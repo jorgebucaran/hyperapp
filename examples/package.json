@@ -1,0 +1,14 @@
+{
+    "name": "flea-examples",
+    "version": "0.0.0",
+    "author": "Jorge Bucaran",
+    "license": "MIT",
+    "private": true,
+    "scripts": {},
+    "devDependencies": {
+        "browser-sync": "^2.18.5",
+        "browserify": "^13.1.1",
+        "chokidar-cli": "^1.2.0",
+        "flea": "file:../"
+    }
+}

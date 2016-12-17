@@ -1,0 +1,14 @@
+{
+    "name": "flea",
+    "description": "Flyweight frontend UI library based in virtual DOM and ES6 tagged template literals",
+    "version": "0.0.0",
+    "main": "index.js",
+    "author": "Jorge Bucaran",
+    "license": "MIT",
+    "scripts": {
+    },
+    "dependencies": {
+        "hyperx": "^2.0.5",
+        "virtual-dom": "^2.1.1"
+    }
+}

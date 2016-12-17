@@ -1,0 +1,9 @@
+#!/bin/sh
+yarn
+node_modules/chokidar-cli/index.js $1/*.js -c \
+    "node_modules/browserify/bin/cmd.js --fast $1/*.js -o static/bundle.js" &
+sleep .5
+touch $1/index.js
+node_modules/browser-sync/bin/browser-sync.js start --server -f static --ss static
+
+

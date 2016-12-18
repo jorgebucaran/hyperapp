@@ -2,39 +2,6 @@
 # yarn lockfile v1
 
 
-browser-split@0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/browser-split/-/browser-split-0.0.1.tgz#7b097574f8e3ead606fb4664e64adfdda2981a93"
-
-camelize@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/camelize/-/camelize-1.0.0.tgz#164a5483e630fa4321e5af07020e531831b2609b"
-
-dom-walk@^0.1.0:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/dom-walk/-/dom-walk-0.1.1.tgz#672226dc74c8f799ad35307df936aba11acd6018"
-
-error@^4.1.1, error@^4.3.0:
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/error/-/error-4.4.0.tgz#bf69ff251fb4a279c19adccdaa6b61e90d9bf12a"
-  dependencies:
-    camelize "^1.0.0"
-    string-template "~0.2.0"
-    xtend "~4.0.0"
-
-ev-store@^7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/ev-store/-/ev-store-7.0.0.tgz#1ab0c7f82136505dd74b31d17701cb2be6d26558"
-  dependencies:
-    individual "^3.0.0"
-
-global@^4.3.0:
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/global/-/global-4.3.1.tgz#5f757908c7cbabce54f386ae440e11e26b7916df"
-  dependencies:
-    min-document "^2.19.0"
-    process "~0.5.1"
-
 hyperscript-attribute-to-property@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/hyperscript-attribute-to-property/-/hyperscript-attribute-to-property-1.0.0.tgz#825308d49bb8e2957923f731981bcc811cad7aff"
@@ -45,70 +12,6 @@ hyperx@^2.0.5:
   dependencies:
     hyperscript-attribute-to-property "^1.0.0"
 
-individual@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/individual/-/individual-3.0.0.tgz#e7ca4f85f8957b018734f285750dc22ec2f9862d"
-
-is-object@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/is-object/-/is-object-1.0.1.tgz#8952688c5ec2ffd6b03ecc85e769e02903083470"
-
-main-loop@^3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/main-loop/-/main-loop-3.4.0.tgz#a2027451a9bbd193bece0cd421e1467c981c8bd2"
-  dependencies:
-    error "^4.1.1"
-    raf "^2.0.1"
-
-min-document@^2.19.0:
-  version "2.19.0"
-  resolved "https://registry.yarnpkg.com/min-document/-/min-document-2.19.0.tgz#7bd282e3f5842ed295bb748cdd9f1ffa2c824685"
-  dependencies:
-    dom-walk "^0.1.0"
-
-next-tick@^0.2.2:
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-0.2.2.tgz#75da4a927ee5887e39065880065b7336413b310d"
-
-performance-now@~0.1.3:
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/performance-now/-/performance-now-0.1.4.tgz#360b642f073ff8c2a693b3c38d7ccbc17b53183b"
-
-process@~0.5.1:
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/process/-/process-0.5.2.tgz#1638d8a8e34c2f440a91db95ab9aeb677fc185cf"
-
-raf@^2.0.1:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/raf/-/raf-2.0.4.tgz#4993e453ea5275bf6ef07a163bdfe9a23233b623"
-  dependencies:
-    performance-now "~0.1.3"
-
-string-template@~0.2.0:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/string-template/-/string-template-0.2.1.tgz#42932e598a352d01fc22ec3367d9d84eec6c9add"
-
-virtual-dom@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/virtual-dom/-/virtual-dom-2.1.1.tgz#80eda2d481b9ede0c049118cefcb4a05f21d1375"
-  dependencies:
-    browser-split "0.0.1"
-    error "^4.3.0"
-    ev-store "^7.0.0"
-    global "^4.3.0"
-    is-object "^1.0.1"
-    next-tick "^0.2.2"
-    x-is-array "0.1.0"
-    x-is-string "0.1.0"
-
-x-is-array@0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/x-is-array/-/x-is-array-0.1.0.tgz#de520171d47b3f416f5587d629b89d26b12dc29d"
-
-x-is-string@0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/x-is-string/-/x-is-string-0.1.0.tgz#474b50865af3a49a9c4657f05acd145458f77d82"
-
-xtend@~4.0.0:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.1.tgz#a5c6d532be656e23db820efb943a1f04998d63af"
+snabbdom@^0.5.4:
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/snabbdom/-/snabbdom-0.5.4.tgz#82d726fd495843d8920d54ac3ca670b7e503375e"

@@ -1,7 +1,7 @@
 {
     "name": "flea",
-    "description": "Flyweight library for building frontend apps based in Snabbdom and ES6 tagged template literals",
-    "version": "0.0.0",
+    "description": "Lbrary for building frontend apps based in Snabbdom and ES6 tagged template literals",
+    "version": "0.0.2",
     "main": "index.js",
     "author": "Jorge Bucaran",
     "license": "MIT",

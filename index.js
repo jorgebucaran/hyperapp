@@ -12,10 +12,12 @@ const html = require("hyperx")((tagName, attrs, children) => {
     while (~--i) {
         const key = keys[i], value = attrs[key]
 
-        switch (key) {
-            case undefined:
-                break
+        if (key === undefined || value === undefined) {
+            console.log("OUT")
+            continue
+        }
 
+        switch (key) {
             case "className":
                 value.split(" ").forEach(cls => {
                     data.class[cls] = true
@@ -35,7 +37,7 @@ const html = require("hyperx")((tagName, attrs, children) => {
         }
     }
 
-    return h(tagName, data, children)
+    return h(tagName, data, [].concat(...children))
 })
 
 const snabbdom = require("snabbdom")
@@ -46,7 +48,7 @@ const patch = snabbdom.init([
     require("snabbdom/modules/eventlisteners")
 ])
 
-const main = (model, view, reducers, container) => {
+const app = (model, view, reducers, container) => {
     const update = (model, action) => {
         const type = action.type === undefined
             ? action
@@ -69,3 +71,5 @@ const main = (model, view, reducers, container) => {
         : document.body.appendChild(document.createElement("div"))
     )
 }
+
+module.exports = { html, app }

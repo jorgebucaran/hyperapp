@@ -1,3 +1,4 @@
 # Flea
 
-Flyweight frontend UI library based in virtual DOM and ES6 tagged template literals
+Flea is a library for building frontend apps based in [Snabbdom] and ES6 tagged template literals.
+

@@ -3,8 +3,8 @@ const html = require("hyperx")((tagName, attrs, children) => {
     const keys = Object.keys(attrs), data = {
         class: {},
         props: {},
-        on: {},
-        style: {}
+        style: {},
+        on: {}
     }
 
     let i = keys.length
@@ -12,8 +12,8 @@ const html = require("hyperx")((tagName, attrs, children) => {
     while (~--i) {
         const key = keys[i], value = attrs[key]
 
-        if (key === undefined || value === undefined) {
-            console.log("OUT")
+        if (key === undefined /* || value === undefined */) {
+            console.log(`Undefined key (${key}) or value (${value})`, tagName, attrs)
             continue
         }
 
@@ -32,12 +32,13 @@ const html = require("hyperx")((tagName, attrs, children) => {
                 if (0 === key.indexOf("on")) {
                     data.on[key.substr(2)] = value
                 } else {
-                    data.props[key] = value
+                    data.props[key] = value === "true"
+                        ? true : value === "false" ? false : value
                 }
         }
     }
 
-    return h(tagName, data, [].concat(...children))
+    return h(tagName, data, children ? [].concat(...children) : children)
 })
 
 const snabbdom = require("snabbdom")
@@ -63,6 +64,7 @@ const app = (model, view, reducers, container) => {
     const render = (model, view, update, lastNode) => {
         const nextNode = view(model, action =>
             render(update(model, action), view, update, nextNode))
+
         patch(lastNode, nextNode)
     }
 

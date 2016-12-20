@@ -24,9 +24,9 @@ const view = (model, dispatch) => {
 }
 
 const update = {
-    COLOR: (model, action) => ({
+    COLOR: (model, msg) => ({
         ...model,
-        [action.key]: action.value
+        [msg.key]: msg.value
     })
 }
 

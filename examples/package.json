@@ -4,11 +4,16 @@
     "author": "Jorge Bucaran",
     "license": "MIT",
     "private": true,
-    "scripts": {},
+    "scripts": {
+        "start": "./index.js"
+    },
     "devDependencies": {
-        "browser-sync": "^2.18.5",
+        "babel-plugin-transform-object-rest-spread": "^6.20.2",
+        "babel-preset-latest": "^6.16.0",
+        "babelify": "^7.3.0",
         "browserify": "^13.1.1",
-        "chokidar-cli": "^1.2.0",
-        "flea": "file:../"
+        "flea": "file:../",
+        "hyperscript": "^2.0.2",
+        "hyperx": "^2.0.5"
     }
 }

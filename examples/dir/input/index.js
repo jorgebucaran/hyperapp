@@ -5,7 +5,7 @@ const model = { name: "" }
 const view = (model, dispatch) => html`
     <div>
         <h1>Hello${model.name === "" ? "!" : `, ${model.name}!`}</h1>
-        Name: <input type="text" oninput=${e =>
+        <input placeholder="What's your name?" type="text" oninput=${e =>
             dispatch({
                 type: "UPDATE_TEXT",
                 value: e.target.value

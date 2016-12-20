@@ -1,4 +1,4 @@
-const { app, html } = require("flea")
+import { app, html } from "flea"
 
 const model = { red: 0, green: 0, blue: 0 }
 
@@ -24,8 +24,10 @@ const view = (model, dispatch) => {
 }
 
 const update = {
-    COLOR: (model, action) =>
-        Object.assign({}, model, { [action.key]: action.value })
+    COLOR: (model, action) => ({
+        ...model,
+        [action.key]: action.value
+    })
 }
 
 app(model, view, update)

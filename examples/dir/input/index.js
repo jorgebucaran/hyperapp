@@ -1,4 +1,4 @@
-const { app, html } = require("flea")
+import { app, html } from "flea"
 
 const model = { name: "" }
 
@@ -14,8 +14,10 @@ const view = (model, dispatch) => html`
     </div>`
 
 const update = {
-    UPDATE_TEXT: (model, action) =>
-        Object.assign({}, model, { name: action.value })
+    UPDATE_TEXT: (model, action) => ({
+        ...model,
+        name: action.value
+    })
 }
 
 app(model, view, update)

@@ -1,4 +1,4 @@
-const { app, html } = require("flea")
+import { app, html } from "flea"
 
 const model = 0
 
@@ -10,7 +10,7 @@ const view = (model, dispatch) => html`
     </div>`
 
 const update = {
-    INCREMENT: model => model + 1,
+    INCREMENT: model => model + 2,
     DECREMENT: model => model - 1
 }
 

@@ -1,4 +1,4 @@
-const { html, app } = require("flea")
+import { app, html } from "flea"
 
 const FilterInfo = { All: 0, Todo: 1, Done: 2 }
 
@@ -6,7 +6,7 @@ const model = {
     todos: [],
     filter: FilterInfo.All,
     input: "",
-    placeholder: "Add new todo"
+    placeholder: "Add new todo!"
 }
 
 const view = (model, dispatch) => {
@@ -67,7 +67,8 @@ const view = (model, dispatch) => {
 }
 
 const update = {
-    ADD: model => Object.assign({}, model, {
+    ADD: model => ({
+        ...model,
         input: "", // reset input
         todos: model.todos.concat({
             done: false,
@@ -75,14 +76,21 @@ const update = {
             id: model.todos.length + 1
         })
     }),
-    TOGGLE: (model, { id, value }) => Object.assign({}, model, {
+    TOGGLE: (model, { id, value }) => ({
+        ...model,
         todos: model.todos.map(t =>
             id === t.id
                 ? Object.assign({}, t, { done: !value })
                 : t)
     }),
-    INPUT: (model, { value }) => Object.assign({}, model, { input: value }),
-    FILTER: (model, { value }) => Object.assign({}, model, { filter: value })
+    INPUT: (model, { value }) => ({
+        ...model,
+        input: value
+    }),
+    FILTER: (model, { value }) => ({
+        ...model,
+        filter: value
+    })
 }
 
 app(model, view, update)

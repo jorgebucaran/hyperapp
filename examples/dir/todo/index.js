@@ -18,8 +18,7 @@ const view = (model, dispatch) => {
                 Object.keys(FilterInfo)
                     .filter(key => FilterInfo[key] !== model.filter)
                     .map(key => html`
-                        <span><a href="#" onclick=${_ => dispatch({
-                            type: "FILTER",
+                        <span><a href="#" onclick=${_ => dispatch("FILTER", {
                             value: FilterInfo[key]
                         })}>${key}</a> </span>
                     `)}
@@ -39,8 +38,7 @@ const view = (model, dispatch) => {
                                     ? "line-through"
                                     : "none"
                             }}
-                            onclick=${e => dispatch({
-                                type: "TOGGLE",
+                            onclick=${e => dispatch("TOGGLE", {
                                 value: t.done,
                                 id: t.id
                             })}>${t.value}
@@ -49,19 +47,13 @@ const view = (model, dispatch) => {
 
             <p>
                 <input
-                    onkeyup=${ e => e.keyCode === 13
-                        ? dispatch({ type: "ADD" })
-                        : ""
-                    }
-                    oninput=${e => dispatch({
-                        type: "INPUT",
-                        value: e.target.value
-                    })}
                     type="text"
+                    onkeyup=${e => e.keyCode === 13 ? dispatch("ADD") : ""}
+                    oninput=${e => dispatch("INPUT", { value: e.target.value })}
                     value=${model.input}
                     placeholder=${model.placeholder}
                 />
-                <button onclick=${_ => dispatch({ type: "ADD" })}>add</button>
+                <button onclick=${_ => dispatch("ADD")}>add</button>
             </p>
         </div>`
 }
@@ -69,7 +61,7 @@ const view = (model, dispatch) => {
 const update = {
     ADD: model => ({
         ...model,
-        input: "", // reset input
+        input: "",
         todos: model.todos.concat({
             done: false,
             value: model.input,

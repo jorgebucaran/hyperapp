@@ -39,39 +39,33 @@ const patch = snabbdom.init([
     require("snabbdom/modules/eventlisteners")
 ])
 
-const app = (model, view, reducers, subscriptions, container) => {
+const app = (model, view, reducers, subs, container) => {
     if (view === undefined) {
         view = model.view
         reducers = model.reducers || model.update
-        subscriptions = model.subscriptions
+        subs = model.subs || model.subscriptions
         container = model.container
         model = model.model
     }
 
     const update = typeof reducers === "function"
-        ? reducers
-        : (model, msg) => {
-            const type = msg.type === undefined ? msg : msg.type
-            return reducers[type] === undefined
-                ? model
-                : reducers[type](model, msg)
-        }
+        ? reducers : (model, msg, data) => reducers[msg](model, data)
 
     const render = (model, view, update, lastNode) => {
-        const send = msg => render(update(model, msg), view, update, nextNode)
-        const nextNode = view(model, send)
-
-        if (subscriptions)
+        patch(lastNode, container = view(model, dispatch))
+        if (subs) {
             document.addEventListener("DOMContentLoaded", _ =>
-                Object.keys(subscriptions).forEach(key => subscriptions[key](send)))
-
-        patch(lastNode, nextNode)
+                Object.keys(subs).forEach(key => subs[key](dispatch, model)))
+        }
     }
 
+    const dispatch = (msg, data) =>
+        render(model = update(model, msg, data), view, update, container)
+
     return render(model, view, update, container
-        ? container
-        : document.body.appendChild(document.createElement("div"))
+        ? container : document.body.appendChild(document.createElement("div"))
     )
 }
 
 module.exports = { html, app }
+

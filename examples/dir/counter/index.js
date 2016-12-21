@@ -5,7 +5,7 @@ const model = 0
 const view = (model, dispatch) => html`
     <div>
         <button onclick=${_ => dispatch("INCREMENT")}>+</button>
-        <p>${model}</p>
+        <h1>${model}</h1>
         <button onclick=${_ => dispatch("DECREMENT")} disabled=${model <= 0}>-</button>
     </div>`
 

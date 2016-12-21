@@ -1,23 +1,17 @@
 import { app, html } from "flea"
 
-const model = { name: "" }
+const model = { value: "" }
 
 const view = (model, dispatch) => html`
     <div>
-        <h1>Hello${model.name === "" ? "!" : `, ${model.name}!`}</h1>
-        <input placeholder="What's your name?" type="text" oninput=${e =>
-            dispatch({
-                type: "UPDATE_TEXT",
-                value: e.target.value
-            })
-        }/>
+        <h1>Hello${model.value === "" ? "!" : `, ${model.value}!`}</h1>
+        Name: <input type="text" oninput=${e =>
+            dispatch("UPDATE_TEXT", { value: e.target.value })}
+        />
     </div>`
 
 const update = {
-    UPDATE_TEXT: (model, action) => ({
-        ...model,
-        name: action.value
-    })
+    UPDATE_TEXT: (model, { value }) => ({ ...model, value })
 }
 
 app(model, view, update)

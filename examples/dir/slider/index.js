@@ -1,33 +1,34 @@
 import { app, html } from "flea"
 
-const model = { red: 0, green: 0, blue: 0 }
+const model = { red: 255, green: 255, blue: 255 }
 
 const view = (model, dispatch) => {
+    document.body.style.backgroundColor = `rgb(${model.red}, ${model.green}, ${model.blue})`
+
     const slider = _ => Object.keys(model).map(key => html`
-        <div><input type="range" min="0" max="255" value=${model[key]} oninput=${e => dispatch({
-            type: "COLOR",
-            key, value: e.target.value
-        })}/></div>`)
+        <div>
+            <input
+                type="range" min="0" max="255"
+                value=${model[key]}
+                oninput=${e => dispatch("COLOR", { key, value: e.target.value })}
+            />
+        </div>`)
 
     return html`
     <div>
-        <h1 style=${{
-            display: "inline-block",
-            borderBottom: `50px solid rgb(${model.red}, ${model.green}, ${model.blue})`
-        }}>
-        ${Object
-            .values(model)
-            .reduce((hex, color) =>
-                hex + "" + parseInt(color).toString(16).toUpperCase(), "#")}</h1>
+        <input type="text" style=${{ fontSize: "12px" }} value=${
+            Object
+                .values(model)
+                .reduce((hex, color) => hex + "" + parseInt(color)
+                    .toString(16)
+                    .toUpperCase(), "#")}
+        />
         ${slider()}
     </div>`
 }
 
 const update = {
-    COLOR: (model, msg) => ({
-        ...model,
-        [msg.key]: msg.value
-    })
+    COLOR: (model, { key, value }) => ({ ...model, [key]: value })
 }
 
 app(model, view, update)

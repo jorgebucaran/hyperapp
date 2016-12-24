@@ -15,12 +15,12 @@ app({
     },
     view: model => html`<h1>${humanTime(model.time, model.miTime)}</h1>`,
     update: {
-        TICK: model => ({ ...model, time: new Date() }),
-        TOGGLE: model => ({ ...model, miTime: !model.miTime })
+        tick: model => ({ ...model, time: new Date() }),
+        toggle: model => ({ ...model, miTime: !model.miTime })
     },
     subscriptions: [
-        dispatch => setInterval(_ => dispatch("TICK"), 1000),
-        dispatch => document.addEventListener("click", _ => dispatch("TOGGLE"))
+        msg => setInterval(msg.tick, 1000),
+        msg => addEventListener("click", msg.toggle)
     ]
 })
 

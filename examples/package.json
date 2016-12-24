@@ -14,6 +14,7 @@
         "browserify": "^13.1.1",
         "flea": "file:../",
         "hyperscript": "^2.0.2",
-        "hyperx": "^2.0.5"
+        "hyperx": "^2.0.5",
+        "whatwg-fetch": "^2.0.1"
     }
 }

@@ -9,7 +9,7 @@ const model = {
     placeholder: "Add new todo!"
 }
 
-const view = (model, dispatch) => {
+const view = (model, msg) => {
     return html`
         <div>
             <h1>Todo</h1>
@@ -18,7 +18,7 @@ const view = (model, dispatch) => {
                 Object.keys(FilterInfo)
                     .filter(key => FilterInfo[key] !== model.filter)
                     .map(key => html`
-                        <span><a href="#" onclick=${_ => dispatch("FILTER", {
+                        <span><a href="#" onclick=${_ => msg.filter({
                             value: FilterInfo[key]
                         })}>${key}</a> </span>
                     `)}
@@ -34,11 +34,10 @@ const view = (model, dispatch) => {
                         model.filter === FilterInfo.All)
                     .map(t => html`
                         <li style=${{
-                                textDecoration: t.done
-                                    ? "line-through"
-                                    : "none"
+                                color: t.done ? "gray" : "black",
+                                textDecoration: t.done ? "line-through" : "none"
                             }}
-                            onclick=${e => dispatch("TOGGLE", {
+                            onclick=${e => msg.toggle({
                                 value: t.done,
                                 id: t.id
                             })}>${t.value}
@@ -48,18 +47,18 @@ const view = (model, dispatch) => {
             <p>
                 <input
                     type="text"
-                    onkeyup=${e => e.keyCode === 13 ? dispatch("ADD") : ""}
-                    oninput=${e => dispatch("INPUT", { value: e.target.value })}
+                    onkeyup=${e => e.keyCode === 13 ? msg.add() : ""}
+                    oninput=${e => msg.input({ value: e.target.value })}
                     value=${model.input}
                     placeholder=${model.placeholder}
                 />
-                <button onclick=${_ => dispatch("ADD")}>add</button>
+                <button onclick=${msg.add}>add</button>
             </p>
         </div>`
 }
 
 const update = {
-    ADD: model => ({
+    add: model => ({
         ...model,
         input: "",
         todos: model.todos.concat({
@@ -68,18 +67,18 @@ const update = {
             id: model.todos.length + 1
         })
     }),
-    TOGGLE: (model, { id, value }) => ({
+    toggle: (model, { id, value }) => ({
         ...model,
         todos: model.todos.map(t =>
             id === t.id
                 ? Object.assign({}, t, { done: !value })
                 : t)
     }),
-    INPUT: (model, { value }) => ({
+    input: (model, { value }) => ({
         ...model,
         input: value
     }),
-    FILTER: (model, { value }) => ({
+    filter: (model, { value }) => ({
         ...model,
         filter: value
     })

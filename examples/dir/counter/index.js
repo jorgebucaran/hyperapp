@@ -2,16 +2,16 @@ import { app, html } from "flea"
 
 const model = 0
 
-const view = (model, dispatch) => html`
+const view = (model, { add, sub }) => html`
     <div>
-        <button onclick=${_ => dispatch("INCREMENT")}>+</button>
+        <button onclick=${add}>+</button>
         <h1>${model}</h1>
-        <button onclick=${_ => dispatch("DECREMENT")} disabled=${model <= 0}>-</button>
+        <button onclick=${sub} disabled=${model <= 0}>-</button>
     </div>`
 
 const update = {
-    INCREMENT: model => model + 1,
-    DECREMENT: model => model - 1
+    add: model => model + 1,
+    sub: model => model - 1
 }
 
 app(model, view, update)

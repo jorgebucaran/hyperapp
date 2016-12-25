@@ -44,66 +44,56 @@ var html = require("hyperx")(function (tagName, attrs, children) {
     return h(tagName, data, children ? [].concat.apply([], children) : children)
 })
 
-function app(model, view, reducers, subs, effects, container) {
-    if (view === undefined) {
-        view = model.view
-        reducers = model.reducers || model.update
-        subs = model.subs || model.subscriptions
-        effects = model.effects
-        container = model.container
-        model = model.model
-    }
-
-    subs = subs || {}
-    reducers = reducers || {}
-    effects = effects || {}
+function app(options) {
+    var model = options.model,
+        view = options.view,
+        reducers = options.reducers || options.update || {},
+        subs = options.subs || options.subscriptions || {},
+        effects = options.effects || {},
+        root = options.root || document.body.appendChild(document.createElement("div"))
 
     var update = typeof reducers === "function"
         ? reducers
-        : function(model, msg, data) {
-            var reduce = reducers[msg]
+        : function(model, name, data) {
+            var reduce = reducers[name]
             if (typeof reduce !== "function") {
-                throw TypeError(msg + " is not a reducer or effect (function)")
+                throw TypeError(name + " is not a reducer or effect (function)")
             }
             return reduce(model, data)
         }
 
-    function dispatch(msg, data) {
-        var effect = effects[msg]
-        if (typeof effect === "function") {
-            effect(model, dispatch)
-            return
-        }
-        render(model = update(model, msg, data), view, update, container)
-        return model
-    }
-
     Object
         .keys(reducers)
         .concat(Object.keys(effects))
-        .forEach(function(msg) {
-            if (reducers[msg] !== undefined && effects[msg] !== undefined) {
-                throw TypeError(msg + " is already defined either as a reducer and/or an effect, use a different name")
+        .forEach(function(name) {
+            if (reducers[name] !== undefined && effects[name] !== undefined) {
+                throw TypeError(name + " is already defined as a reducer and/or an effect, use a different name")
             }
-            dispatch[msg] = function(data) {
-                dispatch(msg, data)
+            dispatch[name] = function(data) {
+                dispatch(name, data)
             }
         })
-
-    function render(model, view, update, lastNode) {
-        patch(lastNode, container = view(model, dispatch))
-    }
-
-    render(model, view, update, container
-        ? container
-        : document.body.appendChild(document.createElement("div"))
-    )
 
     document.addEventListener("DOMContentLoaded", function () {
         Object.keys(subs).forEach(function (key) {
             subs[key](dispatch, model)
         })
     })
+
+    render(model, view, update, root)
+
+    function render(model, view, update, lastNode) {
+        patch(lastNode, root = view(model, dispatch))
+    }
+
+    function dispatch(name, data) {
+        var effect = effects[name]
+        if (typeof effect === "function") {
+            effect(model, dispatch)
+        } else {
+            render(model = update(model, name, data), view, update, root)
+        }
+    }
 }
 
 module.exports = { html: html, app: app }

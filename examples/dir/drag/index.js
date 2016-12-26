@@ -41,4 +41,4 @@ const subs = [
         msg.move({ x: e.pageX, y: e.pageY }))
 ]
 
-app(model, view, update, subs)
+app({ model, view, update, subs })

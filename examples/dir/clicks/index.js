@@ -9,8 +9,8 @@ const update = {
 const view = model => html`<h1>${model} clicks</h1>`
 
 const subs = [
-    ({ click }) => addEventListener("mousedown", click)
+    msg => addEventListener("mousedown", msg.click)
 ]
 
-app(model, view, update, subs)
+app({ model, view, update, subs })
 

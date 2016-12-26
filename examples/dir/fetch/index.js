@@ -6,7 +6,8 @@ const URL = "https://api.github.com/orgs/fisherman/repos?per_page=100"
 const model = {
     search: "",
     repos: [],
-    isFetching: false
+    isFetching: false,
+    org: "github"
 }
 
 const view = (model, msg) => html`
@@ -32,7 +33,7 @@ const update = {
 
 const subs = [
     msg =>
-        fetch(URL)
+        fetch(`https://api.github.com/orgs/${model.org}/repos?per_page=100`)
         .then(repos => repos.json())
         .then(repos => repos.map(repo => ({
             name: repo.name,
@@ -43,6 +44,6 @@ const subs = [
         .then(repos => msg.update({ repos, isFetching: false }))
 ]
 
-app(model, view, update, subs)
+app({ model, view, update, subs })
 
 

@@ -31,4 +31,4 @@ const update = {
     change: (model, { key, value }) => ({ ...model, [key]: value })
 }
 
-app(model, view, update)
+app({ model, view, update })

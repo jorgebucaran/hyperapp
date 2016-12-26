@@ -13,8 +13,8 @@ const update = {
 }
 
 const subs = [
-    ({ toggle }) => addEventListener("mousedown", toggle),
-    ({ toggle }) => addEventListener("mouseup", toggle)
+    msg => addEventListener("mousedown", msg.toggle),
+    msg => addEventListener("mouseup", msg.toggle)
 ]
 
-app(model, view, update, subs)
+app({ model, view, update, subs })

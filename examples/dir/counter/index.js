@@ -1,17 +1,15 @@
 import { app, html } from "flea"
 
-const model = 0
-
-const view = (model, { add, sub }) => html`
+app({
+    model: 0,
+    view: (model, msg) => html`
     <div>
-        <button onclick=${add}>+</button>
+        <button onclick=${msg.add}>+</button>
         <h1>${model}</h1>
-        <button onclick=${sub} disabled=${model <= 0}>-</button>
-    </div>`
-
-const update = {
-    add: model => model + 1,
-    sub: model => model - 1
-}
-
-app(model, view, update)
+        <button onclick=${msg.sub} disabled=${model <= 0}>-</button>
+    </div>`,
+    update: {
+        add: model => model + 1,
+        sub: model => model - 1
+    }
+})

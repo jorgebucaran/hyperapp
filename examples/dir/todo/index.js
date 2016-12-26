@@ -84,4 +84,4 @@ const update = {
     })
 }
 
-app(model, view, update)
+app({ model, view, update })

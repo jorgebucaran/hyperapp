@@ -32,7 +32,7 @@ app({
 })
 ```
 
-[See more examples](https://flea.gomix.me/).
+[See more examples](https://flea.gomix.me/) and a [fiddle](https://jsfiddle.net/jbucaran/epo7fexz/1/).
 
 ## API
 

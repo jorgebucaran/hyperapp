@@ -32,10 +32,7 @@ app({
 })
 ```
 
-## Examples
-
-* ...
-* ...
+[See more examples](https://flea.gomix.me/).
 
 ## API
 

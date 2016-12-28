@@ -55,11 +55,11 @@ const hello = html`<h1>Hello World!</h1>`
 
 The `app` function receives an object with any of the following properties.
 
-### model
+#### model
 
 The model is an object with the state of your app. You don't modify the model directly, instead, you call reducers (update functions) that describe how the model will change. This causes the view to be rendered again.
 
-### update
+#### update
 
 The update object exposes reducers that describe how the model will change. A reducer returns a new model. If you find you are doing something different here, you probably want an [effect](#effect) instead.
 
@@ -67,7 +67,7 @@ Reducers have a signature `(model, data)`, where `model` is the current model, a
 
 You call reducers inside a view, effect or subscription.
 
-### view
+#### view
 
 The view is a function that returns HTML via the `html` function.
 
@@ -83,13 +83,13 @@ or if you prefer
 msg("name", data)
 ```
 
-### effects
+#### effects
 
 Effects are often asynchronous and cause side effects, like writing to a database, or sending requests to servers. When they are done, they often call a reducer.
 
 Effects have a signature `(model, msg, error)`, where `model` is the current model, `msg` is a function you use to call reducers / cause effects (see [view](#view)), and `error` is a function you may call with an error if something goes wrong.
 
-### subscriptions
+#### subscriptions
 
 Subscriptions are functions that run only once when the [DOM is ready](https://developer.mozilla.org/en-US/docs/Web/Events/DOMContentLoaded). Use a subscription to register global events, like mouse or keyboard listeners.
 
@@ -97,23 +97,23 @@ While reducers and effects are actions _you_ cause, you can't call subscriptions
 
 A subscription has a signature `(model, msg, error)`.
 
-### hooks
+#### hooks
 
 Hooks are functions Flea calls when certain events happen across the app. You can use hooks to implement middleware, loggers, etc.
 
-#### onUpdate
+##### onUpdate
 
 Called when the model changes. Signature `(lastModel, newModel, data)`.
 
-#### onAction
+##### onAction
 
 Called when an action (reducer or effect) is dispatched. Signature `(name, data)`.
 
-#### onError
+##### onError
 
 Called when you use the `error` function inside a subscription or effect. If you don't use this hook, the default behavior is to throw. Signature `(err)`.
 
-### root
+#### root
 
 The root is the HTML element that will act as a container for your app. If none is given, Flea will create a `div` element in document.body and append your view in it.
 

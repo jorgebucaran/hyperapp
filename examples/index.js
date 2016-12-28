@@ -4,8 +4,7 @@ const html = require("hyperx")(require("hyperscript"))
 const http = require("http")
 const fs = require("fs")
 const path = require("path")
-const browserify = require("browserify")
-const babelify = require("babelify")
+const b = require("browserify")
 
 const getRoutes = dir =>
     fs.readdirSync(dir).filter(file =>
@@ -13,20 +12,29 @@ const getRoutes = dir =>
 
 http.createServer((req, res) => {
     const routes = getRoutes(__dirname + "/dir/")
-    const match = req.url.match(/^\/static\/([a-z0-9]+)\/bundle\.js$/)
+    const match = req.url.match(/^\/static\/([a-z0-9_+]+)\/bundle\.js$/)
 
     if (req.url === "/") {
-        res.write(html`<body><ul>${routes.map(name =>
-            html`<li><a href="${name}">${name}</a></li>`)}</ul></body>`.outerHTML)
+        res.write(html`
+            <body>
+                <ul>${routes.map(name =>
+                    html`<li><a href="${name}">${name}</a></li>`)}
+                </ul>
+            </body>`.outerHTML)
         res.end()
 
+    } else if (req.url === "/style.css") {
+        fs.createReadStream(path.join(__dirname, "style.css")).pipe(res)
+
     } else if (match && match.length >= 1) {
+
         res.setHeader("content-type", "application/javascript")
-        browserify(`${__dirname}/dir/${match[1]}/index.js`)
-            .transform(babelify, {
+        b(`${__dirname}/dir/${match[1]}/index.js`)
+            .transform("babelify", {
                 presets: ["latest"],
                 plugins: ["transform-object-rest-spread"]
             })
+            .transform("browserify-css", { autoInject: true })
             .bundle().on("error", e => {
                 console.error(e)
                 res.writeHead(500, e.toString())
@@ -35,7 +43,13 @@ http.createServer((req, res) => {
 
     } else {
         routes.filter(name => `/${name}` === req.url).forEach(name => {
-            res.write(`<body><script src="static/${name}/bundle.js"></script></body>`)
+            res.write(`
+                <head>
+                    <link rel="stylesheet" href="style.css"/>
+                </head>
+                <body>
+                    <script src="static/${name}/bundle.js"></script>
+                </body>`)
             res.end()
         })
     }

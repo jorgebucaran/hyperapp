@@ -7,12 +7,13 @@ const model = {
     waiting: false
 }
 
-const view = (model, { waitThenAdd }) =>
+const view = (model, msg) =>
     html`
         <button
-            onclick=${waitThenAdd}
+            onclick=${msg.waitThenAdd}
             disabled=${model.waiting}>${model.counter}
         </button>`
+
 
 const update = {
     add: model => ({ ...model, counter: model.counter + 1 }),
@@ -20,9 +21,9 @@ const update = {
 }
 
 const effects = {
-    waitThenAdd: (model, { add, toggle }) => {
-        toggle()
-        wait(1000).then(add).then(toggle)
+    waitThenAdd: (model, msg) => {
+        msg.toggle()
+        wait(1000).then(msg.add).then(msg.toggle)
     }
 }
 

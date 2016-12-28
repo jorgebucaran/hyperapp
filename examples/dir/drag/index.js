@@ -8,7 +8,7 @@ const model = {
 }
 
 const view = (model, msg) => html`
-    <div
+    <button
         onmousedown=${e => msg.drag({
             position: {
                 x: e.pageX, y: e.pageY, offsetX: e.offsetX, offsetY: e.offsetY
@@ -18,14 +18,12 @@ const view = (model, msg) => html`
             userSelect: "none",
             cursor: "move",
             position: "absolute",
-            padding: "50px",
-            fontSize: "20px",
             left: `${model.position.x - model.position.offsetX}px`,
             top: `${model.position.y - model.position.offsetY}px`,
             backgroundColor: model.dragging ? "gold" : "deepskyblue"
         }}
     >Drag Me!
-    </div>`
+    </button>`
 
 const update = {
     drop: model => ({ ...model, dragging: false }),

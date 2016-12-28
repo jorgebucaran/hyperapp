@@ -6,6 +6,10 @@ hyperscript-attribute-to-property@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/hyperscript-attribute-to-property/-/hyperscript-attribute-to-property-1.0.0.tgz#825308d49bb8e2957923f731981bcc811cad7aff"
 
+hyperx-to-snabbdom@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/hyperx-to-snabbdom/-/hyperx-to-snabbdom-0.1.0.tgz#550f85f573df0590391aee137b521d521097eb2d"
+
 hyperx@^2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/hyperx/-/hyperx-2.0.5.tgz#fedef890d7203f36339b243b27d38e3a424225ab"

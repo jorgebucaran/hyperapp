@@ -5,6 +5,14 @@
     "main": "index.js",
     "author": "Jorge Bucaran",
     "license": "MIT",
+    "repository": "jbucaran/flea",
+    "keywords": [
+        "snabbdom",
+        "hyperx",
+        "frontend",
+        "minimal",
+        "functional"
+    ],
     "scripts": {
         "build": "mkdir -p dist && browserify app.js -s app -g uglifyify | uglifyjs > dist/flea.min.js && browserify html.js -s html -g uglifyify | uglifyjs > dist/html.min.js",
         "gzip": "gzip -c dist/flea.min.js > dist/flea.min.js.gz",

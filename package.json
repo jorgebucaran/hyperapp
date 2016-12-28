@@ -1,14 +1,14 @@
 {
     "name": "flea",
     "description": "Lbrary for building frontend apps based in Snabbdom and ES6 tagged template literals",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "main": "index.js",
     "author": "Jorge Bucaran",
     "license": "MIT",
     "scripts": {},
     "dependencies": {
         "hyperx": "^2.0.5",
+        "hyperx-to-snabbdom": "^0.1.0",
         "snabbdom": "^0.5.4"
     }
 }
-

@@ -1,15 +1,14 @@
 {
     "name": "flea",
-    "description": "JavaScript UI library based in Snabbdom and ES6 tagged template literals",
+    "description": "JavaScript front-end library based in Snabbdom and ES6 tagged template literals",
     "version": "0.0.8",
     "main": "index.js",
     "author": "Jorge Bucaran",
     "license": "MIT",
     "scripts": {
-        "build": "mkdir -p dist && browserify index.js -s app -g uglifyify | uglifyjs > dist/flea.min.js && browserify html.js -s html -g uglifyify | uglifyjs > dist/html.min.js",
+        "build": "mkdir -p dist && browserify app.js -s app -g uglifyify | uglifyjs > dist/flea.min.js && browserify html.js -s html -g uglifyify | uglifyjs > dist/html.min.js",
         "gzip": "gzip -c dist/flea.min.js > dist/flea.min.js.gz",
-        "zopfli": "zopfli dist/flea.min.js -c --i1500 > dist/flea.min.js.gz",
-        "make": "npm run build && npm run gzip"
+        "zopfli": "zopfli dist/flea.min.js -c --i1500 > dist/flea.min.js.gz"
     },
     "dependencies": {
         "hyperx": "^2.0.5",

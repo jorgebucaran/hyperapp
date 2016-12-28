@@ -118,9 +118,9 @@ The root is the HTML element that will serve as a container for your app. If non
 
 ### What about choo or yo-yo?
 
-I like both, but I like yo-yo the best. I even wrote a tiny [module](https://www.npmjs.com/package/yo-yo-app) to help me structure apps with it. I found using  yo-yo only too limited, but choo too frameworky.
+I like both, but I enjoyed yo-yo the best. I even wrote a tiny [module](https://www.npmjs.com/package/yo-yo-app) to help me structure apps with it. I found using only yo-yo too limiting, and choo too frameworky.
 
-I also didn't like some of choo API choices like namespaces, including a router, models as containers for state and [morphdom](https://github.com/patrick-steele-idem/morphdom).
+In particular, I didn't like some of choo choices like namespaces, including a router, models as containers for state and [morphdom](https://github.com/patrick-steele-idem/morphdom).
 
 See also [virtual dom benchmarks](http://vdom-benchmark.github.io/vdom-benchmark/).
 

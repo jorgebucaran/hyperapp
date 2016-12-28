@@ -61,7 +61,7 @@ The model is an object with the state of your app. You don't modify the model di
 
 #### update
 
-The update object exposes reducers that describe how the model will change. A reducer returns a new model. If you find you are doing something different here, you probably want an [effect](#effect) instead.
+The update object exposes reducers that describe how the model will change. A reducer returns a new model. If you find you are doing something different here, you probably want an [effect](#effects) instead.
 
 Reducers have a signature `(model, data)`, where `model` is the current model, and `data` is the data the reducer was passed to.
 
@@ -115,17 +115,17 @@ Called when you use the `error` function inside a subscription or effect. If you
 
 #### root
 
-The root is the HTML element that will act as a container for your app. If none is given, Flea will create a `div` element in document.body and append your view in it.
+The root is the HTML element that will serve as a container for your app. If none is given, Flea will create a `div` element in document.body and append your view in it.
 
 ## FAQ
 
 ### What about choo or yo-yo?
 
-I like yo-yo the best and wrote a tiny [module](https://www.npmjs.com/package/yo-yo-app) to help me structure apps with it. I found using only yo-yo too limited, and choo too frameworky.
+I like both, but I like yo-yo the best. I even wrote a tiny [module](https://www.npmjs.com/package/yo-yo-app) to help me structure apps with it. I found using  yo-yo only too limited, but choo too frameworky.
 
-I didn't like some of choo API choices like namespaces, including a router, models as containers for state and [morphdom](https://github.com/patrick-steele-idem/morphdom).
+I also didn't like some of choo API choices like namespaces, including a router, models as containers for state and [morphdom](https://github.com/patrick-steele-idem/morphdom).
 
-> See also [virtual dom benchmarks](http://vdom-benchmark.github.io/vdom-benchmark/).
+See also [virtual dom benchmarks](http://vdom-benchmark.github.io/vdom-benchmark/).
 
 
 [Snabbdom]: https://github.com/snabbdom/snabbdom

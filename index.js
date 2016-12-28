@@ -6,72 +6,29 @@ var patch = require("snabbdom").init([
     require("snabbdom/modules/eventlisteners")
 ])
 
-var html = require("hyperx")((function (h) {
-    return function (tagName, attrs, children) {
-        var data = {
-            class: {},
-            props: {},
-            style: {},
-            attrs: {},
-            on: {},
-            hook: {}
-        }
-
-        for (var key in attrs) {
-            if (key === undefined || !attrs.hasOwnProperty(key)) {
-                continue
-            }
-            var value = attrs[key]
-
-            if (key === "className") {
-                var cls = value.split(" ")
-                for (var i = 0; i < cls.length; i++) {
-                    data.class[cls[i]] = true
-                }
-            } else if (key === "style") {
-                data.style = value
-
-            } else if ("on" === key.substr(0, 2)) {
-                data.on[key.substr(2)] = value
-
-            } else if ("data-hook-" === key.substr(0, 10)) {
-                data.hook[key.substr(10)] = value
-
-            } else {
-                data.props[key] = data.attrs[key] = value === "true"
-                    ? true : value === "false" ? false : value
-            }
-        }
-
-        return h(tagName, data, children ? [].concat.apply([], children) : children)
-    }
-} (require("snabbdom/h"))))
-
-function app(options) {
+module.exports = function app(options) {
     var model = options.model,
         view = options.view,
         reducers = options.reducers || options.update || {},
-        subs = options.subs || options.subscriptions || {},
+        subs = options.subscriptions || {},
         effects = options.effects || {},
         hooks = options.hooks || {},
         root = options.root || document.body.appendChild(document.createElement("div"))
 
-    var update = typeof reducers === "function"
-        ? reducers
-        : function (model, name, data) {
-            var reduce = reducers[name]
-            if (typeof reduce !== "function") {
-                throw TypeError(name + " is not a reducer or effect (function)")
-            }
-            return reduce(model, data)
+    var update = function (model, name, data) {
+        var reduce = reducers[name]
+        if (typeof reduce !== "function") {
+            throw TypeError(name + " is not a reducer or effect")
         }
+        return reduce(model, data)
+    }
 
     Object
         .keys(reducers)
         .concat(Object.keys(effects))
         .forEach(function (name) {
             if (reducers[name] !== undefined && effects[name] !== undefined) {
-                throw TypeError(name + " is already defined as a reducer and/or an effect, use a different name")
+                throw TypeError(name + " is already defined as a reducer or effect")
             }
             dispatch[name] = function (data) {
                 dispatch(name, data)
@@ -117,6 +74,6 @@ function app(options) {
     }
 }
 
-module.exports = { html: html, app: app }
+
 
 

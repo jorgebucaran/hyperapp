@@ -20,7 +20,7 @@
     },
     "dependencies": {
         "hyperx": "^2.0.5",
-        "hyperx-to-snabbdom": "0.2.1",
+        "hyperx-to-snabbdom": "^0.2.2",
         "snabbdom": "^0.5.4"
     },
     "devDependencies": {

@@ -15,8 +15,6 @@ npm i flea
 This is a basic counter app.
 
 ```js
-import { app, html } from "flea"
-
 app({
     model: 0,
     update: {

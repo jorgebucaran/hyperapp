@@ -1,6 +1,6 @@
 # flea
 
-Flea is a <4kb JavaScript front-end library based in [Snabbdom] and ES6 tagged template literals with [Hyperx].
+Flea is a <4kb JavaScript UI library based in [Snabbdom] and ES6 tagged template literals with [Hyperx].
 
 The API and state management is inspired by the [Elm Architecture] and [choo].
 
@@ -12,7 +12,7 @@ npm i flea
 
 ## Usage
 
-This is a basic counter app.
+A basic counter app. See [fiddle](https://jsfiddle.net/jbucaran/epo7fexz/8/).
 
 ```js
 app({
@@ -25,18 +25,18 @@ app({
         <div>
             <button onclick=${msg.add}>+</button>
             <h1>${model}</h1>
-            <button onclick=${msg.sub} disabled=${model === 0}>–</button>
+            <button onclick=${msg.sub} disabled=${model <= 0}>–</button>
         </div>`
 })
 ```
 
-[See more examples](https://flea.gomix.me/) and a [fiddle](https://jsfiddle.net/jbucaran/epo7fexz/1/).
+[See live examples](https://flea.gomix.me/).
 
 ## API
 
 ### html
 
-You use `html` to compose HTML elements.
+Use `html` to compose HTML elements.
 
 ```js
 const hello = html`<h1>Hello World!</h1>`
@@ -48,17 +48,17 @@ const hello = html`<h1>Hello World!</h1>`
 
 ### app
 
-The `app` function receives an object with any of the following properties.
+The `app` function takes an object with any of the following properties.
 
 #### model
 
-The model is an object with the state of your app. You don't modify the model directly, instead, you call reducers (update functions) that describe how the model will change. This causes the view to be rendered again.
+An value or object that represents the state of your app. You don't modify the model directly, instead, dispatch actions that describe how the model will change. See [view](#view).
 
 #### update
 
-The update object exposes reducers that describe how the model will change. A reducer returns a new model. If you find you are doing something different here, you probably want an [effect](#effects) instead.
+The update object exposes reducer functions. A reducer describes how the model will change for a given action and can return a new model or part of a model. If a reducer returns part of a model, it will be merged back into the current model.
 
-Reducers have a signature `(model, data)`, where `model` is the current model, and `data` is the data the reducer was passed to.
+Reducers have a signature `(model, data)`, where `model` is the current model, and `data` is any data passed into the function.
 
 You call reducers inside a view, effect or subscription.
 
@@ -66,7 +66,7 @@ You call reducers inside a view, effect or subscription.
 
 The view is a function that returns HTML via the `html` function.
 
-The view has a signature `(model, msg)`, where `model` is the current model, and `msg` is a function you use to call reducers / cause effects.
+The view has a signature `(model, msg)`, where `model` is the current model, and `msg` is an object you use to call reducers / cause effects.
 
 ```js
 msg.name(data)
@@ -80,11 +80,11 @@ msg("name", data)
 
 #### effects
 
-Effects are often asynchronous and cause side effects, like writing to a database, or sending requests to servers. When they are done, they often call a reducer.
+Effects are often asynchronous and cause side effects, like writing to a database, or sending requests to servers. When they are done, they often dispatch an action.
 
-Effects have a signature `(model, msg, error)`, where `model` is the current model, `msg` is a function you use to call reducers / cause effects (see [view](#view)), and `error` is a function you may call with an error if something goes wrong.
+Effects have a signature `(model, msg, error)`, where `model` is the current model, `msg` is an object you use to call reducers / cause effects (see [view](#view)), and `error` is a function you may call with an error if something goes wrong.
 
-#### subscriptions
+#### subs
 
 Subscriptions are functions that run only once when the [DOM is ready](https://developer.mozilla.org/en-US/docs/Web/Events/DOMContentLoaded). Use a subscription to register global events, like mouse or keyboard listeners.
 
@@ -94,7 +94,7 @@ A subscription has a signature `(model, msg, error)`.
 
 #### hooks
 
-Hooks are functions Flea calls when certain events happen across the app. You can use hooks to implement middleware, loggers, etc.
+Hooks are functions called when certain events happen across the app. You can use hooks to implement middleware, loggers, etc.
 
 ##### onUpdate
 
@@ -110,7 +110,7 @@ Called when you use the `error` function inside a subscription or effect. If you
 
 #### root
 
-The root is the HTML element that will serve as a container for your app. If none is given, Flea will create a `div` element in document.body and append your view in it.
+The root is the HTML element that will serve as a container for your app. If none is given, a `div` element is appended to the document.body.
 
 ## FAQ
 

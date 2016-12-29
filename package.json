@@ -1,7 +1,7 @@
 {
     "name": "flea",
-    "description": "JavaScript front-end library based in Snabbdom and ES6 tagged template literals",
-    "version": "0.0.10",
+    "description": "Front-end library based in Snabbdom and ES6 tagged template literals",
+    "version": "0.0.11",
     "main": "index.js",
     "author": "Jorge Bucaran",
     "license": "MIT",

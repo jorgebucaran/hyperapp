@@ -1,6 +1,6 @@
 # flea
 
-Flea is a <4kb JavaScript UI library based in [Snabbdom] and ES6 tagged template literals with [Hyperx].
+Flea is a tiny JavaScript UI library based in [Snabbdom] and ES6 tagged template literals with [Hyperx].
 
 The API and state management is inspired by the [Elm Architecture] and [choo].
 
@@ -10,7 +10,7 @@ The API and state management is inspired by the [Elm Architecture] and [choo].
 npm i flea
 ```
 
-## Usage
+## Example
 
 A basic counter app. See [fiddle](https://jsfiddle.net/jbucaran/epo7fexz/10/).
 

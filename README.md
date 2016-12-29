@@ -12,7 +12,7 @@ npm i flea
 
 ## Usage
 
-A basic counter app. See [fiddle](https://jsfiddle.net/jbucaran/epo7fexz/8/).
+A basic counter app. See [fiddle](https://jsfiddle.net/jbucaran/epo7fexz/10/).
 
 ```js
 app({
@@ -30,7 +30,7 @@ app({
 })
 ```
 
-[See live examples](https://flea.gomix.me/).
+[See more examples](https://flea.gomix.me/).
 
 ## API
 

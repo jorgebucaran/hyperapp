@@ -2,7 +2,7 @@
 
 Flea is a tiny JavaScript UI library based in [Snabbdom] and ES6 tagged template literals with [Hyperx].
 
-The API and state management is inspired by the [Elm Architecture] and [choo].
+The API and state management is inspired by the [Elm Architecture], [yo-yo] and [choo].
 
 ## Install
 
@@ -66,7 +66,7 @@ You call reducers inside a view, effect or subscription.
 
 The view is a function that returns HTML via the `html` function.
 
-The view has a signature `(model, msg)`, where `model` is the current model, and `msg` is an object you use to call reducers / cause effects.
+The view has a signature `(model, msg, params)`, where `model` is the current model, and `msg` is an object you use to call reducers / cause effects.
 
 ```js
 msg.name(data)
@@ -77,6 +77,10 @@ or if you prefer
 ```js
 msg("name", data)
 ```
+
+##### routing
+
+...
 
 #### effects
 
@@ -116,14 +120,13 @@ The root is the HTML element that will serve as a container for your app. If non
 
 ### What about choo or yo-yo?
 
-I like both, but I enjoyed yo-yo the best. I even wrote a tiny [module](https://www.npmjs.com/package/yo-yo-app) to help me structure apps with it. I found using only yo-yo too limiting, and choo too frameworky.
+I like both :heart:. I wrote a tiny [module](https://www.npmjs.com/package/yo-yo-app) to help me structure apps with yo-yo too, but I found using only yo-yo not quite enough, and choo a bit too frameworky.
 
-In particular, I didn't like some of choo choices like namespaces, including a router, models as containers for state and [morphdom](https://github.com/patrick-steele-idem/morphdom).
-
-See also [virtual dom benchmarks](http://vdom-benchmark.github.io/vdom-benchmark/).
+I also didn't like some of choo choices like namespaces, plugins, [morphdom](https://github.com/patrick-steele-idem/morphdom) and models as containers for state. Everything else is gold!
 
 
 [Snabbdom]: https://github.com/snabbdom/snabbdom
 [Hyperx]: https://github.com/substack/hyperx
 [Elm Architecture]: https://guide.elm-lang.org/architecture
+[yo-yo]: https://github.com/maxogden/yo-yo
 [choo]: https://github.com/yoshuawuyts/choo

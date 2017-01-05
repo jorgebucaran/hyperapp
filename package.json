@@ -1,11 +1,11 @@
 {
     "name": "flea",
     "description": "Tiny UI library based in Snabbdom and ES6 tagged template literals",
-    "version": "0.0.17",
+    "version": "0.0.18",
     "main": "index.js",
     "author": "Jorge Bucaran",
     "license": "MIT",
-    "repository": "jbucaran/flea",
+    "repository": "fleajs/flea",
     "keywords": [
         "snabbdom",
         "hyperx",

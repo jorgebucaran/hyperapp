@@ -71,7 +71,9 @@ browserify index.js > bundle.js
 ```
 
 ```html
-<body><script src="bundle.js"></script></body>
+<body>
+    <script src="bundle.js"></script>
+</body>
 ```
 
 ## API

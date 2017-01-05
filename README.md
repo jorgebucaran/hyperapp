@@ -12,7 +12,7 @@ npm i flea
 
 ## Examples
 
-### [Hello world](http://codepen.io/jbucaran/pen/Qdwpxy?editors=0010)
+[Hello world](http://codepen.io/jbucaran/pen/Qdwpxy?editors=0010).
 
 ```js
 app({
@@ -21,7 +21,7 @@ app({
 })
 ```
 
-### [Counter](http://codepen.io/jbucaran/pen/zNxZLP?editors=0010)
+[Counter](http://codepen.io/jbucaran/pen/zNxZLP?editors=0010).
 
 ```js
 app({
@@ -39,7 +39,7 @@ app({
 })
 ```
 
-### [Heading bound to input](http://codepen.io/jbucaran/pen/ggbmdN?editors=0010#)
+[Heading bound to input](http://codepen.io/jbucaran/pen/ggbmdN?editors=0010#).
 
 ```js
 app({

@@ -136,40 +136,6 @@ The view has a signature `(model, msg, params)`, where
 msg.action(data)
 ```
 
-#### Routing
-
-Instead of a view as a single function, declare an object with multiple views and use the route path as the key.
-
-```js
-app({
-    view: {
-        "*": (model, msg) => {},
-        "/": (model, msg) => {},
-        "/:slug": (model, msg, params) => {}
-    }
-})
-```
-
-* `*` default route used when no other route matches, e.g, 404 page, etc.
-
-* `/` index route
-
-* `/:a/:b/:c` matches a route with three components using the regular expression `[A-Za-z0-9]+` and stores each captured group in the params object, which is passed into the view function.
-
-The route path syntax is based in the same syntax found in [Express](https://expressjs.com/en/guide/routing.html).
-
-##### setLocation
-
-To update the address bar relative location and render a different view, use `msg.setLocation(path)`.
-
-##### Anchors
-
-As a bonus, we intercept all `<a href="/path">...</a>` clicks and call `msg.setLocation("/path")` for you. If you want to opt out of this, add the custom attribute `data-no-routing` to any anchor element that should be handled differently.
-
-```html
-<a data-no-routing>...</a>
-```
-
 ### effects
 
 Effects cause side effects and are often asynchronous, like writing to a database, or sending requests to servers. They can dispatch other actions too.
@@ -229,6 +195,39 @@ Called when you use the `error` function inside a subscription or effect. If you
 
 The root is the HTML element that will serve as a container for your app. If none is given, a `div` element is appended to the document.body.
 
+## Routing
+
+Instead of a view as a single function, declare an object with multiple views and use the route path as the key.
+
+```js
+app({
+    view: {
+        "*": (model, msg) => {},
+        "/": (model, msg) => {},
+        "/:slug": (model, msg, params) => {}
+    }
+})
+```
+
+* `*` default route used when no other route matches, e.g, 404 page, etc.
+
+* `/` index route
+
+* `/:a/:b/:c` matches a route with three components using the regular expression `[A-Za-z0-9]+` and stores each captured group in the params object, which is passed into the view function.
+
+The route path syntax is based in the same syntax found in [Express](https://expressjs.com/en/guide/routing.html).
+
+### setLocation
+
+To update the address bar relative location and render a different view, use `msg.setLocation(path)`.
+
+### Anchors
+
+As a bonus, we intercept all `<a href="/path">...</a>` clicks and call `msg.setLocation("/path")` for you. If you want to opt out of this, add the custom attribute `data-no-routing` to any anchor element that should be handled differently.
+
+```html
+<a data-no-routing>...</a>
+```
 
 [Snabbdom]: https://github.com/snabbdom/snabbdom
 [Hyperx]: https://github.com/substack/hyperx

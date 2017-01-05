@@ -12,7 +12,7 @@ npm i flea
 
 ## Examples
 
-[Hello world](http://codepen.io/jbucaran/pen/Qdwpxy?editors=0010).
+[Hello world](http://codepen.io/jbucaran/pen/Qdwpxy?editors=0010)
 
 ```js
 app({
@@ -21,7 +21,7 @@ app({
 })
 ```
 
-[Counter](http://codepen.io/jbucaran/pen/zNxZLP?editors=0010).
+[Counter](http://codepen.io/jbucaran/pen/zNxZLP?editors=0010)
 
 ```js
 app({
@@ -39,7 +39,7 @@ app({
 })
 ```
 
-[Heading bound to input](http://codepen.io/jbucaran/pen/ggbmdN?editors=0010#).
+[Input](http://codepen.io/jbucaran/pen/ggbmdN?editors=0010#)
 
 ```js
 app({
@@ -53,6 +53,85 @@ app({
             <input oninput=${e => msg.text(e.target.value)} />
         </div>`
 })
+```
+
+[Mousemove](http://codepen.io/jbucaran/pen/Bpyraw?editors=0010)
+
+```js
+const model = { x: 0, y: 0 }
+
+const update = {
+    move: (model, { x, y }) => ({ x, y })
+}
+
+const view = model => html`<pre>${model.x}, ${model.y}</pre>`
+
+const subs = [
+    (_, msg) => addEventListener("mousemove", e => msg.move({ x: e.clientX, y: e.clientY }))
+]
+
+app({ model, view, update, subs })
+```
+
+[Effects](http://codepen.io/jbucaran/pen/OWPvPj?editors=0010)
+
+```js
+const effects = {
+    randomColor: _ =>
+        document.body.style.backgroundColor = "#" + ((1<<24) * Math.random() | 0).toString(16)
+}
+
+const subs = [
+    (_, msg) => addEventListener("mousemove", msg.randomColor)
+]
+
+app({ effects, subs })
+```
+
+[Drag and Drop](http://codepen.io/jbucaran/pen/apzYvo?editors=0010)
+
+```js
+const model = {
+    dragging: false,
+    position: {
+        x: 0, y: 0, offsetX: 0, offsetY: 0
+    }
+}
+
+const view = (model, msg) => html`
+    <div
+        onmousedown=${e => msg.drag({
+            position: {
+                x: e.pageX, y: e.pageY, offsetX: e.offsetX, offsetY: e.offsetY
+            }
+        })}
+        style=${{
+            userSelect: "none",
+            cursor: "move",
+            position: "absolute",
+            padding: "10px",
+            left: `${model.position.x - model.position.offsetX}px`,
+            top: `${model.position.y - model.position.offsetY}px`,
+            backgroundColor: model.dragging ? "gold" : "deepskyblue"
+        }}
+    >Drag Me!
+    </div>`
+
+const update = {
+    drop: model => ({ dragging: false }),
+    drag: (model, { position }) => ({ dragging: true, position }),
+    move: (model, { x, y }) => model.dragging
+        ? ({ position: { ...model.position, x, y } })
+        : model
+}
+
+const subs = [
+    (_, msg) => addEventListener("mouseup", msg.drop),
+    (_, msg) => addEventListener("mousemove", e =>
+        msg.move({ x: e.pageX, y: e.pageY }))
+]
+
+app({ model, view, update, subs })
 ```
 
 ## Usage

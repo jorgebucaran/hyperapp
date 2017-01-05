@@ -8,7 +8,7 @@ var patch = require("snabbdom").init([
 
 module.exports = function app(options) {
     var model = options.model,
-        view = options.view || Function.prototype,
+        view = options.view || function () { return document.body },
         routes = typeof view === "function" ? undefined : view,
         params = {},
         reducers = options.update || {},
@@ -21,21 +21,20 @@ module.exports = function app(options) {
         }, options.hooks),
         node = options.root || document.body.appendChild(document.createElement("div"))
 
-    //
-    // only if there are routes. dispatch.setLocation is a wrapper for pushState
-    // that causes the result view to be render. also intercept all anchor clicks
-    // and make them call setLocation with anchor's pathname.
-    //
     if (routes) {
-        view = route(routes, location.pathname)
+        view = route(routes, getHashOrPath())
 
         dispatch.setLocation = function (data) {
-            render(model, view = route(routes, data), node)
-            history.pushState({}, "", data)
+            if (history && history.pushState) {
+                render(model, view = route(routes, data), node)
+                history.pushState({}, "", data)
+            } else {
+                window.location.hash = data
+            }
         }
 
-        window.onpopstate = function () {
-            render(model, view = route(routes, location.pathname), node)
+        window[history && history.pushState ? "onpopstate" : "onhashchange"] = function () {
+            render(model, view = route(routes, getHashOrPath()), node)
         }
 
         window.onclick = function (e) {
@@ -54,17 +53,18 @@ module.exports = function app(options) {
                 e.preventDefault()
             }
         }
+
+        function getHashOrPath() {
+            return location.hash ? location.hash.substr(1) : location.pathname
+        }
     }
 
-    //
-    // this is how we wrap dispatch("action", data) to dispatch.action(data).
-    //
     for (var name in merge(merge({}, reducers), effects)) {
         if (reducers[name] && effects[name]) {
             throw TypeError(name + " already defined as reducer or effect")
         }
         //
-        // wrap name in a closure, so we don't end up dispatching the same action
+        // Wrap name in a closure, so we don't end up dispatching the same action
         // for all dispatch.action(data) calls.
         //
         (function(name) {
@@ -82,22 +82,12 @@ module.exports = function app(options) {
 
     render(model, view, node)
 
-
-    //
-    // ready calls cb when the dom is loaded. Should work in >=IE8.
-    //
     function ready(cb) {
         document.addEventListener
             ? document.addEventListener("DOMContentLoaded", cb)
             : window.attachEvent("onload", cb)
     }
 
-
-    //
-    // merge extends target with source properties. if the given source is a string or a number
-    // literal, then returns the source as is. this lets you use a single number or string as
-    // the initial model.
-    //
     function merge(target, source) {
         for (var key in source) {
             target[key] = source[key]
@@ -105,22 +95,10 @@ module.exports = function app(options) {
         return typeof source === "string" || typeof source === "number" ? source : target
     }
 
-
-    //
-    // render updates the DOM calling patch with the view. also mutates the current
-    // node to the new one.
-    //
     function render(model, view, lastNode) {
         patch(lastNode, node = view(model, dispatch))
     }
 
-
-    //
-    // dispatch calls an effect or reducer, aka sending an action. you can either use
-    // dispatch("action", data) or dispatch.action(data). the latter looks better so
-    // it's the style favored in the docs. sending an action updates the model and
-    // renders the result node if the action corresponds to a reducer.
-    //
     function dispatch(name, data) {
         hooks.onAction(name, data)
 
@@ -140,19 +118,6 @@ module.exports = function app(options) {
         hooks.onUpdate(lastModel, model, data)
     }
 
-
-    //
-    // route returns a params-wrapped view function whose key matches the given path.
-    //
-    //      Default: *
-    //      Regexp: /users?/:name -> /user/foo | /users/foo and params -> { name: "foo" }
-    //
-    // the current solution consists in transforming each key to a regular expression, e.g,
-    //
-    //      /users?/:name -> /^\/users?\/:([A-Za-z0-9_]+)/?$/
-    //
-    // and use a stack to collect slugs that match each group capture..
-    //
     function route(routes, path) {
         for (var name in routes) {
             if (name === "*") {
@@ -178,6 +143,9 @@ module.exports = function app(options) {
 
         return routes["*"]
 
+        //
+        // Translate each route to a regex, e.g, /users?/:id -> /^\/users?\/:([A-Za-z0-9_]+)/?$/
+        //
         function pathToRe(path) {
             var slugs = [], re = "^" + path
                 .replace(/\//g, "\\/")

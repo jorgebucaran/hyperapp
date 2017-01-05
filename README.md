@@ -71,12 +71,7 @@ browserify index.js > bundle.js
 ```
 
 ```html
-<!doctype html>
-<html>
-<body>
-    <script src="bundle.js"></script>
-</body>
-</html>
+<body><script src="bundle.js"></script></body>
 ```
 
 ## API
@@ -146,8 +141,8 @@ Instead of a view as a single function, declare an object with multiple views an
 ```js
 app({
     view: {
-        "*": (model, msg) => {}
-        "/": (model, msg) => {}
+        "*": (model, msg) => {},
+        "/": (model, msg) => {},
         "/:slug": (model, msg, params) => {}
     }
 })

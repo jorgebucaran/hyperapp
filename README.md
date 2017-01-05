@@ -1,8 +1,8 @@
 # flea
 
-Flea is a tiny JavaScript UI library based in [Snabbdom] and ES6 tagged template literals with [Hyperx].
+Flea is a tiny JavaScript UI library based in [Snabbdom] and ES6 tagged template literals.
 
-The API and state management is inspired by the [Elm Architecture], [yo-yo] and [choo].
+[See live examples](https://flea.gomix.me/).
 
 ## Install
 
@@ -10,9 +10,18 @@ The API and state management is inspired by the [Elm Architecture], [yo-yo] and 
 npm i flea
 ```
 
-## Example
+## Examples
 
-A basic counter app. [Fiddle](https://jsfiddle.net/jbucaran/epo7fexz/10/).
+### [Hello world](http://codepen.io/jbucaran/pen/Qdwpxy?editors=0010)
+
+```js
+app({
+    model: "Hi.",
+    view: model => html`<h1>${model}</h1>`
+})
+```
+
+### [Counter](http://codepen.io/jbucaran/pen/zNxZLP?editors=0010)
 
 ```js
 app({
@@ -30,7 +39,45 @@ app({
 })
 ```
 
-[More examples](https://flea.gomix.me/).
+### [Heading bound to input](http://codepen.io/jbucaran/pen/ggbmdN?editors=0010#)
+
+```js
+app({
+    model: "",
+    update: {
+        text: (_, value) => value
+    },
+    view: (model, msg) => html`
+        <div>
+            <h1>Hi${model ? " " + model : ""}.</h1>
+            <input oninput=${e => msg.text(e.target.value)} />
+        </div>`
+})
+```
+
+## Usage
+
+CDN
+
+```html
+<script src="https://cdn.rawgit.com/fleajs/flea/master/dist/flea.min.js"></script>
+<script src="https://cdn.rawgit.com/fleajs/flea/master/dist/html.min.js"></script>
+```
+
+Browserify
+
+```
+browserify index.js > bundle.js
+```
+
+```html
+<!doctype html>
+<html>
+<body>
+    <script src="bundle.js"></script>
+</body>
+</html>
+```
 
 ## API
 
@@ -48,59 +95,79 @@ const hello = html`<h1>Hello World!</h1>`
 
 ## app
 
-The `app` function takes an object with any of the following properties.
+Use `app` to create your app. The `app` function receives an object with any of the following properties.
 
 ### model
 
-An value or object that represents the state of your app. You don't modify the model directly, instead, dispatch actions that describe how the model will change. See [view](#view).
+A value or object that represents the state of your app.
+
+You never modify the model directly, instead, send actions describing how the model should change. See [view](#view).
 
 ### update
 
-The update object exposes reducer functions. A reducer describes how the model will change for a given action and can return a new model or part of a model. If a reducer returns part of a model, it will be merged back into the current model.
+Object composed of functions known as reducers. These are a kind of action you can send.
 
-Reducers have a signature `(model, data)`, where `model` is the current model, and `data` is any data passed into the function.
+A reducer describes how the model should change and returns a new model or part of a model.
 
-You call reducers inside a view, effect or subscription.
+```js
+const update = {
+    increment: model + 1,
+    decrement: model - 1
+}
+```
+
+If a reducer returns part of a model, that part will be merged with the current model.
+
+You call reducers inside a [view](#view), [effect](#effect) or [subscription](#subs).
+
+Reducers have a signature `(model, data)`, where
+
+* `model` is the current model, and
+* `data` is the data sent along with the action.
 
 ### view
 
-The view is a function that returns HTML via the `html` function.
+The view is a function that returns HTML using the `html` function.
 
-The view has a signature `(model, msg, params)`, where `model` is the current model, `msg` is an object you use to call reducers / cause effects and `params` is an object with the route parameters if the view belongs to a route. See [Routing][#routing].
+The view has a signature `(model, msg, params)`, where
 
-```js
-msg.name(data)
-```
-
-or if you prefer
+* `model` is the current model,
+* `msg` is the object you use to send actions (call reducers or cause effects) and
+* `params` are the route parameters if the view belongs to a [route](#routing).
 
 ```js
-msg("name", data)
+msg.action(data)
 ```
 
-#### routing
+#### Routing
 
-Instead of declaring a single view function:
-
-```js
-app({ view: model => html`${..}` })
-```
-
-declare an object with multiple views and use the route path as key. The route path syntax is similar to the route syntax used in [Express](https://expressjs.com/en/guide/routing.html).
+Instead of a view as a single function, declare an object with multiple views and use the route path as the key.
 
 ```js
 app({
     view: {
-        "*": (model, msg) => // default route used when no other route matches, e.g, 404 page, etc.
-        "/": (model, msg) => // index route
-        "/:match": (model, msg, { match }) => // matches /[A-Za-z0-9]
+        "*": (model, msg) => {}
+        "/": (model, msg) => {}
+        "/:slug": (model, msg, params) => {}
     }
 })
 ```
 
+* `*` default route used when no other route matches, e.g, 404 page, etc.
+
+* `/` index route
+
+* `/:a/:b/:c` matches a route with three components using the regular expression `[A-Za-z0-9]+` and stores each captured group in the params object, which is passed into the view function.
+
+The route path syntax is based in the same syntax found in [Express](https://expressjs.com/en/guide/routing.html).
+
+##### setLocation
+
 To update the address bar relative location and render a different view, use `msg.setLocation(path)`.
 
-As a bonus, Flea intercepts all `<a href="/path">...</a>` clicks and calls `msg.setLocation("/path")` for you. If you want to opt out of this, add the custom attribute `data-no-routing` to any anchor element that you want to handle yourself.
+##### Anchors
+
+As a bonus, we intercept all `<a href="/path">...</a>` clicks and call `msg.setLocation("/path")` for you. If you want to opt out of this, add the custom attribute `data-no-routing` to any anchor element that should be handled differently.
 
 ```html
 <a data-no-routing>...</a>
@@ -108,21 +175,46 @@ As a bonus, Flea intercepts all `<a href="/path">...</a>` clicks and calls `msg.
 
 ### effects
 
-Effects are often asynchronous and cause side effects, like writing to a database, or sending requests to servers. When they are done, they often dispatch an action.
+Effects cause side effects and are often asynchronous, like writing to a database, or sending requests to servers. They can dispatch other actions too.
 
-Effects have a signature `(model, msg, error)`, where `model` is the current model, `msg` is an object you use to call reducers / cause effects (see [view](#view)), and `error` is a function you may call with an error if something goes wrong.
+Effects have a signature `(model, msg, error)`, where
+
+* `model` is the current model,
+* `msg` is an object you use to call reducers / cause effects (see [view](#view)), and
+* `error` is a function you may call with an error if something goes wrong.
+
+
+```js
+const update = {
+    add: model => model + 1
+}
+
+const effects = {
+    waitThenAdd: (_, msg) => setTimeout(msg.add, 1000)
+}
+```
 
 ### subs
 
-Subscriptions are functions that run only once when the [DOM is ready](https://developer.mozilla.org/en-US/docs/Web/Events/DOMContentLoaded). Use a subscription to register global events, like mouse or keyboard listeners.
+Subscriptions are functions that run once when the [DOM is ready](https://developer.mozilla.org/en-US/docs/Web/Events/DOMContentLoaded). Use a subscription to register global events, like mouse or keyboard listeners.
 
 While reducers and effects are actions _you_ cause, you can't call subscriptions directly.
 
 A subscription has a signature `(model, msg, error)`.
 
+```js
+const update = {
+    move: (model, { x, y }) => ({ x, y })
+}
+
+const subs = [
+    (_, msg) => addEventListener("mousemove", e => msg.move({ x: e.clientX, y: e.clientY }))
+]
+```
+
 ### hooks
 
-Hooks are functions called when certain events happen across the app. You can use hooks to implement middleware, loggers, etc.
+Hooks are functions called for certain events during the lifetime of the app. You can use hooks to implement middleware, loggers, etc.
 
 #### onUpdate
 
@@ -139,14 +231,6 @@ Called when you use the `error` function inside a subscription or effect. If you
 ### root
 
 The root is the HTML element that will serve as a container for your app. If none is given, a `div` element is appended to the document.body.
-
-## FAQ
-
-### What about choo or yo-yo?
-
-I like both okay! I also wrote a tiny [module](https://www.npmjs.com/package/yo-yo-app) to help me structure apps with yo-yo.
-
-I couldn't agree with some of choo choices like namespaces, plugins and [morphdom](https://github.com/patrick-steele-idem/morphdom), but everything else is gold!
 
 
 [Snabbdom]: https://github.com/snabbdom/snabbdom

@@ -1,8 +1,6 @@
 # flea
 
-Flea is a tiny JavaScript UI library based in [Snabbdom] and ES6 tagged template literals.
-
-[See live examples](https://flea.gomix.me/).
+flea is a tiny JavaScript UI library based in [Snabbdom] and ES6 tagged template literals.
 
 ## Install
 
@@ -10,9 +8,23 @@ Flea is a tiny JavaScript UI library based in [Snabbdom] and ES6 tagged template
 npm i flea
 ```
 
+## Usage
+
+CDN
+```html
+<script src="https://cdn.rawgit.com/fleajs/flea/master/dist/flea.min.js"></script>
+<script src="https://cdn.rawgit.com/fleajs/flea/master/dist/html.min.js"></script>
+```
+
+Browserify
+```
+browserify index.js > bundle.js
+```
+
 ## Examples
 
-[Hello world](http://codepen.io/jbucaran/pen/Qdwpxy?editors=0010)
+<details>
+<summary>Hello world</summary>
 
 ```js
 app({
@@ -21,7 +33,12 @@ app({
 })
 ```
 
-[Counter](http://codepen.io/jbucaran/pen/zNxZLP?editors=0010)
+[View online](http://codepen.io/jbucaran/pen/Qdwpxy?editors=0010)
+</details>
+
+
+<details>
+<summary>Counter</summary>
 
 ```js
 app({
@@ -39,7 +56,12 @@ app({
 })
 ```
 
-[Input](http://codepen.io/jbucaran/pen/ggbmdN?editors=0010#)
+[View online](http://codepen.io/jbucaran/pen/zNxZLP?editors=0010)
+</details>
+
+
+<details>
+<summary>Input</summary>
 
 ```js
 app({
@@ -55,40 +77,13 @@ app({
 })
 ```
 
-[Mousemove](http://codepen.io/jbucaran/pen/Bpyraw?editors=0010)
+[View online](http://codepen.io/jbucaran/pen/ggbmdN?editors=0010#)
+</details>
 
-```js
-const model = { x: 0, y: 0 }
 
-const update = {
-    move: (model, { x, y }) => ({ x, y })
-}
 
-const view = model => html`<pre>${model.x}, ${model.y}</pre>`
-
-const subs = [
-    (_, msg) => addEventListener("mousemove", e => msg.move({ x: e.clientX, y: e.clientY }))
-]
-
-app({ model, view, update, subs })
-```
-
-[Effects](http://codepen.io/jbucaran/pen/OWPvPj?editors=0010)
-
-```js
-const effects = {
-    randomColor: _ =>
-        document.body.style.backgroundColor = "#" + ((1<<24) * Math.random() | 0).toString(16)
-}
-
-const subs = [
-    (_, msg) => addEventListener("mousemove", msg.randomColor)
-]
-
-app({ effects, subs })
-```
-
-[Drag and Drop](http://codepen.io/jbucaran/pen/apzYvo?editors=0010)
+<details>
+<summary>Drag and Drop</summary>
 
 ```js
 const model = {
@@ -134,28 +129,116 @@ const subs = [
 app({ model, view, update, subs })
 ```
 
-## Usage
+[View online](http://codepen.io/jbucaran/pen/apzYvo?editors=0010)
+</details>
 
-CDN
 
-```html
-<script src="https://cdn.rawgit.com/fleajs/flea/master/dist/flea.min.js"></script>
-<script src="https://cdn.rawgit.com/fleajs/flea/master/dist/html.min.js"></script>
+<details>
+<summary>Todo</summary>
+
+```js
+const FilterInfo = { All: 0, Todo: 1, Done: 2 }
+
+const model = {
+    todos: [],
+    filter: FilterInfo.All,
+    input: "",
+    placeholder: "Add new todo!"
+}
+
+const view = (model, msg) => {
+    return html`
+        <div>
+            <h1>Todo</h1>
+            <p>
+                Show: ${
+                Object.keys(FilterInfo)
+                    .filter(key => FilterInfo[key] !== model.filter)
+                    .map(key => html`
+                        <span><a href="#" onclick=${_ => msg.filter({
+                            value: FilterInfo[key]
+                        })}>${key}</a> </span>
+                    `)}
+            </p>
+
+            <p><ul>
+                ${model.todos
+                    .filter(t =>
+                        model.filter === FilterInfo.Done
+                            ? t.done :
+                        model.filter === FilterInfo.Todo
+                            ? !t.done :
+                        model.filter === FilterInfo.All)
+                    .map(t => html`
+                        <li style=${{
+                                color: t.done ? "gray" : "black",
+                                textDecoration: t.done ? "line-through" : "none"
+                            }}
+                            onclick=${e => msg.toggle({
+                                value: t.done,
+                                id: t.id
+                            })}>${t.value}
+                        </li>`)}
+            </ul></p>
+
+            <p>
+                <input
+                    type="text"
+                    onkeyup=${e => e.keyCode === 13 ? msg.add() : ""}
+                    oninput=${e => msg.input({ value: e.target.value })}
+                    value=${model.input}
+                    placeholder=${model.placeholder}
+                />
+                <button onclick=${msg.add}>add</button>
+            </p>
+        </div>`
+}
+
+const update = {
+    add: model => ({
+        input: "",
+        todos: model.todos.concat({
+            done: false,
+            value: model.input,
+            id: model.todos.length + 1
+        })
+    }),
+    toggle: (model, { id, value }) => ({
+        todos: model.todos.map(t =>
+            id === t.id
+                ? Object.assign({}, t, { done: !value })
+                : t)
+    }),
+    input: (model, { value }) => ({ input: value }),
+    filter: (model, { value }) => ({ filter: value })
+}
+
+app({ model, view, update })
 ```
 
-Browserify
+[View online](http://codepen.io/jbucaran/pen/zNxRLy?editors=0010)
+</details>
 
-```
-browserify index.js > bundle.js
-```
+[See more examples](https://flea.gomix.me/)
 
-```html
-<body>
-    <script src="bundle.js"></script>
-</body>
-```
 
-## API
+## Documentation
+
+* [html](#html)
+* [app](#app)
+    * [model](#model)
+    * [update](#update)
+    * [view](#view)
+    * [effects](#effects)
+    * [subs](#subs)
+    * [hooks](#hooks)
+        * [onAction](#onaction)
+        * [onUpdate](#onupdate)
+        * [onError](#onerror)
+    * [root](#root)
+* [Routing](#routing)
+    * [setLocation](#setlocation)
+    * [href](#href)
 
 ## html
 
@@ -208,8 +291,8 @@ The view is a function that returns HTML using the `html` function.
 The view has a signature `(model, msg, params)`, where
 
 * `model` is the current model,
-* `msg` is the object you use to send actions (call reducers or cause effects) and
-* `params` are the route parameters if the view belongs to a [route](#routing).
+* `msg` is an object you use to send actions (call reducers or cause effects) and
+* `params` are the [route](#routing) parameters.
 
 ```js
 msg.action(data)
@@ -225,16 +308,24 @@ Effects have a signature `(model, msg, error)`, where
 * `msg` is an object you use to call reducers / cause effects (see [view](#view)), and
 * `error` is a function you may call with an error if something goes wrong.
 
+<details>
+<summary><i>Example</i></summary>
 
 ```js
-const update = {
-    add: model => model + 1
+const effects = {
+    randomColor: _ =>
+        document.body.style.backgroundColor = "#" + ((1<<24) * Math.random() | 0).toString(16)
 }
 
-const effects = {
-    waitThenAdd: (_, msg) => setTimeout(msg.add, 1000)
-}
+const subs = [
+    (_, msg) => addEventListener("mousemove", msg.randomColor)
+]
+
+app({ effects, subs })
 ```
+
+[View online](http://codepen.io/jbucaran/pen/OWPvPj?editors=0010)
+</details>
 
 ### subs
 
@@ -244,19 +335,61 @@ While reducers and effects are actions _you_ cause, you can't call subscriptions
 
 A subscription has a signature `(model, msg, error)`.
 
-```js
-const update = {
-    move: (model, { x, y }) => ({ x, y })
-}
+<details>
+<summary><i>Example</i></summary>
 
-const subs = [
-    (_, msg) => addEventListener("mousemove", e => msg.move({ x: e.clientX, y: e.clientY }))
-]
+```js
+app({
+    model: { x: 0, y: 0 },
+    update: {
+        move: (_, { x, y }) => ({ x, y })
+    },
+    view: model => html`<h1>${model.x}, ${model.y}</h1>`,
+    subs: [
+        (_, msg) => addEventListener("mousemove", e => msg.move({ x: e.clientX, y: e.clientY }))
+    ]
+})
 ```
+
+[View online](http://codepen.io/jbucaran/pen/Bpyraw?editors=0010)
+</details>
+
 
 ### hooks
 
 Hooks are functions called for certain events during the lifetime of the app. You can use hooks to implement middleware, loggers, etc.
+
+
+<details>
+<summary><i>Example</i></summary>
+
+```js
+app({
+    model: true,
+    view: (model, msg) => html`
+        <div>
+            <button onclick=${msg.doSomething}>Log</button>
+            <button onclick=${msg.boom}>Error</button>
+        </div>`,
+    update: {
+        doSomething: model => !model,
+    },
+    effects: {
+        boom: (model, msg, data, err) => setTimeout(_ => err(Error("BOOM")), 1000)
+    },
+    hooks: {
+        onError: e =>
+            console.log("[Error] %c%s", "color: red", e),
+        onAction: name =>
+            console.log("[Action] %c%s", "color: blue", name),
+        onUpdate: (last, model) =>
+            console.log("[Update] %c%s -> %c%s", "color: gray", last, "color: blue", model)
+    }
+})
+```
+
+[View online](http://codepen.io/jbucaran/pen/xgbzEy?editors=0010)
+</details>
 
 #### onUpdate
 
@@ -296,17 +429,86 @@ app({
 
 The route path syntax is based in the same syntax found in [Express](https://expressjs.com/en/guide/routing.html).
 
+
+<details>
+<summary><i>Example</i></summary>
+
+```js
+const { app, html } = require("flea")
+const anchor = n => html`<h1><a href=${"/" + n}>${n}</a></h1>`
+
+app({
+    view: {
+        "/": _ => anchor(Math.floor(Math.random() * 999)),
+        "/:key": (model, msg, { key }) => html`
+            <div>
+                <h1>${key}</h1>
+                <a href="/">Back</a>
+            </div>`
+    }
+})
+```
+
+[View online](https://flea-routing.gomix.me/)
+</details>
+
 ### setLocation
 
 To update the address bar relative location and render a different view, use `msg.setLocation(path)`.
 
-### Anchors
+<details>
+<summary><i>Example</i></summary>
+
+```js
+app({
+    view: {
+      "/": (model, msg) => html`
+        <div>
+          <h1>Home</h1>
+          <button onclick=${_ => msg.setLocation("/about")}>About</button>
+        </div>`,
+      "/about": (model, msg) => html`
+        <div>
+          <h1>About</h1>
+          <button onclick=${_ => msg.setLocation("/")}>Home</button>
+        </div>`
+    }
+})
+```
+
+[View online](https://flea-set-location.gomix.me/)
+</details>
+
+### href
 
 As a bonus, we intercept all `<a href="/path">...</a>` clicks and call `msg.setLocation("/path")` for you. If you want to opt out of this, add the custom attribute `data-no-routing` to any anchor element that should be handled differently.
 
 ```html
 <a data-no-routing>...</a>
 ```
+
+<details>
+<summary><i>Example</i></summary>
+
+```js
+app({
+    view: {
+      "/": (model, msg) => html`
+        <div>
+          <h1>Home</h1>
+          <a href="/about">About</a>
+        </div>`,
+      "/about": (model, msg) => html`
+        <div>
+          <h1>About</h1>
+          <a href="/">Home</a>
+        </div>`
+    }
+})
+```
+
+[View online](https://flea-href.gomix.me/)
+</details>
 
 [Snabbdom]: https://github.com/snabbdom/snabbdom
 [Hyperx]: https://github.com/substack/hyperx

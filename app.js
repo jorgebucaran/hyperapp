@@ -49,7 +49,7 @@ module.exports = function app(options) {
             }
 
             if (target && target.host === location.host && !target.hasAttribute("data-no-routing")) {
-                dispatch.setLocation(e.target.pathname)
+                dispatch.setLocation(target.pathname)
                 e.preventDefault()
             }
         }

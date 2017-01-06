@@ -312,19 +312,37 @@ Effects have a signature `(model, msg, error)`, where
 <summary><i>Example</i></summary>
 
 ```js
-const effects = {
-    randomColor: _ =>
-        document.body.style.backgroundColor = "#" + ((1<<24) * Math.random() | 0).toString(16)
+const wait = time => new Promise(resolve => setTimeout(_ => resolve(), time))
+
+const model = {
+    counter: 0,
+    waiting: false
 }
 
-const subs = [
-    (_, msg) => addEventListener("mousemove", msg.randomColor)
-]
+const view = (model, msg) =>
+    html`
+        <button
+            onclick=${msg.waitThenAdd}
+            disabled=${model.waiting}>${model.counter}
+        </button>`
 
-app({ effects, subs })
+
+const update = {
+    add: model => ({ counter: model.counter + 1 }),
+    toggle: model => ({ waiting: !model.waiting})
+}
+
+const effects = {
+    waitThenAdd: (model, msg) => {
+        msg.toggle()
+        wait(1000).then(msg.add).then(msg.toggle)
+    }
+}
+
+app({ model, view, update, effects })
 ```
 
-[View online](http://codepen.io/jbucaran/pen/OWPvPj?editors=0010)
+[View online](http://codepen.io/jbucaran/pen/jyEKmw?editors=0010)
 </details>
 
 ### subs

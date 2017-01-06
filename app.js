@@ -8,7 +8,9 @@ var patch = require("snabbdom").init([
 
 module.exports = function app(options) {
     var model = options.model,
-        view = options.view || function () { return document.body },
+        view = options.view || function () {
+            return document.body
+        },
         routes = typeof view === "function" ? undefined : view,
         params = {},
         reducers = options.update || {},
@@ -17,7 +19,9 @@ module.exports = function app(options) {
         hooks = merge({
             onAction: Function.prototype,
             onUpdate: Function.prototype,
-            onError: function (err) { throw err }
+            onError: function (err) {
+                throw err
+            }
         }, options.hooks),
         node = options.root || document.body.appendChild(document.createElement("div"))
 
@@ -92,7 +96,9 @@ module.exports = function app(options) {
         for (var key in source) {
             target[key] = source[key]
         }
-        return typeof source === "string" || typeof source === "number" ? source : target
+        return typeof source === "string"
+            || typeof source === "number"
+            || typeof source === "boolean" ? source : target
     }
 
     function render(model, view, lastNode) {
@@ -158,3 +164,4 @@ module.exports = function app(options) {
         }
     }
 }
+

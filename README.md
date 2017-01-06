@@ -1,8 +1,6 @@
-# flea
+# [flea](https://flea.gomix.me/)
 
 flea is a tiny JavaScript UI library based in [Snabbdom] and ES6 tagged template literals.
-
-[See examples](https://flea.gomix.me/).
 
 ## Install
 

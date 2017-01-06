@@ -250,23 +250,21 @@ const hello = html`<h1>Hello World!</h1>`
 
 `html` is a [tagged template string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals). If you are familiar with React, this is like JSX, but [without breaking JavaScript](https://github.com/substack/hyperx/issues/2).
 
-> Flea's `html` function translates [Hyperx] into a [Snabbdom/h](https://github.com/snabbdom/snabbdom/blob/master/src/h.ts) function call.
-
 ## app
 
 Use `app` to create your app. The `app` function receives an object with any of the following properties.
 
 ### model
 
-A value or object that represents the state of your app.
+A value or object that represents the entire state of your app.
 
-You never modify the model directly, instead, send actions describing how the model should change. See [view](#view).
+To update the model, you send actions describing how the model should change. See [view](#view).
 
 ### update
 
-Object composed of functions known as reducers. These are a kind of action you can send.
+An object composed of functions known as reducers. These are a kind of action you send to update the model.
 
-A reducer describes how the model should change and returns a new model or part of a model.
+A reducer describes how the model should change by returning a new model or part of a model.
 
 ```js
 const update = {
@@ -294,9 +292,31 @@ The view has a signature `(model, msg, params)`, where
 * `msg` is an object you use to send actions (call reducers or cause effects) and
 * `params` are the [route](#routing) parameters.
 
+To send an action
+
 ```js
 msg.action(data)
 ```
+
+where `data` is any data you want to share with the reducer or effect.
+
+<details>
+<summary><i>Example</i></summary>
+
+```js
+app({
+    model: true,
+    view: (model, msg) => html`<button onclick=${msg.toggle}>${model+""}</button>`,
+    update: {
+        toggle: model => !model
+    }
+})
+```
+
+[View online](http://codepen.io/jbucaran/pen/ZLGGzy?editors=0010)
+</details>
+
+Alternatively, a view can be an object with multiple views. In this case, each view should a key binding it to a [route](#routing).
 
 ### effects
 

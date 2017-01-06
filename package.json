@@ -21,7 +21,7 @@
     "dependencies": {
         "hyperx": "^2.0.5",
         "hyperx-to-snabbdom": "^0.2.4",
-        "snabbdom": "^0.5.4"
+        "snabbdom": "^0.6.0"
     },
     "devDependencies": {
         "browserify": "^13.1.1",

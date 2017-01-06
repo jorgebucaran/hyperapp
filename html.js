@@ -1,1 +1,1 @@
-module.exports = require("hyperx")(require("hyperx-to-snabbdom")(require("snabbdom/h")))
+module.exports = require("hyperx")(require("hyperx-to-snabbdom")(require("snabbdom/h").h))

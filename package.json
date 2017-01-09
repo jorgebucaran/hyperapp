@@ -1,7 +1,7 @@
 {
     "name": "flea",
     "description": "Tiny UI library based in Snabbdom and ES6 tagged template literals",
-    "version": "0.0.22",
+    "version": "0.0.23",
     "main": "index.js",
     "author": "Jorge Bucaran",
     "license": "MIT",
@@ -20,8 +20,7 @@
     },
     "dependencies": {
         "hyperx": "^2.0.5",
-        "hyperx-to-snabbdom": "^0.2.4",
-        "snabbdom": "^0.6.0"
+        "snabbdom": "^0.6.1"
     },
     "devDependencies": {
         "browserify": "^13.1.1",

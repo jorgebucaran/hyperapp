@@ -451,10 +451,6 @@ hyperscript-attribute-to-property@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/hyperscript-attribute-to-property/-/hyperscript-attribute-to-property-1.0.0.tgz#825308d49bb8e2957923f731981bcc811cad7aff"
 
-hyperx-to-snabbdom@^0.2.4:
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/hyperx-to-snabbdom/-/hyperx-to-snabbdom-0.2.4.tgz#ebbd68641a795f3adbff4b390cdff4df56b5c7e1"
-
 hyperx@^2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/hyperx/-/hyperx-2.0.5.tgz#fedef890d7203f36339b243b27d38e3a424225ab"
@@ -761,7 +757,7 @@ shell-quote@^1.4.3:
     array-reduce "~0.0.0"
     jsonify "~0.0.0"
 
-snabbdom@^0.6.0:
+snabbdom@^0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/snabbdom/-/snabbdom-0.6.1.tgz#b006fb943dc2710b212bf5640aaf5704c1523f9a"
 

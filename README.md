@@ -1,19 +1,19 @@
-# [flea](https://flea.gomix.me/)
+# [hyperapp](https://hyperapp.gomix.me/)
 
-flea is a tiny JavaScript UI library based in [Snabbdom] and ES6 tagged template literals.
+HyperApp is a `1kb` functional JavaScript library for building UI applications.
 
 ## Install
 
 ```
-npm i flea
+npm i hyperapp
 ```
 
 ## Usage
 
 CDN
 ```html
-<script src="https://cdn.rawgit.com/fleajs/flea/master/dist/flea.min.js"></script>
-<script src="https://cdn.rawgit.com/fleajs/flea/master/dist/html.min.js"></script>
+<script src="https://cdn.rawgit.com/hyperapp/hyperapp/master/dist/app.min.js"></script>
+<script src="https://cdn.rawgit.com/hyperapp/hyperapp/master/dist/html.min.js"></script>
 ```
 
 Browserify
@@ -219,7 +219,7 @@ app({ model, view, update })
 [View online](http://codepen.io/jbucaran/pen/zNxRLy?editors=0010)
 </details>
 
-[See more examples](https://flea.gomix.me/)
+[See more examples](https://hyperapp.gomix.me/)
 
 
 ## Documentation
@@ -459,9 +459,7 @@ app({
 })
 ```
 
-* `*` default route used when no other route matches, e.g, 404 page, etc.
-
-* `/` index route
+* `/` index route, also used if no other route matches
 
 * `/:a/:b/:c` matches a route with three components using the regular expression `[A-Za-z0-9]+` and stores each captured group in the params object, which is passed into the view function.
 
@@ -472,7 +470,7 @@ The route path syntax is based in the same syntax found in [Express](https://exp
 <summary><i>Example</i></summary>
 
 ```js
-const { app, html } = require("flea")
+const { app, html } = require("hyperapp")
 const anchor = n => html`<h1><a href=${"/" + n}>${n}</a></h1>`
 
 app({
@@ -487,7 +485,7 @@ app({
 })
 ```
 
-[View online](https://flea-routing.gomix.me/)
+[View online](https://hyperapp-routing.gomix.me/)
 </details>
 
 ### setLocation
@@ -514,7 +512,7 @@ app({
 })
 ```
 
-[View online](https://flea-set-location.gomix.me/)
+[View online](https://hyperapp-set-location.gomix.me/)
 </details>
 
 ### href
@@ -545,10 +543,9 @@ app({
 })
 ```
 
-[View online](https://flea-href.gomix.me/)
+[View online](https://hyperapp-href.gomix.me/)
 </details>
 
-[Snabbdom]: https://github.com/snabbdom/snabbdom
 [Hyperx]: https://github.com/substack/hyperx
 [Elm Architecture]: https://guide.elm-lang.org/architecture
 [yo-yo]: https://github.com/maxogden/yo-yo

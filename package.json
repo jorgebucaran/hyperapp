@@ -1,26 +1,23 @@
 {
-    "name": "flea",
-    "description": "Tiny UI library based in Snabbdom and ES6 tagged template literals",
-    "version": "0.0.23",
+    "name": "hyperapp",
+    "description": "HyperApp",
+    "version": "0.0.1",
     "main": "index.js",
     "author": "Jorge Bucaran",
     "license": "MIT",
-    "repository": "fleajs/flea",
+    "repository": "hyperapp/hyperapp",
     "keywords": [
-        "snabbdom",
         "hyperx",
-        "frontend",
-        "minimal",
-        "functional"
+        "hypertext",
+        "virtual-dom"
     ],
     "scripts": {
-        "build": "mkdir -p dist && browserify app.js -s app -g uglifyify | uglifyjs > dist/flea.min.js && browserify html.js -s html -g uglifyify | uglifyjs > dist/html.min.js",
-        "gzip": "gzip -c dist/flea.min.js > dist/flea.min.js.gz",
-        "zopfli": "zopfli dist/flea.min.js -c --i1500 > dist/flea.min.js.gz"
+        "build": "browserify app.js -s app -g uglifyify | uglifyjs > dist/app.min.js && browserify html.js -s html -g uglifyify | uglifyjs > dist/html.min.js",
+        "gzip": "gzip -c dist/app.min.js > dist/app.min.js.gz",
+        "zopfli": "zopfli dist/app.min.js -c --i1500 > dist/app.min.js.gz"
     },
     "dependencies": {
-        "hyperx": "^2.0.5",
-        "snabbdom": "^0.6.1"
+        "hyperx": "^2.0.5"
     },
     "devDependencies": {
         "browserify": "^13.1.1",

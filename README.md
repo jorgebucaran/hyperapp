@@ -1,5 +1,7 @@
 # [hyperapp](https://hyperapp.gomix.me/)
 
+[![](https://img.shields.io/npm/v/hyperapp.svg)](https://www.npmjs.org/package/hyperapp)
+
 HyperApp is a `1kb` functional JavaScript library for building UI applications.
 
 ## Install

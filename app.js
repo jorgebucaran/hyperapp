@@ -1,22 +1,25 @@
 module.exports = function (options) {
-    var node,
-        msg = {},
-        model = options.model,
-        reducers = options.update || {},
-        effects = options.effects || {},
-        subs = options.subs || {},
-        hooks = merge({
-            onAction: Function.prototype,
-            onUpdate: Function.prototype,
-            onError: function (err) {
-                throw err
-            }
-        }, options.hooks),
-        root = options.root || document.body.appendChild(document.createElement("div")),
-        view = options.view || function () {
+    var msg = {}
+
+    var model = options.model
+    var reducers = options.update || {}
+    var effects = options.effects || {}
+    var subs = options.subs || {}
+
+    var hooks = merge({
+        onAction: Function.prototype,
+        onUpdate: Function.prototype,
+        onError: function (err) {
+            throw err
+        }
+    }, options.hooks)
+
+    var node
+    var root = options.root || document.body.appendChild(document.createElement("div"))
+    var view = options.view || function () {
             return root
-        },
-        routes = typeof view === "function" ? undefined : view
+        }
+    var routes = typeof view === "function" ? undefined : view
 
     if (routes) {
         view = route(routes, getHashOrPath())
@@ -71,7 +74,7 @@ module.exports = function (options) {
                 hooks.onAction(name, data)
 
                 var effect = effects[name]
-                if (typeof effect === "function") {
+                if (effect) {
                     return effect(model, msg, data, hooks.onError)
                 }
 
@@ -133,7 +136,7 @@ module.exports = function (options) {
     }
 
     function defer(fn, data) {
-        setTimeout(function() {
+        setTimeout(function () {
             fn(data)
         }, 0)
     }

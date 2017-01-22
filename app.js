@@ -132,6 +132,12 @@ module.exports = function (options) {
         return type === "string" || type === "number" || type === "boolean"
     }
 
+    function defer(fn, data) {
+        setTimeout(function() {
+            fn(data)
+        }, 0)
+    }
+
     function merge(a, b) {
         var obj = {}, key
 
@@ -162,7 +168,7 @@ module.exports = function (options) {
 
             for (var name in node.data) {
                 if (name === "oncreate") {
-                    node.data[name](element)
+                    defer(node.data[name], element)
                 } else {
                     setElementData(element, name, node.data[name])
                 }
@@ -214,7 +220,7 @@ module.exports = function (options) {
 
             } else if (value !== oldValue) {
                 if (name === "onupdate") {
-                    value(element)
+                    defer(value, element)
                 } else {
                     setElementData(element, name, value, oldValue)
                 }
@@ -237,7 +243,7 @@ module.exports = function (options) {
                 if (oldNode && oldNode.data) {
                     var hook = oldNode.data.onremove
                     if (typeof hook === "function") {
-                        hook(element)
+                        defer(hook, element)
                     }
                 }
 
@@ -252,8 +258,7 @@ module.exports = function (options) {
 
             updateElementData(element, node.data, oldNode.data)
 
-            var len = node.tree.length
-            var oldLen = oldNode.tree.length
+            var len = node.tree.length, oldLen = oldNode.tree.length
 
             for (var i = 0; i < len || i < oldLen; i++) {
                 patch(element, node.tree[i], oldNode.tree[i], i)

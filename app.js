@@ -17,8 +17,8 @@ module.exports = function (options) {
     var node
     var root = options.root || document.body.appendChild(document.createElement("div"))
     var view = options.view || function () {
-            return root
-        }
+        return root
+    }
     var routes = typeof view === "function" ? undefined : view
 
     if (routes) {
@@ -187,6 +187,7 @@ module.exports = function (options) {
 
     function removeElementData(element, name, value) {
         element.removeAttribute(name === "className" ? "class" : name)
+
         if (typeof value === "boolean" || value === "true" || value === "false") {
             element[name] = false
         }
@@ -222,11 +223,9 @@ module.exports = function (options) {
                 removeElementData(element, name, oldValue)
 
             } else if (value !== oldValue) {
-                if (name === "onupdate") {
-                    defer(value, element)
-                } else {
-                    setElementData(element, name, value, oldValue)
-                }
+                name === "onupdate"
+                    ? defer(value, element)
+                    : setElementData(element, name, value, oldValue)
             }
         }
     }
@@ -245,7 +244,7 @@ module.exports = function (options) {
 
                 if (oldNode && oldNode.data) {
                     var hook = oldNode.data.onremove
-                    if (typeof hook === "function") {
+                    if (hook) {
                         defer(hook, element)
                     }
                 }

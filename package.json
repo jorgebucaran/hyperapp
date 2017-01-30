@@ -1,6 +1,6 @@
 {
     "name": "hyperapp",
-    "description": "HyperApp is a 1kb functional JavaScript library for building UI applications",
+    "description": "HyperApp is a 1kb functional JavaScript library for building modern UI applications",
     "version": "0.0.3",
     "main": "index.js",
     "author": "Jorge Bucaran",

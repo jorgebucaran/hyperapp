@@ -2,7 +2,7 @@
 
 [![](https://img.shields.io/npm/v/hyperapp.svg)](https://www.npmjs.org/package/hyperapp)
 
-HyperApp is a `1kb` functional JavaScript library for building UI applications.
+HyperApp is a `1kb` functional JavaScript library for building modern UI applications.
 
 ## Install
 
@@ -20,7 +20,7 @@ CDN
 
 Browserify
 ```
-browserify index.js > bundle.js
+browserify -g uglifyify index.js | uglifyjs > bundle.js
 ```
 
 ## Examples

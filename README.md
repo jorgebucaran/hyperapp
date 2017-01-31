@@ -270,8 +270,8 @@ A reducer describes how the model should change by returning a new model or part
 
 ```js
 const update = {
-    increment: model + 1,
-    decrement: model - 1
+    increment: model => model + 1,
+    decrement: model => model - 1
 }
 ```
 

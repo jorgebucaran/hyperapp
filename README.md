@@ -254,7 +254,15 @@ const hello = html`<h1>Hello World!</h1>`
 
 ## app
 
-Use `app` to create your app. The `app` function receives an object with any of the following properties.
+Use `app` to bootstrap your app.
+
+```js
+app({
+    model, update, view, subs, effects, hooks, root
+})
+```
+
+All properties are optional.
 
 ### model
 

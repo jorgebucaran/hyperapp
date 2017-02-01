@@ -270,8 +270,8 @@ A reducer describes how the model should change by returning a new model or part
 
 ```js
 const update = {
-    increment: model + 1,
-    decrement: model - 1
+    increment: model => model + 1,
+    decrement: model => model - 1
 }
 ```
 
@@ -294,13 +294,30 @@ The view has a signature `(model, msg, params)`, where
 * `msg` is an object you use to send actions (call reducers or cause effects) and
 * `params` are the [route](#routing) parameters.
 
-To send an action
+Use `msg` to send actions.
 
 ```js
 msg.action(data)
 ```
 
-where `data` is any data you want to share with the reducer or effect.
+where `data` is any data you want to pass to the reducer / effect.
+
+<details>
+<summary><i>Example</i></summary>
+
+```js
+app({
+    view: {
+        "/": _ => html`<h1>Home</h1>`,
+        "/about": _ => html`<h1>About</h1>`
+    }
+})
+```
+
+[View online](https://hyperapp-simple-routing.gomix.me/)
+</details>
+
+The view object may accommodate multiple views too. See [routing](#routing).
 
 <details>
 <summary><i>Example</i></summary>
@@ -317,8 +334,6 @@ app({
 
 [View online](http://codepen.io/jbucaran/pen/ZLGGzy?editors=0010)
 </details>
-
-Alternatively, a view can be an object with multiple views. In this case, each view should a key binding it to a [route](#routing).
 
 ### effects
 
@@ -461,7 +476,7 @@ app({
 })
 ```
 
-* `/` index route, also used if no other route matches
+* `/` index route, also used when no other route matches
 
 * `/:a/:b/:c` matches a route with three components using the regular expression `[A-Za-z0-9]+` and stores each captured group in the params object, which is passed into the view function.
 
@@ -548,7 +563,5 @@ app({
 [View online](https://hyperapp-href.gomix.me/)
 </details>
 
-[Hyperx]: https://github.com/substack/hyperx
-[Elm Architecture]: https://guide.elm-lang.org/architecture
-[yo-yo]: https://github.com/maxogden/yo-yo
-[choo]: https://github.com/yoshuawuyts/choo
+
+

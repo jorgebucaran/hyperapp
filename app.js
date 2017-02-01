@@ -143,15 +143,16 @@ module.exports = function (options) {
 
     function merge(a, b) {
         var obj = {}, key
-
+        if (isPrimitive(typeof b)){
+            return b
+        }
         for (key in a) {
             obj[key] = a[key]
         }
         for (key in b) {
             obj[key] = b[key]
         }
-
-        return isPrimitive(typeof b) ? b : obj
+        return obj
     }
 
     function shouldUpdate(a, b) {
@@ -160,7 +161,8 @@ module.exports = function (options) {
             || isPrimitive(typeof a) && a !== b
     }
 
-    function createElementFrom(node, element) {
+    function createElementFrom(node) {
+        var element
         if (isPrimitive(typeof node)) {
             element = document.createTextNode(node)
 

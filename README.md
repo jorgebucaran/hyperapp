@@ -307,23 +307,6 @@ where `data` is any data you want to pass to the reducer / effect.
 
 ```js
 app({
-    view: {
-        "/": _ => html`<h1>Home</h1>`,
-        "/about": _ => html`<h1>About</h1>`
-    }
-})
-```
-
-[View online](https://hyperapp-simple-routing.gomix.me/)
-</details>
-
-The view object may accommodate multiple views too. See [routing](#routing).
-
-<details>
-<summary><i>Example</i></summary>
-
-```js
-app({
     model: true,
     view: (model, msg) => html`<button onclick=${msg.toggle}>${model+""}</button>`,
     update: {
@@ -333,6 +316,23 @@ app({
 ```
 
 [View online](http://codepen.io/jbucaran/pen/ZLGGzy?editors=0010)
+</details>
+
+The view object may accommodate multiple views too. See [routing](#routing).
+
+<details>
+<summary><i>Example</i></summary>
+
+```js
+app({
+    view: {
+        "/": _ => html`<h1>Home</h1>`,
+        "/about": _ => html`<h1>About</h1>`
+    }
+})
+```
+
+[View online](https://hyperapp-simple-routing.gomix.me/)
 </details>
 
 ### effects

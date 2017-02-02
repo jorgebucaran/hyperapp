@@ -14,8 +14,8 @@ npm i hyperapp
 
 CDN
 ```html
-<script src="https://cdn.rawgit.com/hyperapp/hyperapp/master/dist/app.min.js"></script>
-<script src="https://cdn.rawgit.com/hyperapp/hyperapp/master/dist/html.min.js"></script>
+<script src="https://cdn.rawgit.com/hyperapp/hyperapp/0.0.6/dist/app.min.js"></script>
+<script src="https://cdn.rawgit.com/hyperapp/hyperapp/0.0.6/dist/html.min.js"></script>
 ```
 
 Browserify

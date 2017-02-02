@@ -53,7 +53,7 @@ app({
         <div>
             <button onclick=${msg.add}>+</button>
             <h1>${model}</h1>
-            <button onclick=${msg.sub} disabled=${model <= 0}>–</button>
+            <button onclick=${msg.sub} disabled=${model <= 0}>-</button>
         </div>`
 })
 ```

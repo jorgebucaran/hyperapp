@@ -1,7 +1,7 @@
 {
     "name": "hyperapp",
     "description": "HyperApp is a 1kb functional JavaScript library for building modern UI applications",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "main": "index.js",
     "author": "Jorge Bucaran",
     "license": "MIT",
@@ -14,7 +14,7 @@
         "template string"
     ],
     "scripts": {
-        "build": "browserify app.js -s app -g uglifyify -p bundle-collapser/plugin | uglifyjs > dist/app.min.js && browserify html.js -s html -g uglifyify -p bundle-collapser/plugin | uglifyjs > dist/html.min.js",
+        "build": "browserify app.js -s app -g uglifyify -p bundle-collapser/plugin | uglifyjs > dist/app.min.js && browserify html.js -s html -g uglifyify -p bundle-collapser/plugin | uglifyjs > dist/html.min.js && browserify h.js -s h -g uglifyify -p bundle-collapser/plugin | uglifyjs > dist/h.min.js",
         "gzip": "gzip -c dist/app.min.js > dist/app.min.js.gz",
         "zopfli": "zopfli dist/app.min.js -c --i2000 > dist/app.min.js.gz"
     },

@@ -9,9 +9,12 @@
     "keywords": [
         "hyperx",
         "hypertext",
+        "functional",
         "virtual-dom",
         "vdom",
-        "template string"
+        "template string",
+        "hyperscript",
+        "vanilla"
     ],
     "scripts": {
         "build": "browserify app.js -s app -g uglifyify -p bundle-collapser/plugin | uglifyjs > dist/app.min.js && browserify html.js -s html -g uglifyify -p bundle-collapser/plugin | uglifyjs > dist/html.min.js && browserify h.js -s h -g uglifyify -p bundle-collapser/plugin | uglifyjs > dist/h.min.js",

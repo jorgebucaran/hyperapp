@@ -222,11 +222,22 @@ app({ model, view, update })
 <summary>JSX</summary>
 
 ```jsx
-const view = ({world}, msg) => (<div>Hello {world}</div>);
+const view = (model, msg) => (
+    <div>
+        <button onclick={msg.add}>Add</button>
+        <h1>{model}</h1>
+        <button onclick={msg.sub}>Subtract</button>
+    </div>
+);
 
-const model = {world: 'guess again'}
+const model = 0;
 
-app({ model, view })
+const update = {
+    add: model => model + 1,
+    sub: model => model - 1,
+};
+
+app({ model, view, update });
 ```
 
 </details>

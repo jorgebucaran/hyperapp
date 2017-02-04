@@ -1,21 +1,18 @@
 # [hyperapp](https://hyperapp.gomix.me/)
-
 [![](https://img.shields.io/npm/v/hyperapp.svg)](https://www.npmjs.org/package/hyperapp)
 
 HyperApp is a `1kb` functional JavaScript library for building modern UI applications.
 
 ## Install
-
 ```
 npm i hyperapp
 ```
 
 ## Usage
-
 CDN
 ```html
-<script src="https://cdn.rawgit.com/hyperapp/hyperapp/0.0.7/dist/app.min.js"></script>
-<script src="https://cdn.rawgit.com/hyperapp/hyperapp/0.0.7/dist/html.min.js"></script>
+<script src="https://cdn.rawgit.com/hyperapp/hyperapp/0.0.8/dist/app.min.js"></script>
+<script src="https://cdn.rawgit.com/hyperapp/hyperapp/0.0.8/dist/html.min.js"></script>
 ```
 
 Browserify
@@ -85,7 +82,7 @@ app({
 
 
 <details>
-<summary>Drag and Drop</summary>
+<summary>Drag & Drop</summary>
 
 ```js
 const model = {
@@ -225,7 +222,6 @@ app({ model, view, update })
 
 
 ## Documentation
-
 * [html](#html)
 * [app](#app)
     * [model](#model)
@@ -570,6 +566,4 @@ app({
 
 [View online](https://hyperapp-href.gomix.me/)
 </details>
-
-
 

@@ -3,12 +3,14 @@ module.exports = function (tag, data, tree) {
         svg(tag, data, tree)
     }
 
+    data = data == null ? {} : data;
+    if (!tree) tree = [];
     tree = Array.isArray(tree) ? tree : [tree];
 
     return {
         tag: tag,
         data: data || {},
-        tree: [].concat.apply([], tree)
+        tree: [...tree]
     }
 }
 

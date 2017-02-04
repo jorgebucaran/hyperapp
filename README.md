@@ -218,6 +218,19 @@ app({ model, view, update })
 [View online](http://codepen.io/jbucaran/pen/zNxRLy?editors=0010)
 </details>
 
+<details>
+<summary>JSX</summary>
+
+```jsx
+const view = ({world}, msg) => (<div>Hello {world}</div>);
+
+const model = {world: 'guess again'}
+
+app({ model, view })
+```
+
+</details>
+
 [See more examples](https://hyperapp.gomix.me/)
 
 

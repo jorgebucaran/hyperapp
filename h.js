@@ -3,8 +3,6 @@ module.exports = function (tag, data, tree) {
         svg(tag, data, tree)
     }
 
-    tree = Array.isArray(tree) ? tree : [tree];
-
     return {
         tag: tag,
         data: data || {},

@@ -1,14 +1,12 @@
-module.exports = function (tag, data, tree) {
+module.exports = function (tag, data = {}, tree = []) {
     if (tag === "svg") {
         svg(tag, data, tree)
     }
 
-    tree = Array.isArray(tree) ? tree : [tree];
-
     return {
         tag: tag,
-        data: data || {},
-        tree: [].concat.apply([], tree)
+        data: data,
+        tree: [...tree]
     }
 }
 

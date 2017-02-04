@@ -224,9 +224,9 @@ app({ model, view, update })
 ```jsx
 const view = (model, msg) => (
     <div>
-        <button onclick={msg.add}>Add</button>
+        <button onClick={msg.add}>Add</button>
         <h1>{model}</h1>
-        <button onclick={msg.sub}>Subtract</button>
+        <button onClick={msg.sub} disabled={model <= 0}>Subtract</button>
     </div>
 );
 

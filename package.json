@@ -17,6 +17,7 @@
 		"vanilla"
 	],
 	"scripts": {
+		"lint": "eslint ./src/**/*.js",
 		"build": "webpack -p --progress"
 	},
 	"dependencies": {
@@ -24,6 +25,7 @@
 	},
 	"devDependencies": {
 		"compression-webpack-plugin": "^0.3.2",
+		"eslint": "^3.15.0",
 		"webpack": "^2.2.1"
 	}
 }

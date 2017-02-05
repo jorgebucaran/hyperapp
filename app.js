@@ -205,9 +205,13 @@ module.exports = function (options) {
             }
 
         } else if (name.substr(0, 2) === "on") {
-            var event = name.substr(2)
-            element.removeEventListener(event, oldValue)
-            element.addEventListener(event, value)
+            if (typeof value === 'function') {
+                var event = name.substr(2)
+                element.removeEventListener(event, oldValue)
+                element.addEventListener(event, value)
+            } else {
+                element.setAttribute(name, value)
+            }
 
         } else {
             if (value === "false" || value === false) {

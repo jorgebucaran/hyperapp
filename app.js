@@ -1,3 +1,7 @@
+var toString = require('./toString')
+var isPrimitive = require('./utils/isPrimitive')
+var merge = require('./utils/merge')
+
 module.exports = function (options) {
     var msg = {}
 
@@ -5,6 +9,7 @@ module.exports = function (options) {
     var reducers = options.update || {}
     var effects = options.effects || {}
     var subs = options.subs || {}
+    var renderToString = options.renderToString || false;
 
     var hooks = merge({
         onAction: Function.prototype,
@@ -15,7 +20,10 @@ module.exports = function (options) {
     }, options.hooks)
 
     var node
-    var root = options.root || document.body.appendChild(document.createElement("div"))
+    var root = ''
+    if (!renderToString) {
+      root = options.root || document.body.appendChild(document.createElement("div"))
+    }
     var view = options.view || function () {
         return root
     }
@@ -34,31 +42,33 @@ module.exports = function (options) {
             }
         }
 
-        window.addEventListener(history && history.pushState ? "popstate" : "hashchange", function () {
-            render(model, view = route(routes, getHashOrPath()), node)
-        })
+        if (!renderToString) {
+            window.addEventListener(history && history.pushState ? "popstate" : "hashchange", function () {
+                render(model, view = route(routes, getHashOrPath()), node)
+            })
 
-        window.onclick = function (e) {
-            if (e.metaKey || e.shiftKey || e.ctrlKey || e.altKey) {
-                return
-            }
+            window.onclick = function (e) {
+                if (e.metaKey || e.shiftKey || e.ctrlKey || e.altKey) {
+                    return
+                }
 
-            var target = e.target
+                var target = e.target
 
-            while (target && target.localName !== "a") {
-                target = target.parentNode
-            }
+                while (target && target.localName !== "a") {
+                    target = target.parentNode
+                }
 
-            if (target && target.host === location.host
-                && !target.hasAttribute("data-no-routing")) {
+                if (target && target.host === location.host
+                    && !target.hasAttribute("data-no-routing")) {
 
-                var element = target.hash === "" ? element : document.querySelector(target.hash)
-                if (element) {
-                    element.scrollIntoView(true)
+                    var element = target.hash === "" ? element : document.querySelector(target.hash)
+                    if (element) {
+                        element.scrollIntoView(true)
 
-                } else {
-                    msg.setLocation(target.pathname)
-                    return false
+                    } else {
+                        msg.setLocation(target.pathname)
+                        return false
+                    }
                 }
             }
         }
@@ -68,31 +78,35 @@ module.exports = function (options) {
         }
     }
 
-    for (var name in merge(reducers, effects)) {
-        (function (name) {
-            msg[name] = function (data) {
-                hooks.onAction(name, data)
+    if (!renderToString) {
+        for (var name in merge(reducers, effects)) {
+            (function (name) {
+                msg[name] = function (data) {
+                    hooks.onAction(name, data)
 
-                var effect = effects[name]
-                if (effect) {
-                    return effect(model, msg, data, hooks.onError)
+                    var effect = effects[name]
+                    if (effect) {
+                        return effect(model, msg, data, hooks.onError)
+                    }
+
+                    var update = reducers[name], _model = model
+                    render(model = merge(model, update(model, data)), view, node)
+
+                    hooks.onUpdate(_model, model, data)
                 }
-
-                var update = reducers[name], _model = model
-                render(model = merge(model, update(model, data)), view, node)
-
-                hooks.onUpdate(_model, model, data)
-            }
-        } (name))
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-        for (var sub in subs) {
-            subs[sub](model, msg, hooks.onError)
+            } (name))
         }
-    })
 
-    render(model, view)
+        document.addEventListener("DOMContentLoaded", function () {
+            for (var sub in subs) {
+                subs[sub](model, msg, hooks.onError)
+            }
+        })
+
+        render(model, view)
+    } else {
+        return toString(view(model, msg))
+    }
 
     function render(model, view, lastNode) {
         patch(root, node = view(model, msg), lastNode, 0)
@@ -131,31 +145,10 @@ module.exports = function (options) {
         return { re: re, keys: keys }
     }
 
-    function isPrimitive(type) {
-        return type === "string" || type === "number" || type === "boolean"
-    }
-
     function defer(fn, data) {
         setTimeout(function () {
             fn(data)
         }, 0)
-    }
-
-    function merge(a, b) {
-        var obj = {}, key
-
-        if (isPrimitive(typeof b) || Array.isArray(b)){
-            return b
-        }
-
-        for (key in a) {
-            obj[key] = a[key]
-        }
-        for (key in b) {
-            obj[key] = b[key]
-        }
-
-        return obj
     }
 
     function shouldUpdate(a, b) {

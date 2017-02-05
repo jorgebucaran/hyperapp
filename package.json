@@ -17,14 +17,15 @@
 		"vanilla"
 	],
 	"scripts": {
-		"build": "webpack -p"
+		"build": "webpack -p --progress",
+		"test": "jest --coverage --colors --cache"
 	},
 	"dependencies": {
 		"hyperx": "^2.0.5"
 	},
 	"devDependencies": {
-		"browserify": "^14.0.0",
-		"bundle-collapser": "^1.2.1",
-		"compression-webpack-plugin": "^0.3.2"
+		"compression-webpack-plugin": "^0.3.2",
+		"jest": "^18.1.0",
+		"webpack": "^2.2.1"
 	}
 }

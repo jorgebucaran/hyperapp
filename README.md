@@ -4,20 +4,20 @@
 HyperApp is a `1kb` functional JavaScript library for building modern UI applications.
 
 ## Install
-```
+```sh
 npm i hyperapp
+```
+
+```sh
+yarn add hyperapp
 ```
 
 ## Usage
 CDN
-```html
-<script src="https://cdn.rawgit.com/hyperapp/hyperapp/0.0.9/dist/app.min.js"></script>
-<script src="https://cdn.rawgit.com/hyperapp/hyperapp/0.0.9/dist/html.min.js"></script>
-```
 
-Browserify
-```
-browserify -g uglifyify index.js | uglifyjs > bundle.js
+Which exports a umd module named `hyperapp`, so in your browser simply use `var app = hyperapp.app;`
+```html
+<script src="https://cdn.rawgit.com/hyperapp/hyperapp/0.0.9/dist/hyperapp.min.js"></script>
 ```
 
 ## Examples

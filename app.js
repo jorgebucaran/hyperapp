@@ -1,6 +1,8 @@
-var toString = require('./toString')
 var isPrimitive = require('./utils/isPrimitive')
 var merge = require('./utils/merge')
+var getViewForRoute = require('./utils/getViewForRoute')
+var createMsg = require('./utils/createMsg')
+var createHooks = require('./utils/createHooks')
 
 module.exports = function (options) {
     var msg = {}
@@ -9,32 +11,22 @@ module.exports = function (options) {
     var reducers = options.update || {}
     var effects = options.effects || {}
     var subs = options.subs || {}
-    var renderToString = options.renderToString || false;
 
-    var hooks = merge({
-        onAction: Function.prototype,
-        onUpdate: Function.prototype,
-        onError: function (err) {
-            throw err
-        }
-    }, options.hooks)
+    var hooks = createHooks(options)
 
     var node
-    var root = ''
-    if (!renderToString) {
-      root = options.root || document.body.appendChild(document.createElement("div"))
-    }
+    var root = options.root || document.body.appendChild(document.createElement("div"))
     var view = options.view || function () {
         return root
     }
     var routes = typeof view === "function" ? undefined : view
 
     if (routes) {
-        view = route(routes, getHashOrPath())
+        view = getViewForRoute(routes, getHashOrPath())
 
         msg.setLocation = function (data) {
             if (history && history.pushState) {
-                render(model, view = route(routes, data), node)
+                render(model, view = getViewForRoute(routes, data), node)
                 history.pushState({}, "", data)
 
             } else {
@@ -42,33 +34,31 @@ module.exports = function (options) {
             }
         }
 
-        if (!renderToString) {
-            window.addEventListener(history && history.pushState ? "popstate" : "hashchange", function () {
-                render(model, view = route(routes, getHashOrPath()), node)
-            })
+        window.addEventListener(history && history.pushState ? "popstate" : "hashchange", function () {
+            render(model, view = getViewForRoute(routes, getHashOrPath()), node)
+        })
 
-            window.onclick = function (e) {
-                if (e.metaKey || e.shiftKey || e.ctrlKey || e.altKey) {
-                    return
-                }
+        window.onclick = function (e) {
+            if (e.metaKey || e.shiftKey || e.ctrlKey || e.altKey) {
+                return
+            }
 
-                var target = e.target
+            var target = e.target
 
-                while (target && target.localName !== "a") {
-                    target = target.parentNode
-                }
+            while (target && target.localName !== "a") {
+                target = target.parentNode
+            }
 
-                if (target && target.host === location.host
-                    && !target.hasAttribute("data-no-routing")) {
+            if (target && target.host === location.host
+                && !target.hasAttribute("data-no-routing")) {
 
-                    var element = target.hash === "" ? element : document.querySelector(target.hash)
-                    if (element) {
-                        element.scrollIntoView(true)
+                var element = target.hash === "" ? element : document.querySelector(target.hash)
+                if (element) {
+                    element.scrollIntoView(true)
 
-                    } else {
-                        msg.setLocation(target.pathname)
-                        return false
-                    }
+                } else {
+                    msg.setLocation(target.pathname)
+                    return false
                 }
             }
         }
@@ -78,71 +68,21 @@ module.exports = function (options) {
         }
     }
 
-    if (!renderToString) {
-        for (var name in merge(reducers, effects)) {
-            (function (name) {
-                msg[name] = function (data) {
-                    hooks.onAction(name, data)
+    msg = createMsg(options, hooks, function (data, update) {
+        render(model = merge(model, update(model, data)), view, node)
+    })
 
-                    var effect = effects[name]
-                    if (effect) {
-                        return effect(model, msg, data, hooks.onError)
-                    }
-
-                    var update = reducers[name], _model = model
-                    render(model = merge(model, update(model, data)), view, node)
-
-                    hooks.onUpdate(_model, model, data)
-                }
-            } (name))
+    document.addEventListener("DOMContentLoaded", function () {
+        for (var sub in subs) {
+            subs[sub](model, msg, hooks.onError)
         }
+    })
 
-        document.addEventListener("DOMContentLoaded", function () {
-            for (var sub in subs) {
-                subs[sub](model, msg, hooks.onError)
-            }
-        })
+    render(model, view)
 
-        render(model, view)
-    } else {
-        return toString(view(model, msg))
-    }
 
     function render(model, view, lastNode) {
         patch(root, node = view(model, msg), lastNode, 0)
-    }
-
-    function route(routes, path) {
-        for (var route in routes) {
-            var re = regexify(route), params = {}, match
-
-            path.replace(new RegExp(re.re, "g"), function () {
-                for (var i = 1; i < arguments.length - 2; i++) {
-                    params[re.keys.shift()] = arguments[i]
-                }
-
-                match = function (model, msg) {
-                    return routes[route](model, msg, params)
-                }
-            })
-
-            if (match) {
-                return match
-            }
-        }
-
-        return routes["/"]
-    }
-
-    function regexify(path) {
-        var keys = [], re = "^" + path
-            .replace(/\//g, "\\/")
-            .replace(/:([A-Za-z0-9_]+)/g, function (_, key) {
-                keys.push(key)
-                return "([A-Za-z0-9_]+)"
-            }) + "/?$"
-
-        return { re: re, keys: keys }
     }
 
     function defer(fn, data) {

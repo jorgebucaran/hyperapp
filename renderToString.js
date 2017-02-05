@@ -3,7 +3,10 @@ var paramCase = require('param-case')
 var createAttribute = require('vdom-to-html/create-attribute')
 var voidElements = require('vdom-to-html/void-elements')
 
+var createMsg = require('./utils/createMsg')
+var createHooks = require('./utils/createHooks')
 var isPrimitive = require('./utils/isPrimitive')
+var getViewForRoute = require('./utils/getViewForRoute')
 var merge = require('./utils/merge')
 
 function createHTMLStringFrom(node, parent) {
@@ -62,4 +65,11 @@ function closeTag(node) {
     return voidElements[tag] ? '' : '</' + tag + '>'
 }
 
-module.exports = createHTMLStringFrom
+module.exports = function (options, pathname) {
+  var hooks = createHooks(options)
+  var msg = createMsg(options, hooks, function () {})
+  var routes = typeof options.view === 'object' ? options.view : null
+  var view = routes ? getViewForRoute(routes, pathname) : options.view
+
+  return createHTMLStringFrom(view(options.model, msg))
+}

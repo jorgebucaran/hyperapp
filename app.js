@@ -34,9 +34,9 @@ module.exports = function (options) {
             }
         }
 
-        window[history && history.pushState ? "onpopstate" : "onhashchange"] = function () {
+        window.addEventListener(history && history.pushState ? "popstate" : "hashchange", function () {
             render(model, view = route(routes, getHashOrPath()), node)
-        }
+        })
 
         window.onclick = function (e) {
             if (e.metaKey || e.shiftKey || e.ctrlKey || e.altKey) {

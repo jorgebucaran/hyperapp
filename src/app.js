@@ -1,11 +1,10 @@
-console.log("DEV")
 module.exports = options => {
 	const defer = (fn, data) => {
 		setTimeout(_ => fn(data), 0)
 	}
 
 	const merge = (a, b) => {
-		var obj = {}, key
+		let obj = {}, key
 
 		if (isPrimitive(typeof b) || Array.isArray(b)) {
 			return b
@@ -39,10 +38,10 @@ module.exports = options => {
 			}
 
 			if (index >= 0) {
-				var element = parent.childNodes[index]
+				let element = parent.childNodes[index]
 
 				if (oldNode && oldNode.data) {
-					var hook = oldNode.data.onremove
+					let hook = oldNode.data.onremove
 					if (hook) {
 						defer(hook, element)
 					}
@@ -55,20 +54,20 @@ module.exports = options => {
 			parent.replaceChild(createElementFrom(node), parent.childNodes[index])
 
 		} else if (node.tag) {
-			var element = parent.childNodes[index]
+			let element = parent.childNodes[index]
 
 			updateElementData(element, node.data, oldNode.data)
 
-			var len = node.tree.length, oldLen = oldNode.tree.length
+			let len = node.tree.length, oldLen = oldNode.tree.length
 
-			for (var i = 0; i < len || i < oldLen; i++) {
+			for (let i = 0; i < len || i < oldLen; i++) {
 				patch(element, node.tree[i], oldNode.tree[i], i)
 			}
 		}
 	}
 
 	const createElementFrom = node => {
-		var element
+		let element
 
 		if (isPrimitive(typeof node)) {
 			element = document.createTextNode(node)
@@ -78,7 +77,7 @@ module.exports = options => {
 				? document.createElementNS(node.data.ns, node.tag)
 				: document.createElement(node.tag)
 
-			for (var name in node.data) {
+			for (let name in node.data) {
 				if (name === "oncreate") {
 					defer(node.data[name], element)
 				} else {
@@ -86,7 +85,7 @@ module.exports = options => {
 				}
 			}
 
-			for (var i = 0; i < node.tree.length; i++) {
+			for (let i = 0; i < node.tree.length; i++) {
 				element.appendChild(createElementFrom(node.tree[i]))
 			}
 		}
@@ -96,12 +95,12 @@ module.exports = options => {
 
 	const setElementData = (element, name, value, oldValue) => {
 		if (name === "style") {
-			for (var i in value) {
+			for (let i in value) {
 				element.style[i] = value[i]
 			}
 
 		} else if (name.substr(0, 2) === "on") {
-			var event = name.substr(2)
+			let event = name.substr(2)
 			element.removeEventListener(event, oldValue)
 			element.addEventListener(event, value)
 
@@ -125,8 +124,8 @@ module.exports = options => {
 	}
 
 	const updateElementData = (element, data, oldData) => {
-		for (var name in merge(oldData, data)) {
-			var value = data[name], oldValue = oldData[name]
+		for (let name in merge(oldData, data)) {
+			let value = data[name], oldValue = oldData[name]
 
 			if (value === undefined) {
 				removeElementData(element, name, oldValue)
@@ -140,7 +139,7 @@ module.exports = options => {
 	}
 
 	const regexify = path => {
-		var keys = [], re = "^" + path
+		let keys = [], re = "^" + path
 			.replace(/\//g, "\\/")
 			.replace(/:([A-Za-z0-9_]+)/g, (_, key) => {
 				keys.push(key)
@@ -151,11 +150,11 @@ module.exports = options => {
 	}
 
 	const route = (routes, path) => {
-		for (var route in routes) {
-			var re = regexify(route), params = {}, match
+		for (let route in routes) {
+			let re = regexify(route), params = {}, match
 
 			path.replace(new RegExp(re.re, "g"), _ => {
-				for (var i = 1; i < arguments.length - 2; i++) {
+				for (let i = 1; i < arguments.length - 2; i++) {
 					params[re.keys.shift()] = arguments[i]
 				}
 				match = (model, msg) => routes[route](model, msg, params)
@@ -169,14 +168,13 @@ module.exports = options => {
 		return routes["/"]
 	}
 
-	var msg = {}
+	let msg = {},
+		model = options.model,
+		reducers = options.update || {},
+		effects = options.effects || {},
+		subs = options.subs || {}
 
-	var model = options.model
-	var reducers = options.update || {}
-	var effects = options.effects || {}
-	var subs = options.subs || {}
-
-	var hooks = merge({
+	let hooks = merge({
 		onAction: Function.prototype,
 		onUpdate: Function.prototype,
 		onError: err => {
@@ -184,10 +182,10 @@ module.exports = options => {
 		}
 	}, options.hooks)
 
-	var node
-	var root = options.root || document.body.appendChild(document.createElement("div"))
-	var view = options.view || (_ => root)
-	var routes = typeof view === "function" ? undefined : view
+	let node,
+		root = options.root || document.body.appendChild(document.createElement("div")),
+		view = options.view || (_ => root),
+		routes = typeof view === "function" ? undefined : view
 
 	if (routes) {
 		view = route(routes, location.pathname)
@@ -206,7 +204,7 @@ module.exports = options => {
 				return
 			}
 
-			var target = e.target
+			let target = e.target
 
 			while (target && target.localName !== "a") {
 				target = target.parentNode
@@ -215,7 +213,7 @@ module.exports = options => {
 			if (target && target.host === location.host
 				&& !target.hasAttribute("data-no-routing")) {
 
-				var element = target.hash === "" ? element : document.querySelector(target.hash)
+				let element = target.hash === "" ? element : document.querySelector(target.hash)
 
 				if (element) {
 					element.scrollIntoView(true)
@@ -231,12 +229,12 @@ module.exports = options => {
 		msg[name] = data => {
 			hooks.onAction(name, data)
 
-			var effect = effects[name]
+			let effect = effects[name]
 			if (effect) {
 				return effect(model, msg, data, hooks.onError)
 			}
 
-			var update = reducers[name], _model = model
+			let update = reducers[name], _model = model
 			render(model = merge(model, update(model, data)), view, node)
 
 			hooks.onUpdate(_model, model, data)
@@ -244,7 +242,7 @@ module.exports = options => {
 	}
 
 	document.addEventListener("DOMContentLoaded", _ => {
-		for (var sub in subs) {
+		for (let sub in subs) {
 			subs[sub](model, msg, hooks.onError)
 		}
 	})

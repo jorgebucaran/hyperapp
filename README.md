@@ -3,7 +3,7 @@
 [![CircleCI](https://img.shields.io/circleci/project/github/hyperapp/hyperapp/master.svg)](https://circleci.com/gh/hyperapp/hyperapp)
 [![Codecov](https://img.shields.io/codecov/c/github/hyperapp/hyperapp/master.svg)](https://codecov.io/gh/hyperapp/hyperapp)
 
-HyperApp is a `1kb` functional JavaScript library for building modern UI applications.
+HyperApp is a `~1kb` functional JavaScript library for building modern UI applications.
 
 ## Install
 ```sh
@@ -15,12 +15,30 @@ yarn add hyperapp
 ```
 
 ## Usage
-CDN
 
-Which exports a umd module named `hyperapp`, so in your browser simply use `var app = hyperapp.app;`
+### CDN
+
 ```html
-<script src="https://cdn.rawgit.com/hyperapp/hyperapp/0.0.9/dist/hyperapp.min.js"></script>
+<script src="https://cdn.rawgit.com/hyperapp/hyperapp/0.0.10/dist/hyperapp.min.js"></script>
 ```
+
+```js
+const { app, html } = hyperapp
+```
+
+<details>
+<summary>Other</summary>
+
+The following imports modify the global
+
+```html
+<script src="https://cdn.rawgit.com/hyperapp/hyperapp/0.0.10/dist/app.min.js"></script>
+<script src="https://cdn.rawgit.com/hyperapp/hyperapp/0.0.10/dist/html.min.js"></script>
+<script src="https://cdn.rawgit.com/hyperapp/hyperapp/0.0.10/dist/h.min.js"></script>
+```
+</details>
+
+Bundle
 
 ## Examples
 

@@ -3,15 +3,16 @@ const webpack = require("webpack")
 
 module.exports = {
 	entry: {
-		hyperapp: ["./index.js"],
+		hyperapp: "./index.js",
 		app: "./app.js",
+		h: "./h.js",
 		html: "./html.js"
 	},
 
 	output: {
 		path: "./dist/",
 		filename: "[name].min.js",
-		library: "hyperapp",
+		library: "[name]",
 		libraryTarget: "umd"
 	},
 

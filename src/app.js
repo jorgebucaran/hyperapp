@@ -1,3 +1,4 @@
+console.log("DEV")
 module.exports = options => {
 	const defer = (fn, data) => {
 		setTimeout(_ => fn(data), 0)
@@ -226,22 +227,20 @@ module.exports = options => {
 		})
 	}
 
-	for (var name in merge(reducers, effects)) {
-		(_ => {
-			msg[name] = data => {
-				hooks.onAction(name, data)
+	for (let name in merge(reducers, effects)) {
+		msg[name] = data => {
+			hooks.onAction(name, data)
 
-				var effect = effects[name]
-				if (effect) {
-					return effect(model, msg, data, hooks.onError)
-				}
-
-				var update = reducers[name], _model = model
-				render(model = merge(model, update(model, data)), view, node)
-
-				hooks.onUpdate(_model, model, data)
+			var effect = effects[name]
+			if (effect) {
+				return effect(model, msg, data, hooks.onError)
 			}
-		})()
+
+			var update = reducers[name], _model = model
+			render(model = merge(model, update(model, data)), view, node)
+
+			hooks.onUpdate(_model, model, data)
+		}
 	}
 
 	document.addEventListener("DOMContentLoaded", _ => {

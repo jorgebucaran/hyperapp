@@ -1,15 +1,20 @@
-const CompressionPlugin = require("compression-webpack-plugin")
-const BabiliPlugin = require("babili-webpack-plugin")
-const webpack = require("webpack")
+const CompressionPlugin = require("compression-webpack-plugin");
+const BabiliPlugin = require("babili-webpack-plugin");
+const webpack = require("webpack");
 
 module.exports = {
-	entry: "./src/index.js",
+	entry: {
+		hyperapp: ['./src/index.js'],
+		app: './src/app.js',
+		html: './src/html.js'
+	},
 
 	output: {
 		path: "./dist/",
-		filename: "hyperapp.min.js",
+		filename: "[name].min.js",
 		library: "hyperapp",
-		libraryTarget: "umd"
+		libraryTarget: "umd",
+		jsonpFunction: 'ha'
 	},
 
 	module: {
@@ -26,10 +31,11 @@ module.exports = {
 
 	plugins: [
 		new webpack.LoaderOptionsPlugin({
+			minimize: true,
 			debug: false
 		}),
 
-	    new BabiliPlugin(),
+		new BabiliPlugin(),
 
 		new webpack.optimize.OccurrenceOrderPlugin(),
 		new webpack.optimize.AggressiveMergingPlugin(),
@@ -37,6 +43,26 @@ module.exports = {
 		new CompressionPlugin({
 			asset: "[path].gz",
 			algorithm: "zopfli"
+		}),
+
+		new webpack.optimize.UglifyJsPlugin({
+			minimize: true,
+			mangle: true,
+			output: {comments: false},
+			compress: {
+				warnings: false,
+				sequences: true,
+				dead_code: true,
+				conditionals: true,
+				booleans: true,
+				unused: true,
+				if_return: true,
+				join_vars: true,
+				drop_console: true,
+				unsafe: true,
+				loops: true,
+				negate_iife: true
+			}
 		})
 	]
 }

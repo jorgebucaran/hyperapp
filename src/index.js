@@ -1,5 +1,5 @@
-import app from "./app.js"
-import html from "./html.js"
-import h from "./h.js"
+const app = require("./app")
+const html = require("./html")
+const h = require("./h")
 
-export default { app, html, h }
+module.exports = { app, html, h }

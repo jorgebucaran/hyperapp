@@ -1,8 +1,7 @@
-export default options => {
-	const isPrimitive = type =>
-		type === "string" || type === "number" || type === "boolean"
-
-	const defer = (fn, data) => setTimeout(_ => fn(data), 0)
+module.exports = options => {
+	const defer = (fn, data) => {
+		setTimeout(_ => fn(data), 0)
+	}
 
 	const merge = (a, b) => {
 		var obj = {}, key
@@ -21,8 +20,11 @@ export default options => {
 		return obj
 	}
 
-	const render = (model, view, lastNode) =>
+	const isPrimitive = type => type === "string" || type === "number" || type === "boolean"
+
+	const render = (model, view, lastNode) => {
 		patch(root, node = view(model, msg), lastNode, 0)
+	}
 
 	const shouldUpdate = (a, b) => a.tag !== b.tag || typeof a !== typeof b || isPrimitive(typeof a) && a !== b
 
@@ -138,13 +140,13 @@ export default options => {
 
 	const regexify = path => {
 		var keys = [], re = "^" + path
-				.replace(/\//g, "\\/")
-				.replace(/:([A-Za-z0-9_]+)/g, function (_, key) {
-					keys.push(key)
-					return "([A-Za-z0-9_]+)"
-				}) + "/?$"
+			.replace(/\//g, "\\/")
+			.replace(/:([A-Za-z0-9_]+)/g, (_, key) => {
+				keys.push(key)
+				return "([A-Za-z0-9_]+)"
+			}) + "/?$"
 
-		return {re: re, keys: keys}
+		return { re: re, keys: keys }
 	}
 
 	const route = (routes, path) => {
@@ -194,8 +196,9 @@ export default options => {
 			history.pushState({}, "", data)
 		}
 
-		window.addEventListener("popstate", _ =>
-			render(model, view = route(routes, location.pathname), node))
+		window.addEventListener("popstate", _ => {
+			render(model, view = route(routes, location.pathname), node)
+		})
 
 		window.addEventListener("click", e => {
 			if (e.metaKey || e.shiftKey || e.ctrlKey || e.altKey) {
@@ -223,20 +226,22 @@ export default options => {
 		})
 	}
 
-	for (let name in merge(reducers, effects)) {
-		msg[name] = data => {
-			hooks.onAction(name, data)
+	for (var name in merge(reducers, effects)) {
+		(_ => {
+			msg[name] = data => {
+				hooks.onAction(name, data)
 
-			var effect = effects[name]
-			if (effect) {
-				return effect(model, msg, data, hooks.onError)
+				var effect = effects[name]
+				if (effect) {
+					return effect(model, msg, data, hooks.onError)
+				}
+
+				var update = reducers[name], _model = model
+				render(model = merge(model, update(model, data)), view, node)
+
+				hooks.onUpdate(_model, model, data)
 			}
-
-			var update = reducers[name], _model = model
-			render(model = merge(model, update(model, data)), view, node)
-
-			hooks.onUpdate(_model, model, data)
-		}
+		})()
 	}
 
 	document.addEventListener("DOMContentLoaded", _ => {

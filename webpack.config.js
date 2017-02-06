@@ -3,31 +3,27 @@ const Wrapper = require("wrapper-webpack-plugin")
 const CompressionPlugin = require("compression-webpack-plugin")
 
 module.exports = {
-	context: `${__dirname}/src/`,
-	cache: true,
-
 	entry: {
-		hyperapp: "./index.js",
-		app: "./app.js",
-		h: "./h.js",
-		html: "./html.js"
+		hyperapp: ["./src/index.js"],
+		app: "./src/app.js",
+		html: "./src/html.js",
+		h: "./src/h.js"
 	},
 
 	output: {
 		path: "./dist/",
 		filename: "[name].min.js",
-		library: "export",
-		libraryTarget: "this"
+		library: "[name]"
 	},
 
 	module: {
-		rules: [
-			{
-				test: /\.js$/,
-				loader: "babel-loader",
-				exclude: /node_modules/
+		loaders: [{
+			loader: "babel-loader",
+			exclude: /node_modules/,
+			query: {
+				presets: ["es2015", "babili"]
 			}
-		]
+		}]
 	},
 
 	plugins: [
@@ -47,7 +43,7 @@ module.exports = {
 		new webpack.optimize.UglifyJsPlugin({
 			minimize: true,
 			mangle: true,
-			output: {comments: false},
+			output: { comments: false },
 			sourceMap: true,
 			compress: {
 				warnings: false,
@@ -63,15 +59,6 @@ module.exports = {
 				loops: true,
 				negate_iife: true
 			}
-		}),
-
-		new Wrapper({
-			header(fileName) {
-				const module = /^([a-z]+)\.*/.exec(fileName)
-
-				return `window["${module[1]}"] = (function() {`
-			},
-			footer: "return this.export.default})();"
 		})
 	]
 }

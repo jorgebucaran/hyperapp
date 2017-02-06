@@ -3,6 +3,8 @@ machine:
     version: stable
   environment:
     NODE_ENV: 'development'
+    JEST_SUITE_NAME: HyperApp
+    JEST_JUNIT_OUTPUT: $CIRCLE_TEST_REPORTS/junit.xml
   pre:
     - curl -o- -L https://yarnpkg.com/install.sh | bash
     - mkdir ~/.yarn-cache

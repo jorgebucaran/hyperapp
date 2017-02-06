@@ -10,3 +10,4 @@ yarn.lock
 sandbox
 node_modules
 coverage
+*.xml

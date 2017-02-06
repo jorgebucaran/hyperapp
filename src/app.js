@@ -1,4 +1,3 @@
-console.log("DEV")
 module.exports = options => {
 	const defer = (fn, data) => {
 		setTimeout(_ => fn(data), 0)

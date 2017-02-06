@@ -248,7 +248,7 @@ module.exports = options => {
                     element.scrollIntoView(true)
                 } else {
                     msg.setLocation(target.pathname)
-                    return false
+                    e.preventDefault()
                 }
             }
         })

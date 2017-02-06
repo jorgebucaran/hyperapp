@@ -4,6 +4,7 @@ machine:
   environment:
     NODE_ENV: 'development'
   pre:
+    - curl -o- -L https://yarnpkg.com/install.sh | bash
     - mkdir ~/.yarn-cache
 
 general:

@@ -1,23 +1,41 @@
 # [hyperapp](https://hyperapp.gomix.me/)
-[![](https://img.shields.io/npm/v/hyperapp.svg)](https://www.npmjs.org/package/hyperapp)
 
-HyperApp is a `1kb` functional JavaScript library for building modern UI applications.
+[![Version](https://img.shields.io/npm/v/hyperapp.svg)](https://www.npmjs.org/package/hyperapp)
+[![TravisCI](https://img.shields.io/travis/hyperapp/hyperapp/master.svg)](https://travis-ci.org/hyperapp/hyperapp)
+[![Codecov](https://img.shields.io/codecov/c/github/hyperapp/hyperapp/master.svg)](https://codecov.io/gh/hyperapp/hyperapp)
 
-## Install
+HyperApp is a `~1kb` functional JavaScript library for building modern UI applications.
+
+## Usage
+### CDN
+```html
+<script src="https://cdn.rawgit.com/hyperapp/hyperapp/0.0.10/dist/hyperapp.min.js"></script>
+```
+
+```js
+const { app, html } = hyperapp
+```
+
+<details><summary>Globals</summary>
+
+```html
+<script src="https://cdn.rawgit.com/hyperapp/hyperapp/0.0.10/dist/app.min.js"></script>
+<script src="https://cdn.rawgit.com/hyperapp/hyperapp/0.0.10/dist/html.min.js"></script>
+<script src="https://cdn.rawgit.com/hyperapp/hyperapp/0.0.10/dist/h.min.js"></script>
+```
+</details>
+
+### Node
 ```
 npm i hyperapp
 ```
 
-## Usage
-CDN
-```html
-<script src="https://cdn.rawgit.com/hyperapp/hyperapp/0.0.9/dist/app.min.js"></script>
-<script src="https://cdn.rawgit.com/hyperapp/hyperapp/0.0.9/dist/html.min.js"></script>
+```js
+const { app, html } = require("hyperapp")
 ```
 
-Browserify
-```
-browserify -g uglifyify index.js | uglifyjs > bundle.js
+```js
+import { appm html } from "hyperapp"
 ```
 
 ## Examples
@@ -227,7 +245,7 @@ app({ model, view, update })
     * [model](#model)
     * [update](#update)
     * [view](#view)
-        * [lifecycle events](#lifecycle-events)
+        * [Lifecycle Events](#lifecycle-events)
     * [effects](#effects)
     * [subs](#subs)
     * [hooks](#hooks)
@@ -340,49 +358,52 @@ app({
 [View online](https://hyperapp-simple-routing.gomix.me/)
 </details>
 
-#### lifecycle events
+#### Lifecycle Events
 
-Hyperapp provides lifecycle events for the virtual HTML nodes:
+Events you can attach to your virtual HTML elements to access the actual DOM elements.
 
 ```js
 app({
-  view: _ => html`
-    <div oncreate=${e => console.log(e)}>Hi.</div>`
+  view: _ => html`<div oncreate=${e => console.log(e)}>Hi.</div>`
 })
 ```
 
-The supported events are:
-
+##### Events
 - `oncreate(e : HTMLElement)`
 - `onupdate(e : HTMLElement)`
 - `onremove(e : HTMLElement)`
 
-The lifecycle event handler receives a reference to the DOM element.
+The event handler receives a reference to the DOM element.
 
 <details>
 <summary><i>Example</i></summary>
 
 ```js
-function repaint(canvas, model) {
-  var context = canvas.getContext('2d')
-  context.fillStyle = 'white'
-  context.fillRect(0, 0, canvas.width, canvas.height)
-  context.beginPath()
-  context.arc(model.x, model.y, 50, 0, 2 * Math.PI)
-  context.stroke()
+const repaint = (canvas, model) => {
+    const context = canvas.getContext("2d")
+    context.fillStyle = "white"
+    context.fillRect(0, 0, canvas.width, canvas.height)
+    context.beginPath()
+    context.arc(model.x, model.y, 50, 0, 2 * Math.PI)
+    context.stroke()
 }
 
 app({
     model: { x: 0, y: 0 },
-    view: model => html`<canvas width="600" height="300" onupdate=${(e) => repaint(e, model)} />`,
+    view: model => html`<canvas
+        width="600"
+        height="300"
+        onupdate=${e => repaint(e, model)} />`,
     update: {
         move: (model) => ({ x: model.x + 1, y: model.y + 1 })
     },
     subs: [
-      (_, msg) => setInterval(() => { msg.move() }, 100)
+      (_, msg) => setInterval(_ => msg.move(), 10)
     ]
 })
 ```
+
+[View online](http://codepen.io/jbucaran/pen/MJXMQZ?editors=0010)
 </details>
 
 ### effects

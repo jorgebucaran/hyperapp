@@ -1,0 +1,29 @@
+{
+    "presets": [
+        "babili"
+    ],
+    "env": {
+        "tests": {
+            "presets": [
+                [
+                    "es2015",
+                    {
+                        "modules": "commonjs",
+                        "loose": false
+                    }
+                ]
+            ]
+        },
+        "production": {
+            "presets": [
+                [
+                    "es2015",
+                    {
+                        "modules": false,
+                        "loose": false
+                    }
+                ]
+            ]
+        }
+    }
+}

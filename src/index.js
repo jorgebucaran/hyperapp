@@ -1,5 +1,9 @@
-module.exports = {
-	app: require("./app"),
-	html: require("./html"),
-	h: require("./h")
+import app from "./app.js";
+import html from "./html.js";
+import h from "./h.js";
+
+export default {
+	app,
+	html,
+	h
 }

@@ -3,8 +3,6 @@
 import app from "../src/app.js"
 import html from "../src/html.js"
 
-console.log(app);
-
 describe("App", () => {
 
 	test("boots with no bugs", () => {

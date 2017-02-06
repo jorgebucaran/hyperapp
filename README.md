@@ -9,7 +9,7 @@ HyperApp is a `1kb` functional JavaScript library for building modern UI applica
 ## Usage
 ### CDN
 ```html
-<script src="https://cdn.rawgit.com/hyperapp/hyperapp/0.0.10/dist/hyperapp.min.js"></script>
+<script src="https://cdn.rawgit.com/hyperapp/hyperapp/0.0.11/dist/hyperapp.min.js"></script>
 ```
 ```js
 const { app, html } = hyperapp

@@ -67,11 +67,11 @@ module.exports = {
 
 		new Wrapper({
 			header(fileName) {
-				const module = /^([a-z]+)\.*/.exec(fileName);
+				const module = /^([a-z]+)\.*/.exec(fileName)
 
-				return `window['${module[1]}'] = (function() {`;
+				return `window["${module[1]}"] = (function() {`
 			},
-			footer: 'return this.export.default})();'
+			footer: "return this.export.default})();"
 		})
 	]
 }

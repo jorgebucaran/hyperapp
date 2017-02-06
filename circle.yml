@@ -20,7 +20,6 @@ database:
 dependencies:
   cache_directories:
     - ~/.yarn-cache
-    - ~/node_modules
   override:
     - yarn
     - yarn global add codecov

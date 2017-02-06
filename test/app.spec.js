@@ -1,27 +1,29 @@
 /* global describe, test, expect */
 
-const app = require("../app.js")
-const html = require("../html.js")
+import app from "../app.js"
+import html from "../html.js"
 
-describe("App", _ => {
+console.log(app);
 
-	test("boots with no bugs", _ => {
-		app({model: {}, view: _ => (html`<div>Hi</div>`)})
+describe("App", () => {
+
+	test("boots with no bugs", () => {
+		app({ model: {}, view: () => (html`<div>Hi</div>`) })
 	})
 
-	test("renders a model", _ => {
+	test("renders a model", () => {
 		const model = {
 			world: "world"
 		}
 
 		const view = (model) => html`<div id="test-me">${model.world}</div>`
 
-		app({model, view})
+		app({ model, view })
 
 		expect(document.getElementById("test-me").innerHTML).toEqual(model.world)
 	})
 
-	test("renders a model with a loop", _ => {
+	test("renders a model with a loop", () => {
 		const model = {
 			loop: [
 				"string1",
@@ -31,7 +33,7 @@ describe("App", _ => {
 
 		const view = (model) => html`<div>${model.loop.map(value => (html`<p>${value}</p>`))}</div>`
 
-		app({model, view})
+		app({ model, view })
 
 		expect(document.getElementsByTagName("p").length).toEqual(model.loop.length)
 	})

@@ -18,7 +18,8 @@
   ],
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack --progress",
-    "test": "cross-env NODE_ENV=tests jest --coverage --colors --cache"
+    "test": "cross-env NODE_ENV=tests jest --coverage --colors --cache",
+    "posttest": "standard"
   },
   "dependencies": {
     "hyperx": "^2.0.5"
@@ -31,8 +32,8 @@
     "compression-webpack-plugin": "^0.3.2",
     "cross-env": "^3.1.4",
     "jest": "^18.1.0",
-    "webpack": "^2.2.1",
-    "wrapper-webpack-plugin": "^0.1.11"
+    "standard": "^8.6.0",
+    "webpack": "^2.2.1"
   },
   "jest": {
     "verbose": true

@@ -17,12 +17,16 @@
 		"vanilla"
 	],
 	"scripts": {
-		"build": "webpack -p --progress"
+		"build": "webpack --progress"
 	},
 	"dependencies": {
 		"hyperx": "^2.0.5"
 	},
 	"devDependencies": {
+		"babel-core": "^6.22.1",
+		"babel-loader": "^6.2.10",
+		"babel-preset-es2015": "^6.22.0",
+		"babili-webpack-plugin": "^0.0.9",
 		"compression-webpack-plugin": "^0.3.2",
 		"webpack": "^2.2.1"
 	}

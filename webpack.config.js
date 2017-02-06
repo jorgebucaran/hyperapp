@@ -13,8 +13,7 @@ module.exports = {
 		path: "./dist/",
 		filename: "[name].min.js",
 		library: "hyperapp",
-		libraryTarget: "umd",
-		jsonpFunction: 'ha'
+		libraryTarget: "umd"
 	},
 
 	module: {

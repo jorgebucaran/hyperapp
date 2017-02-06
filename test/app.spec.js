@@ -34,3 +34,18 @@ describe('App', () => {
     expect(document.getElementsByTagName('p').length).toEqual(model.loop.length)
   })
 })
+
+describe('Event lifecycle', () => {
+  test('accepts oncreate property', (done) => {
+    var target = null
+    var handleCreate = (e) => { target = e }
+    app({
+      model: {},
+      view: () => (html`<div oncreate=${handleCreate}>Hi</div>`)
+    })
+    setTimeout(_ => {
+      expect(target).not.toEqual(null)
+      done()
+    }, 1)
+  })
+})

@@ -1,6 +1,6 @@
 # [hyperapp](https://hyperapp.gomix.me/)
-[![](https://img.shields.io/npm/v/hyperapp.svg)](https://www.npmjs.org/package/hyperapp)
 
+[![](https://img.shields.io/npm/v/hyperapp.svg)](https://www.npmjs.org/package/hyperapp)
 [![CircleCI branch](https://img.shields.io/circleci/project/github/hyperapp/hyperapp/master.svg)](https://circleci.com/gh/hyperapp/hyperapp)
 [![Codecov branch](https://img.shields.io/codecov/c/github/hyperapp/hyperapp/master.svg)](https://codecov.io/gh/hyperapp/hyperapp)
 

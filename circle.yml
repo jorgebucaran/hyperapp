@@ -1,0 +1,27 @@
+machine:
+  node:
+    version: stable
+  environment:
+    NODE_ENV: 'development'
+  pre:
+    - mkdir ~/.yarn-cache
+
+general:
+  artifacts:
+    - dist/
+
+database:
+  override:
+    - echo "No database"
+
+dependencies:
+  cache_directories:
+    - ~/.yarn-cache
+    - ~/node_modules
+  override:
+    - yarn install --pure-lockfile
+test:
+  pre:
+    - yarn build
+  override:
+    - yarn test

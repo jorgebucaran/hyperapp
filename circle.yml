@@ -25,3 +25,4 @@ test:
     - yarn build
   override:
     - yarn test
+    - yarn lint

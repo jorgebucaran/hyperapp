@@ -3,16 +3,20 @@ module.exports = {
 		"node": true,
 		"browser": true
 	},
+	"parserOptions": {
+		"ecmaVersion": 7,
+		"sourceType": "module"
+	},
 	"extends": "eslint:recommended",
 	"rules": {
+		"linebreak-style": "off",
 		"indent": [
 			"error",
 			"tab"
 		],
-		"linebreak-style": "off",
 		"quotes": [
 			"error",
-			"single"
+			"double"
 		],
 		"semi": [
 			"error",
@@ -22,6 +26,13 @@ module.exports = {
 			"warn"
 		],
 		"no-redeclare": [
+			"warn"
+		],
+		"semi": [
+			"error",
+			"never"
+		],
+		"no-unused-vars": [
 			"warn"
 		]
 	}

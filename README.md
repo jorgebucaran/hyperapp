@@ -21,7 +21,7 @@ npm i hyperapp
 ```
 
 ```js
-import { app html } from "hyperapp"
+import { app, html } from "hyperapp"
 ```
 
 ```js

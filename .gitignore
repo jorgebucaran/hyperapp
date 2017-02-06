@@ -9,3 +9,4 @@ yarn.lock
 # Misc
 sandbox
 node_modules
+coverage

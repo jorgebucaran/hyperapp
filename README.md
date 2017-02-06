@@ -227,6 +227,7 @@ app({ model, view, update })
     * [model](#model)
     * [update](#update)
     * [view](#view)
+        * [lifecycle events](#lifecycle-events)
     * [effects](#effects)
     * [subs](#subs)
     * [hooks](#hooks)
@@ -337,6 +338,42 @@ app({
 ```
 
 [View online](https://hyperapp-simple-routing.gomix.me/)
+</details>
+
+#### lifecycle events
+
+Hyperapp provides lifecycle events for the virtual HTML nodes:
+
+```js
+app({
+  view: _ => html`
+    <div oncreate=${e => console.log(e)}>Hi.</div>`
+})
+```
+
+The supported events are:
+
+- `oncreate(e : HTMLElement)`
+- `onupdate(e : HTMLElement)`
+- `onremove(e : HTMLElement)`
+
+The lifecycle event handler receives a reference to the DOM element.
+
+<details>
+<summary><i>Example</i></summary>
+
+```js
+function repaint (canvas) {
+  const ctx = canvas.getContext('2d');
+  ctx.fillRect(0, 0, canvas.width, canvas.height)
+  ...
+}
+
+app({
+  view: _ => html`
+    <canvas width="600" height="300" onupdate=${repaint} />`
+})
+```
 </details>
 
 ### effects
@@ -566,4 +603,3 @@ app({
 
 [View online](https://hyperapp-href.gomix.me/)
 </details>
-

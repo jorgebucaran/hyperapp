@@ -1,24 +1,13 @@
 # [hyperapp](https://hyperapp.gomix.me/)
 
 [![Version](https://img.shields.io/npm/v/hyperapp.svg)](https://www.npmjs.org/package/hyperapp)
-[![TravisCI]https://img.shields.io/travis/hyperapp/hyperapp/master.svg)](https://travis-ci.org/hyperapp/hyperapp)
+[![TravisCI](https://img.shields.io/travis/hyperapp/hyperapp/master.svg)](https://travis-ci.org/hyperapp/hyperapp)
 [![Codecov](https://img.shields.io/codecov/c/github/hyperapp/hyperapp/master.svg)](https://codecov.io/gh/hyperapp/hyperapp)
 
 HyperApp is a `~1kb` functional JavaScript library for building modern UI applications.
 
-## Install
-```sh
-npm i hyperapp
-```
-
-```sh
-yarn add hyperapp
-```
-
 ## Usage
-
 ### CDN
-
 ```html
 <script src="https://cdn.rawgit.com/hyperapp/hyperapp/0.0.10/dist/hyperapp.min.js"></script>
 ```
@@ -27,10 +16,7 @@ yarn add hyperapp
 const { app, html } = hyperapp
 ```
 
-<details>
-<summary>Other</summary>
-
-The following imports modify the global
+<details><summary>Globals</summary>
 
 ```html
 <script src="https://cdn.rawgit.com/hyperapp/hyperapp/0.0.10/dist/app.min.js"></script>
@@ -39,7 +25,18 @@ The following imports modify the global
 ```
 </details>
 
-Bundle
+### Node
+```
+npm i hyperapp
+```
+
+```js
+const { app, html } = require("hyperapp")
+```
+
+```js
+import { appm html } from "hyperapp"
+```
 
 ## Examples
 

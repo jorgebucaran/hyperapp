@@ -367,9 +367,9 @@ function repaint(canvas, model) {
   var context = canvas.getContext('2d')
   context.fillStyle = 'white'
   context.fillRect(0, 0, canvas.width, canvas.height)
-  context.beginPath();
-  context.arc(model.x, model.y, 50, 0, 2 * Math.PI);
-  context.stroke();
+  context.beginPath()
+  context.arc(model.x, model.y, 50, 0, 2 * Math.PI)
+  context.stroke()
 }
 
 app({

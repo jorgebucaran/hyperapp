@@ -21,11 +21,11 @@ npm i hyperapp
 ```
 
 ```js
-const { app, html } = require("hyperapp")
+import { app html } from "hyperapp"
 ```
 
 ```js
-import { appm html } from "hyperapp"
+const { app, html } = require("hyperapp")
 ```
 
 ## Examples

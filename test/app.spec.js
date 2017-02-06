@@ -1,38 +1,38 @@
 /* global describe, test, expect */
 
-const app = require('../src/app.js');
-const html = require('../src/html.js');
+const app = require("../src/app.js")
+const html = require("../src/html.js")
 
-describe('App', () => {
+describe("App", _ => {
 
-	test('boots with no bugs', () => {
-		app({model: {}, view: () => (html`<div>Hi</div>`)});
-	});
+	test("boots with no bugs", _ => {
+		app({model: {}, view: _ => (html`<div>Hi</div>`)})
+	})
 
-	test('renders a model', () => {
+	test("renders a model", _ => {
 		const model = {
-			world: 'world'
-		};
+			world: "world"
+		}
 
-		const view = (model) => html`<div id="test-me">${model.world}</div>`;
+		const view = (model) => html`<div id="test-me">${model.world}</div>`
 
-		app({model, view});
+		app({model, view})
 
-		expect(document.getElementById('test-me').innerHTML).toEqual(model.world);
-	});
+		expect(document.getElementById("test-me").innerHTML).toEqual(model.world)
+	})
 
-	test('renders a model with a loop', () => {
+	test("renders a model with a loop", _ => {
 		const model = {
 			loop: [
 				"string1",
 				"string2"
 			]
-		};
+		}
 
-		const view = (model) => html`<div>${model.loop.map(value => (html`<p>${value}</p>`))}</div>`;
+		const view = (model) => html`<div>${model.loop.map(value => (html`<p>${value}</p>`))}</div>`
 
-		app({model, view});
+		app({model, view})
 
-		expect(document.getElementsByTagName('p').length).toEqual(model.loop.length);
-	});
+		expect(document.getElementsByTagName("p").length).toEqual(model.loop.length)
+	})
 })

@@ -1,17 +1,9 @@
 export default options => {
-	/**
-	 *
-	 */
-	const render = (model, view, lastNode) => patch(root, node = view(model, msg), lastNode, 0)
+	const isPrimitive = type =>
+		type === "string" || type === "number" || type === "boolean"
 
-	/**
-	 *
-	 */
-	const isPrimitive = type => type === "string" || type === "number" || type === "boolean"
+	const defer = (fn, data) => setTimeout(_ => fn(data), 0)
 
-	/**
-	 *
-	 */
 	const merge = (a, b) => {
 		var obj = {}, key
 
@@ -29,14 +21,11 @@ export default options => {
 		return obj
 	}
 
-	/**
-	 *
-	 */
-	const defer = (fn, data) => setTimeout(_ => fn(data), 0)
+	const render = (model, view, lastNode) =>
+		patch(root, node = view(model, msg), lastNode, 0)
 
-	/**
-	 *
-	 */
+	const shouldUpdate = (a, b) => a.tag !== b.tag || typeof a !== typeof b || isPrimitive(typeof a) && a !== b
+
 	const patch = (parent, node, oldNode, index) => {
 		if (oldNode === undefined) {
 			parent.appendChild(createElementFrom(node))
@@ -75,11 +64,9 @@ export default options => {
 		}
 	}
 
-	/**
-	 *
-	 */
 	const createElementFrom = node => {
 		var element
+
 		if (isPrimitive(typeof node)) {
 			element = document.createTextNode(node)
 
@@ -104,9 +91,6 @@ export default options => {
 		return element
 	}
 
-	/**
-	 *
-	 */
 	const setElementData = (element, name, value, oldValue) => {
 		if (name === "style") {
 			for (var i in value) {
@@ -129,9 +113,6 @@ export default options => {
 		}
 	}
 
-	/**
-	 *
-	 */
 	const removeElementData = (element, name, value) => {
 		element.removeAttribute(name === "className" ? "class" : name)
 
@@ -140,9 +121,6 @@ export default options => {
 		}
 	}
 
-	/**
-	 *
-	 */
 	const updateElementData = (element, data, oldData) => {
 		for (var name in merge(oldData, data)) {
 			var value = data[name], oldValue = oldData[name]
@@ -158,14 +136,6 @@ export default options => {
 		}
 	}
 
-	/**
-	 *
-	 */
-	const shouldUpdate = (a, b) => a.tag !== b.tag || typeof a !== typeof b || isPrimitive(typeof a) && a !== b
-
-	/**
-	 *
-	 */
 	const regexify = path => {
 		var keys = [], re = "^" + path
 				.replace(/\//g, "\\/")
@@ -177,9 +147,6 @@ export default options => {
 		return {re: re, keys: keys}
 	}
 
-	/**
-	 *
-	 */
 	const route = (routes, path) => {
 		for (var route in routes) {
 			var re = regexify(route), params = {}, match

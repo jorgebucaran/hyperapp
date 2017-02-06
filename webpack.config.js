@@ -1,12 +1,12 @@
-const CompressionPlugin = require("compression-webpack-plugin");
-const BabiliPlugin = require("babili-webpack-plugin");
-const webpack = require("webpack");
+const CompressionPlugin = require("compression-webpack-plugin")
+const BabiliPlugin = require("babili-webpack-plugin")
+const webpack = require("webpack")
 
 module.exports = {
 	entry: {
-		hyperapp: ['./src/index.js'],
-		app: './src/app.js',
-		html: './src/html.js'
+		hyperapp: ["./index.js"],
+		app: "./app.js",
+		html: "./html.js"
 	},
 
 	output: {

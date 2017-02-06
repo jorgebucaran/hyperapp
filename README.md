@@ -3,6 +3,7 @@
 [![CircleCI](https://img.shields.io/circleci/project/github/hyperapp/hyperapp/master.svg)](https://circleci.com/gh/hyperapp/hyperapp)
 [![Codecov](https://img.shields.io/codecov/c/github/hyperapp/hyperapp/master.svg)](https://codecov.io/gh/hyperapp/hyperapp)
 
+
 HyperApp is a `1kb` functional JavaScript library for building modern UI applications.
 
 ## Install

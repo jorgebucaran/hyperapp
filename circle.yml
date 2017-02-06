@@ -20,7 +20,7 @@ dependencies:
     - ~/.yarn-cache
     - ~/node_modules
   override:
-    - yarn install --pure-lockfile
+    - yarn
     - yarn global add codecov
 
 test:

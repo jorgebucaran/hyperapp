@@ -20,9 +20,12 @@ dependencies:
     - ~/node_modules
   override:
     - yarn install --pure-lockfile
+    - yarn global add codecov
+
 test:
   pre:
     - yarn build
   override:
     - yarn test
+    - codecov
     - yarn lint

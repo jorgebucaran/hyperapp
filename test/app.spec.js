@@ -1,7 +1,7 @@
 /* global describe, test, expect */
 
-const app = require("../src/app.js")
-const html = require("../src/html.js")
+const app = require("../app.js")
+const html = require("../html.js")
 
 describe("App", _ => {
 

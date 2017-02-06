@@ -34,8 +34,6 @@ module.exports = {
 			debug: false
 		}),
 
-		new BabiliPlugin(),
-
 		new webpack.optimize.OccurrenceOrderPlugin(),
 		new webpack.optimize.AggressiveMergingPlugin(),
 

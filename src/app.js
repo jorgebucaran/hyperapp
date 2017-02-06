@@ -1,4 +1,4 @@
-module.exports = options => {
+export default options => {
 	const defer = (fn, data) => {
 		setTimeout(_ => fn(data), 0)
 	}

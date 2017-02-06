@@ -8,7 +8,7 @@ const svg = (tag, data, tree) => {
 	})
 }
 
-module.exports = function (tag, data, tree) {
+export default (tag, data, tree) => {
 	if (tag === "svg") {
 		svg(tag, data, tree)
 	}

@@ -153,7 +153,7 @@ module.exports = options => {
 		for (var route in routes) {
 			var re = regexify(route), params = {}, match
 
-			path.replace(new RegExp(re.re, "g"), _ => {
+			path.replace(new RegExp(re.re, "g"), function() {
 				for (var i = 1; i < arguments.length - 2; i++) {
 					params[re.keys.shift()] = arguments[i]
 				}

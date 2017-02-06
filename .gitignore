@@ -11,3 +11,4 @@ sandbox
 node_modules
 coverage
 *.xml
+npm-debug.*

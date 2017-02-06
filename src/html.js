@@ -1,1 +1,1 @@
-module.exports = require("hyperx")(require("./h"))
+module.exports = require('hyperx')(require('./h'))

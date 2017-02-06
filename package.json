@@ -1,33 +1,40 @@
 {
-    "name": "hyperapp",
-    "description": "HyperApp is a 1kb functional JavaScript library for building modern UI applications",
-    "version": "0.0.9",
-    "main": "index.js",
-    "author": "Jorge Bucaran",
-    "license": "MIT",
-    "repository": "hyperapp/hyperapp",
-    "keywords": [
-        "hyperx",
-        "hypertext",
-        "functional",
-        "virtual-dom",
-        "vdom",
-        "template string",
-        "hyperscript",
-        "vanilla"
-    ],
-    "scripts": {
-        "build": "browserify app.js -s app -g uglifyify -p bundle-collapser/plugin | uglifyjs > dist/app.min.js && browserify html.js -s html -g uglifyify -p bundle-collapser/plugin | uglifyjs > dist/html.min.js && browserify h.js -s h -g uglifyify -p bundle-collapser/plugin | uglifyjs > dist/h.min.js",
-        "gzip": "gzip -c dist/app.min.js > dist/app.min.js.gz",
-        "zopfli": "zopfli dist/app.min.js -c --i2000 > dist/app.min.js.gz"
-    },
-    "dependencies": {
-        "hyperx": "^2.0.5"
-    },
-    "devDependencies": {
-        "browserify": "^13.1.1",
-        "bundle-collapser": "^1.2.1",
-        "uglifyify": "^3.0.4",
-        "uglifyjs": "^2.4.10"
-    }
+  "name": "hyperapp",
+  "description": "HyperApp is a 1kb functional JavaScript library for building modern UI applications",
+  "version": "0.0.9",
+  "main": "src/index.js",
+  "author": "Jorge Bucaran",
+  "license": "MIT",
+  "repository": "hyperapp/hyperapp",
+  "keywords": [
+    "hyperx",
+    "hypertext",
+    "functional",
+    "virtual-dom",
+    "vdom",
+    "template string",
+    "hyperscript",
+    "vanilla"
+  ],
+  "scripts": {
+    "build": "cross-env NODE_ENV=production webpack --progress",
+    "test": "cross-env NODE_ENV=tests jest --coverage --colors --cache"
+  },
+  "dependencies": {
+    "hyperx": "^2.0.5"
+  },
+  "devDependencies": {
+    "babel-core": "^6.22.1",
+    "babel-loader": "^6.2.10",
+    "babel-preset-babili": "^0.0.10",
+    "babel-preset-es2015": "^6.22.0",
+    "compression-webpack-plugin": "^0.3.2",
+    "cross-env": "^3.1.4",
+    "jest": "^18.1.0",
+    "webpack": "^2.2.1",
+    "wrapper-webpack-plugin": "^0.1.11"
+  },
+  "jest": {
+    "verbose": true
+  }
 }

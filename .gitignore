@@ -1,4 +1,13 @@
-sandbox
-node_modules
+# IDE
+.idea/
+.vscode/
+
+# Logs
+.log*
 yarn.lock
 
+# Misc
+sandbox
+node_modules
+coverage
+*.xml

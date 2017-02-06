@@ -1,4 +1,1 @@
-import hyperx from "hyperx"
-import h from "./h.js"
-
-export default hyperx(h)
+module.exports = require("hyperx")(require("./h"))

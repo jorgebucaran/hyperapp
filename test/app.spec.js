@@ -1,7 +1,6 @@
 /* global describe, test, expect */
 
-import app from "../src/app.js"
-import html from "../src/html.js"
+const { app, html } = require("../src/")
 
 describe("App", () => {
 

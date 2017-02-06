@@ -1,7 +1,11 @@
-const CompressionPlugin = require("compression-webpack-plugin")
 const webpack = require("webpack")
+const Wrapper = require("wrapper-webpack-plugin")
+const CompressionPlugin = require("compression-webpack-plugin")
 
 module.exports = {
+	context: `${__dirname}/src/`,
+	cache: true,
+
 	entry: {
 		hyperapp: "./index.js",
 		app: "./app.js",
@@ -12,8 +16,8 @@ module.exports = {
 	output: {
 		path: "./dist/",
 		filename: "[name].min.js",
-		library: "[name]",
-		libraryTarget: "umd"
+		library: "export",
+		libraryTarget: "this"
 	},
 
 	module: {
@@ -44,6 +48,7 @@ module.exports = {
 			minimize: true,
 			mangle: true,
 			output: {comments: false},
+			sourceMap: true,
 			compress: {
 				warnings: false,
 				sequences: true,
@@ -58,6 +63,15 @@ module.exports = {
 				loops: true,
 				negate_iife: true
 			}
+		}),
+
+		new Wrapper({
+			header(fileName) {
+				const module = /^([a-z]+)\.*/.exec(fileName);
+
+				return `window['${module[1]}'] = (function() {`;
+			},
+			footer: 'return this.export.default})();'
 		})
 	]
 }

@@ -1,7 +1,7 @@
 /* global describe, test, expect */
 
-import app from "../app.js"
-import html from "../html.js"
+import app from "../src/app.js"
+import html from "../src/html.js"
 
 console.log(app);
 

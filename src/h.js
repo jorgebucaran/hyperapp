@@ -15,7 +15,7 @@ export default (tag, data, tree) => {
 	}
 
 	return {
-		tag: tag,
+		tag,
 		data: data || {},
 		tree: [].concat.apply([], tree)
 	}

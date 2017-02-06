@@ -2,7 +2,7 @@
   "name": "hyperapp",
   "description": "HyperApp is a 1kb functional JavaScript library for building modern UI applications",
   "version": "0.0.9",
-  "main": "index.js",
+  "main": "src/index.js",
   "author": "Jorge Bucaran",
   "license": "MIT",
   "repository": "hyperapp/hyperapp",
@@ -17,8 +17,8 @@
     "vanilla"
   ],
   "scripts": {
-    "build": "webpack --progress",
-    "test": "jest --coverage --colors --cache"
+    "build": "cross-env NODE_ENV=production webpack --progress",
+    "test": "cross-env NODE_ENV=tests jest --coverage --colors --cache"
   },
   "dependencies": {
     "hyperx": "^2.0.5"
@@ -29,7 +29,9 @@
     "babel-preset-babili": "^0.0.10",
     "babel-preset-es2015": "^6.22.0",
     "compression-webpack-plugin": "^0.3.2",
+    "cross-env": "^3.1.4",
     "jest": "^18.1.0",
-    "webpack": "^2.2.1"
+    "webpack": "^2.2.1",
+    "wrapper-webpack-plugin": "^0.1.11"
   }
 }

@@ -363,15 +363,24 @@ The lifecycle event handler receives a reference to the DOM element.
 <summary><i>Example</i></summary>
 
 ```js
-function repaint (canvas) {
-  const ctx = canvas.getContext('2d');
+function repaint(canvas, model) {
+  var ctx = canvas.getContext('2d')
+  ctx.fillStyle = 'white'
   ctx.fillRect(0, 0, canvas.width, canvas.height)
-  ...
+  ctx.beginPath();
+  ctx.arc(model.x, model.y, 50, 0, 2 * Math.PI);
+  ctx.stroke();
 }
 
 app({
-  view: _ => html`
-    <canvas width="600" height="300" onupdate=${repaint} />`
+    model: { x: 0, y: 0 },
+    view: model => html`<canvas width="600" height="300" onupdate=${(e) => repaint(e, model)} />`,
+    update: {
+        move: (model) => ({ x: model.x + 1, y: model.y + 1 })
+    },
+    subs: [
+      (_, msg) => setInterval(() => { msg.move() }, 100)
+    ]
 })
 ```
 </details>

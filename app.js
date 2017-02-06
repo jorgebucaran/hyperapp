@@ -58,7 +58,7 @@ module.exports = function (options) {
 
                 } else {
                     msg.setLocation(target.pathname)
-                    return false
+                    e.preventDefault()
                 }
             }
         }

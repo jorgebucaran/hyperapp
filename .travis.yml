@@ -1,0 +1,18 @@
+language: node_js
+node_js:
+  - "7"
+  - "6"
+
+env:
+  - NODE_ENV=development
+
+before_install:
+  - curl -o- -L https://yarnpkg.com/install.sh | bash
+
+install:
+  - yarn
+  - yarn global add codecov
+
+script:
+  - yarn test
+  - codecov

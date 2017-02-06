@@ -31,13 +31,11 @@
     "compression-webpack-plugin": "^0.3.2",
     "cross-env": "^3.1.4",
     "jest": "^18.1.0",
-    "jest-junit": "^1.1.0",
     "node-zopfli": "^2.0.2",
     "webpack": "^2.2.1",
     "wrapper-webpack-plugin": "^0.1.11"
   },
   "jest": {
-    "verbose": true,
-    "testResultsProcessor": "./node_modules/jest-junit"
+    "verbose": true
   }
 }

@@ -16,7 +16,7 @@
         "vanilla"
     ],
     "scripts": {
-        "t": "jest --coverage --colors --cache",
+        "test": "jest --coverage --colors --cache",
         "b": "npm run b:all > /dev/null",
         "b:all": "npm run b:hyperapp && npm run b:hyperapp:hx",
         "b:hyperapp": "rollup -n hyperapp -cmf umd -o dist/hyperapp.js -- index.js",

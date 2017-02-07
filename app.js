@@ -4,7 +4,8 @@ module.exports = function (options) {
 	var model = options.model
 	var reducers = options.update || {}
 	var effects = options.effects || {}
-	var subs = options.subs || {}
+	/* options.subs will be deprecated in 0.0.13 in favor of only subscriptions */
+	var subs = options.subscriptions || options.subs || {}
 
 	var hooks = merge({
 		onAction: Function.prototype,

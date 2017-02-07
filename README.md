@@ -10,12 +10,12 @@ HyperApp is a `1kb` JavaScript library for building modern UI applications.
 ## Download
 For JSX.
 <pre>
-<a href=https://cdn.rawgit.com/hyperapp/hyperapp/0.0.11/dist/hyperapp.js>https://cdn.rawgit.com/hyperapp/hyperapp/0.0.11/dist/hyperapp.js</a>
+<a href=https://unpkg.com/hyperapp@0.0.12/dist/hyperapp.js>https://unpkg.com/hyperapp@0.0.12/dist/hyperapp.js</a>
 </pre>
 
 For Hyperx.
 <pre>
-<a href=https://cdn.rawgit.com/hyperapp/hyperapp/0.0.11/dist/hyperapp.hx.js>https://cdn.rawgit.com/hyperapp/hyperapp/0.0.11/dist/hyperapp.hx.js</a>
+<a href=https://unpkg.com/hyperapp@0.0.12/dist/hyperapp.hx.js>https://unpkg.com/hyperapp@0.0.12/dist/hyperapp.hx.js</a>
 </pre>
 
 With npm.

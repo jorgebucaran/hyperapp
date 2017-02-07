@@ -4,7 +4,6 @@
 [![Codecov](https://img.shields.io/codecov/c/github/hyperapp/hyperapp/master.svg)](https://codecov.io/gh/hyperapp/hyperapp)
 [![Slack](https://hyperappjs.herokuapp.com/badge.svg)](https://hyperappjs.herokuapp.com)
 
-https://hyperappjs.herokuapp.com/
 HyperApp is a `1kb` JavaScript library for building modern UI applications.
 
 ## Download

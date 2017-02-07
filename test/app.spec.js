@@ -35,4 +35,19 @@ describe("App", () => {
 
 		expect(document.getElementsByTagName("p").length).toEqual(model.loop.length)
 	})
+
+	test("renders svg", () => {
+		const model = {
+			text: "zelda"
+		}
+
+		const view = model =>
+			html`<svg><text>${model.text}</text></svg>`
+
+		app({ model, view })
+
+		expect(document.getElementsByTagName("svg").length).toEqual(1)
+		expect(document.getElementsByTagName("svg")[0].namespaceURI).toEqual("http://www.w3.org/2000/svg")
+		expect(document.getElementsByTagName("text")[0].innerHTML).toEqual(model.text)
+	})
 })

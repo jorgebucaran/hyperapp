@@ -28,20 +28,10 @@ describe("App", () => {
 			]
 		}
 
-		const view = model => {
-			const x = html`<div>${model.loop.map(value => html`<p>${value}</p>`)}</div>`
-
-			console.log(x)
-
-			return x
-		}
-
-		console.log("================~")
+		const view = model =>
+			html`<div>${model.loop.map(value => html`<p>${value}</p>`)}</div>`
 
 		app({ model, view })
-
-		console.log("================")
-		console.log(document)
 
 		expect(document.getElementsByTagName("p").length).toEqual(model.loop.length)
 	})

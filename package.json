@@ -1,40 +1,38 @@
 {
-  "name": "hyperapp",
-  "description": "HyperApp is a 1kb functional JavaScript library for building modern UI applications",
-  "version": "0.0.11",
-  "main": "src/index.js",
-  "author": "Jorge Bucaran",
-  "license": "MIT",
-  "repository": "hyperapp/hyperapp",
-  "keywords": [
-    "hyperx",
-    "hypertext",
-    "functional",
-    "virtual-dom",
-    "vdom",
-    "template string",
-    "hyperscript",
-    "vanilla"
-  ],
-  "scripts": {
-    "build": "cross-env NODE_ENV=production webpack --progress",
-    "test": "cross-env NODE_ENV=tests jest --coverage --colors --cache"
-  },
-  "dependencies": {
-    "hyperx": "^2.0.5"
-  },
-  "devDependencies": {
-    "babel-core": "^6.22.1",
-    "babel-loader": "^6.2.10",
-    "babel-preset-babili": "^0.0.10",
-    "babel-preset-es2015": "^6.22.0",
-    "compression-webpack-plugin": "^0.3.2",
-    "cross-env": "^3.1.4",
-    "jest": "^18.1.0",
-    "webpack": "^2.2.1",
-    "wrapper-webpack-plugin": "^0.1.11"
-  },
-  "jest": {
-    "verbose": true
-  }
+    "name": "hyperapp",
+    "description": "1kb JavaScript library for building modern UI applications",
+    "version": "0.0.11",
+    "main": "index.js",
+    "author": "Jorge Bucaran",
+    "license": "MIT",
+    "repository": "hyperapp/hyperapp",
+    "keywords": [
+        "hyperx",
+        "hypertext",
+        "functional",
+        "virtual-dom",
+        "template string",
+        "hyperscript",
+        "vanilla"
+    ],
+    "scripts": {
+        "t": "jest --coverage --colors --cache",
+        "b": "npm run b:all > /dev/null",
+        "b:all": "npm run b:hyperapp && npm run b:hyperapp:hx",
+        "b:hyperapp": "rollup -n hyperapp -cmf umd -o dist/hyperapp.min.js -- index.js",
+        "b:hyperapp:hx": "rollup -n hyperapp -cmf umd -o dist/hyperapp.hx.min.js -- hx.js"
+    },
+    "dependencies": {
+        "hyperx": "^2.0.5"
+    },
+    "devDependencies": {
+        "jest": "^18.1.0",
+        "rollup": "^0.41.4",
+        "rollup-plugin-commonjs": "^7.0.0",
+        "rollup-plugin-node-resolve": "^2.0.0",
+        "rollup-plugin-uglify": "^1.0.1"
+    },
+    "jest": {
+        "verbose": true
+    }
 }

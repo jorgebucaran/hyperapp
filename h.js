@@ -1,4 +1,12 @@
-module.exports = function (tag, data, tree) {
+module.exports = function (tag, data) {
+  	var tree = []
+	tree.push.apply(tree, arguments)
+	tree.shift()
+	tree.shift()
+	var head = tree[0]
+
+	tree = Array.isArray(head) || head === undefined ? head : tree
+
 	if (tag === "svg") {
 		svg(tag, data, tree)
 	}

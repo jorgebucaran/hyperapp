@@ -1,5 +1,5 @@
 /* global describe, test, it, expect */
-const { app, html } = require("../src/")
+const { app, html } = require("../hx")
 
 function fireDOMLoaded () {
   var event = document.createEvent("Event")
@@ -39,7 +39,8 @@ describe("App", () => {
 			]
 		}
 
-		const view = (model) => html`<div>${model.loop.map(value => (html`<p>${value}</p>`))}</div>`
+		const view = model =>
+			html`<div>${model.loop.map(value => html`<p>${value}</p>`)}</div>`
 
 		app({ model, view })
 

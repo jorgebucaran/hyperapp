@@ -11,3 +11,6 @@ sandbox
 node_modules
 coverage
 *.xml
+
+# Gzip
+*.gz

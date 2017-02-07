@@ -17,7 +17,7 @@
     ],
     "scripts": {
         "t": "jest --coverage --colors --cache",
-        "b": "dist && npm run b:all > /dev/null",
+        "b": "npm run b:all > /dev/null",
         "b:all": "npm run b:hyperapp && npm run b:hyperapp:hx",
         "b:hyperapp": "rollup -n hyperapp -cmf umd -o dist/hyperapp.min.js -- index.js",
         "b:hyperapp:hx": "rollup -n hyperapp -cmf umd -o dist/hyperapp.hx.min.js -- hx.js"
@@ -28,7 +28,6 @@
     "devDependencies": {
         "jest": "^18.1.0",
         "rollup": "^0.41.4",
-        "rollup-plugin-buble": "^0.15.0",
         "rollup-plugin-commonjs": "^7.0.0",
         "rollup-plugin-node-resolve": "^2.0.0",
         "rollup-plugin-uglify": "^1.0.1"

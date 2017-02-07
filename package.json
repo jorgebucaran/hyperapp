@@ -1,8 +1,8 @@
 {
     "name": "hyperapp",
-    "description": "HyperApp is a 1kb functional JavaScript library for building modern UI applications",
+    "description": "1kb JavaScript library for building modern UI applications",
     "version": "0.0.11",
-    "main": "src/index.js",
+    "main": "index.js",
     "author": "Jorge Bucaran",
     "license": "MIT",
     "repository": "hyperapp/hyperapp",
@@ -11,23 +11,22 @@
         "hypertext",
         "functional",
         "virtual-dom",
-        "vdom",
         "template string",
         "hyperscript",
         "vanilla"
     ],
     "scripts": {
-        "test": "jest --coverage --colors --cache",
-        "build": "mkdirp dist && npm run build:hyperapp && npm run build:hyperapp+html",
-        "build:hyperapp": "rollup -n hyperapp -cmf umd -o dist/hyperapp.min.js -- src/index.js",
-        "build:hyperapp+html": "rollup -n hyperapp -cmf umd -o dist/hyperapp.html.min.js -- src/html.js"
+        "t": "jest --coverage --colors --cache",
+        "b": "mkdir -p dist && npm run b:all > /dev/null",
+        "b:all": "npm run b:hyperapp && npm run b:hyperapp:hx",
+        "b:hyperapp": "rollup -n hyperapp -cmf umd -o dist/hyperapp.min.js -- index.js",
+        "b:hyperapp:hx": "rollup -n hyperapp -cmf umd -o dist/hyperapp.hx.min.js -- hx.js"
     },
     "dependencies": {
         "hyperx": "^2.0.5"
     },
     "devDependencies": {
         "jest": "^18.1.0",
-        "mkdirp": "^0.5.1",
         "rollup": "^0.41.4",
         "rollup-plugin-buble": "^0.15.0",
         "rollup-plugin-commonjs": "^7.0.0",

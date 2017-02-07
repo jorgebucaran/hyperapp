@@ -1,35 +1,77 @@
 # [hyperapp](https://hyperapp.gomix.me/)
-
 [![Version](https://img.shields.io/npm/v/hyperapp.svg)](https://www.npmjs.org/package/hyperapp)
 [![TravisCI](https://img.shields.io/travis/hyperapp/hyperapp/master.svg)](https://travis-ci.org/hyperapp/hyperapp)
 [![Codecov](https://img.shields.io/codecov/c/github/hyperapp/hyperapp/master.svg)](https://codecov.io/gh/hyperapp/hyperapp)
 
-HyperApp is a `1kb` functional JavaScript library for building modern UI applications.
+HyperApp is a `1kb` JavaScript library for building modern UI applications.
+
+## Download
+For JSX.
+<pre>
+<a href=https://cdn.rawgit.com/hyperapp/hyperapp/0.0.11/dist/hyperapp.min.js>https://cdn.rawgit.com/hyperapp/hyperapp/0.0.11/dist/hyperapp.min.js</a>
+</pre>
+
+For Hyperx.
+<pre>
+<a href=https://cdn.rawgit.com/hyperapp/hyperapp/0.0.11/dist/hyperapp.hx.min.js>https://cdn.rawgit.com/hyperapp/hyperapp/0.0.11/dist/hyperapp.hx.min.js</a>
+</pre>
+
+With npm.
+<pre>
+npm i <a href=npmjs.com/package/hyperapp>hyperapp</a>
+</pre>
+
 
 ## Usage
-### CDN
+Embed in your document.
 ```html
-<script src="https://cdn.rawgit.com/hyperapp/hyperapp/0.0.11/dist/hyperapp.min.js"></script>
+<script src="hyperapp.js"></script>
 ```
+
+Try it out.
 ```js
 const { app, html } = hyperapp
+
+app({
+    model: "Hi.",
+    view: model => html`<h1>${model}</h1>`
+})
 ```
 
-### Node
-```
-npm i hyperapp
-```
-
+In ES6.
 ```js
 import { app, html } from "hyperapp"
 ```
+
+In CommonJS.
 
 ```js
 const { app, html } = require("hyperapp")
 ```
 
-## Examples
+Use with a bundler.
 
+<details>
+<summary>Browserify</summary>
+
+```sh
+browserify index.js -t hyperxify -g uglifyify | uglifyjs > bundle.js
+```
+</details>
+
+<details>
+<summary>Webpack</summary>
+
+```sh
+webpack -p --module-bind "js=babel?presets[]=react,presets[]=es2015 index.js bundle.js
+
+```
+</details>
+
+For a more thorough introduction and advanced usage see the [HyperApp User Guide](https://www.gitbook.com/book/hyperapp/hyperapp).
+
+
+## Examples
 <details>
 <summary>Hello world</summary>
 
@@ -86,7 +128,6 @@ app({
 
 [View online](http://codepen.io/jbucaran/pen/ggbmdN?editors=0010#)
 </details>
-
 
 
 <details>
@@ -231,6 +272,7 @@ app({ model, view, update })
 
 ## Documentation
 * [html](#html)
+* [JSX](#jsx)
 * [app](#app)
     * [model](#model)
     * [update](#update)
@@ -248,17 +290,34 @@ app({ model, view, update })
     * [href](#href)
 
 ## html
-
 Use `html` to compose HTML elements.
 
 ```js
 const hello = html`<h1>Hello World!</h1>`
 ```
 
-`html` is a [tagged template string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals). If you are familiar with React, this is like JSX, but [without breaking JavaScript](https://github.com/substack/hyperx/issues/2).
+`html` is a [tagged template string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) via [Hyperx](https://github.com/substack/hyperx).
+
+## JSX
+For JSX use the [JSX pragma](https://babeljs.io/docs/plugins/transform-react-jsx/) and import `h`.
+
+<details><summary><i>Example</i></summary>
+
+```js
+/** @jsx h */
+const { h, app } = hyperapp
+
+app({
+    model: "Hi.",
+    view: model => <h1>{model}</h1>
+})
+```
+
+[View online](http://codepen.io/jbucaran/pen/ggjBPE?editors=0010)
+</details>
+
 
 ## app
-
 Use `app` to bootstrap your app.
 
 ```js
@@ -270,13 +329,11 @@ app({
 All properties are optional.
 
 ### model
-
 A value or object that represents the entire state of your app.
 
 To update the model, you send actions describing how the model should change. See [view](#view).
 
 ### update
-
 An object composed of functions known as reducers. These are a kind of action you send to update the model.
 
 A reducer describes how the model should change by returning a new model or part of a model.
@@ -298,7 +355,6 @@ Reducers have a signature `(model, data)`, where
 * `data` is the data sent along with the action.
 
 ### view
-
 The view is a function that returns HTML using the `html` function.
 
 The view has a signature `(model, msg, params)`, where
@@ -349,7 +405,6 @@ app({
 </details>
 
 #### Lifecycle Events
-
 Events you can attach to your virtual HTML elements to access the actual DOM elements.
 
 ```js
@@ -397,7 +452,6 @@ app({
 </details>
 
 ### effects
-
 Effects cause side effects and are often asynchronous, like writing to a database, or sending requests to servers. They can dispatch other actions too.
 
 Effects have a signature `(model, msg, error)`, where
@@ -444,7 +498,6 @@ app({ model, view, update, effects })
 </details>
 
 ### subs
-
 Subscriptions are functions that run once when the [DOM is ready](https://developer.mozilla.org/en-US/docs/Web/Events/DOMContentLoaded). Use a subscription to register global events, like mouse or keyboard listeners.
 
 While reducers and effects are actions _you_ cause, you can't call subscriptions directly.
@@ -472,7 +525,6 @@ app({
 
 
 ### hooks
-
 Hooks are functions called for certain events during the lifetime of the app. You can use hooks to implement middleware, loggers, etc.
 
 
@@ -508,23 +560,18 @@ app({
 </details>
 
 #### onUpdate
-
 Called when the model changes. Signature `(lastModel, newModel, data)`.
 
 #### onAction
-
 Called when an action (reducer or effect) is dispatched. Signature `(name, data)`.
 
 #### onError
-
 Called when you use the `error` function inside a subscription or effect. If you don't use this hook, the default behavior is to throw. Signature `(err)`.
 
 ### root
-
 The root is the HTML element that will serve as a container for your app. If none is given, a `div` element is appended to the document.body.
 
 ## Routing
-
 Instead of a view as a single function, declare an object with multiple views and use the route path as the key.
 
 ```js
@@ -567,7 +614,6 @@ app({
 </details>
 
 ### setLocation
-
 To update the address bar relative location and render a different view, use `msg.setLocation(path)`.
 
 <details>
@@ -594,7 +640,6 @@ app({
 </details>
 
 ### href
-
 As a bonus, we intercept all `<a href="/path">...</a>` clicks and call `msg.setLocation("/path")` for you. If you want to opt out of this, add the custom attribute `data-no-routing` to any anchor element that should be handled differently.
 
 ```html

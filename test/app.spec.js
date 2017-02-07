@@ -1,6 +1,6 @@
 /* global describe, test, expect */
 
-const { app, html } = require("../src/")
+const { app, html } = require("../hx")
 
 describe("App", () => {
 
@@ -28,9 +28,20 @@ describe("App", () => {
 			]
 		}
 
-		const view = (model) => html`<div>${model.loop.map(value => (html`<p>${value}</p>`))}</div>`
+		const view = model => {
+			const x = html`<div>${model.loop.map(value => html`<p>${value}</p>`)}</div>`
+
+			console.log(x)
+
+			return x
+		}
+
+		console.log("================~")
 
 		app({ model, view })
+
+		console.log("================")
+		console.log(document)
 
 		expect(document.getElementsByTagName("p").length).toEqual(model.loop.length)
 	})

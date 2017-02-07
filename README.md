@@ -51,25 +51,17 @@ const { app, html } = require("hyperapp")
 
 Use with a bundler.
 
-<details>
-<summary>Browserify</summary>
-
+* Browserify
 ```sh
 browserify index.js -t hyperxify -g uglifyify | uglifyjs > bundle.js
 ```
-</details>
 
-<details>
-<summary>Webpack</summary>
-
+* Webpack
 ```sh
 webpack -p --module-bind "js=babel?presets[]=react,presets[]=es2015 index.js bundle.js
-
 ```
-</details>
 
 For a more thorough introduction and advanced usage see the [HyperApp User Guide](https://www.gitbook.com/book/hyperapp/hyperapp).
-
 
 ## Examples
 <details>

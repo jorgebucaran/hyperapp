@@ -1,4 +1,4 @@
-/* global describe, test, it, expect */
+/* global beforeEach, describe, it, expect */
 
 const { app, html } = require("../hx")
 
@@ -14,13 +14,17 @@ function firePopState() {
   window.document.dispatchEvent(event)
 }
 
+beforeEach(() => {
+  document.body.innerHTML = ''
+})
+
 describe("App", () => {
 
-  test("boots with no bugs", () => {
+  it("boots with no bugs", () => {
     app({ model: {}, view: () => (html`<div>Hi</div>`) })
   })
 
-  test("renders a model", () => {
+  it("renders a model", () => {
     const model = {
       world: "world"
     }
@@ -32,7 +36,7 @@ describe("App", () => {
     expect(document.getElementById("test-me").innerHTML).toEqual(model.world)
   })
 
-  test("renders a model with a loop", () => {
+  it("renders a model with a loop", () => {
     const model = {
       loop: [
         "string1",
@@ -48,7 +52,7 @@ describe("App", () => {
     expect(document.getElementsByTagName("p").length).toEqual(model.loop.length)
   })
 
-  test("renders svg", () => {
+  it("renders svg", () => {
     const model = {
       text: "zelda"
     }
@@ -62,6 +66,30 @@ describe("App", () => {
     expect(document.getElementsByTagName("svg")[0].namespaceURI).toEqual("http://www.w3.org/2000/svg")
     expect(document.getElementsByTagName("text")[0].innerHTML).toEqual(model.text)
   })
+
+  it("exec's a render when the update changes", () => {
+    const firstValue = 'first-value'
+    const secondValue = 'second-value'
+
+    const model = firstValue
+
+    const view = (model, update) => html`<div><input oninput=${e => update.fire(e.target.value)} value=${model}/><p>${model}</p></div>`
+
+    const update = { fire: (_, value) => value }
+
+    app({ model, view, update })
+
+    const input = document.getElementsByTagName('input')[0];
+
+    expect(input.value).toEqual(firstValue)
+
+    const evnt = new Event('input', {bubbles:true});
+    input.value = secondValue;
+    input.dispatchEvent(evnt);
+
+    expect(input.value).toEqual(secondValue)
+    expect(document.getElementsByTagName('p')[0].innerHTML).toEqual(secondValue)
+  });
 })
 
 describe("Subscriptions", () => {
@@ -159,7 +187,7 @@ describe("Hooks", () => {
 
     expect(guard).toEqual("effect error")
   })
-  
+
 })
 
 describe("Lifecycle events", () => {
@@ -169,7 +197,7 @@ describe("Lifecycle events", () => {
 
   const subs = [(_, msg) => msg.add(2)]
 
-  test("accepts oncreate property", done => {
+  it("accepts oncreate property", done => {
     const target = null
 
     const handleCreate = (e) => { target = e }

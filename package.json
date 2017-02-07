@@ -1,7 +1,7 @@
 {
     "name": "hyperapp",
     "description": "1kb JavaScript library for building modern UI applications",
-    "version": "0.0.11",
+    "version": "0.0.12",
     "main": "index.js",
     "author": "Jorge Bucaran",
     "license": "MIT",

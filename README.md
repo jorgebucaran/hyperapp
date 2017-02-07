@@ -49,14 +49,12 @@ In CommonJS.
 const { app, html } = require("hyperapp")
 ```
 
-Use with a bundler.
-
-* Browserify
+Browserify
 ```sh
 browserify index.js -t hyperxify -g uglifyify | uglifyjs > bundle.js
 ```
 
-* Webpack
+Webpack
 ```sh
 webpack -p --module-bind "js=babel?presets[]=react,presets[]=es2015 index.js bundle.js
 ```

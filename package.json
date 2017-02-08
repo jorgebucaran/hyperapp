@@ -1,41 +1,38 @@
 {
-  "name": "hyperapp",
-  "description": "1kb JavaScript library for building modern UI applications",
-  "version": "0.0.12",
-  "main": "index.js",
-  "license": "MIT",
-  "repository": "github:hyperapp/hyperapp",
-  "author": "Jorge Bucaran",
-  "contributors": [
-    "Marais Rossouw <hi@marais.io> (https://marais.io)"
-  ],
-  "keywords": [
-    "hyperx",
-    "hypertext",
-    "functional",
-    "virtual-dom",
-    "template string",
-    "hyperscript",
-    "vanilla"
-  ],
-  "scripts": {
-    "test": "jest --coverage --colors --cache",
-    "b": "npm run b:all > /dev/null",
-    "b:all": "npm run b:hyperapp && npm run b:hyperapp:hx",
-    "b:hyperapp": "rollup -n hyperapp -cmf umd -o dist/hyperapp.js -- index.js",
-    "b:hyperapp:hx": "rollup -n hyperapp -cmf umd -o dist/hyperapp.hx.js -- hx.js"
-  },
-  "dependencies": {
-    "hyperx": "^2.0.5"
-  },
-  "devDependencies": {
-    "jest": "^18.1.0",
-    "rollup": "^0.41.4",
-    "rollup-plugin-commonjs": "^7.0.0",
-    "rollup-plugin-node-resolve": "^2.0.0",
-    "rollup-plugin-uglify": "^1.0.1"
-  },
-  "jest": {
-    "verbose": true
-  }
+    "name": "hyperapp",
+    "description": "1kb JavaScript library for building modern UI applications",
+    "version": "0.0.12",
+    "main": "index.js",
+    "license": "MIT",
+    "repository": "github:hyperapp/hyperapp",
+    "author": "Jorge Bucaran",
+    "keywords": [
+        "hyperx",
+        "hypertext",
+        "functional",
+        "virtual-dom",
+        "template string",
+        "hyperscript",
+        "vanilla"
+    ],
+    "scripts": {
+        "test": "jest --coverage --colors --cache",
+        "b": "npm run b:all > /dev/null",
+        "b:all": "npm run b:hyperapp && npm run b:hyperapp:hx",
+        "b:hyperapp": "rollup -n hyperapp -cmf umd -o dist/hyperapp.js -- index.js",
+        "b:hyperapp:hx": "rollup -n hyperapp -cmf umd -o dist/hyperapp.hx.js -- hx.js"
+    },
+    "dependencies": {
+        "hyperx": "^2.0.5"
+    },
+    "devDependencies": {
+        "jest": "^18.1.0",
+        "rollup": "^0.41.4",
+        "rollup-plugin-commonjs": "^7.0.0",
+        "rollup-plugin-node-resolve": "^2.0.0",
+        "rollup-plugin-uglify": "^1.0.1"
+    },
+    "jest": {
+        "verbose": true
+    }
 }

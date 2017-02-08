@@ -1,6 +1,6 @@
 /* global beforeEach, describe, it, expect */
 
-const { app, html } = require("../hx")
+const { app, html, h } = require("../hx")
 
 function fireDOMLoaded() {
   const event = document.createEvent("Event")
@@ -22,6 +22,11 @@ describe("App", () => {
 
   it("boots with no bugs", () => {
     app({ model: {}, view: () => (html`<div>Hi</div>`) })
+  })
+
+  // FIXME: if fails... this is not true
+  it.skip("allow all params to be optional", () => {
+    app()
   })
 
   it("renders a model", () => {
@@ -92,6 +97,30 @@ describe("App", () => {
   });
 })
 
+describe("Views", () => {
+  it("allows inline styles as object with properties in camelCase", () => {
+    const view = (model) => html`<div id="red"
+      style=${{
+        backgroundColor: "red",
+        padding: "10px"
+      }}>I'm red</div>`
+
+    app({ view })
+    var el = document.getElementById("red")
+    expect(el).not.toBe(null)
+    expect(el.style["background-color"]).toEqual("red")
+    expect(el.style["padding"]).toEqual("10px")
+  })
+
+  it("allows the views to be defined directly with h", () => {
+    const view = (model) => h("div", { id: "test" }, "inside div")
+    app({ view })
+    var el = document.getElementById("test")
+    expect(el).not.toBe(null)
+    expect(el.innerHTML).toEqual("inside div")
+  })
+})
+
 describe("Subscriptions", () => {
 
   it("fires all subscriptions when DOM is ready", () => {
@@ -122,7 +151,7 @@ describe("Hooks", () => {
   const subs = [(_, msg) => msg.add(2)]
 
   it("fires onUpdate when the model is updated", () => {
-    const guard = null
+    let guard = null
 
     const hooks = {
       onUpdate: (prev, model) => { guard = { prev, model } }
@@ -136,7 +165,7 @@ describe("Hooks", () => {
   })
 
   it("fires onAction when a reducer is dispatched", () => {
-    const guard = null
+    let guard = null
 
     const hooks = {
       onAction: (name, data) => { guard = { name, data } }
@@ -150,9 +179,9 @@ describe("Hooks", () => {
   })
 
   it("fires onAction when an effect is dispatched", () => {
-    const guard = null
+    let guard = null
 
-    const effectDone = false
+    let effectDone = false
 
     const hooks = {
       onAction: (name, data) => { guard = { name, data } }
@@ -171,7 +200,7 @@ describe("Hooks", () => {
   })
 
   it("fires onError when a effect fails", () => {
-    const guard = null
+    let guard = null
 
     const hooks = {
       onError: (err) => { guard = err }
@@ -198,7 +227,7 @@ describe("Lifecycle events", () => {
   const subs = [(_, msg) => msg.add(2)]
 
   it("accepts oncreate property", done => {
-    const target = null
+    let target = null
 
     const handleCreate = (e) => { target = e }
 
@@ -216,7 +245,7 @@ describe("Lifecycle events", () => {
   // FIXME: currently it fails... is it a bug?
   // TODO: need help on this
   it.skip("fires onupdate when view changed", done => {
-    const guard = null
+    let guard = null
 
     const handleUpdate = (e) => { guard = e }
 

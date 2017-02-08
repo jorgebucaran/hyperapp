@@ -1,6 +1,6 @@
 /* global beforeEach, describe, it, expect */
 
-const { app, html } = require("../hx")
+const { app, html, h } = require("../hx")
 
 function fireDOMLoaded() {
   const event = document.createEvent("Event")
@@ -110,6 +110,14 @@ describe("Views", () => {
     expect(el).not.toBe(null)
     expect(el.style["background-color"]).toEqual("red")
     expect(el.style["padding"]).toEqual("10px")
+  })
+
+  it("allows the views to be defined directly with h", () => {
+    const view = (model) => h("div", { id: "test" }, "inside div")
+    app({ view })
+    var el = document.getElementById("test")
+    expect(el).not.toBe(null)
+    expect(el.innerHTML).toEqual("inside div")
   })
 })
 

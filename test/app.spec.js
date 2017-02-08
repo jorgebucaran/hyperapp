@@ -24,6 +24,11 @@ describe("App", () => {
     app({ model: {}, view: () => (html`<div>Hi</div>`) })
   })
 
+  // FIXME: if fails... this is not true
+  it.skip("allow all params to be optional", () => {
+    app()
+  })
+
   it("renders a model", () => {
     const model = {
       world: "world"

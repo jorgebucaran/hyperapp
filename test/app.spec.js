@@ -1,6 +1,6 @@
 /* global describe, test, expect */
 
-const { app, html } = require("../hx")
+const { app, html } = require("../")
 
 describe("App", () => {
 

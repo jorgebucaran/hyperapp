@@ -97,6 +97,22 @@ describe("App", () => {
   });
 })
 
+describe("Views", () => {
+  it("allows inline styles as object with properties in camelCase", () => {
+    const view = (model) => html`<div id="red"
+      style=${{
+        backgroundColor: "red",
+        padding: "10px"
+      }}>I'm red</div>`
+
+    app({ view })
+    var el = document.getElementById("red")
+    expect(el).not.toBe(null)
+    expect(el.style["background-color"]).toEqual("red")
+    expect(el.style["padding"]).toEqual("10px")
+  })
+})
+
 describe("Subscriptions", () => {
 
   it("fires all subscriptions when DOM is ready", () => {

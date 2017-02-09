@@ -3,9 +3,9 @@
     "description": "1kb JavaScript library for building modern UI applications",
     "version": "0.0.12",
     "main": "index.js",
-    "author": "Jorge Bucaran",
     "license": "MIT",
-    "repository": "hyperapp/hyperapp",
+    "repository": "github:hyperapp/hyperapp",
+    "author": "Jorge Bucaran",
     "keywords": [
         "hyperx",
         "hypertext",
@@ -17,10 +17,9 @@
     ],
     "scripts": {
         "test": "jest --coverage --colors --cache",
-        "b": "npm run b:all > /dev/null",
-        "b:all": "npm run b:hyperapp && npm run b:hyperapp:hx",
-        "b:hyperapp": "rollup -n hyperapp -cmf umd -o dist/hyperapp.js -- index.js",
-        "b:hyperapp:hx": "rollup -n hyperapp -cmf umd -o dist/hyperapp.hx.js -- hx.js"
+        "build": "npm run b:hyperapp > /dev/null && npm run b:hyperapp.hx > /dev/null",
+        "b:hyperapp": "rollup -n hyperapp -cmf umd -o dist/hyperapp.js -- hyperapp.js",
+        "b:hyperapp.hx": "rollup -n hyperapp -cmf umd -o dist/hyperapp.hx.js -- index.js"
     },
     "dependencies": {
         "hyperx": "^2.0.5"

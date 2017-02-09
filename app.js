@@ -4,8 +4,14 @@ module.exports = function (options) {
 	var model = options.model
 	var reducers = options.update || {}
 	var effects = options.effects || {}
-	/* options.subs will be deprecated in 0.0.13 in favor of only subscriptions */
-	var subs = options.subscriptions || options.subs || {}
+
+	var subscriptions = function (subs) {
+		// `subs` will be deprecated in favor of only `subscriptions` >= 0.0.13
+		subs = options.subscriptions || options.subs
+		for (var key in subs) {
+			subs[key](model, msg, hooks.onError)
+		}
+	}
 
 	var hooks = merge({
 		onAction: Function.prototype,
@@ -75,14 +81,14 @@ module.exports = function (options) {
 
 				hooks.onUpdate(_model, model, data)
 			}
-		} (name))
+		}(name))
 	}
 
-	document.addEventListener("DOMContentLoaded", function () {
-		for (var sub in subs) {
-			subs[sub](model, msg, hooks.onError)
-		}
-	})
+	if (document.readyState !== "loading") {
+		subscriptions()
+	} else {
+		document.addEventListener("DOMContentLoaded", subscriptions)
+	}
 
 	render(model, view)
 

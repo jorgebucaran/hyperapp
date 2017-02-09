@@ -6,65 +6,50 @@
 
 HyperApp is a `1kb` JavaScript library for building modern UI applications.
 
-## Download
-For JSX.
+## Install
+With npm or yarn.
 <pre>
-<a href=https://unpkg.com/hyperapp@0.0.12/dist/hyperapp.js>https://unpkg.com/hyperapp@0.0.12/dist/hyperapp.js</a>
+npm i <a href=https://npmjs.com/package/hyperapp>hyperapp</a>
 </pre>
-
-For Hyperx.
-<pre>
-<a href=https://unpkg.com/hyperapp@0.0.12/dist/hyperapp.hx.js>https://unpkg.com/hyperapp@0.0.12/dist/hyperapp.hx.js</a>
-</pre>
-
-With npm.
-<pre>
-npm i <a href=npmjs.com/package/hyperapp>hyperapp</a>
-</pre>
-
 
 ## Usage
-Embed in your document.
-```html
-<script src="hyperapp.js"></script>
-```
-
-Try it out.
-```js
-const { app, html } = hyperapp
-
-app({
-    model: "Hi.",
-    view: model => html`<h1>${model}</h1>`
-})
-```
-
-In ES6.
-```js
-import { app, html } from "hyperapp"
-```
-
-In CommonJS.
+CommonJS
 
 ```js
 const { app, html } = require("hyperapp")
 ```
 
-Browserify
-```sh
-browserify index.js -t hyperxify -g uglifyify | uglifyjs > bundle.js
+ES6
+```js
+import { app, html } from "hyperapp"
 ```
 
-Webpack
-```sh
-webpack -p --module-bind "js=babel?presets[]=react,presets[]=es2015 index.js bundle.js
+## Bundle
+With [Browserify](https://github.com/substack/node-browserify).
+<pre>
+browserify -t <a href=https://github.com/substack/hyperxify>hyperxify</a> -g <a href=https://github.com/hughsk/uglifyify>uglifyify</a> index.js | <a href=https://www.npmjs.com/package/uglifyjs>uglifyjs</a> > bundle.js
+</pre>
+
+Or [Webpack](https://webpack.js.org/)/[Rollup](http://rollupjs.org/).
+
+## CDN
+HyperApp is also distributed as a minified file, hosted on a CDN.
+
+For [JSX](https://babeljs.io/docs/plugins/transform-react-jsx/).
+```html
+<script src="https://unpkg.com/hyperapp@0.0.12/dist/hyperapp.js"></script>
+```
+
+For [Hyperx](https://github.com/substack/hyperx).
+```html
+<script src="https://unpkg.com/hyperapp@0.0.12/dist/hyperapp.hx.js"></script>
 ```
 
 For a more thorough introduction and advanced usage see the [HyperApp User Guide](https://www.gitbook.com/book/hyperapp/hyperapp).
 
 ## Examples
 <details>
-<summary>Hello world</summary>
+<summary>Hello World</summary>
 
 ```js
 app({
@@ -159,13 +144,13 @@ const update = {
         : model
 }
 
-const subs = [
+const subscriptions = [
     (_, msg) => addEventListener("mouseup", msg.drop),
     (_, msg) => addEventListener("mousemove", e =>
         msg.move({ x: e.pageX, y: e.pageY }))
 ]
 
-app({ model, view, update, subs })
+app({ model, view, update, subscriptions })
 ```
 
 [View online](http://codepen.io/jbucaran/pen/apzYvo?editors=0010)
@@ -260,17 +245,16 @@ app({ model, view, update })
 
 [See more examples](https://hyperapp.gomix.me/)
 
-
 ## Documentation
 * [html](#html)
-* [JSX](#jsx)
+* [jsx](#jsx)
 * [app](#app)
     * [model](#model)
     * [update](#update)
     * [view](#view)
-        * [Lifecycle Events](#lifecycle-events)
+        * [Lifecycle Methods](#lifecycle-methods)
     * [effects](#effects)
-    * [subs](#subs)
+    * [subscriptions](#subscriptions)
     * [hooks](#hooks)
         * [onAction](#onaction)
         * [onUpdate](#onupdate)
@@ -281,22 +265,20 @@ app({ model, view, update })
     * [href](#href)
 
 ## html
-Use `html` to compose HTML elements.
+Use to compose HTML elements.
 
 ```js
-const hello = html`<h1>Hello World!</h1>`
+const hello = html`<h1>Hello.</h1>`
 ```
 
-`html` is a [tagged template string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) via [Hyperx](https://github.com/substack/hyperx).
+> `html` is a [Hyperx](https://github.com/substack/hyperx)-based [template](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) function.
 
-## JSX
-For JSX use the [JSX pragma](https://babeljs.io/docs/plugins/transform-react-jsx/) and import `h`.
-
-<details><summary><i>Example</i></summary>
+## jsx
+Import the `h` function and include the [jsx pragma](https://babeljs.io/docs/plugins/transform-react-jsx/), in any order.
 
 ```js
+import { h, app } from "hyperapp"
 /** @jsx h */
-const { h, app } = hyperapp
 
 app({
     model: "Hi.",
@@ -305,15 +287,23 @@ app({
 ```
 
 [View online](http://codepen.io/jbucaran/pen/ggjBPE?editors=0010)
-</details>
 
+Or, add it to your [`.babelrc`](https://babeljs.io/docs/usage/babelrc/) configuration.
+
+```
+{
+    "plugins": [
+        ["transform-react-jsx", { "pragma": "h" }]
+    ]
+}
+```
 
 ## app
 Use `app` to bootstrap your app.
 
 ```js
 app({
-    model, update, view, subs, effects, hooks, root
+    model, update, view, subscriptions, effects, hooks, root
 })
 ```
 
@@ -338,7 +328,7 @@ const update = {
 
 If a reducer returns part of a model, that part will be merged with the current model.
 
-You call reducers inside a [view](#view), [effect](#effect) or [subscription](#subs).
+You call reducers inside a [view](#view), [effect](#effect) or [subscription](#subscriptions).
 
 Reducers have a signature `(model, data)`, where
 
@@ -360,7 +350,8 @@ Use `msg` to send actions.
 msg.action(data)
 ```
 
-where `data` is any data you want to pass to the reducer / effect.
+* `data` is the data that's passed to the `action`, and
+* `action` the name of the reducer / effect.
 
 <details>
 <summary><i>Example</i></summary>
@@ -395,21 +386,18 @@ app({
 [View online](https://hyperapp-simple-routing.gomix.me/)
 </details>
 
-#### Lifecycle Events
-Events you can attach to your virtual HTML elements to access the actual DOM elements.
+#### Lifecycle Methods
+Function handlers you can attach to virtual nodes to access DOM elements. The available methods are:
+
+* oncreate(e : `HTMLElement`)
+* onupdate(e : `HTMLElement`)
+* onremove(e : `HTMLElement`)
 
 ```js
 app({
   view: _ => html`<div oncreate=${e => console.log(e)}>Hi.</div>`
 })
 ```
-
-##### Events
-- `oncreate(e : HTMLElement)`
-- `onupdate(e : HTMLElement)`
-- `onremove(e : HTMLElement)`
-
-The event handler receives a reference to the DOM element.
 
 <details>
 <summary><i>Example</i></summary>
@@ -433,7 +421,7 @@ app({
     update: {
         move: (model) => ({ x: model.x + 1, y: model.y + 1 })
     },
-    subs: [
+    subscriptions: [
       (_, msg) => setInterval(_ => msg.move(), 10)
     ]
 })
@@ -445,11 +433,12 @@ app({
 ### effects
 Effects cause side effects and are often asynchronous, like writing to a database, or sending requests to servers. They can dispatch other actions too.
 
-Effects have a signature `(model, msg, error)`, where
+Effects have a signature `(model, msg, data, error)`, where
 
 * `model` is the current model,
-* `msg` is an object you use to call reducers / cause effects (see [view](#view)), and
-* `error` is a function you may call with an error if something goes wrong.
+* `msg` is an object you use to call reducers / cause effects (see [view](#view)),
+* `data` is the data passed into the effect, and
+* `error` is a function you can optionally call to throw an error
 
 <details>
 <summary><i>Example</i></summary>
@@ -488,7 +477,7 @@ app({ model, view, update, effects })
 [View online](http://codepen.io/jbucaran/pen/jyEKmw?editors=0010)
 </details>
 
-### subs
+### subscriptions
 Subscriptions are functions that run once when the [DOM is ready](https://developer.mozilla.org/en-US/docs/Web/Events/DOMContentLoaded). Use a subscription to register global events, like mouse or keyboard listeners.
 
 While reducers and effects are actions _you_ cause, you can't call subscriptions directly.
@@ -505,7 +494,7 @@ app({
         move: (_, { x, y }) => ({ x, y })
     },
     view: model => html`<h1>${model.x}, ${model.y}</h1>`,
-    subs: [
+    subscriptions: [
         (_, msg) => addEventListener("mousemove", e => msg.move({ x: e.clientX, y: e.clientY }))
     ]
 })
@@ -516,8 +505,16 @@ app({
 
 
 ### hooks
-Hooks are functions called for certain events during the lifetime of the app. You can use hooks to implement middleware, loggers, etc.
+Function handlers that can be used to inspect your application, implement middleware, loggers, etc.
 
+#### onUpdate
+Called when the model changes. Signature `(lastModel, newModel, data)`.
+
+#### onAction
+Called when an action (reducer or effect) is dispatched. Signature `(name, data)`.
+
+#### onError
+Called when you use the `error` function inside a subscription or effect. If you don't use this hook, the default behavior is to throw. Signature `(err)`.
 
 <details>
 <summary><i>Example</i></summary>
@@ -549,15 +546,6 @@ app({
 
 [View online](http://codepen.io/jbucaran/pen/xgbzEy?editors=0010)
 </details>
-
-#### onUpdate
-Called when the model changes. Signature `(lastModel, newModel, data)`.
-
-#### onAction
-Called when an action (reducer or effect) is dispatched. Signature `(name, data)`.
-
-#### onError
-Called when you use the `error` function inside a subscription or effect. If you don't use this hook, the default behavior is to throw. Signature `(err)`.
 
 ### root
 The root is the HTML element that will serve as a container for your app. If none is given, a `div` element is appended to the document.body.
@@ -631,7 +619,7 @@ app({
 </details>
 
 ### href
-As a bonus, we intercept all `<a href="/path">...</a>` clicks and call `msg.setLocation("/path")` for you. If you want to opt out of this, add the custom attribute `data-no-routing` to any anchor element that should be handled differently.
+HyperApp intercepts all `<a href="/path">...</a>` clicks and calls `msg.setLocation("/path")` for you. If you want to opt out of this, add a custom `data-no-routing` attribute to anchor elements that should be handled differently.
 
 ```html
 <a data-no-routing>...</a>

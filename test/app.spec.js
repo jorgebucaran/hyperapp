@@ -128,7 +128,7 @@ describe("Subscriptions", () => {
 
         app({
             view: () => html`<div>View</div>`,
-            subs: [
+            subscriptions: [
                 () => { check["one"] = true },
                 () => { check["two"] = true }
             ]
@@ -148,7 +148,7 @@ describe("Hooks", () => {
 
     const update = { add: (model, data) => model + data }
 
-    const subs = [(_, msg) => msg.add(2)]
+    const subscriptions = [(_, msg) => msg.add(2)]
 
     it("fires onUpdate when the model is updated", () => {
         let guard = null
@@ -157,7 +157,7 @@ describe("Hooks", () => {
             onUpdate: (prev, model) => { guard = { prev, model } }
         }
 
-        app({ model, view, update, subs, hooks })
+        app({ model, view, update, subscriptions, hooks })
 
         fireDOMLoaded()
 
@@ -171,7 +171,7 @@ describe("Hooks", () => {
             onAction: (name, data) => { guard = { name, data } }
         }
 
-        app({ model, view, update, subs, hooks })
+        app({ model, view, update, subscriptions, hooks })
 
         fireDOMLoaded()
 
@@ -191,7 +191,7 @@ describe("Hooks", () => {
             add: () => { effectDone = true }
         }
 
-        app({ model, view, effects, subs, hooks })
+        app({ model, view, effects, subscriptions, hooks })
 
         fireDOMLoaded()
 
@@ -210,7 +210,7 @@ describe("Hooks", () => {
             add: (model, msg, data, error) => { error("effect error") }
         }
 
-        app({ model, view, effects, subs, hooks })
+        app({ model, view, effects, subscriptions, hooks })
 
         fireDOMLoaded()
 
@@ -224,7 +224,7 @@ describe("Lifecycle events", () => {
 
     const update = { add: (model, data) => model + data }
 
-    const subs = [(_, msg) => msg.add(2)]
+    const subscriptions = [(_, msg) => msg.add(2)]
 
     it("accepts oncreate property", done => {
         let target = null
@@ -251,7 +251,7 @@ describe("Lifecycle events", () => {
 
         const view = (model) => html`<div onupdate=${handleUpdate}>${model}</div>`
 
-        app({ model, update, subs, view })
+        app({ model, update, subscriptions, view })
 
         fireDOMLoaded()
 

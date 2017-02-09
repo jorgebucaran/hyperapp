@@ -37,12 +37,12 @@ HyperApp is also distributed as a minified file, hosted on a CDN.
 
 For [JSX](https://babeljs.io/docs/plugins/transform-react-jsx/).
 ```html
-<script src="https://unpkg.com/hyperapp@0.0.13/dist/hyperapp.js"></script>
+<script src="https://unpkg.com/hyperapp/dist/hyperapp.js"></script>
 ```
 
 For [Hyperx](https://github.com/substack/hyperx).
 ```html
-<script src="https://unpkg.com/hyperapp@0.0.13/dist/hyperapp.hx.js"></script>
+<script src="https://unpkg.com/hyperapp/dist/hyperapp.hx.js"></script>
 ```
 
 For a more thorough introduction and advanced usage see the [HyperApp User Guide](https://www.gitbook.com/book/hyperapp/hyperapp).

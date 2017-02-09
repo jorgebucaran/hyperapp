@@ -35,7 +35,7 @@ Or [Webpack](https://webpack.js.org/)/[Rollup](http://rollupjs.org/).
 ## CDN
 HyperApp is also distributed as a minified file, hosted on a CDN:
 
-> CDN usage has a limited use case. If you are working on a production site, compile and bundle your application during development using Browserify/Webpack/Rollup.
+> CDN usage has a limited use case. If you are working on a production site, compile and bundle your application during development.
 
 For [JSX](https://babeljs.io/docs/plugins/transform-react-jsx/).
 ```html

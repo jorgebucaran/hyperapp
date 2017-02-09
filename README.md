@@ -33,7 +33,9 @@ browserify -t <a href=https://github.com/substack/hyperxify>hyperxify</a> -g <a 
 Or [Webpack](https://webpack.js.org/)/[Rollup](http://rollupjs.org/).
 
 ## CDN
-HyperApp is also distributed as a minified single-file, hosted on a CDN:
+HyperApp is also distributed as a minified file, hosted on a CDN:
+
+> CDN usage has a limited use case. If you are working on a production site, compile and bundle your application during development using Browserify/Webpack/Rollup.
 
 For [JSX](https://babeljs.io/docs/plugins/transform-react-jsx/).
 ```html
@@ -272,14 +274,14 @@ Use to compose HTML elements.
 const hello = html`<h1>Hello.</h1>`
 ```
 
-`html` is a [template](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) function based in [Hyperx](https://github.com/substack/hyperx).
+> `html` is a [Hyperx](https://github.com/substack/hyperx)-based [template](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) function.
 
 ## jsx
-For jsx, import `h`, and use the [jsx pragma](https://babeljs.io/docs/plugins/transform-react-jsx/), or viceversa.
+Import the `h` function and include the [jsx pragma](https://babeljs.io/docs/plugins/transform-react-jsx/), in any order.
 
 ```js
+import { h, app } from "hyperapp"
 /** @jsx h */
-const { h, app } = hyperapp
 
 app({
     model: "Hi.",
@@ -289,9 +291,7 @@ app({
 
 [View online](http://codepen.io/jbucaran/pen/ggjBPE?editors=0010)
 
-> Compiling in the browser has a fairly limited use case. If you are working on a production site you should be precompiling your scripts server-side with [Babel](http://babeljs.io/docs/setup/).
-
-Or, add it to your [`.babelrc`](https://babeljs.io/docs/usage/babelrc/).
+Or, add it to your [`.babelrc`](https://babeljs.io/docs/usage/babelrc/) configuration.
 
 ```
 {

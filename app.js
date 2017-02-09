@@ -6,7 +6,8 @@ module.exports = function (options) {
 	var effects = options.effects || {}
 
 	var subscriptions = function (subs) {
-		subs = options.subscriptions
+		// `subs` will be deprecated in favor of only `subscriptions` >= 0.0.13
+		subs = options.subscriptions || options.subs
 		for (var key in subs) {
 			subs[key](model, msg, hooks.onError)
 		}

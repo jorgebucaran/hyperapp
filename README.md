@@ -32,7 +32,7 @@ browserify -t <a href=https://github.com/substack/hyperxify>hyperxify</a> -g <a 
 
 Or [Webpack](https://webpack.js.org/)/[Rollup](http://rollupjs.org/).
 
-## Using a CDN
+## CDN
 HyperApp is also distributed as a minified single-file, hosted on a CDN:
 
 For [JSX](https://babeljs.io/docs/plugins/transform-react-jsx/).
@@ -248,7 +248,7 @@ app({ model, view, update })
 
 ## Documentation
 * [html](#html)
-* [JSX](#jsx)
+* [jsx](#jsx)
 * [app](#app)
     * [model](#model)
     * [update](#update)
@@ -274,8 +274,8 @@ const hello = html`<h1>Hello.</h1>`
 
 `html` is a [template](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) function based in [Hyperx](https://github.com/substack/hyperx).
 
-## JSX
-For JSX, import `h`, and use the [JSX pragma](https://babeljs.io/docs/plugins/transform-react-jsx/).
+## jsx
+For jsx, import `h`, and use the [jsx pragma](https://babeljs.io/docs/plugins/transform-react-jsx/), or viceversa.
 
 ```js
 /** @jsx h */
@@ -289,6 +289,8 @@ app({
 
 [View online](http://codepen.io/jbucaran/pen/ggjBPE?editors=0010)
 
+> Compiling in the browser has a fairly limited use case. If you are working on a production site you should be precompiling your scripts server-side with [Babel](http://babeljs.io/docs/setup/).
+
 Or, add it to your [`.babelrc`](https://babeljs.io/docs/usage/babelrc/).
 
 ```
@@ -298,9 +300,6 @@ Or, add it to your [`.babelrc`](https://babeljs.io/docs/usage/babelrc/).
     ]
 }
 ```
-
-See [Using Babel](http://babeljs.io/docs/setup/) if you're new to Babel.
-
 
 ## app
 Use `app` to bootstrap your app.

@@ -33,7 +33,7 @@ browserify -t <a href=https://github.com/substack/hyperxify>hyperxify</a> -g <a 
 Or [Webpack](https://webpack.js.org/)/[Rollup](http://rollupjs.org/).
 
 ## CDN
-HyperApp is also distributed as a minified file, hosted on a CDN:
+HyperApp is also distributed as a minified file, hosted on a CDN.
 
 For [JSX](https://babeljs.io/docs/plugins/transform-react-jsx/).
 ```html
@@ -253,7 +253,7 @@ app({ model, view, update })
     * [model](#model)
     * [update](#update)
     * [view](#view)
-        * [Lifecycle Events](#lifecycle-events)
+        * [Lifecycle Methods](#lifecycle-methods)
     * [effects](#effects)
     * [subscriptions](#subscriptions)
     * [hooks](#hooks)
@@ -387,21 +387,18 @@ app({
 [View online](https://hyperapp-simple-routing.gomix.me/)
 </details>
 
-#### Lifecycle Events
-Events you can attach to your virtual HTML elements to access the actual DOM elements.
+#### Lifecycle Methods
+Function handlers you can attach to virtual nodes to access DOM elements. The available methods are:
+
+* oncreate(e : `HTMLElement`)
+* onupdate(e : `HTMLElement`)
+* onremove(e : `HTMLElement`)
 
 ```js
 app({
   view: _ => html`<div oncreate=${e => console.log(e)}>Hi.</div>`
 })
 ```
-
-##### Events
-- `oncreate(e : HTMLElement)`
-- `onupdate(e : HTMLElement)`
-- `onremove(e : HTMLElement)`
-
-The event handler receives a reference to the DOM element.
 
 <details>
 <summary><i>Example</i></summary>
@@ -509,8 +506,16 @@ app({
 
 
 ### hooks
-Hooks are functions called for certain events during the lifetime of the app. You can use hooks to implement middleware, loggers, etc.
+Function handlers that can be used to inspect your application, implement middleware, loggers, etc.
 
+#### onUpdate
+Called when the model changes. Signature `(lastModel, newModel, data)`.
+
+#### onAction
+Called when an action (reducer or effect) is dispatched. Signature `(name, data)`.
+
+#### onError
+Called when you use the `error` function inside a subscription or effect. If you don't use this hook, the default behavior is to throw. Signature `(err)`.
 
 <details>
 <summary><i>Example</i></summary>
@@ -542,15 +547,6 @@ app({
 
 [View online](http://codepen.io/jbucaran/pen/xgbzEy?editors=0010)
 </details>
-
-#### onUpdate
-Called when the model changes. Signature `(lastModel, newModel, data)`.
-
-#### onAction
-Called when an action (reducer or effect) is dispatched. Signature `(name, data)`.
-
-#### onError
-Called when you use the `error` function inside a subscription or effect. If you don't use this hook, the default behavior is to throw. Signature `(err)`.
 
 ### root
 The root is the HTML element that will serve as a container for your app. If none is given, a `div` element is appended to the document.body.

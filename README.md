@@ -245,7 +245,6 @@ app({ model, view, update })
 
 [See more examples](https://hyperapp.gomix.me/)
 
-
 ## Documentation
 * [html](#html)
 * [jsx](#jsx)
@@ -620,7 +619,7 @@ app({
 </details>
 
 ### href
-As a bonus, we intercept all `<a href="/path">...</a>` clicks and call `msg.setLocation("/path")` for you. If you want to opt out of this, add the custom attribute `data-no-routing` to any anchor element that should be handled differently.
+HyperApp intercepts all `<a href="/path">...</a>` clicks and calls `msg.setLocation("/path")` for you. If you want to opt out of this, add a custom `data-no-routing` attribute to anchor elements that should be handled differently.
 
 ```html
 <a data-no-routing>...</a>

@@ -1,69 +1,55 @@
 # [hyperapp](https://hyperapp.gomix.me/)
 [![Version](https://img.shields.io/npm/v/hyperapp.svg)](https://www.npmjs.org/package/hyperapp)
 [![TravisCI](https://img.shields.io/travis/hyperapp/hyperapp/master.svg)](https://travis-ci.org/hyperapp/hyperapp)
+[![Codecov](https://img.shields.io/codecov/c/github/hyperapp/hyperapp/master.svg)](https://codecov.io/gh/hyperapp/hyperapp)
 [![Slack](https://hyperappjs.herokuapp.com/badge.svg)](https://hyperappjs.herokuapp.com)
 
 HyperApp is a `1kb` JavaScript library for building modern UI applications.
 
 ## Download
-For JSX.
-<pre>
-<a href=https://unpkg.com/hyperapp@0.0.12/dist/hyperapp.js>https://unpkg.com/hyperapp@0.0.12/dist/hyperapp.js</a>
-</pre>
-
-For Hyperx.
-<pre>
-<a href=https://unpkg.com/hyperapp@0.0.12/dist/hyperapp.hx.js>https://unpkg.com/hyperapp@0.0.12/dist/hyperapp.hx.js</a>
-</pre>
-
-With npm.
+With npm or yarn.
 <pre>
 npm i <a href=npmjs.com/package/hyperapp>hyperapp</a>
 </pre>
 
-
 ## Usage
-Embed in your document.
-```html
-<script src="hyperapp.js"></script>
-```
-
-Try it out.
-```js
-const { app, html } = hyperapp
-
-app({
-    model: "Hi.",
-    view: model => html`<h1>${model}</h1>`
-})
-```
-
-In ES6.
-```js
-import { app, html } from "hyperapp"
-```
-
-In CommonJS.
+CommonJS
 
 ```js
 const { app, html } = require("hyperapp")
 ```
 
-Browserify
-```sh
-browserify index.js -t hyperxify -g uglifyify | uglifyjs > bundle.js
+ES6
+```js
+import { app, html } from "hyperapp"
 ```
 
-Webpack
-```sh
-webpack -p --module-bind "js=babel?presets[]=react,presets[]=es2015 index.js bundle.js
+## Bundle
+With [Browserify](https://github.com/substack/node-browserify).
+<pre>
+browserify -t <a href=https://github.com/substack/hyperxify>hyperxify</a> -g <a href=https://github.com/hughsk/uglifyify>uglifyify</a> index.js | <a href=https://www.npmjs.com/package/uglifyjs>uglifyjs</a> > bundle.js
+</pre>
+
+Or [Webpack](https://webpack.js.org/)/[Rollup](http://rollupjs.org/).
+
+## Using a CDN
+HyperApp is also distributed as a minified single-file, hosted on a CDN:
+
+For [JSX](https://babeljs.io/docs/plugins/transform-react-jsx/).
+```html
+<script src="https://unpkg.com/hyperapp@0.0.12/dist/hyperapp.js"></script>
+```
+
+For [Hyperx](https://github.com/substack/hyperx).
+```html
+<script src="https://unpkg.com/hyperapp@0.0.12/dist/hyperapp.hx.js"></script>
 ```
 
 For a more thorough introduction and advanced usage see the [HyperApp User Guide](https://www.gitbook.com/book/hyperapp/hyperapp).
 
 ## Examples
 <details>
-<summary>Hello world</summary>
+<summary>Hello World</summary>
 
 ```js
 app({
@@ -280,18 +266,16 @@ app({ model, view, update })
     * [href](#href)
 
 ## html
-Use `html` to compose HTML elements.
+Use to compose HTML elements.
 
 ```js
-const hello = html`<h1>Hello World!</h1>`
+const hello = html`<h1>Hello.</h1>`
 ```
 
-`html` is a [tagged template string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) via [Hyperx](https://github.com/substack/hyperx).
+`html` is a [template](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) function based in [Hyperx](https://github.com/substack/hyperx).
 
 ## JSX
-For JSX use the [JSX pragma](https://babeljs.io/docs/plugins/transform-react-jsx/) and import `h`.
-
-<details><summary><i>Example</i></summary>
+For JSX, import `h`, and use the [JSX pragma](https://babeljs.io/docs/plugins/transform-react-jsx/).
 
 ```js
 /** @jsx h */
@@ -304,7 +288,18 @@ app({
 ```
 
 [View online](http://codepen.io/jbucaran/pen/ggjBPE?editors=0010)
-</details>
+
+Or, add it to your [`.babelrc`](https://babeljs.io/docs/usage/babelrc/).
+
+```
+{
+    "plugins": [
+        ["transform-react-jsx", { "pragma": "h" }]
+    ]
+}
+```
+
+See [Using Babel](http://babeljs.io/docs/setup/) if you're new to Babel.
 
 
 ## app

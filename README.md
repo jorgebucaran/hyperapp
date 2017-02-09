@@ -158,13 +158,13 @@ const update = {
         : model
 }
 
-const subs = [
+const subscriptions = [
     (_, msg) => addEventListener("mouseup", msg.drop),
     (_, msg) => addEventListener("mousemove", e =>
         msg.move({ x: e.pageX, y: e.pageY }))
 ]
 
-app({ model, view, update, subs })
+app({ model, view, update, subscriptions })
 ```
 
 [View online](http://codepen.io/jbucaran/pen/apzYvo?editors=0010)
@@ -269,7 +269,7 @@ app({ model, view, update })
     * [view](#view)
         * [Lifecycle Events](#lifecycle-events)
     * [effects](#effects)
-    * [subs](#subs)
+    * [subscriptions](#subscriptions)
     * [hooks](#hooks)
         * [onAction](#onaction)
         * [onUpdate](#onupdate)
@@ -312,7 +312,7 @@ Use `app` to bootstrap your app.
 
 ```js
 app({
-    model, update, view, subs, effects, hooks, root
+    model, update, view, subscriptions, effects, hooks, root
 })
 ```
 
@@ -337,7 +337,7 @@ const update = {
 
 If a reducer returns part of a model, that part will be merged with the current model.
 
-You call reducers inside a [view](#view), [effect](#effect) or [subscription](#subs).
+You call reducers inside a [view](#view), [effect](#effect) or [subscription](#subscriptions).
 
 Reducers have a signature `(model, data)`, where
 
@@ -359,7 +359,8 @@ Use `msg` to send actions.
 msg.action(data)
 ```
 
-where `data` is any data you want to pass to the reducer / effect.
+* `data` is the data that's passed to the `action`, and
+* `action` the name of the reducer / effect.
 
 <details>
 <summary><i>Example</i></summary>
@@ -432,7 +433,7 @@ app({
     update: {
         move: (model) => ({ x: model.x + 1, y: model.y + 1 })
     },
-    subs: [
+    subscriptions: [
       (_, msg) => setInterval(_ => msg.move(), 10)
     ]
 })
@@ -444,11 +445,12 @@ app({
 ### effects
 Effects cause side effects and are often asynchronous, like writing to a database, or sending requests to servers. They can dispatch other actions too.
 
-Effects have a signature `(model, msg, error)`, where
+Effects have a signature `(model, msg, data, error)`, where
 
 * `model` is the current model,
-* `msg` is an object you use to call reducers / cause effects (see [view](#view)), and
-* `error` is a function you may call with an error if something goes wrong.
+* `msg` is an object you use to call reducers / cause effects (see [view](#view)),
+* `data` is the data passed into the effect, and
+* `error` is a function you can optionally call to throw an error
 
 <details>
 <summary><i>Example</i></summary>
@@ -487,7 +489,7 @@ app({ model, view, update, effects })
 [View online](http://codepen.io/jbucaran/pen/jyEKmw?editors=0010)
 </details>
 
-### subs
+### subscriptions
 Subscriptions are functions that run once when the [DOM is ready](https://developer.mozilla.org/en-US/docs/Web/Events/DOMContentLoaded). Use a subscription to register global events, like mouse or keyboard listeners.
 
 While reducers and effects are actions _you_ cause, you can't call subscriptions directly.
@@ -504,7 +506,7 @@ app({
         move: (_, { x, y }) => ({ x, y })
     },
     view: model => html`<h1>${model.x}, ${model.y}</h1>`,
-    subs: [
+    subscriptions: [
         (_, msg) => addEventListener("mousemove", e => msg.move({ x: e.clientX, y: e.clientY }))
     ]
 })

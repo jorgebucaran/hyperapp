@@ -5,14 +5,6 @@ module.exports = function (options) {
 	var reducers = options.update || {}
 	var effects = options.effects || {}
 
-	var subscriptions = function (subs) {
-		// `subs` will be deprecated in favor of only `subscriptions` >= 0.0.13
-		subs = options.subscriptions || options.subs
-		for (var key in subs) {
-			subs[key](model, msg, hooks.onError)
-		}
-	}
-
 	var hooks = merge({
 		onAction: Function.prototype,
 		onUpdate: Function.prototype,
@@ -22,7 +14,7 @@ module.exports = function (options) {
 	}, options.hooks)
 
 	var node
-	var root = options.root || document.body.appendChild(document.createElement("div"))
+	var root = options.root
 	var view = options.view || function () {
 		return root
 	}
@@ -84,13 +76,23 @@ module.exports = function (options) {
 		}(name))
 	}
 
-	if (document.readyState !== "loading") {
-		subscriptions()
-	} else {
-		document.addEventListener("DOMContentLoaded", subscriptions)
+	var boot = function () {
+		// `subs` will be deprecated in favor of only `subscriptions` >= 0.0.13
+		var subs = options.subscriptions || options.subs
+		if (!root){
+			root = document.body.appendChild(document.createElement("div"))
+		}
+		for (var key in subs) {
+			subs[key](model, msg, hooks.onError)
+		}
+		render(model, view)
 	}
 
-	render(model, view)
+	if (document.readyState !== "loading") {
+		boot()
+	} else {
+		document.addEventListener("DOMContentLoaded", boot)
+	}
 
 	function render(model, view, lastNode) {
 		patch(root, node = view(model, msg), lastNode, 0)

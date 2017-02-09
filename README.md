@@ -9,7 +9,7 @@ HyperApp is a `1kb` JavaScript library for building modern UI applications.
 ## Install
 With npm or yarn.
 <pre>
-npm i <a href=npmjs.com/package/hyperapp>hyperapp</a>
+npm i <a href=https://npmjs.com/package/hyperapp>hyperapp</a>
 </pre>
 
 ## Usage

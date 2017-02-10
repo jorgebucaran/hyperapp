@@ -1,11 +1,18 @@
 module.exports = function (tag, data) {
-  	var tree = []
+	var tree = []
 	tree.push.apply(tree, arguments)
 	tree.shift()
 	tree.shift()
 	var head = tree[0]
 
 	tree = Array.isArray(head) || head === undefined ? head : tree
+
+	if (typeof tag === "function") {
+		return tag({
+			props: data,
+			children: tree || []
+		})
+	}
 
 	if (tag === "svg") {
 		svg(tag, data, tree)

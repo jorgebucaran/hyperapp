@@ -1,35 +1,35 @@
 {
-    "name": "hyperapp",
-    "description": "1kb JavaScript library for building modern UI applications",
-    "version": "0.0.14",
-    "main": "src/index.js",
-    "license": "MIT",
-    "repository": "hyperapp/hyperapp",
-    "author": "Jorge Bucaran",
-    "keywords": [
-        "hyperx",
-        "hypertext",
-        "functional",
-        "virtual-dom",
-        "template string",
-        "hyperscript",
-        "vanilla"
-    ],
-    "scripts": {
-        "test": "jest --coverage --colors --cache",
-        "build": "rollup -n hyperapp -cmf umd -i src/index.js -o dist/hyperapp.js > /dev/null"
-    },
-    "dependencies": {
-        "hyperx": "^2.0.5"
-    },
-    "devDependencies": {
-        "jest": "^18.1.0",
-        "rollup": "^0.41.4",
-        "rollup-plugin-commonjs": "^7.0.0",
-        "rollup-plugin-node-resolve": "^2.0.0",
-        "rollup-plugin-uglify": "^1.0.1"
-    },
-    "jest": {
-        "verbose": true
-    }
+  "name": "hyperapp",
+  "description": "1kb JavaScript library for building modern UI applications",
+  "version": "0.0.14",
+  "main": "src/index.js",
+  "license": "MIT",
+  "repository": "hyperapp/hyperapp",
+  "author": "Jorge Bucaran",
+  "keywords": [
+    "hyperx",
+    "hypertext",
+    "functional",
+    "virtual-dom",
+    "template string",
+    "hyperscript",
+    "vanilla"
+  ],
+  "scripts": {
+    "test": "jest --coverage --colors --cache",
+    "build": "rollup -n hyperapp -cmf umd -i src/index.js -o dist/hyperapp.js > /dev/null"
+  },
+  "dependencies": {
+    "hyperx": "^2.0.5"
+  },
+  "devDependencies": {
+    "jest": "^18.1.0",
+    "rollup": "^0.41.4",
+    "rollup-plugin-commonjs": "^7.0.0",
+    "rollup-plugin-node-resolve": "^2.0.0",
+    "rollup-plugin-uglify": "^1.0.1"
+  },
+  "jest": {
+    "verbose": true
+  }
 }

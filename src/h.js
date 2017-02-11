@@ -35,4 +35,3 @@ function svg(tag, data, children) {
 		}
 	}
 }
-

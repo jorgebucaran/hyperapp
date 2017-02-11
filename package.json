@@ -17,9 +17,7 @@
     ],
     "scripts": {
         "test": "jest --coverage --colors --cache",
-        "build": "npm run b:hyperapp > /dev/null && npm run b:hyperapp.hx > /dev/null",
-        "b:hyperapp": "rollup -n hyperapp -cmf umd -i src/hyperapp.js -o dist/hyperapp.js",
-        "b:hyperapp.hx": "rollup -n hyperapp -cmf umd -i src/index.js -o dist/hyperapp.hx.js"
+        "build": "rollup -n hyperapp -cmf umd -i src/index.js -o dist/hyperapp.js > /dev/null"
     },
     "dependencies": {
         "hyperx": "^2.0.5"

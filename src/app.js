@@ -1,15 +1,15 @@
 module.exports = function (options) {
-	var model = options.model,
-		view = options.view
+	var model = options.model
+	var	view = options.view
 
-	var actions = {},
-		effects = options.effects || {},
-		reducers = options.update || {}
+	var actions = {}
+	var effects = options.effects || {}
+	var reducers = options.update || {}
 
 	var subs = options.subscriptions
 
-	var node,
-		root = options.root || document.body.appendChild(document.createElement("div"))
+	var node
+	var root = options.root || document.body.appendChild(document.createElement("div"))
 
 	var hooks = merge({
 		onAction: Function.prototype,

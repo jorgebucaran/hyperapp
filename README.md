@@ -72,11 +72,11 @@ app({
         add: model => model + 1,
         sub: model => model - 1
     },
-    view: (model, msg) => html`
+    view: (model, actions) => html`
         <div>
-            <button onclick=${msg.add}>+</button>
+            <button onclick=${actions.add}>+</button>
             <h1>${model}</h1>
-            <button onclick=${msg.sub} disabled=${model <= 0}>-</button>
+            <button onclick=${actions.sub} disabled=${model <= 0}>-</button>
         </div>`
 })
 ```
@@ -94,10 +94,10 @@ app({
     update: {
         text: (_, value) => value
     },
-    view: (model, msg) => html`
+    view: (model, actions) => html`
         <div>
             <h1>Hi${model ? " " + model : ""}.</h1>
-            <input oninput=${e => msg.text(e.target.value)} />
+            <input oninput=${e => actions.text(e.target.value)} />
         </div>`
 })
 ```
@@ -117,9 +117,9 @@ const model = {
     }
 }
 
-const view = (model, msg) => html`
+const view = (model, actions) => html`
     <div
-        onmousedown=${e => msg.drag({
+        onmousedown=${e => actions.drag({
             position: {
                 x: e.pageX, y: e.pageY, offsetX: e.offsetX, offsetY: e.offsetY
             }
@@ -145,9 +145,9 @@ const update = {
 }
 
 const subscriptions = [
-    (_, msg) => addEventListener("mouseup", msg.drop),
-    (_, msg) => addEventListener("mousemove", e =>
-        msg.move({ x: e.pageX, y: e.pageY }))
+    (_, actions) => addEventListener("mouseup", actions.drop),
+    (_, actions) => addEventListener("mousemove", e =>
+        actions.move({ x: e.pageX, y: e.pageY }))
 ]
 
 app({ model, view, update, subscriptions })
@@ -170,7 +170,7 @@ const model = {
     placeholder: "Add new todo!"
 }
 
-const view = (model, msg) => {
+const view = (model, actions) => {
     return html`
         <div>
             <h1>Todo</h1>
@@ -179,7 +179,7 @@ const view = (model, msg) => {
                 Object.keys(FilterInfo)
                     .filter(key => FilterInfo[key] !== model.filter)
                     .map(key => html`
-                        <span><a href="#" onclick=${_ => msg.filter({
+                        <span><a href="#" onclick=${_ => actions.filter({
                             value: FilterInfo[key]
                         })}>${key}</a> </span>
                     `)}
@@ -198,7 +198,7 @@ const view = (model, msg) => {
                                 color: t.done ? "gray" : "black",
                                 textDecoration: t.done ? "line-through" : "none"
                             }}
-                            onclick=${e => msg.toggle({
+                            onclick=${e => actions.toggle({
                                 value: t.done,
                                 id: t.id
                             })}>${t.value}
@@ -208,12 +208,12 @@ const view = (model, msg) => {
             <p>
                 <input
                     type="text"
-                    onkeyup=${e => e.keyCode === 13 ? msg.add() : ""}
-                    oninput=${e => msg.input({ value: e.target.value })}
+                    onkeyup=${e => e.keyCode === 13 ? actions.add() : ""}
+                    oninput=${e => actions.input({ value: e.target.value })}
                     value=${model.input}
                     placeholder=${model.placeholder}
                 />
-                <button onclick=${msg.add}>add</button>
+                <button onclick=${actions.add}>add</button>
             </p>
         </div>`
 }
@@ -249,23 +249,22 @@ app({ model, view, update })
 * [html](#html)
 * [jsx](#jsx)
 * [app](#app)
-    * [model](#model)
-    * [update](#update)
-    * [view](#view)
+    * [model](#optionsmodel)
+    * [update](#optionsupdate)
+    * [view](#optionsview)
         * [Lifecycle Methods](#lifecycle-methods)
-    * [effects](#effects)
-    * [subscriptions](#subscriptions)
-    * [hooks](#hooks)
+    * [effects](#optionseffects)
+    * [subscriptions](#optionssubscriptions)
+    * [hooks](#optionshooks)
         * [onAction](#onaction)
         * [onUpdate](#onupdate)
         * [onError](#onerror)
-    * [root](#root)
+    * [root](#optionsroot)
+    * [render](#render)
 * [Routing](#routing)
-    * [setLocation](#setlocation)
-    * [href](#href)
 
 ## html
-Use to compose HTML elements.
+Use `html` to compose HTML elements.
 
 ```js
 const hello = html`<h1>Hello.</h1>`
@@ -299,25 +298,17 @@ Or, add it to your [`.babelrc`](https://babeljs.io/docs/usage/babelrc/) configur
 ```
 
 ## app
-Use `app` to bootstrap your app.
+Use `app` to start your app.
 
 ```js
-app({
-    model, update, view, subscriptions, effects, hooks, root
-})
+app(options)
 ```
 
-All properties are optional.
+### options.model
+A primitive type, array or object that represents the state of your application. HyperApp applications use a single model architecture.
 
-### model
-A value or object that represents the entire state of your app.
-
-To update the model, you send actions describing how the model should change. See [view](#view).
-
-### update
-An object composed of functions known as reducers. These are a kind of action you send to update the model.
-
-A reducer describes how the model should change by returning a new model or part of a model.
+### options.update
+An object composed of functions often called _reducers_. A reducer describes how to derive the next model from the current model.
 
 ```js
 const update = {
@@ -326,32 +317,29 @@ const update = {
 }
 ```
 
-If a reducer returns part of a model, that part will be merged with the current model.
+Reducers can return an entire new model or part of a model. If a reducer returns part of a model, it will merged with the current model.
 
-You call reducers inside a [view](#view), [effect](#effect) or [subscription](#subscriptions).
+Reducers can be triggered inside a [view](#optionview), [effect](#optioneffects) or [subscription](#optionssubscriptions).
 
-Reducers have a signature `(model, data)`, where
+Reducers have the signature `(model, data)`, where
 
 * `model` is the current model, and
-* `data` is the data sent along with the action.
+* `data` is the data sent to the reducer. See [view](#optionsview).
 
-### view
-The view is a function that returns HTML using the `html` function.
+### options.view
+A function that returns an HTML element using [jsx](#jsx) or [`html`](#html) function.
 
-The view has a signature `(model, msg, params)`, where
+The view has the signature `(model, actions)`, where
 
-* `model` is the current model,
-* `msg` is an object you use to send actions (call reducers or cause effects) and
-* `params` are the [route](#routing) parameters.
-
-Use `msg` to send actions.
+* `model` is the current model, and
+* `actions` is an object used to trigger [reducers](optionsupdate) and/or [effects](optionseffects).
 
 ```js
-msg.action(data)
+actions.action(data)
 ```
 
-* `data` is the data that's passed to the `action`, and
-* `action` the name of the reducer / effect.
+* `data` is any data you want to send to `action`, and
+* `action` the name of the reducer or effect.
 
 <details>
 <summary><i>Example</i></summary>
@@ -359,7 +347,7 @@ msg.action(data)
 ```js
 app({
     model: true,
-    view: (model, msg) => html`<button onclick=${msg.toggle}>${model+""}</button>`,
+    view: (model, actions) => html`<button onclick=${actions.toggle}>${model+""}</button>`,
     update: {
         toggle: model => !model
     }
@@ -369,25 +357,8 @@ app({
 [View online](http://codepen.io/jbucaran/pen/ZLGGzy?editors=0010)
 </details>
 
-The view object may accommodate multiple views too. See [routing](#routing).
-
-<details>
-<summary><i>Example</i></summary>
-
-```js
-app({
-    view: {
-        "/": _ => html`<h1>Home</h1>`,
-        "/about": _ => html`<h1>About</h1>`
-    }
-})
-```
-
-[View online](https://hyperapp-simple-routing.gomix.me/)
-</details>
-
 #### Lifecycle Methods
-Function handlers you can attach to virtual nodes to access DOM elements. The available methods are:
+Functions that can be attached to your virtual HTML nodes to access their real DOM elements.
 
 * oncreate(e : `HTMLElement`)
 * onupdate(e : `HTMLElement`)
@@ -422,7 +393,7 @@ app({
         move: (model) => ({ x: model.x + 1, y: model.y + 1 })
     },
     subscriptions: [
-      (_, msg) => setInterval(_ => msg.move(), 10)
+      (_, actions) => setInterval(_ => actions.move(), 10)
     ]
 })
 ```
@@ -430,15 +401,15 @@ app({
 [View online](http://codepen.io/jbucaran/pen/MJXMQZ?editors=0010)
 </details>
 
-### effects
-Effects cause side effects and are often asynchronous, like writing to a database, or sending requests to servers. They can dispatch other actions too.
+### options.effects
+Actions that cause side effects and are often asynchronous, like writing to a database, or sending requests to servers.
 
-Effects have a signature `(model, msg, data, error)`, where
+Effects have a signature `(model, actions, data, error)`, where
 
 * `model` is the current model,
-* `msg` is an object you use to call reducers / cause effects (see [view](#view)),
-* `data` is the data passed into the effect, and
-* `error` is a function you can optionally call to throw an error
+* `actions` is an object used to trigger [reducers](optionsupdate) and/or [effects](optionseffects),
+* `data` is the data send to the effect, and
+* `error` is a function you may call to throw an error
 
 <details>
 <summary><i>Example</i></summary>
@@ -451,10 +422,10 @@ const model = {
     waiting: false
 }
 
-const view = (model, msg) =>
+const view = (model, actions) =>
     html`
         <button
-            onclick=${msg.waitThenAdd}
+            onclick=${actions.waitThenAdd}
             disabled=${model.waiting}>${model.counter}
         </button>`
 
@@ -465,9 +436,9 @@ const update = {
 }
 
 const effects = {
-    waitThenAdd: (model, msg) => {
-        msg.toggle()
-        wait(1000).then(msg.add).then(msg.toggle)
+    waitThenAdd: (model, actions) => {
+        actions.toggle()
+        wait(1000).then(actions.add).then(actions.toggle)
     }
 }
 
@@ -477,12 +448,10 @@ app({ model, view, update, effects })
 [View online](http://codepen.io/jbucaran/pen/jyEKmw?editors=0010)
 </details>
 
-### subscriptions
-Subscriptions are functions that run once when the [DOM is ready](https://developer.mozilla.org/en-US/docs/Web/Events/DOMContentLoaded). Use a subscription to register global events, like mouse or keyboard listeners.
+### options.subscriptions
+Subscriptions are functions scheduled to run only once when the [DOM is ready](https://developer.mozilla.org/en-US/docs/Web/Events/DOMContentLoaded). Use a subscription to register global events, open a socket connection, attached mouse or keyboard event listeners, etc.
 
-While reducers and effects are actions _you_ cause, you can't call subscriptions directly.
-
-A subscription has a signature `(model, msg, error)`.
+A subscription has the signature `(model, actions, error)`.
 
 <details>
 <summary><i>Example</i></summary>
@@ -495,7 +464,7 @@ app({
     },
     view: model => html`<h1>${model.x}, ${model.y}</h1>`,
     subscriptions: [
-        (_, msg) => addEventListener("mousemove", e => msg.move({ x: e.clientX, y: e.clientY }))
+        (_, actions) => addEventListener("mousemove", e => actions.move({ x: e.clientX, y: e.clientY }))
     ]
 })
 ```
@@ -504,14 +473,14 @@ app({
 </details>
 
 
-### hooks
+### options.hooks
 Function handlers that can be used to inspect your application, implement middleware, loggers, etc.
 
 #### onUpdate
 Called when the model changes. Signature `(lastModel, newModel, data)`.
 
 #### onAction
-Called when an action (reducer or effect) is dispatched. Signature `(name, data)`.
+Called when an action (reducer or effect) is triggered. Signature `(name, data)`.
 
 #### onError
 Called when you use the `error` function inside a subscription or effect. If you don't use this hook, the default behavior is to throw. Signature `(err)`.
@@ -522,16 +491,16 @@ Called when you use the `error` function inside a subscription or effect. If you
 ```js
 app({
     model: true,
-    view: (model, msg) => html`
+    view: (model, actions) => html`
         <div>
-            <button onclick=${msg.doSomething}>Log</button>
-            <button onclick=${msg.boom}>Error</button>
+            <button onclick=${actions.doSomething}>Log</button>
+            <button onclick=${actions.boom}>Error</button>
         </div>`,
     update: {
         doSomething: model => !model,
     },
     effects: {
-        boom: (model, msg, data, err) => setTimeout(_ => err(Error("BOOM")), 1000)
+        boom: (model, actions, data, err) => setTimeout(_ => err(Error("BOOM")), 1000)
     },
     hooks: {
         onError: e =>
@@ -547,103 +516,15 @@ app({
 [View online](http://codepen.io/jbucaran/pen/xgbzEy?editors=0010)
 </details>
 
-### root
-The root is the HTML element that will serve as a container for your app. If none is given, a `div` element is appended to the document.body.
+### options.root
+The HTML element container of your application. If none is given, a `div` element is appended to document.body and used as the root node of your application.
+
+### render
+[app](#app) returns an object that consists of
+* the same input options passed to `app`, and
+* a `render(view)` function that can be used to render and alternate between views.
+
+The `render` function can be used to implement routing in your application.
 
 ## Routing
-Instead of a view as a single function, declare an object with multiple views and use the route path as the key.
-
-```js
-app({
-    view: {
-        "*": (model, msg) => {},
-        "/": (model, msg) => {},
-        "/:slug": (model, msg, params) => {}
-    }
-})
-```
-
-* `/` index route, also used when no other route matches
-
-* `/:a/:b/:c` matches a route with three components using the regular expression `[A-Za-z0-9]+` and stores each captured group in the params object, which is passed into the view function.
-
-The route path syntax is based in the same syntax found in [Express](https://expressjs.com/en/guide/routing.html).
-
-
-<details>
-<summary><i>Example</i></summary>
-
-```js
-const { app, html } = require("hyperapp")
-const anchor = n => html`<h1><a href=${"/" + n}>${n}</a></h1>`
-
-app({
-    view: {
-        "/": _ => anchor(Math.floor(Math.random() * 999)),
-        "/:key": (model, msg, { key }) => html`
-            <div>
-                <h1>${key}</h1>
-                <a href="/">Back</a>
-            </div>`
-    }
-})
-```
-
-[View online](https://hyperapp-routing.gomix.me/)
-</details>
-
-### setLocation
-To update the address bar relative location and render a different view, use `msg.setLocation(path)`.
-
-<details>
-<summary><i>Example</i></summary>
-
-```js
-app({
-    view: {
-      "/": (model, msg) => html`
-        <div>
-          <h1>Home</h1>
-          <button onclick=${_ => msg.setLocation("/about")}>About</button>
-        </div>`,
-      "/about": (model, msg) => html`
-        <div>
-          <h1>About</h1>
-          <button onclick=${_ => msg.setLocation("/")}>Home</button>
-        </div>`
-    }
-})
-```
-
-[View online](https://hyperapp-set-location.gomix.me/)
-</details>
-
-### href
-HyperApp intercepts all `<a href="/path">...</a>` clicks and calls `msg.setLocation("/path")` for you. If you want to opt out of this, add a custom `data-no-routing` attribute to anchor elements that should be handled differently.
-
-```html
-<a data-no-routing>...</a>
-```
-
-<details>
-<summary><i>Example</i></summary>
-
-```js
-app({
-    view: {
-      "/": (model, msg) => html`
-        <div>
-          <h1>Home</h1>
-          <a href="/about">About</a>
-        </div>`,
-      "/about": (model, msg) => html`
-        <div>
-          <h1>About</h1>
-          <a href="/">Home</a>
-        </div>`
-    }
-})
-```
-
-[View online](https://hyperapp-href.gomix.me/)
-</details>
+HyperApp does not provide a router out of the box. If your application needs a router use [HyperApp Router](https://github.com/hyperapp/hyperapp-router).

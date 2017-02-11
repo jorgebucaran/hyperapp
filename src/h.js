@@ -1,38 +1,37 @@
 module.exports = function (tag, data) {
-	var tree = []
-	tree.push.apply(tree, arguments)
-	tree.shift()
-	tree.shift()
-	var head = tree[0]
+	data = data || []
 
-	tree = Array.isArray(head) || head === undefined ? head : tree
+	var children = []
+	children.push.apply(children, arguments)
+	children.shift()
+	children.shift()
+	var head = children[0]
+
+	children = Array.isArray(head) || head === undefined ? head : children
 
 	if (typeof tag === "function") {
-		return tag({
-			props: data,
-			children: tree || []
-		})
+		data.children = children || []
+		return tag(data)
 	}
 
 	if (tag === "svg") {
-		svg(tag, data, tree)
+		svg(tag, data, children)
 	}
 
 	return {
 		tag: tag,
-		data: data || {},
-		tree: [].concat.apply([], tree)
+		data: data,
+		children: [].concat.apply([], children)
 	}
 }
 
-function svg(tag, data, tree) {
+function svg(tag, data, children) {
 	data.ns = "http://www.w3.org/2000/svg"
 
-	for (var i = 0; i < tree.length; i++) {
-		var node = tree[i]
+	for (var i = 0; i < children.length; i++) {
+		var node = children[i]
 		if (node.data) {
-			svg(node.tag, node.data, node.tree)
+			svg(node.tag, node.data, node.children)
 		}
 	}
 }
-

@@ -297,7 +297,7 @@ app({
 Use `app` to start the app.
 
 <pre>
-<strong>app</strong>({
+app({
     <a href="#model">model</a>,
     <a href="#update">update</a>,
     <a href="#view">view</a>,

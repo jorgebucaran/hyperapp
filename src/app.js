@@ -41,10 +41,6 @@ module.exports = function (options) {
 	}
 
 	ready(function () {
-		for (var key in subs) {
-			subs[key](model, actions, hooks.onError)
-		}
-
 		root = options.root || document.body.appendChild(document.createElement("div"))
 
 		if (typeof view === "function") {
@@ -56,6 +52,10 @@ module.exports = function (options) {
 				render(model, view = newView ? newView : view, node)
 			}
 		}))
+
+		for (var key in subs) {
+			subs[key](model, actions, hooks.onError)
+		}
 	})
 
 	function ready(cb) {

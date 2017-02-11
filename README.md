@@ -264,7 +264,7 @@ Use `html` to compose HTML elements.
 const hello = html`<h1>Hello.</h1>`
 ```
 
-> `html` is a [Hyperx](https://github.com/substack/hyperx)-based [template](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) function.
+`html` is a [Hyperx](https://github.com/substack/hyperx)-based [template](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) function.
 
 ## jsx
 Import the `h` function and include the [jsx pragma](https://babeljs.io/docs/plugins/transform-react-jsx/), in any order.
@@ -311,7 +311,7 @@ const update = {
 }
 ```
 
-Reducers can return an entire new model or part of a model. If a reducer returns part of a model, it will merged with the current model.
+Reducers can return an entirely new model or part of a model. If a reducer returns part of a model, it will be merged with the current model.
 
 Reducers can be triggered inside a [view](#optionview), [effect](#optioneffects) or [subscription](#optionssubscriptions).
 
@@ -321,19 +321,21 @@ Reducers have the signature `(model, data)`, where
 * `data` is the data sent to the reducer. See [view](#optionsview).
 
 ### options.view
-A function that returns an HTML element using [jsx](#jsx) or [`html`](#html) function.
+A function that returns an HTML element using [jsx](#jsx) or the [`html`](#html) function.
 
-The view has the signature `(model, actions)`, where
+A view has the signature `(model, actions)`:
 
 * `model` is the current model, and
 * `actions` is an object used to trigger [reducers](optionsupdate) and/or [effects](optionseffects).
+
+A view's actions have the following signature:
 
 ```js
 actions.action(data)
 ```
 
-* `data` is any data you want to send to `action`, and
-* `action` the name of the reducer or effect.
+* `data` is any data you want to send to `action`.
+* `action` is the name of the reducer or effect.
 
 <details>
 <summary><i>Example</i></summary>
@@ -398,12 +400,12 @@ app({
 ### options.effects
 Actions that cause side effects and are often asynchronous, like writing to a database, or sending requests to servers.
 
-Effects have a signature `(model, actions, data, error)`, where
+Effects have the following signature: `(model, actions, data, error)`.
 
-* `model` is the current model,
-* `actions` is an object used to trigger [reducers](optionsupdate) and/or [effects](optionseffects),
-* `data` is the data send to the effect, and
-* `error` is a function you may call to throw an error
+* `model` is the current model.
+* `actions` is an object used to trigger [reducers](optionsupdate) and/or [effects](optionseffects).
+* `data` is the data send to the effect.
+* `error` is a function you may call to throw an error.
 
 <details>
 <summary><i>Example</i></summary>
@@ -468,16 +470,16 @@ app({
 
 
 ### options.hooks
-Function handlers that can be used to inspect your application, implement middleware, loggers, etc.
+Hooks are function handlers that can be used to inspect your application, implement middleware, loggers, etc. There are three: `onUpdate`, `onAction`, and `onError`:
 
 #### onUpdate
-Called when the model changes. Signature `(lastModel, newModel, data)`.
+Called when the model changes. Signature: `(lastModel, newModel, data)`.
 
 #### onAction
-Called when an action (reducer or effect) is triggered. Signature `(name, data)`.
+Called when an action (reducer or effect) is triggered. Signature: `(name, data)`.
 
 #### onError
-Called when you use the `error` function inside a subscription or effect. If you don't use this hook, the default behavior is to throw. Signature `(err)`.
+Called when you use the `error` function inside a subscription or effect. If you don't use this hook, the default behavior is to throw. Signature: `(err)`.
 
 <details>
 <summary><i>Example</i></summary>
@@ -511,11 +513,12 @@ app({
 </details>
 
 ### options.root
-The HTML element container of your application. If none is given, a `div` element is appended to document.body and used as the root node of your application.
+Root is the HTML element container of your application. If none is given, a `div` element is appended to document.body and used as the root node of your application.
 
 ### render
-[app](#app) returns an object that consists of
-* the same input options passed to `app`, and
+The [app](#app) function returns an object with the following graph:
+
+* the options passed to `app`.
 * a `render(view)` function that can be used to render and alternate between views.
 
 The `render` function can be used to implement routing in your application.

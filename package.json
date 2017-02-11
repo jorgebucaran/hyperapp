@@ -1,10 +1,10 @@
 {
     "name": "hyperapp",
     "description": "1kb JavaScript library for building modern UI applications",
-    "version": "0.0.13",
+    "version": "0.0.14",
     "main": "src/index.js",
     "license": "MIT",
-    "repository": "github:hyperapp/hyperapp",
+    "repository": "hyperapp/hyperapp",
     "author": "Jorge Bucaran",
     "keywords": [
         "hyperx",

@@ -35,14 +35,8 @@ Or [Webpack](https://webpack.js.org/)/[Rollup](http://rollupjs.org/).
 ## CDN
 HyperApp is also distributed as a minified file, hosted on a CDN.
 
-For [JSX](https://babeljs.io/docs/plugins/transform-react-jsx/).
 ```html
 <script src="https://unpkg.com/hyperapp/dist/hyperapp.js"></script>
-```
-
-For [Hyperx](https://github.com/substack/hyperx).
-```html
-<script src="https://unpkg.com/hyperapp/dist/hyperapp.hx.js"></script>
 ```
 
 For a more thorough introduction and advanced usage see the [HyperApp User Guide](https://www.gitbook.com/book/hyperapp/hyperapp).

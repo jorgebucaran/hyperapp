@@ -15,12 +15,12 @@ npm i <a href=https://npmjs.com/package/hyperapp>hyperapp</a>
 CommonJS
 
 ```js
-const { app, h } = require("hyperapp")
+const { h, app } = require("hyperapp")
 ```
 
 ES6
 ```js
-import { app, h } from "hyperapp"
+import { h, app } from "hyperapp"
 ```
 
 ## Bundle
@@ -51,7 +51,7 @@ app({
 })
 ```
 
-[View online](http://codepen.io/jbucaran/pen/Qdwpxy?editors=0010)
+[View online](http://codepen.io/jbucaran/pen/ggjBPE?editors=0010)
 </details>
 
 
@@ -74,7 +74,7 @@ app({
 })
 ```
 
-[View online](http://codepen.io/jbucaran/pen/zNxZLP?editors=0010)
+[View online](http://codepen.io/jbucaran/pen/PWdwaB?editors=0010)
 </details>
 
 
@@ -95,7 +95,7 @@ app({
 })
 ```
 
-[View online](http://codepen.io/jbucaran/pen/ggbmdN?editors=0010#)
+[View online](http://codepen.io/jbucaran/pen/qRMEGX?editors=0010)
 </details>
 
 
@@ -122,8 +122,8 @@ const view = (model, actions) =>
             cursor: "move",
             position: "absolute",
             padding: "10px",
-            left: `{model.position.x - model.position.offsetX}px`,
-            top: `{model.position.y - model.position.offsetY}px`,
+            left: `${model.position.x - model.position.offsetX}px`,
+            top: `${model.position.y - model.position.offsetY}px`,
             backgroundColor: model.dragging ? "gold" : "deepskyblue"
         }}
     >Drag Me!
@@ -146,7 +146,7 @@ const subscriptions = [
 app({ model, view, update, subscriptions })
 ```
 
-[View online](http://codepen.io/jbucaran/pen/apzYvo?editors=0010)
+[View online](http://codepen.io/jbucaran/pen/ggQNZO?editors=0010)
 </details>
 
 
@@ -156,83 +156,79 @@ app({ model, view, update, subscriptions })
 ```js
 const FilterInfo = { All: 0, Todo: 1, Done: 2 }
 
-const model = {
-    todos: [],
-    filter: FilterInfo.All,
-    input: "",
-    placeholder: "Add new todo!"
-}
-
-const view = (model, actions) =>
-    <div>
-        <h1>Todo</h1>
-        <p>
-            Show: {
-                Object.keys(FilterInfo)
+app({
+    model: {
+        todos: [],
+        filter: FilterInfo.All,
+        input: "",
+        placeholder: "Add new todo!"
+    },
+    view: (model, msg) =>
+        <div>
+            <h1>Todo</h1>
+            <p>
+                Show: {Object.keys(FilterInfo)
                     .filter(key => FilterInfo[key] !== model.filter)
                     .map(key =>
-                        <span><a href="#" onclick={_ => actions.filter({
+                        <span><a data-no-routing href="#" onclick={_ => msg.filter({
                             value: FilterInfo[key]
                         })}>{key}</a> </span>
                     )}
-        </p>
+            </p>
 
-        <p><ul>
-            {model.todos
-                .filter(t =>
-                    model.filter === FilterInfo.Done
-                        ? t.done :
-                        model.filter === FilterInfo.Todo
-                            ? !t.done :
-                            model.filter === FilterInfo.All)
-                .map(t =>
-                    <li style={{
-                        color: t.done ? "gray" : "black",
-                        textDecoration: t.done ? "line-through" : "none"
-                    }}
-                        onclick={e => actions.toggle({
-                            value: t.done,
-                            id: t.id
-                        })}>{t.value}
-                    </li>)}
-        </ul></p>
+            <p><ul>
+                {model.todos
+                    .filter(t =>
+                        model.filter === FilterInfo.Done
+                            ? t.done :
+                            model.filter === FilterInfo.Todo
+                                ? !t.done :
+                                model.filter === FilterInfo.All)
+                    .map(t =>
+                        <li style={{
+                            color: t.done ? "gray" : "black",
+                            textDecoration: t.done ? "line-through" : "none"
+                        }}
+                            onclick={e => msg.toggle({
+                                value: t.done,
+                                id: t.id
+                            })}>{t.value}
+                        </li>)}
+            </ul></p>
 
-        <p>
-            <input
-                type="text"
-                onkeyup={e => e.keyCode === 13 ? actions.add() : ""}
-                oninput={e => actions.input({ value: e.target.value })}
-                value={model.input}
-                placeholder={model.placeholder}
-            />
-            <button onclick={actions.add}>add</button>
-        </p>
-    </div>
-}
-
-const update = {
-    add: model => ({
-        input: "",
-        todos: model.todos.concat({
-            done: false,
-            value: model.input,
-            id: model.todos.length + 1
-        })
-    }),
-    toggle: (model, { id, value }) => ({
-        todos: model.todos.map(t =>
-            id === t.id
-                ? Object.assign({}, t, { done: !value })
-                : t)
-    }),
-    input: (model, { value }) => ({ input: value }),
-    filter: (model, { value }) => ({ filter: value })
-}
-
-app({ model, view, update })
+            <p>
+                <input
+                    type="text"
+                    onkeyup={e => e.keyCode === 13 ? msg.add() : ""}
+                    oninput={e => msg.input({ value: e.target.value })}
+                    value={model.input}
+                    placeholder={model.placeholder}
+                />{" "}
+                <button onclick={msg.add}>add</button>
+            </p>
+        </div>,
+    update: {
+        add: model => ({
+            input: "",
+            todos: model.todos.concat({
+                done: false,
+                value: model.input,
+                id: model.todos.length + 1
+            })
+        }),
+        toggle: (model, { id, value }) => ({
+            todos: model.todos.map(t =>
+                id === t.id
+                    ? Object.assign({}, t, { done: !value })
+                    : t)
+        }),
+        input: (model, { value }) => ({ input: value }),
+        filter: (model, { value }) => ({ filter: value })
+    }
+})
 ```
 
-[View online](http://codepen.io/jbucaran/pen/zNxRLy?editors=0010)
+[View online](http://codepen.io/jbucaran/pen/QdVwQo?editors=0010)
 </details>
 
 [See more examples](https://hyperapp.gomix.me/)
@@ -292,6 +288,8 @@ app({
     view: model => html`<h1>${model}</h1>`
 })
 ```
+
+[View online](http://codepen.io/jbucaran/pen/Qdwpxy?editors=0010)
 
 `html` is a [Hyperx](https://github.com/substack/hyperx)-based [template](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) function.
 
@@ -533,7 +531,7 @@ HyperApp provides a router out of the box.
 ```js
 import { h, app, router } from "hyperapp"
 
-app({ model, view, update, router })
+app({ view, router })
 ```
 
 When using the router, the `view` must be an object that consists of routes, each with a corresponding view function.
@@ -543,7 +541,7 @@ app({
     view: {
         "/": (model, actions) => {},
         "/about": (model, actions) => {},
-        "/:slug": (model, actions, params) => {}
+        "/:key": (model, actions, params) => {}
     }
 })
 ```
@@ -552,7 +550,6 @@ app({
 <summary><i>Example</i></summary>
 
 ```js
-const { h, app } = require("hyperapp")
 const Anchor = ({ href }) => <h1><a href={"/" + href}>{href}</a></h1>
 
 app({
@@ -563,7 +560,8 @@ app({
                 <h1>{key}</h1>
                 <a href="/">Back</a>
             </div>
-    }
+    },
+    router
 })
 ```
 
@@ -572,7 +570,7 @@ app({
 
 * `/` matches the index route or when no other route matches.
 
-* `/:slug` matches a route using the regular expression `[A-Za-z0-9]+`. The matched key is passed to the route's view function via [`params`](#params).
+* `/:key` matches a route using the regular expression `[A-Za-z0-9]+`. The matched key is passed to the route's view function via [`params`](#params).
 
 > The router path syntax is loosely based in the same syntax used in [Express](https://expressjs.com/en/guide/routing.html).
 

@@ -1,17 +1,15 @@
 module.exports = function (options) {
-	var msg = {}
+	var model = options.model,
+		view = options.view
 
-	var model = options.model
-	var reducers = options.update || {}
-	var effects = options.effects || {}
+	var actions = {},
+		effects = options.effects || {},
+		reducers = options.update || {}
 
-	var subscriptions = function (subs) {
-		// `subs` will be deprecated in favor of only `subscriptions` >= 0.0.13
-		subs = options.subscriptions || options.subs
-		for (var key in subs) {
-			subs[key](model, msg, hooks.onError)
-		}
-	}
+	var subs = options.subscriptions
+
+	var node,
+		root = options.root || document.body.appendChild(document.createElement("div"))
 
 	var hooks = merge({
 		onAction: Function.prototype,
@@ -21,59 +19,14 @@ module.exports = function (options) {
 		}
 	}, options.hooks)
 
-	var node
-	var root = options.root || document.body.appendChild(document.createElement("div"))
-	var view = options.view || function () {
-		return root
-	}
-	var routes = typeof view === "function" ? undefined : view
-
-	if (routes) {
-		view = route(routes, location.pathname)
-
-		msg.setLocation = function (data) {
-			render(model, view = route(routes, data), node)
-			history.pushState({}, "", data)
-		}
-
-		window.addEventListener("popstate", function () {
-			render(model, view = route(routes, location.pathname), node)
-		})
-
-		window.onclick = function (e) {
-			if (e.metaKey || e.shiftKey || e.ctrlKey || e.altKey) {
-				return
-			}
-
-			var target = e.target
-
-			while (target && target.localName !== "a") {
-				target = target.parentNode
-			}
-
-			if (target && target.host === location.host
-				&& !target.hasAttribute("data-no-routing")) {
-
-				var element = target.hash === "" ? element : document.querySelector(target.hash)
-				if (element) {
-					element.scrollIntoView(true)
-
-				} else {
-					msg.setLocation(target.pathname)
-					e.preventDefault()
-				}
-			}
-		}
-	}
-
 	for (var name in merge(reducers, effects)) {
 		(function (name) {
-			msg[name] = function (data) {
+			actions[name] = function (data) {
 				hooks.onAction(name, data)
 
 				var effect = effects[name]
 				if (effect) {
-					return effect(model, msg, data, hooks.onError)
+					return effect(model, actions, data, hooks.onError)
 				}
 
 				var update = reducers[name], _model = model
@@ -90,43 +43,24 @@ module.exports = function (options) {
 		document.addEventListener("DOMContentLoaded", subscriptions)
 	}
 
-	render(model, view)
+	if (typeof view === "function") {
+		render(model, view)
+	}
+
+	return merge(options, {
+		render: function (newView) {
+			render(model, view = newView ? newView : view, node)
+		}
+	})
+
+	function subscriptions() {
+		for (var key in subs) {
+			subs[key](model, actions, hooks.onError)
+		}
+	}
 
 	function render(model, view, lastNode) {
-		patch(root, node = view(model, msg), lastNode, 0)
-	}
-
-	function route(routes, path) {
-		for (var route in routes) {
-			var re = regexify(route), params = {}, match
-
-			path.replace(new RegExp(re.re, "g"), function () {
-				for (var i = 1; i < arguments.length - 2; i++) {
-					params[re.keys.shift()] = arguments[i]
-				}
-
-				match = function (model, msg) {
-					return routes[route](model, msg, params)
-				}
-			})
-
-			if (match) {
-				return match
-			}
-		}
-
-		return routes["/"]
-	}
-
-	function regexify(path) {
-		var keys = [], re = "^" + path
-			.replace(/\//g, "\\/")
-			.replace(/:([A-Za-z0-9_]+)/g, function (_, key) {
-				keys.push(key)
-				return "([A-Za-z0-9_]+)"
-			}) + "/?$"
-
-		return { re: re, keys: keys }
+		patch(root, node = view(model, actions), lastNode, 0)
 	}
 
 	function isPrimitive(type) {
@@ -180,8 +114,8 @@ module.exports = function (options) {
 				}
 			}
 
-			for (var i = 0; i < node.tree.length; i++) {
-				element.appendChild(createElementFrom(node.tree[i]))
+			for (var i = 0; i < node.children.length; i++) {
+				element.appendChild(createElementFrom(node.children[i]))
 			}
 		}
 
@@ -203,7 +137,7 @@ module.exports = function (options) {
 			}
 
 		} else if (name.substr(0, 2) === "on") {
-			var event = name.substr(2)
+			var event = name.substr(2).toLowerCase()
 			element.removeEventListener(event, oldValue)
 			element.addEventListener(event, value)
 
@@ -263,10 +197,10 @@ module.exports = function (options) {
 
 			updateElementData(element, node.data, oldNode.data)
 
-			var len = node.tree.length, oldLen = oldNode.tree.length
+			var len = node.children.length, oldLen = oldNode.children.length
 
 			for (var i = 0; i < len || i < oldLen; i++) {
-				patch(element, node.tree[i], oldNode.tree[i], i)
+				patch(element, node.children[i], oldNode.children[i], i)
 			}
 		}
 	}

@@ -296,7 +296,7 @@ app({
 ## app
 Use `app` to start the app.
 
-<code>
+<pre>
 <strong>app</strong>({
     <a href="#model">model</a>,
     <a href="#update">update</a>,
@@ -306,7 +306,7 @@ Use `app` to start the app.
     <a href="#root">root</a>,
     <a href="#router">router</a>
 })
-</code>
+</pre>
 
 ### model
 A primitive type, array or object that represents the state of your application. HyperApp applications use a single model architecture.

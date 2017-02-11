@@ -1,5 +1,5 @@
 module.exports = function (tag, data) {
-	data = data || []
+	data = data || {}
 
 	var children = []
 	children.push.apply(children, arguments)

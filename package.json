@@ -6,6 +6,9 @@
     "license": "MIT",
     "repository": "github:hyperapp/hyperapp",
     "author": "Jorge Bucaran",
+    "contributors": [
+        "Marais Rossouw <hi@marais.io> (https://marais.io)"
+    ],
     "keywords": [
         "hyperx",
         "hypertext",

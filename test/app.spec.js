@@ -8,12 +8,6 @@ function fireDOMLoaded() {
     window.document.dispatchEvent(event)
 }
 
-function firePopState() {
-    const event = document.createEvent("Event")
-    event.initEvent("popstate", true, true)
-    window.document.dispatchEvent(event)
-}
-
 beforeEach(() => {
     document.body.innerHTML = ''
 })
@@ -24,9 +18,8 @@ describe("App", () => {
         app({ model: {}, view: () => (html`<div>Hi</div>`) })
     })
 
-    // FIXME: if fails... this is not true
-    it.skip("allow all params to be optional", () => {
-        app()
+    it("allows optional options", () => {
+        app({})
     })
 
     it("renders a model", () => {
@@ -72,7 +65,7 @@ describe("App", () => {
         expect(document.getElementsByTagName("text")[0].innerHTML).toEqual(model.text)
     })
 
-    it("exec's a render when the update changes", () => {
+    it("renders the view when the model changes", () => {
         const firstValue = 'first-value'
         const secondValue = 'second-value'
 
@@ -95,15 +88,25 @@ describe("App", () => {
         expect(input.value).toEqual(secondValue)
         expect(document.getElementsByTagName('p')[0].innerHTML).toEqual(secondValue)
     });
+
+    it.skip("boots application on domcontentloaded", () => {
+        // console.log(">", document.readyState)
+        // window.document.readyState = "loading"
+        // console.log(">", document.readyState)
+        // app({
+        //     model: 0
+        // })
+        // fireDOMLoaded()
+        // expect(0).toEqual(0)
+    })
 })
 
 describe("Views", () => {
     it("allows inline styles as object with properties in camelCase", () => {
-        const view = (model) => html`<div id="red"
-      style=${{
-                backgroundColor: "red",
-                padding: "10px"
-            }}>I'm red</div>`
+        const view = (model) => html`<div id="red" style=${{
+            backgroundColor: "red",
+            padding: "10px"
+        }}>I'm red</div>`
 
         app({ view })
         var el = document.getElementById("red")
@@ -116,13 +119,47 @@ describe("Views", () => {
         const view = (model) => h("div", { id: "test" }, "inside div")
         app({ view })
         var el = document.getElementById("test")
+
         expect(el).not.toBe(null)
         expect(el.innerHTML).toEqual("inside div")
+    })
+
+    it("sets bool attributes", () => {
+        const view = (model) => h("div", { id: "test", dummy: false }, "inside div")
+        app({ view })
+        var el = document.getElementById("test")
+
+        expect(el).not.toBe(null)
+        expect(el.dummy).toEqual(false)
+    })
+
+    it("removes element data", () => {
+        const model = 0
+        const update = {
+            add: (model, data) => model + data
+        }
+        const subscriptions = [(_, msg) => msg.add(2)]
+
+        const view = model => h("div", model === 0 ?
+            ({
+                id: "test",
+                style: { color: "red" }
+            }) :
+            ({
+                id: "test"
+            })
+            , "...")
+
+        app({ model, view, update, subscriptions })
+
+        var el = document.getElementById("test")
+
+        expect(el).not.toBe(null)
+        expect(el.style.color).toBe("")
     })
 })
 
 describe("Subscriptions", () => {
-
     it("fires all subscriptions when DOM is ready", () => {
         const check = {}
 
@@ -220,36 +257,30 @@ describe("Hooks", () => {
 })
 
 describe("Lifecycle events", () => {
-    const model = {}
-
-    const update = { add: (model, data) => model + data }
-
+    const model = 0
+    const update = {
+        add: (model, data) => model + data
+    }
     const subscriptions = [(_, msg) => msg.add(2)]
 
-    it("accepts oncreate property", done => {
-        let target = null
-
-        const handleCreate = (e) => { target = e }
+    it("fires oncreate", done => {
+        let guard = null
 
         app({
             model: {},
-            view: () => (html`<div oncreate=${handleCreate}>Hi</div>`)
+            view: () => (html`<div oncreate=${e => guard = e}></div>`)
         })
 
         setTimeout(() => {
-            expect(target).not.toEqual(null)
+            expect(guard).not.toEqual(null)
             done()
         }, 1)
     })
 
-    // FIXME: currently it fails... is it a bug?
-    // TODO: need help on this
-    it.skip("fires onupdate when view changed", done => {
+    it("fires onupdate", done => {
         let guard = null
 
-        const handleUpdate = (e) => { guard = e }
-
-        const view = (model) => html`<div onupdate=${handleUpdate}>${model}</div>`
+        const view = (model) => html`<div onupdate=${e => guard = e}></div>`
 
         app({ model, update, subscriptions, view })
 
@@ -258,8 +289,72 @@ describe("Lifecycle events", () => {
         setTimeout(() => {
             expect(guard).not.toEqual(null)
             done()
-        }, 1)
+        })
 
     })
 
+    it("fires onremove", done => {
+        let guard = null
+
+        const a = html`
+            <ul>
+                <li>1</li>
+                <li>2</li>
+                <li>3</li>
+                <li>4</li>
+                <li onremove=${e => guard = e}>5</li>
+            </ul>`
+
+        const b = html`
+            <ul>
+                <li>item 1</li>
+                <li>hello!</li>
+            </ul>`
+
+        const view = (model) => html`${model === 0 ? a : b}`
+
+        app({ model, view, update, subscriptions })
+
+        fireDOMLoaded()
+
+        setTimeout(() => {
+            expect(guard).not.toEqual(null)
+            done()
+        })
+    })
+})
+
+describe("Router API", () => {
+    it("calls router with object.render(view)", () => {
+        const model = "beep"
+
+        app({
+            model: "beep",
+            router: api => {
+                api.render(model => html`<h1 id="test">${model}</h1>`)
+            }
+        })
+
+        var el = document.getElementById("test")
+
+        expect(el).not.toBe(null)
+        expect(el.innerHTML).toBe(model)
+    })
+
+    it("calls router with object.render(view) #2", () => {
+        const model = "beep"
+
+        app({
+            view: model => html`<h1 id="test">${model}</h1>`,
+            model: "beep",
+            router: api => {
+                api.render(undefined)
+            }
+        })
+
+        var el = document.getElementById("test")
+
+        expect(el).not.toBe(null)
+        expect(el.innerHTML).toBe(model)
+    })
 })

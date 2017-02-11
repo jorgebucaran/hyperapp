@@ -237,18 +237,18 @@ app({
 * [jsx](#jsx)
 * [html](#html)
 * [app](#app)
-    * [model](#optionsmodel)
-    * [update](#optionsupdate)
-    * [view](#optionsview)
+    * [model](#model)
+    * [update](#update)
+    * [view](#view)
         * [Lifecycle Methods](#lifecycle-methods)
-    * [effects](#optionseffects)
-    * [subscriptions](#optionssubscriptions)
-    * [hooks](#optionshooks)
+    * [effects](#effects)
+    * [subscriptions](#subscriptions)
+    * [hooks](#hooks)
         * [onAction](#onaction)
         * [onUpdate](#onupdate)
         * [onError](#onerror)
-    * [root](#optionsroot)
-    * [Router](#optionsrouter)
+    * [root](#root)
+    * [Router](#router)
         * [setLocation](#actionssetlocation)
         * [href](#href)
 
@@ -296,14 +296,22 @@ app({
 ## app
 Use `app` to start the app.
 
-```js
-app(options)
-```
+<code>
+<strong>app</strong>({
+    <a href="#model">model</a>,
+    <a href="#update">update</a>,
+    <a href="#view">view</a>,
+    <a href="#effects">effects</a>,
+    <a href="#subscriptions">subscriptions</a>,
+    <a href="#root">root</a>,
+    <a href="#router">router</a>
+})
+</code>
 
-### options.model
+### model
 A primitive type, array or object that represents the state of your application. HyperApp applications use a single model architecture.
 
-### options.update
+### update
 An object composed of functions often called _reducers_. A reducer describes how to derive the next model from the current model.
 
 ```js
@@ -315,26 +323,26 @@ const update = {
 
 Reducers can return an entirely new model or part of a model. If a reducer returns part of a model, it will be merged with the current model.
 
-Reducers can be triggered inside a [view](#optionview), [effect](#optioneffects) or [subscription](#optionssubscriptions).
+Reducers can be triggered inside a [view](#view), [effect](#effects) or [subscription](#subscriptions).
 
 Reducers have the signature `(model, data, params)`:
 
 * `model` is the current model.
 * `data` is the data sent to the reducer.
 
-When using the [Router](#optionsrouter), the view receives additionally
+When using the [Router](#router), the view receives additionally
 
 <a name="params"></a>
 
 * `params` an object with the matched route parameters.
 
-### options.view
+### view
 A function that returns an HTML element using [jsx](#jsx) or the [`html`](#html) function.
 
 A view has the signature `(model, actions)`:
 
 * `model` is the current model.
-* `actions` is an object used to trigger [reducers](optionsupdate) and [effects](optionseffects).
+* `actions` is an object used to trigger [reducers](update) and [effects](effects).
 
 To use actions:
 
@@ -405,13 +413,13 @@ app({
 [View online](http://codepen.io/jbucaran/pen/MJXMQZ?editors=0010)
 </details>
 
-### options.effects
+### effects
 Actions that cause side effects and can be asynchronous, like writing to a database, or sending requests to servers.
 
 Effects have the following signature: `(model, actions, data, error)`.
 
 * `model` is the current model.
-* `actions` is an object used to trigger [reducers](optionsupdate) and [effects](optionseffects).
+* `actions` is an object used to trigger [reducers](update) and [effects](effects).
 * `data` is the data sent to the effect.
 * `error` is a function you may call to throw an error.
 
@@ -451,7 +459,7 @@ app({ model, view, update, effects })
 [View online](http://codepen.io/jbucaran/pen/jyEKmw?editors=0010)
 </details>
 
-### options.subscriptions
+### subscriptions
 Subscriptions are functions scheduled to run only once when the [DOM is ready](https://developer.mozilla.org/en-US/docs/Web/Events/DOMContentLoaded). Use a subscription to register global events, open a socket connection, attached mouse or keyboard event listeners, etc.
 
 A subscription has the signature `(model, actions, error)`.
@@ -479,7 +487,7 @@ app({
 </details>
 
 
-### options.hooks
+### hooks
 Function handlers that can be used to inspect your application, implement middleware, loggers, etc. There are three: `onUpdate`, `onAction`, and `onError`.
 
 #### onUpdate
@@ -522,10 +530,10 @@ app({
 [View online](http://codepen.io/jbucaran/pen/xgbzEy?editors=0010)
 </details>
 
-### options.root
+### root
 The HTML element container of your application. If none is given, a `div` element is appended to document.body and used as the container.
 
-### options.router
+### router
 HyperApp provides a router out of the box.
 
 ```js
@@ -575,7 +583,7 @@ app({
 > The router path syntax is loosely based in the same syntax used in [Express](https://expressjs.com/en/guide/routing.html).
 
 ### actions.setLocation
-A special action available when using the [Router](#optionsrouter). Use `setLocation(path)` to update the [location.pathname](https://developer.mozilla.org/en-US/docs/Web/API/Location). If the path matches an existing route, the corresponding view will be rendered.
+A special action available when using the [Router](#router). Use `setLocation(path)` to update the [location.pathname](https://developer.mozilla.org/en-US/docs/Web/API/Location). If the path matches an existing route, the corresponding view will be rendered.
 
 <details>
 <summary><i>Example</i></summary>

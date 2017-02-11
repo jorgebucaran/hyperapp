@@ -1,6 +1,6 @@
 module.exports = function (options) {
 	var model = options.model
-	var	view = options.view
+	var view = options.view
 
 	var actions = {}
 	var effects = options.effects || {}
@@ -8,10 +8,13 @@ module.exports = function (options) {
 
 	var subs = options.subscriptions
 
+	var router = options.router || Function.prototype
+
 	var node
-	var root = options.root || document.body.appendChild(document.createElement("div"))
+	var root
 
 	var hooks = merge({
+		// onRoute?
 		onAction: Function.prototype,
 		onUpdate: Function.prototype,
 		onError: function (err) {
@@ -37,40 +40,34 @@ module.exports = function (options) {
 		}(name))
 	}
 
-	if (document.readyState !== "loading") {
-		subscriptions()
-	} else {
-		document.addEventListener("DOMContentLoaded", subscriptions)
-	}
-
-	if (typeof view === "function") {
-		render(model, view)
-	}
-
-	return merge(options, {
-		render: function (newView) {
-			render(model, view = newView ? newView : view, node)
-		}
-	})
-
-	function subscriptions() {
+	ready(function () {
 		for (var key in subs) {
 			subs[key](model, actions, hooks.onError)
+		}
+
+		root = options.root || document.body.appendChild(document.createElement("div"))
+
+		if (typeof view === "function") {
+			render(model, view)
+		}
+
+		router(merge(options, {
+			render: function (newView) {
+				render(model, view = newView ? newView : view, node)
+			}
+		}))
+	})
+
+	function ready(cb) {
+		if (document.readyState !== "loading") {
+			cb()
+		} else {
+			document.addEventListener("DOMContentLoaded", cb)
 		}
 	}
 
 	function render(model, view, lastNode) {
 		patch(root, node = view(model, actions), lastNode, 0)
-	}
-
-	function isPrimitive(type) {
-		return type === "string" || type === "number" || type === "boolean"
-	}
-
-	function defer(fn, data) {
-		setTimeout(function () {
-			fn(data)
-		}, 0)
 	}
 
 	function merge(a, b) {
@@ -88,6 +85,16 @@ module.exports = function (options) {
 		}
 
 		return obj
+	}
+
+	function isPrimitive(type) {
+		return type === "string" || type === "number" || type === "boolean"
+	}
+
+	function defer(fn, data) {
+		setTimeout(function () {
+			fn(data)
+		}, 0)
 	}
 
 	function shouldUpdate(a, b) {

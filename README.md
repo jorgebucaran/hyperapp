@@ -7,7 +7,6 @@
 HyperApp is a `1kb` JavaScript library for building modern UI applications.
 
 ## Install
-With npm or yarn.
 <pre>
 npm i <a href=https://npmjs.com/package/hyperapp>hyperapp</a>
 </pre>
@@ -16,12 +15,12 @@ npm i <a href=https://npmjs.com/package/hyperapp>hyperapp</a>
 CommonJS
 
 ```js
-const { app, html } = require("hyperapp")
+const { app, h } = require("hyperapp")
 ```
 
 ES6
 ```js
-import { app, html } from "hyperapp"
+import { app, h } from "hyperapp"
 ```
 
 ## Bundle
@@ -48,7 +47,7 @@ For a more thorough introduction and advanced usage see the [HyperApp User Guide
 ```js
 app({
     model: "Hi.",
-    view: model => html`<h1>${model}</h1>`
+    view: model => <h1>{model}</h1>
 })
 ```
 
@@ -66,12 +65,12 @@ app({
         add: model => model + 1,
         sub: model => model - 1
     },
-    view: (model, actions) => html`
+    view: (model, actions) =>
         <div>
-            <button onclick=${actions.add}>+</button>
-            <h1>${model}</h1>
-            <button onclick=${actions.sub} disabled=${model <= 0}>-</button>
-        </div>`
+            <button onclick={actions.add}>+</button>
+            <h1>{model}</h1>
+            <button onclick={actions.sub} disabled={model <= 0}>-</button>
+        </div>
 })
 ```
 
@@ -88,11 +87,11 @@ app({
     update: {
         text: (_, value) => value
     },
-    view: (model, actions) => html`
+    view: (model, actions) =>
         <div>
-            <h1>Hi${model ? " " + model : ""}.</h1>
-            <input oninput=${e => actions.text(e.target.value)} />
-        </div>`
+            <h1>Hi{model ? " " + model : ""}.</h1>
+            <input oninput={e => actions.text(e.target.value)} />
+        </div>
 })
 ```
 
@@ -111,24 +110,24 @@ const model = {
     }
 }
 
-const view = (model, actions) => html`
+const view = (model, actions) =>
     <div
-        onmousedown=${e => actions.drag({
+        onmousedown={e => actions.drag({
             position: {
                 x: e.pageX, y: e.pageY, offsetX: e.offsetX, offsetY: e.offsetY
             }
         })}
-        style=${{
+        style={{
             userSelect: "none",
             cursor: "move",
             position: "absolute",
             padding: "10px",
-            left: `${model.position.x - model.position.offsetX}px`,
-            top: `${model.position.y - model.position.offsetY}px`,
+            left: `{model.position.x - model.position.offsetX}px`,
+            top: `{model.position.y - model.position.offsetY}px`,
             backgroundColor: model.dragging ? "gold" : "deepskyblue"
         }}
     >Drag Me!
-    </div>`
+    </div>
 
 const update = {
     drop: model => ({ dragging: false }),
@@ -164,52 +163,51 @@ const model = {
     placeholder: "Add new todo!"
 }
 
-const view = (model, actions) => {
-    return html`
-        <div>
-            <h1>Todo</h1>
-            <p>
-                Show: ${
+const view = (model, actions) =>
+    <div>
+        <h1>Todo</h1>
+        <p>
+            Show: {
                 Object.keys(FilterInfo)
                     .filter(key => FilterInfo[key] !== model.filter)
-                    .map(key => html`
-                        <span><a href="#" onclick=${_ => actions.filter({
+                    .map(key =>
+                        <span><a href="#" onclick={_ => actions.filter({
                             value: FilterInfo[key]
-                        })}>${key}</a> </span>
-                    `)}
-            </p>
+                        })}>{key}</a> </span>
+                    )}
+        </p>
 
-            <p><ul>
-                ${model.todos
-                    .filter(t =>
-                        model.filter === FilterInfo.Done
-                            ? t.done :
+        <p><ul>
+            {model.todos
+                .filter(t =>
+                    model.filter === FilterInfo.Done
+                        ? t.done :
                         model.filter === FilterInfo.Todo
                             ? !t.done :
-                        model.filter === FilterInfo.All)
-                    .map(t => html`
-                        <li style=${{
-                                color: t.done ? "gray" : "black",
-                                textDecoration: t.done ? "line-through" : "none"
-                            }}
-                            onclick=${e => actions.toggle({
-                                value: t.done,
-                                id: t.id
-                            })}>${t.value}
-                        </li>`)}
-            </ul></p>
+                            model.filter === FilterInfo.All)
+                .map(t =>
+                    <li style={{
+                        color: t.done ? "gray" : "black",
+                        textDecoration: t.done ? "line-through" : "none"
+                    }}
+                        onclick={e => actions.toggle({
+                            value: t.done,
+                            id: t.id
+                        })}>{t.value}
+                    </li>)}
+        </ul></p>
 
-            <p>
-                <input
-                    type="text"
-                    onkeyup=${e => e.keyCode === 13 ? actions.add() : ""}
-                    oninput=${e => actions.input({ value: e.target.value })}
-                    value=${model.input}
-                    placeholder=${model.placeholder}
-                />
-                <button onclick=${actions.add}>add</button>
-            </p>
-        </div>`
+        <p>
+            <input
+                type="text"
+                onkeyup={e => e.keyCode === 13 ? actions.add() : ""}
+                oninput={e => actions.input({ value: e.target.value })}
+                value={model.input}
+                placeholder={model.placeholder}
+            />
+            <button onclick={actions.add}>add</button>
+        </p>
+    </div>
 }
 
 const update = {
@@ -240,8 +238,8 @@ app({ model, view, update })
 [See more examples](https://hyperapp.gomix.me/)
 
 ## Documentation
-* [html](#html)
 * [jsx](#jsx)
+* [html](#html)
 * [app](#app)
     * [model](#optionsmodel)
     * [update](#optionsupdate)
@@ -254,17 +252,9 @@ app({ model, view, update })
         * [onUpdate](#onupdate)
         * [onError](#onerror)
     * [root](#optionsroot)
-    * [render](#render)
-* [Routing](#routing)
-
-## html
-Use `html` to compose HTML elements.
-
-```js
-const hello = html`<h1>Hello.</h1>`
-```
-
-`html` is a [Hyperx](https://github.com/substack/hyperx)-based [template](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) function.
+    * [Router](#optionsrouter)
+        * [setLocation](#actionssetlocation)
+        * [href](#href)
 
 ## jsx
 Import the `h` function and include the [jsx pragma](https://babeljs.io/docs/plugins/transform-react-jsx/), in any order.
@@ -291,8 +281,22 @@ Or, add it to your [`.babelrc`](https://babeljs.io/docs/usage/babelrc/) configur
 }
 ```
 
+## html
+To use HyperApp without jsx, import the `html` function instead.
+
+```js
+const { html, app } = require("hyperapp")
+
+app({
+    model: "Hi.",
+    view: model => html`<h1>${model}</h1>`
+})
+```
+
+`html` is a [Hyperx](https://github.com/substack/hyperx)-based [template](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) function.
+
 ## app
-Use `app` to start your app.
+Use `app` to start the app.
 
 ```js
 app(options)
@@ -315,20 +319,26 @@ Reducers can return an entirely new model or part of a model. If a reducer retur
 
 Reducers can be triggered inside a [view](#optionview), [effect](#optioneffects) or [subscription](#optionssubscriptions).
 
-Reducers have the signature `(model, data)`, where
+Reducers have the signature `(model, data, params)`:
 
-* `model` is the current model, and
-* `data` is the data sent to the reducer. See [view](#optionsview).
+* `model` is the current model.
+* `data` is the data sent to the reducer.
+
+When using the [Router](#optionsrouter), the view receives additionally
+
+<a name="params"></a>
+
+* `params` an object with the matched route parameters.
 
 ### options.view
 A function that returns an HTML element using [jsx](#jsx) or the [`html`](#html) function.
 
 A view has the signature `(model, actions)`:
 
-* `model` is the current model, and
-* `actions` is an object used to trigger [reducers](optionsupdate) and/or [effects](optionseffects).
+* `model` is the current model.
+* `actions` is an object used to trigger [reducers](optionsupdate) and [effects](optionseffects).
 
-A view's actions have the following signature:
+To use actions:
 
 ```js
 actions.action(data)
@@ -343,7 +353,7 @@ actions.action(data)
 ```js
 app({
     model: true,
-    view: (model, actions) => html`<button onclick=${actions.toggle}>${model+""}</button>`,
+    view: (model, actions) => <button onclick={actions.toggle}>{model+""}</button>,
     update: {
         toggle: model => !model
     }
@@ -362,7 +372,7 @@ Functions that can be attached to your virtual HTML nodes to access their real D
 
 ```js
 app({
-  view: _ => html`<div oncreate=${e => console.log(e)}>Hi.</div>`
+    view: _ => <div oncreate={e => console.log(e)}>Hi.</div>
 })
 ```
 
@@ -381,10 +391,10 @@ const repaint = (canvas, model) => {
 
 app({
     model: { x: 0, y: 0 },
-    view: model => html`<canvas
+    view: model => <canvas
         width="600"
         height="300"
-        onupdate=${e => repaint(e, model)} />`,
+        onupdate={e => repaint(e, model)} />,
     update: {
         move: (model) => ({ x: model.x + 1, y: model.y + 1 })
     },
@@ -398,13 +408,13 @@ app({
 </details>
 
 ### options.effects
-Actions that cause side effects and are often asynchronous, like writing to a database, or sending requests to servers.
+Actions that cause side effects and can be asynchronous, like writing to a database, or sending requests to servers.
 
 Effects have the following signature: `(model, actions, data, error)`.
 
 * `model` is the current model.
-* `actions` is an object used to trigger [reducers](optionsupdate) and/or [effects](optionseffects).
-* `data` is the data send to the effect.
+* `actions` is an object used to trigger [reducers](optionsupdate) and [effects](optionseffects).
+* `data` is the data sent to the effect.
 * `error` is a function you may call to throw an error.
 
 <details>
@@ -419,11 +429,10 @@ const model = {
 }
 
 const view = (model, actions) =>
-    html`
-        <button
-            onclick=${actions.waitThenAdd}
-            disabled=${model.waiting}>${model.counter}
-        </button>`
+    <button
+        onclick={actions.waitThenAdd}
+        disabled={model.waiting}>{model.counter}
+    </button>
 
 
 const update = {
@@ -458,9 +467,12 @@ app({
     update: {
         move: (_, { x, y }) => ({ x, y })
     },
-    view: model => html`<h1>${model.x}, ${model.y}</h1>`,
+    view: model => <h1>{model.x}, {model.y}</h1>,
     subscriptions: [
-        (_, actions) => addEventListener("mousemove", e => actions.move({ x: e.clientX, y: e.clientY }))
+        (_, actions) => addEventListener("mousemove", e => actions.move({
+            x: e.clientX,
+            y: e.clientY
+        }))
     ]
 })
 ```
@@ -470,7 +482,7 @@ app({
 
 
 ### options.hooks
-Hooks are function handlers that can be used to inspect your application, implement middleware, loggers, etc. There are three: `onUpdate`, `onAction`, and `onError`:
+Function handlers that can be used to inspect your application, implement middleware, loggers, etc. There are three: `onUpdate`, `onAction`, and `onError`.
 
 #### onUpdate
 Called when the model changes. Signature: `(lastModel, newModel, data)`.
@@ -487,11 +499,11 @@ Called when you use the `error` function inside a subscription or effect. If you
 ```js
 app({
     model: true,
-    view: (model, actions) => html`
+    view: (model, actions) =>
         <div>
-            <button onclick=${actions.doSomething}>Log</button>
-            <button onclick=${actions.boom}>Error</button>
-        </div>`,
+            <button onclick={actions.doSomething}>Log</button>
+            <button onclick={actions.boom}>Error</button>
+        </div>,
     update: {
         doSomething: model => !model,
     },
@@ -513,15 +525,123 @@ app({
 </details>
 
 ### options.root
-Root is the HTML element container of your application. If none is given, a `div` element is appended to document.body and used as the root node of your application.
+The HTML element container of your application. If none is given, a `div` element is appended to document.body and used as the container.
 
-### render
-The [app](#app) function returns an object with the following graph:
+### options.router
+HyperApp provides a router out of the box.
 
-* the options passed to `app`.
-* a `render(view)` function that can be used to render and alternate between views.
+```js
+import { h, app, router } from "hyperapp"
 
-The `render` function can be used to implement routing in your application.
+app({ model, view, update, router })
+```
 
-## Routing
-HyperApp does not provide a router out of the box. If your application needs a router use [HyperApp Router](https://github.com/hyperapp/hyperapp-router).
+When using the router, the `view` must be an object that consists of routes, each with a corresponding view function.
+
+```js
+app({
+    view: {
+        "/": (model, actions) => {},
+        "/about": (model, actions) => {},
+        "/:slug": (model, actions, params) => {}
+    }
+})
+```
+
+<details>
+<summary><i>Example</i></summary>
+
+```js
+const { h, app } = require("hyperapp")
+const Anchor = ({ href }) => <h1><a href={"/" + href}>{href}</a></h1>
+
+app({
+    view: {
+        "/": _ => <Anchor href={Math.floor(Math.random() * 999)}></Anchor>,
+        "/:key": (model, actions, { key }) =>
+            <div>
+                <h1>{key}</h1>
+                <a href="/">Back</a>
+            </div>
+    }
+})
+```
+
+[View online](https://hyperapp-routing.gomix.me/)
+</details>
+
+* `/` matches the index route or when no other route matches.
+
+* `/:slug` matches a route using the regular expression `[A-Za-z0-9]+`. The matched key is passed to the route's view function via [`params`](#params).
+
+> The router path syntax is loosely based in the same syntax used in [Express](https://expressjs.com/en/guide/routing.html).
+
+### actions.setLocation
+A special action available when using the [Router](#optionsrouter). Use `setLocation(path)` to update the [location.pathname](https://developer.mozilla.org/en-US/docs/Web/API/Location). If the path matches an existing route, the corresponding view will be rendered.
+
+<details>
+<summary><i>Example</i></summary>
+
+```js
+const Page = ({ title, target, onclick }) =>
+    <div>
+        <h1>{title}</h1>
+        <button onclick={onclick}>{target}</button>
+    </div>
+
+app({
+    router,
+    view: {
+        "/": (model, actions) =>
+            <Page
+                title="Home"
+                target="About"
+                onclick={_ => actions.setLocation("/about")}>
+            </Page>
+        ,
+        "/about": (model, actions) =>
+            <Page
+                title="About"
+                target="Home"
+                onclick={_ => actions.setLocation("/")}>
+            </Page>
+    }
+})
+```
+
+[View online](https://hyperapp-set-location.gomix.me/)
+</details>
+
+
+#### href
+HyperApp intercepts all `<a href="/path">...</a>` clicks and calls `action.setLocation("/path")` for convenience. External links and links that begin with a `#` character are not intercepted.
+
+<details>
+<summary><i>Example</i></summary>
+
+```js
+app({
+    view: {
+        "/": (model, msg) =>
+            <div>
+                <h1>Home</h1>
+                <a href="/about">About</a>
+            </div>
+        ,
+        "/about": (model, msg) =>
+            <div>
+                <h1>About</h1>
+                <a href="/">Home</a>
+            </div>
+    }
+})
+```
+
+[View online](https://hyperapp-href.gomix.me/)
+</details>
+
+Add a custom `data-no-routing` attribute to anchor elements that should be handled differently.
+
+```html
+<a data-no-routing>Not a route</a>
+```

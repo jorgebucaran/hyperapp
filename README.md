@@ -4,6 +4,12 @@
 [![Codecov](https://img.shields.io/codecov/c/github/hyperapp/hyperapp/master.svg)](https://codecov.io/gh/hyperapp/hyperapp)
 [![Slack](https://hyperappjs.herokuapp.com/badge.svg)](https://hyperappjs.herokuapp.com)
 
+[Browserify]: https://github.com/substack/node-browserify
+[Webpack]: https://webpack.js.org/
+[Rollup]: http://rollupjs.org/
+[Babel]: http://babeljs.io/docs/setup/
+[Hyperx]: https://github.com/substack/hyperx
+
 HyperApp is a `1kb` JavaScript library for building modern UI applications.
 
 ## Install
@@ -29,13 +35,7 @@ HyperApp is also distributed as a minified file, hosted on a CDN.
 <script src="https://unpkg.com/hyperapp/dist/hyperapp.js"></script>
 ```
 
-## Bundle
-[Browserify]: https://github.com/substack/node-browserify
-[Webpack]: https://webpack.js.org/
-[Rollup]: http://rollupjs.org/
-With [Browserify], [Webpack], [Rollup], etc.
-
-See the [HyperApp User Guide](https://www.gitbook.com/book/hyperapp/hyperapp) for complete instructions.
+For a complete introduction to HyperApp see the [User Guide](https://www.gitbook.com/book/hyperapp/hyperapp).
 
 ## Examples
 <details>
@@ -116,8 +116,8 @@ const view = (model, actions) =>
             cursor: "move",
             position: "absolute",
             padding: "10px",
-            left: `${model.position.x - model.position.offsetX}px`,
-            top: `${model.position.y - model.position.offsetY}px`,
+            left: model.position.x - model.position.offsetX + "px",
+            top: model.position.y - model.position.offsetY + "px",
             backgroundColor: model.dragging ? "gold" : "deepskyblue"
         }}
     >Drag Me!
@@ -246,46 +246,44 @@ app({
         * [href](#href)
 
 ## jsx
-Using the [jsx pragma](https://babeljs.io/docs/plugins/transform-react-jsx/).
+Via [`.babelrc`](https://babeljs.io/docs/usage/babelrc/).
+```
+{
+    "plugins": [
+        [ "transform-react-jsx", { "pragma": "h" } ]
+    ]
+}
+```
+
+Alternatively, use the [jsx pragma](https://babeljs.io/docs/plugins/transform-react-jsx/).
+
 ```js
 import { h, app } from "hyperapp"
 /** @jsx h */
 ```
 
-Via [`.babelrc`](https://babeljs.io/docs/usage/babelrc/).
-```
-{
-    "presets": ["es2015", "react"],
-    "plugins": [
-        [
-            "transform-react-jsx",
-            {
-                "pragma": "h"
-            }
-        ]
-    ]
-}
-```
+Bundle with [Browserify], [Webpack], [Rollup], etc.
+
+<details>
+<summary><i>Example</i></summary>
 
 <pre>
-browserify \
-    -t babelify index.js \
-    -g uglifyify \
-    -p bundle-collapser/plugin \
-    | uglifyjs > bundle.js
+<a href="https://www.npmjs.com/package/browserify">browserify</a> \
+    -t <a href="https://www.npmjs.com/package/babelify">babelify</a> \
+    -g <a href="https://www.npmjs.com/package/uglifyify">uglifyify</a> \
+    -p <a href="https://www.npmjs.com/package/bundle-collapser">bundle-collapser/plugin</a> index.js | <a href="https://www.npmjs.com/package/uglify-js">uglifyjs</a> > bundle.js
 </pre>
 
-transform-react-jsx [babel-plugin-transform-react-jsx]()
+[See gist](https://gist.github.com/jbucaran/21bbf0bbb0fe97345505664883100706)
 
-The steps above assume you have an ES2015 build set up using babel with [Webpack] or [Rollup].
+</details>
 
 ## hyperx
-HyperApp can be used
+HyperApp can be used with ES6 [template](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) functions using [Hyperx].
 
 <pre>
 npm i <a href=https://npmjs.com/package/hyperx>hyperx</a>
 </pre>
-
 
 ```js
 const { h, app } = require("hyperapp")
@@ -298,13 +296,20 @@ app({
 })
 ```
 
+<details>
+<summary><i>Example</i></summary>
 
 <pre>
-browserify -t <a href=https://github.com/substack/hyperxify>hyperxify</a> -g <a href=https://github.com/hughsk/uglifyify>uglifyify</a> index.js | <a href=https://www.npmjs.com/package/uglifyjs>uglifyjs</a> > bundle.js
+<a href="https://www.npmjs.com/package/browserify">browserify</a> \
+    -t <a href="https://www.npmjs.com/package/hyperxify">hyperxify</a> \
+    -t <a href="https://www.npmjs.com/package/babelify">babelify</a> \
+    -g <a href="https://www.npmjs.com/package/uglifyify">uglifyify</a> \
+    -p <a href="https://www.npmjs.com/package/bundle-collapser">bundle-collapser/plugin</a> index.js | <a href="https://www.npmjs.com/package/uglify-js">uglifyjs</a> > bundle.js
 </pre>
 
+[See gist](https://gist.github.com/jbucaran/48c1edb4fb0ea1aa5415b6686cc7fb45)
+</details>
 
-`html` is a [Hyperx](https://github.com/substack/hyperx)-based [template](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) function.
 
 ## app
 Use `app` to start the app.

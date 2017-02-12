@@ -58,7 +58,7 @@ module.exports = function (options) {
             }
         }
 
-        return views["/"]
+        return routes["/"]
     }
 
     function regexify(path) {

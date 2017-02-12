@@ -1,14 +1,14 @@
 module.exports = function (options) {
-    var view = options.view
+    var routes = options.view
     var render = options.render
 
     function setLocation(data) {
-        render(route(view, data))
+        render(match(routes, data))
         history.pushState({}, "", data)
     }
 
     window.addEventListener("popstate", function () {
-        render(route(view, location.pathname))
+        render(match(routes, location.pathname))
     })
 
     window.addEventListener("click", function (e) {
@@ -36,9 +36,9 @@ module.exports = function (options) {
         }
     })
 
-    render(route(view, location.pathname))
+    render(match(routes, location.pathname))
 
-    function route(routes, path) {
+    function match(routes, path) {
         for (var route in routes) {
             var re = regexify(route), params = {}, match
 
@@ -48,8 +48,10 @@ module.exports = function (options) {
                 }
 
                 match = function (model, actions) {
-                    actions.setLocation = setLocation
-                    return routes[route](model, actions, params, setLocation)
+                    if (actions) {
+                        actions.setLocation = setLocation
+                    }
+                    return routes[route](model, actions, params)
                 }
             })
 

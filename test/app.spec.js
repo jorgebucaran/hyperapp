@@ -90,14 +90,16 @@ describe("App", () => {
     });
 
     it.skip("boots application on domcontentloaded", () => {
-        // console.log(">", document.readyState)
-        // window.document.readyState = "loading"
-        // console.log(">", document.readyState)
-        // app({
-        //     model: 0
-        // })
-        // fireDOMLoaded()
-        // expect(0).toEqual(0)
+        /*
+        console.log(">", document.readyState)
+        window.document.readyState = "loading"
+        console.log(">", document.readyState)
+        app({
+            model: 0
+        })
+        fireDOMLoaded()
+        expect(0).toEqual(0)
+        */
     })
 })
 
@@ -124,6 +126,24 @@ describe("Views", () => {
         expect(el.innerHTML).toEqual("inside div")
     })
 
+    it("allows data to be null", () => {
+        const view = (model) => h("div", undefined, "inside div")
+        app({ view })
+        var el = document.getElementsByTagName("div")[0]
+
+        expect(el).not.toBe(null)
+        expect(el.innerHTML).toEqual("<div>inside div</div>")
+    })
+
+    it("allows tag to be a function", () => {
+        const view = (model) => h(_ => h("div", { id: "test" }, "component"), undefined)
+        app({ view })
+        var el = document.getElementById("test")
+
+        expect(el).not.toBe(null)
+        expect(el.innerHTML).toEqual("component")
+    })
+
     it("sets bool attributes", () => {
         const view = (model) => h("div", { id: "test", dummy: false }, "inside div")
         app({ view })
@@ -143,7 +163,9 @@ describe("Views", () => {
         const view = model => h("div", model === 0 ?
             ({
                 id: "test",
-                style: { color: "red" }
+                className: "foo",
+                style: { color: "red" },
+                foo: true
             }) :
             ({
                 id: "test"
@@ -254,6 +276,22 @@ describe("Hooks", () => {
         expect(guard).toEqual("effect error")
     })
 
+    it("throws when onError handler is not given", () => {
+        const effects = {
+            add: (model, msg, data, error) => {
+                try {
+                    error("no error handler")
+                } catch (e) {
+                    expect(e).toEqual("no error handler")
+                }
+            }
+        }
+
+        app({ model, view, effects, subscriptions })
+
+        fireDOMLoaded()
+    })
+
 })
 
 describe("Lifecycle events", () => {
@@ -302,16 +340,16 @@ describe("Lifecycle events", () => {
                 <li>2</li>
                 <li>3</li>
                 <li>4</li>
-                <li onremove=${e => guard = e}>5</li>
+                <li onremove=${e => guard = e}>foo</li>
             </ul>`
 
         const b = html`
             <ul>
-                <li>item 1</li>
-                <li>hello!</li>
+                <li>foo</li>
+                <li>bar</li>
             </ul>`
 
-        const view = (model) => html`${model === 0 ? a : b}`
+        const view = model => html`${model === 0 ? a : b}`
 
         app({ model, view, update, subscriptions })
 

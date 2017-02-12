@@ -1,6 +1,8 @@
 /* global beforeEach, describe, it, expect */
 
-const { app, html, h } = require("../")
+const { app, h } = require("../")
+const hyperx = require("hyperx")
+const html = hyperx(h)
 
 function fireDOMLoaded() {
     const event = document.createEvent("Event")
@@ -9,7 +11,7 @@ function fireDOMLoaded() {
 }
 
 beforeEach(() => {
-    document.body.innerHTML = ''
+    document.body.innerHTML = ""
 })
 
 describe("App", () => {

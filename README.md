@@ -347,7 +347,7 @@ Reducers have the signature `(model, data, params)`:
 * `model` is the current model.
 * `data` is the data sent to the reducer.
 
-When using the [Router](#router), the view receives additionally
+When using the [Router](#router), the view receives an additional argument:
 
 <a name="params"></a>
 
@@ -559,16 +559,14 @@ import { h, app, router } from "hyperapp"
 app({ view, router })
 ```
 
-When using the router, the `view` must be an object that consists of routes, each with a corresponding view function.
+When using the router, `view` must be an object that consists of routes, each with a corresponding view function.
 
 ```js
-app({
-    view: {
-        "/": (model, actions) => {},
-        "/about": (model, actions) => {},
-        "/:key": (model, actions, params) => {}
-    }
-})
+view: {
+    "/": (model, actions) => {},
+    "/about": (model, actions) => {},
+    "/:key": (model, actions, params) => {}
+}
 ```
 
 <details>
@@ -597,10 +595,8 @@ app({
 
 * `/:key` matches a route using the regular expression `[A-Za-z0-9]+`. The matched key is passed to the route's view function via [`params`](#params).
 
-> The router path syntax is loosely based in the same syntax used in [Express](https://expressjs.com/en/guide/routing.html).
-
 ### actions.setLocation
-A special action available when using the [Router](#router). Use `setLocation(path)` to update the [location.pathname](https://developer.mozilla.org/en-US/docs/Web/API/Location). If the path matches an existing route, the corresponding view will be rendered.
+A special action available when using the [Router](#router). Use `actions.setLocation(path)` to update the [location.pathname](https://developer.mozilla.org/en-US/docs/Web/API/Location). If the path matches an existing route, the corresponding view will be rendered.
 
 <details>
 <summary><i>Example</i></summary>
@@ -613,7 +609,6 @@ const Page = ({ title, target, onclick }) =>
     </div>
 
 app({
-    router,
     view: {
         "/": (model, actions) =>
             <Page
@@ -628,7 +623,8 @@ app({
                 target="Home"
                 onclick={_ => actions.setLocation("/")}>
             </Page>
-    }
+    },
+    router
 })
 ```
 
@@ -656,7 +652,8 @@ app({
                 <h1>About</h1>
                 <a href="/">Home</a>
             </div>
-    }
+    },
+    router
 })
 ```
 

@@ -22,6 +22,7 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "hyperx": "^2.0.5",
     "jest": "^18.1.0",
     "rollup": "^0.41.4",
     "rollup-plugin-commonjs": "^7.0.0",

@@ -279,7 +279,7 @@ Bundle with [Browserify], [Webpack], [Rollup], etc.
 </details>
 
 ## hyperx
-HyperApp can be used with ES6 [template](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) functions using [Hyperx].
+HyperApp can be used with ES6 [template functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) via [Hyperx].
 
 <pre>
 npm i <a href=https://npmjs.com/package/hyperx>hyperx</a>
@@ -309,7 +309,6 @@ app({
 
 [See gist](https://gist.github.com/jbucaran/48c1edb4fb0ea1aa5415b6686cc7fb45)
 </details>
-
 
 ## app
 Use `app` to start the app.

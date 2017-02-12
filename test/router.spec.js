@@ -110,6 +110,8 @@ describe("Router", () => {
     })
 
     it("intercepts href clicks", done => {
+        // TODO: Divide href tests for simpler upkeep
+
         function fireClick(options) {
             const event = document.createEvent("Event")
 
@@ -124,13 +126,13 @@ describe("Router", () => {
         }
 
         window.location.pathname = "/"
-        window.location.host = "foo"
+        window.location.host = "hyperapp"
 
         router({
             view: {
                 "/": Function.prototype,
                 "/:key": (model, actions, { key }) => {
-                    expect(key).toBe("baz")
+                    expect(key).toBe("foo")
                     done()
                 }
             },
@@ -142,12 +144,27 @@ describe("Router", () => {
         fireClick({ ctrlKey: true })
         fireClick({ shiftKey: true })
 
+        const a = document.createElement("a")
+        a.id = "bar"
+        document.body.appendChild(a)
+        // a.scrollIntoView = _ => expect(0).toBe(0)
+
+        fireClick({
+            target: {
+                hash: "#bar",
+                localName: "a",
+                host: "hyperapp",
+                hasAttribute: Function.prototype
+            }
+        })
+
         fireClick({
             target: {
                 parentNode: {
+                    hash: "",
                     localName: "a",
-                    host: "foo",
-                    pathname: "/baz",
+                    host: "hyperapp",
+                    pathname: "/foo",
                     hasAttribute: Function.prototype
                 }
             }

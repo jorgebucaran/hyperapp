@@ -89,17 +89,27 @@ describe("App", () => {
         expect(document.getElementsByTagName('p')[0].innerHTML).toEqual(secondValue)
     });
 
-    it.skip("boots application on domcontentloaded", () => {
-        /*
-        console.log(">", document.readyState)
-        window.document.readyState = "loading"
-        console.log(">", document.readyState)
-        app({
-            model: 0
+    it("boots application on domcontentloaded", done => {
+        Object.defineProperty(document, "readyState", {
+            writable: true
         })
+
+        window.document.readyState = "loading"
+
+        const model = "foo"
+
+        app({
+            model,
+            subscriptions: [_ => {
+                expect(model).toEqual("foo")
+                done()
+            }]
+        })
+
+        window.document.readyState = "complete"
+
         fireDOMLoaded()
-        expect(0).toEqual(0)
-        */
+
     })
 })
 

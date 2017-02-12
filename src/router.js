@@ -72,4 +72,3 @@ module.exports = function (options) {
         return { re: re, keys: keys }
     }
 }
-

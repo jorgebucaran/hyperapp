@@ -12,24 +12,15 @@ npm i <a href=https://npmjs.com/package/hyperapp>hyperapp</a>
 </pre>
 
 ## Usage
-CommonJS
-
-```js
-const { h, app } = require("hyperapp")
-```
-
 ES6
 ```js
 import { h, app } from "hyperapp"
 ```
 
-## Bundle
-With [Browserify](https://github.com/substack/node-browserify).
-<pre>
-browserify -t <a href=https://github.com/substack/hyperxify>hyperxify</a> -g <a href=https://github.com/hughsk/uglifyify>uglifyify</a> index.js | <a href=https://www.npmjs.com/package/uglifyjs>uglifyjs</a> > bundle.js
-</pre>
-
-Or [Webpack](https://webpack.js.org/)/[Rollup](http://rollupjs.org/).
+CommonJS
+```js
+const { h, app } = require("hyperapp")
+```
 
 ## CDN
 HyperApp is also distributed as a minified file, hosted on a CDN.
@@ -38,7 +29,13 @@ HyperApp is also distributed as a minified file, hosted on a CDN.
 <script src="https://unpkg.com/hyperapp/dist/hyperapp.js"></script>
 ```
 
-For a more thorough introduction and advanced usage see the [HyperApp User Guide](https://www.gitbook.com/book/hyperapp/hyperapp).
+## Bundle
+[Browserify]: https://github.com/substack/node-browserify
+[Webpack]: https://webpack.js.org/
+[Rollup]: http://rollupjs.org/
+With [Browserify], [Webpack], [Rollup], etc.
+
+See the [HyperApp User Guide](https://www.gitbook.com/book/hyperapp/hyperapp) for complete instructions.
 
 ## Examples
 <details>
@@ -53,7 +50,6 @@ app({
 
 [View online](http://codepen.io/jbucaran/pen/ggjBPE?editors=0010)
 </details>
-
 
 <details>
 <summary>Counter</summary>
@@ -77,7 +73,6 @@ app({
 [View online](http://codepen.io/jbucaran/pen/PWdwaB?editors=0010)
 </details>
 
-
 <details>
 <summary>Input</summary>
 
@@ -97,7 +92,6 @@ app({
 
 [View online](http://codepen.io/jbucaran/pen/qRMEGX?editors=0010)
 </details>
-
 
 <details>
 <summary>Drag & Drop</summary>
@@ -149,7 +143,6 @@ app({ model, view, update, subscriptions })
 [View online](http://codepen.io/jbucaran/pen/ggQNZO?editors=0010)
 </details>
 
-
 <details>
 <summary>Todo</summary>
 
@@ -163,14 +156,14 @@ app({
         input: "",
         placeholder: "Add new todo!"
     },
-    view: (model, msg) =>
+    view: (model, actions) =>
         <div>
             <h1>Todo</h1>
             <p>
                 Show: {Object.keys(FilterInfo)
                     .filter(key => FilterInfo[key] !== model.filter)
                     .map(key =>
-                        <span><a data-no-routing href="#" onclick={_ => msg.filter({
+                        <span><a data-no-routing href="#" onclick={_ => actions.filter({
                             value: FilterInfo[key]
                         })}>{key}</a> </span>
                     )}
@@ -189,7 +182,7 @@ app({
                             color: t.done ? "gray" : "black",
                             textDecoration: t.done ? "line-through" : "none"
                         }}
-                            onclick={e => msg.toggle({
+                            onclick={e => actions.toggle({
                                 value: t.done,
                                 id: t.id
                             })}>{t.value}
@@ -199,12 +192,12 @@ app({
             <p>
                 <input
                     type="text"
-                    onkeyup={e => e.keyCode === 13 ? msg.add() : ""}
-                    oninput={e => msg.input({ value: e.target.value })}
+                    onkeyup={e => e.keyCode === 13 ? actions.add() : ""}
+                    oninput={e => actions.input({ value: e.target.value })}
                     value={model.input}
                     placeholder={model.placeholder}
                 />{" "}
-                <button onclick={msg.add}>add</button>
+                <button onclick={actions.add}>add</button>
             </p>
         </div>,
     update: {
@@ -235,7 +228,7 @@ app({
 
 ## Documentation
 * [jsx](#jsx)
-* [html](#html)
+* [hyperx](#hyperx)
 * [app](#app)
     * [model](#model)
     * [update](#update)
@@ -253,35 +246,51 @@ app({
         * [href](#href)
 
 ## jsx
-Import the `h` function and include the [jsx pragma](https://babeljs.io/docs/plugins/transform-react-jsx/), in any order.
-
+Using the [jsx pragma](https://babeljs.io/docs/plugins/transform-react-jsx/).
 ```js
 import { h, app } from "hyperapp"
 /** @jsx h */
-
-app({
-    model: "Hi.",
-    view: model => <h1>{model}</h1>
-})
 ```
 
-[View online](http://codepen.io/jbucaran/pen/ggjBPE?editors=0010)
-
-Or, add it to your [`.babelrc`](https://babeljs.io/docs/usage/babelrc/) configuration.
-
+Via [`.babelrc`](https://babeljs.io/docs/usage/babelrc/).
 ```
 {
+    "presets": ["es2015", "react"],
     "plugins": [
-        ["transform-react-jsx", { "pragma": "h" }]
+        [
+            "transform-react-jsx",
+            {
+                "pragma": "h"
+            }
+        ]
     ]
 }
 ```
 
-## html
-To use HyperApp without jsx, import the `html` function instead.
+<pre>
+browserify \
+    -t babelify index.js \
+    -g uglifyify \
+    -p bundle-collapser/plugin \
+    | uglifyjs > bundle.js
+</pre>
+
+transform-react-jsx [babel-plugin-transform-react-jsx]()
+
+The steps above assume you have an ES2015 build set up using babel with [Webpack] or [Rollup].
+
+## hyperx
+HyperApp can be used
+
+<pre>
+npm i <a href=https://npmjs.com/package/hyperx>hyperx</a>
+</pre>
+
 
 ```js
-const { html, app } = require("hyperapp")
+const { h, app } = require("hyperapp")
+const hyperx = require("hyperx")
+const html = hyperx(h)
 
 app({
     model: "Hi.",
@@ -289,7 +298,11 @@ app({
 })
 ```
 
-[View online](http://codepen.io/jbucaran/pen/Qdwpxy?editors=0010)
+
+<pre>
+browserify -t <a href=https://github.com/substack/hyperxify>hyperxify</a> -g <a href=https://github.com/hughsk/uglifyify>uglifyify</a> index.js | <a href=https://www.npmjs.com/package/uglifyjs>uglifyjs</a> > bundle.js
+</pre>
+
 
 `html` is a [Hyperx](https://github.com/substack/hyperx)-based [template](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) function.
 
@@ -628,13 +641,13 @@ HyperApp intercepts all `<a href="/path">...</a>` clicks and calls `action.setLo
 ```js
 app({
     view: {
-        "/": (model, msg) =>
+        "/": (model, actions) =>
             <div>
                 <h1>Home</h1>
                 <a href="/about">About</a>
             </div>
         ,
-        "/about": (model, msg) =>
+        "/about": (model, actions) =>
             <div>
                 <h1>About</h1>
                 <a href="/">Home</a>

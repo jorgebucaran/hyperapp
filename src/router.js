@@ -25,13 +25,13 @@ module.exports = function (options) {
         if (target && target.host === location.host
             && !target.hasAttribute("data-no-routing")) {
 
-            var element = target.hash === "" ? element : document.querySelector(target.hash)
+            var element = document.querySelector(target.hash === "" ? element : target.hash)
+
             if (element) {
                 element.scrollIntoView(true)
-
             } else {
-                setLocation(target.pathname)
                 e.preventDefault()
+                setLocation(target.pathname)
             }
         }
     })
@@ -48,9 +48,7 @@ module.exports = function (options) {
                 }
 
                 match = function (model, actions) {
-                    if (actions) {
-                        actions.setLocation = setLocation
-                    }
+                    actions.setLocation = setLocation
                     return routes[route](model, actions, params)
                 }
             })

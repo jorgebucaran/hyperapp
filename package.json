@@ -1,8 +1,9 @@
 {
   "name": "hyperapp",
   "description": "1kb JavaScript library for building modern UI applications",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "src/index.js",
+  "browser": "dist/hyperapp.js",
   "license": "MIT",
   "repository": "hyperapp/hyperapp",
   "author": "Jorge Bucaran",
@@ -17,12 +18,11 @@
   ],
   "scripts": {
     "test": "jest --coverage --colors --cache",
-    "build": "rollup -n hyperapp -cmf umd -i src/index.js -o dist/hyperapp.js"
+    "build": "rollup -n hyperapp -cmf iife -i src/index.js -o dist/hyperapp.js"
   },
-  "dependencies": {
-    "hyperx": "^2.0.5"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "hyperx": "^2.0.5",
     "jest": "^18.1.0",
     "rollup": "^0.41.4",
     "rollup-plugin-commonjs": "^7.0.0",

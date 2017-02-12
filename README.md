@@ -4,6 +4,12 @@
 [![Codecov](https://img.shields.io/codecov/c/github/hyperapp/hyperapp/master.svg)](https://codecov.io/gh/hyperapp/hyperapp)
 [![Slack](https://hyperappjs.herokuapp.com/badge.svg)](https://hyperappjs.herokuapp.com)
 
+[Browserify]: https://github.com/substack/node-browserify
+[Webpack]: https://webpack.js.org/
+[Rollup]: http://rollupjs.org/
+[Babel]: http://babeljs.io/docs/setup/
+[Hyperx]: https://github.com/substack/hyperx
+
 HyperApp is a `1kb` JavaScript library for building modern UI applications.
 
 ## Install
@@ -12,24 +18,15 @@ npm i <a href=https://npmjs.com/package/hyperapp>hyperapp</a>
 </pre>
 
 ## Usage
-CommonJS
-
-```js
-const { h, app } = require("hyperapp")
-```
-
 ES6
 ```js
 import { h, app } from "hyperapp"
 ```
 
-## Bundle
-With [Browserify](https://github.com/substack/node-browserify).
-<pre>
-browserify -t <a href=https://github.com/substack/hyperxify>hyperxify</a> -g <a href=https://github.com/hughsk/uglifyify>uglifyify</a> index.js | <a href=https://www.npmjs.com/package/uglifyjs>uglifyjs</a> > bundle.js
-</pre>
-
-Or [Webpack](https://webpack.js.org/)/[Rollup](http://rollupjs.org/).
+CommonJS
+```js
+const { h, app } = require("hyperapp")
+```
 
 ## CDN
 HyperApp is also distributed as a minified file, hosted on a CDN.
@@ -38,7 +35,7 @@ HyperApp is also distributed as a minified file, hosted on a CDN.
 <script src="https://unpkg.com/hyperapp/dist/hyperapp.js"></script>
 ```
 
-For a more thorough introduction and advanced usage see the [HyperApp User Guide](https://www.gitbook.com/book/hyperapp/hyperapp).
+For a complete introduction to HyperApp see the [User Guide](https://www.gitbook.com/book/hyperapp/hyperapp).
 
 ## Examples
 <details>
@@ -53,7 +50,6 @@ app({
 
 [View online](http://codepen.io/jbucaran/pen/ggjBPE?editors=0010)
 </details>
-
 
 <details>
 <summary>Counter</summary>
@@ -77,7 +73,6 @@ app({
 [View online](http://codepen.io/jbucaran/pen/PWdwaB?editors=0010)
 </details>
 
-
 <details>
 <summary>Input</summary>
 
@@ -97,7 +92,6 @@ app({
 
 [View online](http://codepen.io/jbucaran/pen/qRMEGX?editors=0010)
 </details>
-
 
 <details>
 <summary>Drag & Drop</summary>
@@ -122,8 +116,8 @@ const view = (model, actions) =>
             cursor: "move",
             position: "absolute",
             padding: "10px",
-            left: `${model.position.x - model.position.offsetX}px`,
-            top: `${model.position.y - model.position.offsetY}px`,
+            left: model.position.x - model.position.offsetX + "px",
+            top: model.position.y - model.position.offsetY + "px",
             backgroundColor: model.dragging ? "gold" : "deepskyblue"
         }}
     >Drag Me!
@@ -149,7 +143,6 @@ app({ model, view, update, subscriptions })
 [View online](http://codepen.io/jbucaran/pen/ggQNZO?editors=0010)
 </details>
 
-
 <details>
 <summary>Todo</summary>
 
@@ -163,14 +156,14 @@ app({
         input: "",
         placeholder: "Add new todo!"
     },
-    view: (model, msg) =>
+    view: (model, actions) =>
         <div>
             <h1>Todo</h1>
             <p>
                 Show: {Object.keys(FilterInfo)
                     .filter(key => FilterInfo[key] !== model.filter)
                     .map(key =>
-                        <span><a data-no-routing href="#" onclick={_ => msg.filter({
+                        <span><a data-no-routing href="#" onclick={_ => actions.filter({
                             value: FilterInfo[key]
                         })}>{key}</a> </span>
                     )}
@@ -189,7 +182,7 @@ app({
                             color: t.done ? "gray" : "black",
                             textDecoration: t.done ? "line-through" : "none"
                         }}
-                            onclick={e => msg.toggle({
+                            onclick={e => actions.toggle({
                                 value: t.done,
                                 id: t.id
                             })}>{t.value}
@@ -199,12 +192,12 @@ app({
             <p>
                 <input
                     type="text"
-                    onkeyup={e => e.keyCode === 13 ? msg.add() : ""}
-                    oninput={e => msg.input({ value: e.target.value })}
+                    onkeyup={e => e.keyCode === 13 ? actions.add() : ""}
+                    oninput={e => actions.input({ value: e.target.value })}
                     value={model.input}
                     placeholder={model.placeholder}
                 />{" "}
-                <button onclick={msg.add}>add</button>
+                <button onclick={actions.add}>add</button>
             </p>
         </div>,
     update: {
@@ -235,7 +228,7 @@ app({
 
 ## Documentation
 * [jsx](#jsx)
-* [html](#html)
+* [hyperx](#hyperx)
 * [app](#app)
     * [model](#model)
     * [update](#update)
@@ -253,35 +246,49 @@ app({
         * [href](#href)
 
 ## jsx
-Import the `h` function and include the [jsx pragma](https://babeljs.io/docs/plugins/transform-react-jsx/), in any order.
-
-```js
-import { h, app } from "hyperapp"
-/** @jsx h */
-
-app({
-    model: "Hi.",
-    view: model => <h1>{model}</h1>
-})
-```
-
-[View online](http://codepen.io/jbucaran/pen/ggjBPE?editors=0010)
-
-Or, add it to your [`.babelrc`](https://babeljs.io/docs/usage/babelrc/) configuration.
-
+Via [`.babelrc`](https://babeljs.io/docs/usage/babelrc/).
 ```
 {
     "plugins": [
-        ["transform-react-jsx", { "pragma": "h" }]
+        [ "transform-react-jsx", { "pragma": "h" } ]
     ]
 }
 ```
 
-## html
-To use HyperApp without jsx, import the `html` function instead.
+Alternatively, use the [jsx pragma](https://babeljs.io/docs/plugins/transform-react-jsx/).
 
 ```js
-const { html, app } = require("hyperapp")
+import { h, app } from "hyperapp"
+/** @jsx h */
+```
+
+Bundle with [Browserify], [Webpack], [Rollup], etc.
+
+<details>
+<summary><i>Example</i></summary>
+
+<pre>
+<a href="https://www.npmjs.com/package/browserify">browserify</a> \
+    -t <a href="https://www.npmjs.com/package/babelify">babelify</a> \
+    -g <a href="https://www.npmjs.com/package/uglifyify">uglifyify</a> \
+    -p <a href="https://www.npmjs.com/package/bundle-collapser">bundle-collapser/plugin</a> index.js | <a href="https://www.npmjs.com/package/uglify-js">uglifyjs</a> > bundle.js
+</pre>
+
+[See gist](https://gist.github.com/jbucaran/21bbf0bbb0fe97345505664883100706)
+
+</details>
+
+## hyperx
+HyperApp can be used with ES6 [template functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) via [Hyperx].
+
+<pre>
+npm i <a href=https://npmjs.com/package/hyperx>hyperx</a>
+</pre>
+
+```js
+const { h, app } = require("hyperapp")
+const hyperx = require("hyperx")
+const html = hyperx(h)
 
 app({
     model: "Hi.",
@@ -289,9 +296,19 @@ app({
 })
 ```
 
-[View online](http://codepen.io/jbucaran/pen/Qdwpxy?editors=0010)
+<details>
+<summary><i>Example</i></summary>
 
-`html` is a [Hyperx](https://github.com/substack/hyperx)-based [template](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) function.
+<pre>
+<a href="https://www.npmjs.com/package/browserify">browserify</a> \
+    -t <a href="https://www.npmjs.com/package/hyperxify">hyperxify</a> \
+    -t <a href="https://www.npmjs.com/package/babelify">babelify</a> \
+    -g <a href="https://www.npmjs.com/package/uglifyify">uglifyify</a> \
+    -p <a href="https://www.npmjs.com/package/bundle-collapser">bundle-collapser/plugin</a> index.js | <a href="https://www.npmjs.com/package/uglify-js">uglifyjs</a> > bundle.js
+</pre>
+
+[See gist](https://gist.github.com/jbucaran/48c1edb4fb0ea1aa5415b6686cc7fb45)
+</details>
 
 ## app
 Use `app` to start the app.
@@ -330,7 +347,7 @@ Reducers have the signature `(model, data, params)`:
 * `model` is the current model.
 * `data` is the data sent to the reducer.
 
-When using the [Router](#router), the view receives additionally
+When using the [Router](#router), the view receives an additional argument:
 
 <a name="params"></a>
 
@@ -542,16 +559,14 @@ import { h, app, router } from "hyperapp"
 app({ view, router })
 ```
 
-When using the router, the `view` must be an object that consists of routes, each with a corresponding view function.
+When using the router, `view` must be an object that consists of routes, each with a corresponding view function.
 
 ```js
-app({
-    view: {
-        "/": (model, actions) => {},
-        "/about": (model, actions) => {},
-        "/:key": (model, actions, params) => {}
-    }
-})
+view: {
+    "/": (model, actions) => {},
+    "/about": (model, actions) => {},
+    "/:key": (model, actions, params) => {}
+}
 ```
 
 <details>
@@ -580,10 +595,8 @@ app({
 
 * `/:key` matches a route using the regular expression `[A-Za-z0-9]+`. The matched key is passed to the route's view function via [`params`](#params).
 
-> The router path syntax is loosely based in the same syntax used in [Express](https://expressjs.com/en/guide/routing.html).
-
 ### actions.setLocation
-A special action available when using the [Router](#router). Use `setLocation(path)` to update the [location.pathname](https://developer.mozilla.org/en-US/docs/Web/API/Location). If the path matches an existing route, the corresponding view will be rendered.
+A special action available when using the [Router](#router). Use `actions.setLocation(path)` to update the [location.pathname](https://developer.mozilla.org/en-US/docs/Web/API/Location). If the path matches an existing route, the corresponding view will be rendered.
 
 <details>
 <summary><i>Example</i></summary>
@@ -596,7 +609,6 @@ const Page = ({ title, target, onclick }) =>
     </div>
 
 app({
-    router,
     view: {
         "/": (model, actions) =>
             <Page
@@ -611,7 +623,8 @@ app({
                 target="Home"
                 onclick={_ => actions.setLocation("/")}>
             </Page>
-    }
+    },
+    router
 })
 ```
 
@@ -628,18 +641,19 @@ HyperApp intercepts all `<a href="/path">...</a>` clicks and calls `action.setLo
 ```js
 app({
     view: {
-        "/": (model, msg) =>
+        "/": (model, actions) =>
             <div>
                 <h1>Home</h1>
                 <a href="/about">About</a>
             </div>
         ,
-        "/about": (model, msg) =>
+        "/about": (model, actions) =>
             <div>
                 <h1>About</h1>
                 <a href="/">Home</a>
             </div>
-    }
+    },
+    router
 })
 ```
 

@@ -19,12 +19,12 @@ npm i <a href=https://npmjs.com/package/hyperapp>hyperapp</a>
 
 ## Usage
 ES6
-```js
+```jsx
 import { h, app } from "hyperapp"
 ```
 
 CommonJS
-```js
+```jsx
 const { h, app } = require("hyperapp")
 ```
 
@@ -41,7 +41,7 @@ For a complete introduction to HyperApp see the [User Guide](https://www.gitbook
 <details>
 <summary>Hello World</summary>
 
-```js
+```jsx
 app({
     model: "Hi.",
     view: model => <h1>{model}</h1>
@@ -54,7 +54,7 @@ app({
 <details>
 <summary>Counter</summary>
 
-```js
+```jsx
 app({
     model: 0,
     update: {
@@ -70,13 +70,13 @@ app({
 })
 ```
 
-[View online](http://codepen.io/jbucaran/pen/PWdwaB?editors=0010)
+[View online](http://codepen.io/jbucaran/pen/zNxZLP?editors=0010)
 </details>
 
 <details>
 <summary>Input</summary>
 
-```js
+```jsx
 app({
     model: "",
     update: {
@@ -96,7 +96,7 @@ app({
 <details>
 <summary>Drag & Drop</summary>
 
-```js
+```jsx
 const model = {
     dragging: false,
     position: {
@@ -140,13 +140,13 @@ const subscriptions = [
 app({ model, view, update, subscriptions })
 ```
 
-[View online](http://codepen.io/jbucaran/pen/ggQNZO?editors=0010)
+[View online](http://codepen.io/jbucaran/pen/apzYvo?editors=0010)
 </details>
 
 <details>
 <summary>Todo</summary>
 
-```js
+```jsx
 const FilterInfo = { All: 0, Todo: 1, Done: 2 }
 
 app({
@@ -221,7 +221,7 @@ app({
 })
 ```
 
-[View online](http://codepen.io/jbucaran/pen/QdVwQo?editors=0010)
+[View online](http://codepen.io/jbucaran/pen/zNxRLy?editors=0010)
 </details>
 
 [See more examples](https://hyperapp.gomix.me/)
@@ -257,7 +257,7 @@ Via [`.babelrc`](https://babeljs.io/docs/usage/babelrc/).
 
 Alternatively, use the [jsx pragma](https://babeljs.io/docs/plugins/transform-react-jsx/).
 
-```js
+```jsx
 import { h, app } from "hyperapp"
 /** @jsx h */
 ```
@@ -285,7 +285,7 @@ HyperApp can be used with ES6 [template functions](https://developer.mozilla.org
 npm i <a href=https://npmjs.com/package/hyperx>hyperx</a>
 </pre>
 
-```js
+```jsx
 const { h, app } = require("hyperapp")
 const hyperx = require("hyperx")
 const html = hyperx(h)
@@ -331,7 +331,7 @@ A primitive type, array or object that represents the state of your application.
 ### update
 An object composed of functions often called _reducers_. A reducer describes how to derive the next model from the current model.
 
-```js
+```jsx
 const update = {
     increment: model => model + 1,
     decrement: model => model - 1
@@ -363,7 +363,7 @@ A view has the signature `(model, actions)`:
 
 To use actions:
 
-```js
+```jsx
 actions.action(data)
 ```
 
@@ -373,7 +373,7 @@ actions.action(data)
 <details>
 <summary><i>Example</i></summary>
 
-```js
+```jsx
 app({
     model: true,
     view: (model, actions) => <button onclick={actions.toggle}>{model+""}</button>,
@@ -393,7 +393,7 @@ Functions that can be attached to your virtual HTML nodes to access their real D
 * onupdate(e : `HTMLElement`)
 * onremove(e : `HTMLElement`)
 
-```js
+```jsx
 app({
     view: _ => <div oncreate={e => console.log(e)}>Hi.</div>
 })
@@ -402,7 +402,7 @@ app({
 <details>
 <summary><i>Example</i></summary>
 
-```js
+```jsx
 const repaint = (canvas, model) => {
     const context = canvas.getContext("2d")
     context.fillStyle = "white"
@@ -443,7 +443,7 @@ Effects have the following signature: `(model, actions, data, error)`.
 <details>
 <summary><i>Example</i></summary>
 
-```js
+```jsx
 const wait = time => new Promise(resolve => setTimeout(_ => resolve(), time))
 
 const model = {
@@ -484,7 +484,7 @@ A subscription has the signature `(model, actions, error)`.
 <details>
 <summary><i>Example</i></summary>
 
-```js
+```jsx
 app({
     model: { x: 0, y: 0 },
     update: {
@@ -519,7 +519,7 @@ Called when you use the `error` function inside a subscription or effect. If you
 <details>
 <summary><i>Example</i></summary>
 
-```js
+```jsx
 app({
     model: true,
     view: (model, actions) =>
@@ -553,7 +553,7 @@ The HTML element container of your application. If none is given, a `div` elemen
 ### router
 HyperApp provides a router out of the box.
 
-```js
+```jsx
 import { h, app, router } from "hyperapp"
 
 app({ view, router })
@@ -561,7 +561,7 @@ app({ view, router })
 
 When using the router, `view` must be an object that consists of routes, each with a corresponding view function.
 
-```js
+```jsx
 view: {
     "/": (model, actions) => {},
     "/about": (model, actions) => {},
@@ -572,7 +572,7 @@ view: {
 <details>
 <summary><i>Example</i></summary>
 
-```js
+```jsx
 const Anchor = ({ href }) => <h1><a href={"/" + href}>{href}</a></h1>
 
 app({
@@ -601,7 +601,7 @@ A special action available when using the [Router](#router). Use `actions.setLoc
 <details>
 <summary><i>Example</i></summary>
 
-```js
+```jsx
 const Page = ({ title, target, onclick }) =>
     <div>
         <h1>{title}</h1>
@@ -638,7 +638,7 @@ HyperApp intercepts all `<a href="/path">...</a>` clicks and calls `action.setLo
 <details>
 <summary><i>Example</i></summary>
 
-```js
+```jsx
 app({
     view: {
         "/": (model, actions) =>

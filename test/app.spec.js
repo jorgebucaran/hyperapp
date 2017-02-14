@@ -379,8 +379,8 @@ describe("Router API", () => {
 
         app({
             model: "beep",
-            router: api => {
-                api.render(model => html`<h1 id="test">${model}</h1>`)
+            router: render => {
+                render(model => html`<h1 id="test">${model}</h1>`)
             }
         })
 
@@ -396,9 +396,7 @@ describe("Router API", () => {
         app({
             view: model => html`<h1 id="test">${model}</h1>`,
             model: "beep",
-            router: api => {
-                api.render(undefined)
-            }
+            router: render => render(undefined)
         })
 
         var el = document.getElementById("test")

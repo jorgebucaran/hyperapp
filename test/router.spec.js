@@ -13,9 +13,7 @@ describe("Router", () => {
 
     function matchRouteWithPath({ view, path, expected }) {
         window.location.pathname = path
-        router({
-            view, render: (match) => expect(match({}, {}, {})).toBe(expected())
-        })
+        router((match) => expect(match({}, {}, {})).toBe(expected()), { view })
     }
 
     it("matches complete routes", () => {
@@ -74,12 +72,11 @@ describe("Router", () => {
         window.history.pushState = (a, b, data) => expect(data).toBe("/foo")
         window.location.pathname = "/"
 
-        router({
+        router(match => match(42, actions), {
             view: {
                 "/": (model, actions) => { },
                 "/:key": (model, actions, { key }) => expect(key).toBe("foo")
-            },
-            render: match => match(42, actions)
+            }
         })
 
         actions.setLocation("/foo")
@@ -94,15 +91,14 @@ describe("Router", () => {
 
         window.location.pathname = "/"
 
-        router({
+        router(match => match(42, {}), {
             view: {
                 "/": Function.prototype,
                 "/:key": (model, _, { key }) => {
                     expect(key).toBe("bar")
                     done()
                 }
-            },
-            render: match => match(42, {})
+            }
         })
 
         window.location.pathname = "/bar"
@@ -128,15 +124,14 @@ describe("Router", () => {
         window.location.pathname = "/"
         window.location.host = "hyperapp"
 
-        router({
+        router(match => match({}, {}), {
             view: {
                 "/": Function.prototype,
                 "/:key": (model, actions, { key }) => {
                     expect(key).toBe("foo")
                     done()
                 }
-            },
-            render: match => match({}, {})
+            }
         })
 
         fireClick({ metaKey: true })

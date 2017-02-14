@@ -1,7 +1,12 @@
 import uglify from "rollup-plugin-uglify"
-import cjs from "rollup-plugin-commonjs"
-import resolve from "rollup-plugin-node-resolve"
 
 export default {
-    plugins: [ cjs(), resolve(), uglify() ]
+    plugins: [
+        uglify({
+            compress: {
+                collapse_vars: true,
+                pure_funcs: ["Object.defineProperty"]
+            }
+        })
+    ]
 }

@@ -1,14 +1,15 @@
 # [hyperapp](https://hyperapp.gomix.me/)
-[![Version](https://img.shields.io/npm/v/hyperapp.svg)](https://www.npmjs.org/package/hyperapp)
-[![TravisCI](https://img.shields.io/travis/hyperapp/hyperapp/master.svg)](https://travis-ci.org/hyperapp/hyperapp)
-[![Codecov](https://img.shields.io/codecov/c/github/hyperapp/hyperapp/master.svg)](https://codecov.io/gh/hyperapp/hyperapp)
-[![Slack](https://hyperappjs.herokuapp.com/badge.svg)](https://hyperappjs.herokuapp.com)
+[![cdnjs](https://img.shields.io/cdnjs/v/hyperapp.svg)](https://cdnjs.com/libraries/hyperapp)
+[![version](https://img.shields.io/npm/v/hyperapp.svg)](https://www.npmjs.org/package/hyperapp)
+[![travis](https://img.shields.io/travis/hyperapp/hyperapp/master.svg)](https://travis-ci.org/hyperapp/hyperapp)
+[![codecov](https://img.shields.io/codecov/c/github/hyperapp/hyperapp/master.svg)](https://codecov.io/gh/hyperapp/hyperapp)
+[![slack](https://hyperappjs.herokuapp.com/badge.svg)](https://hyperappjs.herokuapp.com)
 
 [Browserify]: https://github.com/substack/node-browserify
-[Webpack]: https://webpack.js.org/
-[Rollup]: http://rollupjs.org/
-[Babel]: http://babeljs.io/docs/setup/
-[Hyperx]: https://github.com/substack/hyperx
+[Webpack]: https://github.com/webpack/webpack
+[Rollup]: https://github.com/rollup/rollup
+[hyperx]: https://github.com/substack/hyperx
+[jsx]: https://facebook.github.io/react/docs/introducing-jsx.html
 
 HyperApp is a `1kb` JavaScript library for building modern UI applications.
 
@@ -26,13 +27,6 @@ import { h, app } from "hyperapp"
 CommonJS
 ```jsx
 const { h, app } = require("hyperapp")
-```
-
-## CDN
-HyperApp is also distributed as a minified file, hosted on a CDN.
-
-```html
-<script src="https://unpkg.com/hyperapp/dist/hyperapp.js"></script>
 ```
 
 For a complete introduction to HyperApp see the [User Guide](https://www.gitbook.com/book/hyperapp/hyperapp).
@@ -227,6 +221,7 @@ app({
 [See more examples](https://hyperapp.gomix.me/)
 
 ## Documentation
+* [h](#h)
 * [jsx](#jsx)
 * [hyperx](#hyperx)
 * [app](#app)
@@ -241,49 +236,197 @@ app({
         * [onUpdate](#onupdate)
         * [onError](#onerror)
     * [root](#root)
-    * [Router](#router)
+    * [router](#router)
         * [setLocation](#actionssetlocation)
         * [href](#href)
 
-## jsx
-Via [`.babelrc`](https://babeljs.io/docs/usage/babelrc/).
+## h
+`h` is a virtual [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Element) node factory function.
+
+```jsx
+app({
+    view: _ => h("a", { href: "#" }, "Hi")
+})
 ```
+
+[View online](http://codepen.io/jbucaran/pen/vgvoKq?editors=0010)
+
+A virtual node has the following properties:
+
+| Property   | Type               | Description
+|:----------:|:------------------:|----------------------
+| tag        | String or Function  | The tag name, e.g. `div`. A function that returns a tree of virtual nodes is known as a child component.|
+| data       | Object | An object of DOM attributes, events, properties and lifecycle methods.
+| children   | ...Any?    | An array of children virtual nodes. If a node is a JavaScript [primitive value], it will be rendered as a [text node].
+
+[primitive value]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Primitive_values
+[text node]: https://developer.mozilla.org/en-US/docs/Web/API/Document/createTextNode
+
+## jsx
+[jsx] enables you to mix HTML and JavaScript.
+```jsx
+const link = <a href="#">Hi</a>
+```
+
+is equivalent to:
+```jsx
+ const link = h("a", { href: "#" }, ["Hi"])
+```
+
+To use jsx with HyperApp follow the steps for your chosen module bundler.
+
+<details>
+<summary><a href="https://github.com/substack/node-browserify">Browserify</a></summary>
+
+Create a `.babelrc` file:
+```js
 {
+    "presets": ["es2015"],
     "plugins": [
-        [ "transform-react-jsx", { "pragma": "h" } ]
+        [
+            "transform-react-jsx",
+            {
+                "pragma": "h"
+            }
+        ]
     ]
 }
 ```
 
-Alternatively, use the [jsx pragma](https://babeljs.io/docs/plugins/transform-react-jsx/).
-
-```jsx
-import { h, app } from "hyperapp"
-/** @jsx h */
-```
-
-Bundle with [Browserify], [Webpack], [Rollup], etc.
-
-<details>
-<summary><i>Example</i></summary>
-
+Install development dependencies:
 <pre>
-<a href="https://www.npmjs.com/package/browserify">browserify</a> \
-    -t <a href="https://www.npmjs.com/package/babelify">babelify</a> \
-    -g <a href="https://www.npmjs.com/package/uglifyify">uglifyify</a> \
-    -p <a href="https://www.npmjs.com/package/bundle-collapser">bundle-collapser/plugin</a> index.js | <a href="https://www.npmjs.com/package/uglify-js">uglifyjs</a> > bundle.js
+npm i -S \
+    <a href="https://www.npmjs.com/package/babel-plugin-transform-react-jsx">babel-plugin-transform-react-jsx</a> \
+    <a href="https://www.npmjs.com/package/babel-preset-es2015">babel-preset-es2015</a> \
+    <a href="https://www.npmjs.com/package/babelify">babelify</a> \
+    <a href="https://www.npmjs.com/package/browserify">browserify</a> \
+    <a href="https://www.npmjs.com/package/bundle-collapser">bundle-collapser</a> \
+    <a href="https://www.npmjs.com/package/uglifyify">uglifyify</a> \
+    <a href="https://www.npmjs.com/package/uglifyjs">uglifyjs</a>
 </pre>
 
-[See gist](https://gist.github.com/jbucaran/21bbf0bbb0fe97345505664883100706)
+Bundle your application:
+<pre>
+$(<a href="https://docs.npmjs.com/cli/bin">npm bin</a>)/browserify \
+    -t babelify \
+    -g uglifyify \
+    -p bundle-collapser/plugin index.js | uglifyjs > bundle.js
+</pre>
 
+[See boilerplate](https://gist.github.com/jbucaran/21bbf0bbb0fe97345505664883100706)
+</details>
+
+
+<details>
+<summary><a href="https://github.com/rollup/rollup">Rollup</a></summary>
+
+Create a `.babelrc` file:
+```js
+{
+    "presets": ["es2015-rollup"],
+    "plugins": [
+        [
+            "transform-react-jsx",
+            {
+                "pragma": "h"
+            }
+        ]
+    ]
+}
+```
+
+Create a `rollup.config.js` file:
+```jsx
+import babel from "rollup-plugin-babel"
+import resolve from "rollup-plugin-node-resolve"
+import uglify from "rollup-plugin-uglify"
+
+export default {
+    plugins: [
+        babel(),
+        resolve({
+            jsnext: true
+        }),
+        uglify()
+    ]
+}
+```
+
+Install development dependencies:
+<pre>
+npm i -S \
+    <a href="https://www.npmjs.com/package/babel-plugin-transform-react-jsx">babel-plugin-transform-react-jsx</a> \
+    <a href="https://www.npmjs.com/package/babel-preset-es2015-rollup">babel-preset-es2015-rollup</a> \
+    <a href="https://www.npmjs.com/package/rollup">rollup</a> \
+    <a href="https://www.npmjs.com/package/rollup-plugin-babel">rollup-plugin-babel</a> \
+    <a href="https://www.npmjs.com/package/rollup-plugin-node-resolve">rollup-plugin-node-resolve</a> \
+    <a href="https://www.npmjs.com/package/rollup-plugin-uglify">rollup-plugin-uglify</a>
+</pre>
+
+Bundle your application:
+<pre>
+$(<a href="https://docs.npmjs.com/cli/bin">npm bin</a>)/rollup -cf iife -i index.js -o bundle.js
+</pre>
+
+[See boilerplate](https://gist.github.com/jbucaran/0c0da8f1256a0a66090151cfda777c2c)
+</details>
+
+
+<details>
+<summary><a href="https://github.com/webpack/webpack">Webpack</a></summary>
+
+Create a `.babelrc` file:
+```js
+{
+    "presets": ["es2015"],
+    "plugins": [
+        [
+            "transform-react-jsx",
+            {
+                "pragma": "h"
+            }
+        ]
+    ]
+}
+```
+
+Create a `webpack.config.js` file:
+```js
+module.exports = {
+    entry: "./index.js",
+    output: {
+        filename: "bundle.js",
+    },
+    module: {
+        loaders: [{
+            test: /\.js$/,
+            exclude: /node_modules/,
+            loader: "babel-loader"
+        }]
+    }
+}
+```
+
+Install development dependencies:
+<pre>
+npm i -S \
+    <a href="https://www.npmjs.com/package/webpack">webpack</a> \
+    <a href="https://www.npmjs.com/package/babel-core">babel-core</a> \
+    <a href="https://www.npmjs.com/package/babel-loader">babel-loader</a> \
+    <a href="https://www.npmjs.com/package/babel-preset-es2015">babel-preset-es2015</a> \
+    <a href="https://www.npmjs.com/package/babel-plugin-transform-react-jsx">babel-plugin-transform-react-jsx</a>
+</pre>
+
+Bundle your application:
+<pre>
+$(<a href="https://docs.npmjs.com/cli/bin">npm bin</a>)/webpack -p
+</pre>
+
+[See boilerplate](https://gist.github.com/jbucaran/6010a83891043a6e0c37a3cec684c08e)
 </details>
 
 ## hyperx
-HyperApp can be used with ES6 [template functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) via [Hyperx].
-
-<pre>
-npm i <a href=https://npmjs.com/package/hyperx>hyperx</a>
-</pre>
+hyperx is a [template function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) factory, or ES6 alternative to [jsx].
 
 ```jsx
 const { h, app } = require("hyperapp")
@@ -295,23 +438,42 @@ app({
     view: model => html`<h1>${model}</h1>`
 })
 ```
+[View online](https://gomix.com/#!/project/hyperapp-hyperx-example)
 
 <details>
-<summary><i>Example</i></summary>
+<summary>Setup Instructions</summary>
 
+Install hyperx:
 <pre>
-<a href="https://www.npmjs.com/package/browserify">browserify</a> \
-    -t <a href="https://www.npmjs.com/package/hyperxify">hyperxify</a> \
-    -t <a href="https://www.npmjs.com/package/babelify">babelify</a> \
-    -g <a href="https://www.npmjs.com/package/uglifyify">uglifyify</a> \
-    -p <a href="https://www.npmjs.com/package/bundle-collapser">bundle-collapser/plugin</a> index.js | <a href="https://www.npmjs.com/package/uglify-js">uglifyjs</a> > bundle.js
+npm i -D <a href=https://npmjs.com/package/hyperx>hyperx</a>
 </pre>
 
-[See gist](https://gist.github.com/jbucaran/48c1edb4fb0ea1aa5415b6686cc7fb45)
+Install development dependencies:
+<pre>
+npm i -S \
+    <a href="https://www.npmjs.com/package/browserify">browserify</a> \
+    <a href="https://www.npmjs.com/package/hyperxify">hyperxify</a> \
+    <a href="https://www.npmjs.com/package/babelify">babelify</a> \
+    <a href="https://www.npmjs.com/package/uglifyify">uglifyify</a> \
+    <a href="https://www.npmjs.com/package/bundle-collapser">bundle-collapser</a>
+    <a href="https://www.npmjs.com/package/uglify-js">uglify-js</a>
+</pre>
+
+
+Bundle your application:
+<pre>
+$(<a href="https://docs.npmjs.com/cli/bin">npm bin</a>)/browserify \
+    -t hyperxify \
+    -t babelify \
+    -g uglifyify \
+    -p bundle-collapser/plugin index.js | uglifyjs > bundle.js
+</pre>
+
+[See boilerplate](https://gist.github.com/jbucaran/48c1edb4fb0ea1aa5415b6686cc7fb45)
 </details>
 
 ## app
-Use `app` to start the app.
+Use `app` to start your app.
 
 <pre>
 app({
@@ -477,7 +639,7 @@ app({ model, view, update, effects })
 </details>
 
 ### subscriptions
-Subscriptions are functions scheduled to run only once when the [DOM is ready](https://developer.mozilla.org/en-US/docs/Web/Events/DOMContentLoaded). Use a subscription to register global events, open a socket connection, attached mouse or keyboard event listeners, etc.
+Functions scheduled to run only once when the [DOM is ready](https://developer.mozilla.org/en-US/docs/Web/Events/DOMContentLoaded). Use a subscription to register global events, open a socket connection, attached mouse or keyboard event listeners, etc.
 
 A subscription has the signature `(model, actions, error)`.
 

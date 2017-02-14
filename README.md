@@ -236,12 +236,12 @@ app({
         * [onUpdate](#onupdate)
         * [onError](#onerror)
     * [root](#root)
-    * [Router](#router)
+    * [router](#router)
         * [setLocation](#actionssetlocation)
         * [href](#href)
 
 ## h
-`h` is a virtual node factory function.
+`h` is a virtual [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Element) node factory function.
 
 ```jsx
 app({
@@ -250,8 +250,6 @@ app({
 ```
 
 [View online](http://codepen.io/jbucaran/pen/vgvoKq?editors=0010)
-
-Virtual nodes are JavaScript objects that represent [DOM elements](https://developer.mozilla.org/en-US/docs/Web/API/Element).
 
 A virtual node has the following properties:
 
@@ -361,7 +359,7 @@ npm i -S \
     <a href="https://www.npmjs.com/package/babel-preset-es2015-rollup">babel-preset-es2015-rollup</a> \
     <a href="https://www.npmjs.com/package/rollup">rollup</a> \
     <a href="https://www.npmjs.com/package/rollup-plugin-babel">rollup-plugin-babel</a> \
-    <a href="https://www.npmjs.com/package/rollup-plugin-node-resolve">rollup-plugin-node-resolve</a>
+    <a href="https://www.npmjs.com/package/rollup-plugin-node-resolve">rollup-plugin-node-resolve</a> \
     <a href="https://www.npmjs.com/package/rollup-plugin-uglify">rollup-plugin-uglify</a>
 </pre>
 
@@ -445,7 +443,7 @@ app({
 <details>
 <summary>Setup Instructions</summary>
 
-Install hyperx dependency:
+Install hyperx:
 <pre>
 npm i -D <a href=https://npmjs.com/package/hyperx>hyperx</a>
 </pre>
@@ -458,17 +456,17 @@ npm i -S \
     <a href="https://www.npmjs.com/package/babelify">babelify</a> \
     <a href="https://www.npmjs.com/package/uglifyify">uglifyify</a> \
     <a href="https://www.npmjs.com/package/bundle-collapser">bundle-collapser</a>
-    <a href="https://www.npmjs.com/package/uglify-js">uglifyjs</a>
+    <a href="https://www.npmjs.com/package/uglify-js">uglify-js</a>
 </pre>
 
 
 Bundle your application:
 <pre>
-$(<a href="https://docs.npmjs.com/cli/bin">npm bin</a>)/<a href="https://www.npmjs.com/package/browserify">browserify</a> \
-    -t <a href="https://www.npmjs.com/package/hyperxify">hyperxify</a> \
-    -t <a href="https://www.npmjs.com/package/babelify">babelify</a> \
-    -g <a href="https://www.npmjs.com/package/uglifyify">uglifyify</a> \
-    -p <a href="https://www.npmjs.com/package/bundle-collapser">bundle-collapser/plugin</a> index.js | <a href="https://www.npmjs.com/package/uglify-js">uglifyjs</a> > bundle.js
+$(<a href="https://docs.npmjs.com/cli/bin">npm bin</a>)/browserify \
+    -t hyperxify \
+    -t babelify \
+    -g uglifyify \
+    -p bundle-collapser/plugin index.js | uglifyjs > bundle.js
 </pre>
 
 [See boilerplate](https://gist.github.com/jbucaran/48c1edb4fb0ea1aa5415b6686cc7fb45)

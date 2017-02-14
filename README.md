@@ -224,6 +224,30 @@ app({
 [View online](http://codepen.io/jbucaran/pen/zNxRLy?editors=0010)
 </details>
 
+<details>
+<summary>JSX</summary>
+
+```jsx
+const view = (model, msg) => (
+    <div>
+        <button onClick={msg.add}>Add</button>
+        <h1>{model}</h1>
+        <button onClick={msg.sub} disabled={model <= 0}>Subtract</button>
+    </div>
+);
+
+const model = 0;
+
+const update = {
+    add: model => model + 1,
+    sub: model => model - 1,
+};
+
+app({ model, view, update });
+```
+
+</details>
+
 [See more examples](https://hyperapp.gomix.me/)
 
 ## Documentation

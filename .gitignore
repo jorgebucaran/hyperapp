@@ -12,5 +12,6 @@ node_modules
 coverage
 *.xml
 
-# Gzip
+# Dist
 *.gz
+dist/

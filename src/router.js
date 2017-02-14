@@ -1,6 +1,5 @@
-export default function (options) {
+export default function (render, options) {
     var routes = options.view
-    var render = options.render
 
     function setLocation(data) {
         render(match(routes, data))

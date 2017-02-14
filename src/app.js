@@ -47,11 +47,9 @@ export default function (options) {
 			render(model, view)
 		}
 
-		router(merge(options, {
-			render: function (newView) {
-				render(model, view = newView ? newView : view, node)
-			}
-		}))
+		router(function (newView) {
+			render(model, view = newView ? newView : view, node)
+		}, options)
 
 		for (var key in subs) {
 			subs[key](model, actions, hooks.onError)

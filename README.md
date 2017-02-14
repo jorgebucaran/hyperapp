@@ -241,13 +241,8 @@ app({
         * [href](#href)
 
 ## h
-`h` is a virtual node factory function. Virtual nodes are JavaScript objects that represent [DOM elements](https://developer.mozilla.org/en-US/docs/Web/API/Element).
+`h` is a virtual node factory function.
 
-```jsx
-h("a", { href: "#" }, "Hi")
-```
-
-HyperApp can turn virtual nodes into HTML.
 ```jsx
 app({
     view: _ => h("a", { href: "#" }, "Hi")
@@ -256,19 +251,21 @@ app({
 
 [View online](http://codepen.io/jbucaran/pen/vgvoKq?editors=0010)
 
+Virtual nodes are JavaScript objects that represent [DOM elements](https://developer.mozilla.org/en-US/docs/Web/API/Element).
+
 A virtual node has the following properties:
 
 | Property   | Type               | Description
 |:----------:|:------------------:|----------------------
-| `tag`      | String or Function  | The tag name, e.g. `div`. A function that returns a tree of virtual nodes is known as a child component.|
-| `data`     | Object | An object of DOM attributes, events, properties and lifecycle methods.
-| `children` | ...Any?    | An array of children virtual nodes. If a node is a JavaScript [primitive value], it will be rendered as a [text node].
+| tag        | String or Function  | The tag name, e.g. `div`. A function that returns a tree of virtual nodes is known as a child component.|
+| data       | Object | An object of DOM attributes, events, properties and lifecycle methods.
+| children   | ...Any?    | An array of children virtual nodes. If a node is a JavaScript [primitive value], it will be rendered as a [text node].
 
 [primitive value]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Primitive_values
 [text node]: https://developer.mozilla.org/en-US/docs/Web/API/Document/createTextNode
 
 ## jsx
-[jsx] is a syntax extension that enables you to mix HTML and JavaScript.
+[jsx] enables you to mix HTML and JavaScript.
 ```jsx
 const link = <a href="#">Hi</a>
 ```

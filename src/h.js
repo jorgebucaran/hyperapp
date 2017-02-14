@@ -1,4 +1,4 @@
-module.exports = function (tag, data) {
+export default function (tag, data) {
 	data = data || {}
 
 	var children = []

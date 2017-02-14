@@ -1,4 +1,4 @@
-# [hyperapp](https://hyperapp.gomix.me/)
+# [hyperapp](https://hyperapp.gomix.me)
 [![cdnjs](https://img.shields.io/cdnjs/v/hyperapp.svg)](https://cdnjs.com/libraries/hyperapp)
 [![version](https://img.shields.io/npm/v/hyperapp.svg)](https://www.npmjs.org/package/hyperapp)
 [![travis](https://img.shields.io/travis/hyperapp/hyperapp/master.svg)](https://travis-ci.org/hyperapp/hyperapp)
@@ -218,7 +218,7 @@ app({
 [View online](http://codepen.io/jbucaran/pen/zNxRLy?editors=0010)
 </details>
 
-[See more examples](https://hyperapp.gomix.me/)
+[See more examples](https://hyperapp.gomix.me)
 
 ## Documentation
 * [h](#h)
@@ -316,24 +316,8 @@ $(<a href="https://docs.npmjs.com/cli/bin">npm bin</a>)/browserify \
 [See boilerplate](https://gist.github.com/jbucaran/21bbf0bbb0fe97345505664883100706)
 </details>
 
-
 <details>
 <summary><a href="https://github.com/rollup/rollup">Rollup</a></summary>
-
-Create a `.babelrc` file:
-```js
-{
-    "presets": ["es2015-rollup"],
-    "plugins": [
-        [
-            "transform-react-jsx",
-            {
-                "pragma": "h"
-            }
-        ]
-    ]
-}
-```
 
 Create a `rollup.config.js` file:
 ```jsx
@@ -342,25 +326,31 @@ import resolve from "rollup-plugin-node-resolve"
 import uglify from "rollup-plugin-uglify"
 
 export default {
-    plugins: [
-        babel(),
-        resolve({
-            jsnext: true
-        }),
-        uglify()
-    ]
+	plugins: [
+		babel({
+			babelrc: false,
+			presets: ["es2015-rollup"],
+			plugins: [
+				["transform-react-jsx", { pragma: "h" }]
+			]
+		}),
+		resolve({
+			jsnext: true
+		}),
+		uglify()
+	]
 }
 ```
 
 Install development dependencies:
 <pre>
 npm i -S \
-    <a href="https://www.npmjs.com/package/babel-plugin-transform-react-jsx">babel-plugin-transform-react-jsx</a> \
-    <a href="https://www.npmjs.com/package/babel-preset-es2015-rollup">babel-preset-es2015-rollup</a> \
     <a href="https://www.npmjs.com/package/rollup">rollup</a> \
     <a href="https://www.npmjs.com/package/rollup-plugin-babel">rollup-plugin-babel</a> \
     <a href="https://www.npmjs.com/package/rollup-plugin-node-resolve">rollup-plugin-node-resolve</a> \
-    <a href="https://www.npmjs.com/package/rollup-plugin-uglify">rollup-plugin-uglify</a>
+    <a href="https://www.npmjs.com/package/rollup-plugin-uglify">rollup-plugin-uglify</a> \
+    <a href="https://www.npmjs.com/package/babel-preset-es2015-rollup">babel-preset-es2015-rollup</a> \
+    <a href="https://www.npmjs.com/package/babel-plugin-transform-react-jsx">babel-plugin-transform-react-jsx</a>
 </pre>
 
 Bundle your application:
@@ -488,10 +478,10 @@ app({
 </pre>
 
 ### model
-A primitive type, array or object that represents the state of your application. HyperApp applications use a single model architecture.
+The model is a primitive type, array or object that represents the state of your application. HyperApp applications use a single model architecture.
 
 ### update
-An object composed of functions often called _reducers_. A reducer describes how to derive the next model from the current model.
+Update is an object composed of functions called _reducers_. A reducer describes how to derive the next model from the current model.
 
 ```jsx
 const update = {
@@ -500,37 +490,37 @@ const update = {
 }
 ```
 
-Reducers can return an entirely new model or part of a model. If a reducer returns part of a model, it will be merged with the current model.
+A reducer can return an entirely new model or part of a model. If it returns part of a model, that part will be merged with the current model.
 
-Reducers can be triggered inside a [view](#view), [effect](#effects) or [subscription](#subscriptions).
+A reducer can be triggered inside a [view](#view), [effect](#effects) or [subscription](#subscriptions).
 
-Reducers have the signature `(model, data, params)`:
+A reducer has the signature `(model, data, params)`:
 
-* `model` is the current model.
-* `data` is the data sent to the reducer.
+* `model`: the current model.
+* `data`: the data sent to the reducer.
 
-When using the [Router](#router), the view receives an additional argument:
+If the [router](#router) is used, reducers receives an additional argument:
 
 <a name="params"></a>
 
-* `params` an object with the matched route parameters.
+* `params`: an object with the matched route parameters.
 
 ### view
-A function that returns an HTML element using [jsx](#jsx) or the [`html`](#html) function.
+A function that returns a virtual node tree using [jsx](#jsx), [hyperx](#hyperx) or [`h`](#h).
 
 A view has the signature `(model, actions)`:
 
-* `model` is the current model.
-* `actions` is an object used to trigger [reducers](update) and [effects](effects).
+* `model`: the current model.
+* `actions`: an object used to trigger [reducers](update) and [effects](effects).
 
-To use actions:
+To send actions:
 
 ```jsx
 actions.action(data)
 ```
 
-* `data` is any data you want to send to `action`.
-* `action` is the name of the reducer or effect.
+* `data`: any data you want to send to `action`.
+* `action`: the name of the reducer or effect.
 
 <details>
 <summary><i>Example</i></summary>
@@ -549,7 +539,7 @@ app({
 </details>
 
 #### Lifecycle Methods
-Functions that can be attached to your virtual HTML nodes to access their real DOM elements.
+The lifecycle methods are functions that can be attached to virtual nodes in order to access their real DOM elements.
 
 * oncreate(e : `HTMLElement`)
 * onupdate(e : `HTMLElement`)
@@ -593,14 +583,14 @@ app({
 </details>
 
 ### effects
-Actions that cause side effects and can be asynchronous, like writing to a database, or sending requests to servers.
+Effects are actions that cause side effects and can be asynchronous, like writing to a database, or sending requests to servers.
 
 Effects have the following signature: `(model, actions, data, error)`.
 
-* `model` is the current model.
-* `actions` is an object used to trigger [reducers](update) and [effects](effects).
-* `data` is the data sent to the effect.
-* `error` is a function you may call to throw an error.
+* `model`: the current model.
+* `actions`: an object used to trigger [reducers](update) and [effects](effects).
+* `data`: the data sent to the effect.
+* `error`: a function you may call to throw an error.
 
 <details>
 <summary><i>Example</i></summary>
@@ -639,7 +629,7 @@ app({ model, view, update, effects })
 </details>
 
 ### subscriptions
-Functions scheduled to run only once when the [DOM is ready](https://developer.mozilla.org/en-US/docs/Web/Events/DOMContentLoaded). Use a subscription to register global events, open a socket connection, attached mouse or keyboard event listeners, etc.
+Subscriptions are functions scheduled to run only once when the [DOM is ready](https://developer.mozilla.org/en-US/docs/Web/Events/DOMContentLoaded). Use a subscription to register global events, open a socket connection, attached mouse or keyboard event listeners, etc.
 
 A subscription has the signature `(model, actions, error)`.
 
@@ -667,7 +657,7 @@ app({
 
 
 ### hooks
-Function handlers that can be used to inspect your application, implement middleware, loggers, etc. There are three: `onUpdate`, `onAction`, and `onError`.
+Hooks are function handlers that can be used to inspect your application, implement middleware, loggers, etc. There are three: `onUpdate`, `onAction`, and `onError`.
 
 #### onUpdate
 Called when the model changes. Signature: `(lastModel, newModel, data)`.
@@ -710,26 +700,34 @@ app({
 </details>
 
 ### root
-The HTML element container of your application. If none is given, a `div` element is appended to document.body and used as the container.
+The root is the HTML element container of your application. If none is given, a `div` element is appended to document.body and used as the container.
 
 ### router
-HyperApp provides a router out of the box.
+The router is a function with the signature `(render, options)`:
 
+* `render`: a function that can render a [view](#view).
+* `options`: the same options object passed to [`app`](#app)
+
+HyperApp provides a router out of the box.
 ```jsx
 import { h, app, router } from "hyperapp"
-
-app({ view, router })
 ```
 
-When using the router, `view` must be an object that consists of routes, each with a corresponding view function.
-
+To use the router, pass it to `app`.
 ```jsx
-view: {
-    "/": (model, actions) => {},
-    "/about": (model, actions) => {},
-    "/:key": (model, actions, params) => {}
-}
+app({
+    router,
+    view: {
+        "/": (model, actions) => {},
+        "/about": (model, actions) => {},
+        "/:key": (model, actions, params) => {}
+    }
+})
 ```
+
+In this case, the `view` property is used as a dictionary to look up views by route.
+
+The key is a route and the value is the [view](#view) function.
 
 <details>
 <summary><i>Example</i></summary>
@@ -750,15 +748,15 @@ app({
 })
 ```
 
-[View online](https://hyperapp-routing.gomix.me/)
+[View online](https://hyperapp-routing.gomix.me)
 </details>
 
-* `/` matches the index route or when no other route matches.
+* `/`: match the index route or use as a wildcard to select the view when no route matches.
 
-* `/:key` matches a route using the regular expression `[A-Za-z0-9]+`. The matched key is passed to the route's view function via [`params`](#params).
+* `/:key`: match a route using the regular expression `[A-Za-z0-9]+`. The matched key is passed to the view function via [`params`](#params).
 
 ### actions.setLocation
-A special action available when using the [Router](#router). Use `actions.setLocation(path)` to update the [location.pathname](https://developer.mozilla.org/en-US/docs/Web/API/Location). If the path matches an existing route, the corresponding view will be rendered.
+Call `actions.setLocation(path)` to update the [location.pathname](https://developer.mozilla.org/en-US/docs/Web/API/Location). If the path matches an existing route, the corresponding view will be rendered. Requires the default [Router](#router).
 
 <details>
 <summary><i>Example</i></summary>
@@ -790,12 +788,11 @@ app({
 })
 ```
 
-[View online](https://hyperapp-set-location.gomix.me/)
+[View online](https://hyperapp-set-location.gomix.me)
 </details>
 
-
 #### href
-HyperApp intercepts all `<a href="/path">...</a>` clicks and calls `action.setLocation("/path")` for convenience. External links and links that begin with a `#` character are not intercepted.
+HyperApp intercepts all `<a href="/path">...</a>` clicks and calls `action.setLocation("/path")`. External links and links that begin with a `#` character are not intercepted.
 
 <details>
 <summary><i>Example</i></summary>
@@ -819,7 +816,7 @@ app({
 })
 ```
 
-[View online](https://hyperapp-href.gomix.me/)
+[View online](https://hyperapp-href.gomix.me)
 </details>
 
 Add a custom `data-no-routing` attribute to anchor elements that should be handled differently.

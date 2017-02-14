@@ -1,5 +1,5 @@
-module.exports = {
-    router: require("./router"),
-    app: require("./app"),
-    h: require("./h")
-}
+import h from "./h"
+import app from "./app"
+import router from "./router"
+
+export { h, app, router }

@@ -1,4 +1,4 @@
-module.exports = function (options) {
+export default function (options) {
 	var model = options.model
 	var view = options.view
 

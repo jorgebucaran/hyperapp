@@ -14,8 +14,7 @@
     "jsx",
     "react",
     "elm",
-    "virtual-dom",
-    "vanilla"
+    "virtual-dom"
   ],
   "scripts": {
     "test": "jest --coverage --no-cache",

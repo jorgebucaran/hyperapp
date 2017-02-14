@@ -1,6 +1,6 @@
 /* global describe, it, expect */
 
-const { router } = require("../")
+import { router } from "../src"
 
 describe("Router", () => {
     Object.defineProperty(window.location, "pathname", {

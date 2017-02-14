@@ -241,7 +241,7 @@ app({
         * [href](#href)
 
 ## h
-`h` is a virtual [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Element) node factory function.
+`h` is a virtual node factory function.
 
 ```jsx
 app({

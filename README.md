@@ -341,13 +341,15 @@ Create a `rollup.config.js` file:
 ```jsx
 import babel from "rollup-plugin-babel"
 import resolve from "rollup-plugin-node-resolve"
+import uglify from "rollup-plugin-uglify"
 
 export default {
     plugins: [
         babel(),
         resolve({
             jsnext: true
-        })
+        }),
+        uglify()
     ]
 }
 ```
@@ -360,6 +362,7 @@ npm i -S \
     <a href="https://www.npmjs.com/package/rollup">rollup</a> \
     <a href="https://www.npmjs.com/package/rollup-plugin-babel">rollup-plugin-babel</a> \
     <a href="https://www.npmjs.com/package/rollup-plugin-node-resolve">rollup-plugin-node-resolve</a>
+    <a href="https://www.npmjs.com/package/rollup-plugin-uglify">rollup-plugin-uglify</a>
 </pre>
 
 Bundle your application:

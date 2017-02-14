@@ -494,7 +494,7 @@ A reducer can return an entirely new model or part of a model. If it returns par
 
 A reducer can be triggered inside a [view](#view), [effect](#effects) or [subscription](#subscriptions).
 
-A reducer has the signature `(model, data, params)`:
+A reducer has a signature `(model, data, params)`:
 
 * `model`: the current model.
 * `data`: the data sent to the reducer.
@@ -508,7 +508,7 @@ If the [router](#router) is used, reducers receives an additional argument:
 ### view
 A function that returns a virtual node tree using [jsx](#jsx), [hyperx](#hyperx) or [`h`](#h).
 
-A view has the signature `(model, actions)`:
+A view has a signature `(model, actions)`:
 
 * `model`: the current model.
 * `actions`: an object used to trigger [reducers](update) and [effects](effects).
@@ -631,7 +631,7 @@ app({ model, view, update, effects })
 ### subscriptions
 Subscriptions are functions scheduled to run only once when the [DOM is ready](https://developer.mozilla.org/en-US/docs/Web/Events/DOMContentLoaded). Use a subscription to register global events, open a socket connection, attached mouse or keyboard event listeners, etc.
 
-A subscription has the signature `(model, actions, error)`.
+A subscription has a signature `(model, actions, error)`.
 
 <details>
 <summary><i>Example</i></summary>
@@ -703,7 +703,7 @@ app({
 The root is the HTML element container of your application. If none is given, a `div` element is appended to document.body and used as the container.
 
 ### router
-The router is a function with the signature `(render, options)`:
+The router is a function with a signature `(render, options)`:
 
 * `render`: a function that can render a [view](#view).
 * `options`: the same options object passed to [`app`](#app)

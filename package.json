@@ -4,6 +4,7 @@
   "version": "0.3.0",
   "main": "dist/hyperapp.js",
   "jsnext:main": "src/index.js",
+  "module": "src/index.js",
   "license": "MIT",
   "repository": "hyperapp/hyperapp",
   "author": "Jorge Bucaran",

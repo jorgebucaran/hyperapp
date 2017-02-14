@@ -1,34 +1,33 @@
 {
   "name": "hyperapp",
   "description": "1kb JavaScript library for building modern UI applications",
-  "version": "0.2.1",
-  "main": "src/index.js",
+  "version": "0.3.0",
+  "main": "dist/hyperapp.js",
+  "jsnext:main": "src/index.js",
   "license": "MIT",
   "repository": "hyperapp/hyperapp",
   "author": "Jorge Bucaran",
   "keywords": [
     "hyperx",
-    "hypertext",
-    "functional",
-    "virtual-dom",
-    "template string",
     "hyperscript",
+    "jsx",
+    "react",
+    "elm",
+    "virtual-dom",
     "vanilla"
   ],
   "scripts": {
-    "test": "jest --coverage --colors --cache",
-    "build": "rollup -n hyperapp -cmf iife -i src/index.js -o dist/hyperapp.js"
+    "test": "jest --coverage --no-cache",
+    "build": "rollup -cm -n hyperapp -f umd -i src/index.js -o dist/hyperapp.js"
   },
-  "dependencies": {},
+  "babel": {
+    "presets": "es2015"
+  },
   "devDependencies": {
+    "babel-preset-es2015": "^6.22.0",
     "hyperx": "^2.0.5",
     "jest": "^18.1.0",
     "rollup": "^0.41.4",
-    "rollup-plugin-commonjs": "^7.0.0",
-    "rollup-plugin-node-resolve": "^2.0.0",
     "rollup-plugin-uglify": "^1.0.1"
-  },
-  "jest": {
-    "verbose": true
   }
 }

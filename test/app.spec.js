@@ -1,7 +1,7 @@
 /* global beforeEach, describe, it, expect */
 
-const { app, h } = require("../")
-const hyperx = require("hyperx")
+import { app, h } from "../src"
+import hyperx from "hyperx"
 const html = hyperx(h)
 
 function fireDOMLoaded() {
@@ -15,7 +15,6 @@ beforeEach(() => {
 })
 
 describe("App", () => {
-
     it("boots with no bugs", () => {
         app({ model: {}, view: () => (html`<div>Hi</div>`) })
     })
@@ -306,7 +305,7 @@ describe("Hooks", () => {
 
 })
 
-describe("Lifecycle events", () => {
+describe("Lifecycle methods", () => {
     const model = 0
     const update = {
         add: (model, data) => model + data

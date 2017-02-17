@@ -4,7 +4,7 @@ export default function (options) {
 
 	var actions = {}
 	var effects = options.effects || {}
-	var reducers = options.update || {}
+	var reducers = options.reducers || options.update || {}
 
 	var subs = options.subscriptions
 
@@ -14,7 +14,6 @@ export default function (options) {
 	var root
 
 	var hooks = merge({
-		// onRoute?
 		onAction: Function.prototype,
 		onUpdate: Function.prototype,
 		onError: function (err) {
@@ -120,7 +119,11 @@ export default function (options) {
 			}
 
 			for (var i = 0; i < node.children.length; i++) {
-				element.appendChild(createElementFrom(node.children[i]))
+				var childNode = node.children[i]
+
+				if (childNode !== undefined && typeof childNode !== "boolean") {
+					element.appendChild(createElementFrom(childNode))
+				}
 			}
 		}
 
@@ -141,8 +144,8 @@ export default function (options) {
 				element.style[i] = value[i]
 			}
 
-		} else if (name.substr(0, 2) === "on") {
-			var event = name.substr(2).toLowerCase()
+		} else if (name[0] === "o" && name[1] === "n") {
+			var event = name.substr(2)
 			element.removeEventListener(event, oldValue)
 			element.addEventListener(event, value)
 

@@ -1,39 +1,46 @@
 # [hyperapp](https://hyperapp.gomix.me)
-[![cdnjs](https://img.shields.io/cdnjs/v/hyperapp.svg)](https://cdnjs.com/libraries/hyperapp)
-[![version](https://img.shields.io/npm/v/hyperapp.svg)](https://www.npmjs.org/package/hyperapp)
+[![circleci](https://circleci.com/gh/hyperapp/hyperapp/tree/master.svg?style=shield)](https://circleci.com/gh/hyperapp/hyperapp/tree/master)
 [![travis](https://img.shields.io/travis/hyperapp/hyperapp/master.svg)](https://travis-ci.org/hyperapp/hyperapp)
 [![codecov](https://img.shields.io/codecov/c/github/hyperapp/hyperapp/master.svg)](https://codecov.io/gh/hyperapp/hyperapp)
+[![version](https://img.shields.io/npm/v/hyperapp.svg)](https://www.npmjs.org/package/hyperapp)
 [![slack](https://hyperappjs.herokuapp.com/badge.svg)](https://hyperappjs.herokuapp.com)
 
 [Browserify]: https://github.com/substack/node-browserify
 [Webpack]: https://github.com/webpack/webpack
 [Rollup]: https://github.com/rollup/rollup
-[hyperx]: https://github.com/substack/hyperx
-[jsx]: https://facebook.github.io/react/docs/introducing-jsx.html
+[Hyperx]: https://github.com/substack/hyperx
+[JSX]: https://facebook.github.io/react/docs/introducing-jsx.html
+[Babel]: http://babeljs.io/
+[DOM]: https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction
+[Elm Architecture]: https://guide.elm-lang.org/architecture/
+[CDN]: https://cdnjs.com/libraries/hyperapp
 
-HyperApp is a `1kb` JavaScript library for building modern UI applications.
+HyperApp is a JavaScript library for building frontend applications.
 
-## Install
+* **Declarative**: HyperApp's design is based on the [Elm Architecture]. Create scalable browser-based applications using a functional paradigm. The twist is you don't have to learn a new language.
+* **Stateless components**: Build complex user interfaces from micro-components. Stateless components are framework agnostic, reusable, predictable and easier to debug.
+* **Batteries-included**: Out of the box, HyperApp has Elm-like state management, a virtual DOM engine and a router; it still weighs `1kb` and has no dependencies. We're not opinionated about your stack either; use Browserify with [Hyperx]; Webpack or Rollup with Babel/[JSX]. Your choice.
+
+[Get started with HyperApp](https://www.gitbook.com/book/hyperapp/hyperapp).
+
+## Installation
 <pre>
-npm i <a href=https://npmjs.com/package/hyperapp>hyperapp</a>
+npm i -S <a href=https://npmjs.com/package/hyperapp>hyperapp</a>
 </pre>
 
 ## Usage
-ES6
+In Node.js.
 ```jsx
 import { h, app } from "hyperapp"
 ```
 
-CommonJS
+In the browser via the [CDN].
 ```jsx
-const { h, app } = require("hyperapp")
+const { h, app } = hyperapp
 ```
 
-For a complete introduction to HyperApp see the [User Guide](https://www.gitbook.com/book/hyperapp/hyperapp).
-
 ## Examples
-<details>
-<summary>Hello World</summary>
+<details><summary>Hello World</summary>
 
 ```jsx
 app({
@@ -45,21 +52,20 @@ app({
 [View online](http://codepen.io/jbucaran/pen/Qdwpxy?editors=0010)
 </details>
 
-<details>
-<summary>Counter</summary>
+<details><summary>Counter</summary>
 
 ```jsx
 app({
     model: 0,
-    update: {
+    reducers: {
         add: model => model + 1,
         sub: model => model - 1
     },
     view: (model, actions) =>
         <div>
-            <button onclick={actions.add}>+</button>
+            <button onClick={actions.add}>+</button>
             <h1>{model}</h1>
-            <button onclick={actions.sub} disabled={model <= 0}>-</button>
+            <button onClick={actions.sub} disabled={model <= 0}>-</button>
         </div>
 })
 ```
@@ -67,19 +73,18 @@ app({
 [View online](http://codepen.io/jbucaran/pen/zNxZLP?editors=0010)
 </details>
 
-<details>
-<summary>Input</summary>
+<details><summary>Input</summary>
 
 ```jsx
 app({
     model: "",
-    update: {
+    reducers: {
         text: (_, value) => value
     },
     view: (model, actions) =>
         <div>
             <h1>Hi{model ? " " + model : ""}.</h1>
-            <input oninput={e => actions.text(e.target.value)} />
+            <input onInput={e => actions.text(e.target.value)} />
         </div>
 })
 ```
@@ -87,8 +92,7 @@ app({
 [View online](http://codepen.io/jbucaran/pen/qRMEGX?editors=0010)
 </details>
 
-<details>
-<summary>Drag & Drop</summary>
+<details><summary>Drag & Drop</summary>
 
 ```jsx
 const model = {
@@ -100,24 +104,21 @@ const model = {
 
 const view = (model, actions) =>
     <div
-        onmousedown={e => actions.drag({
+        onMouseDown={e => actions.drag({
             position: {
                 x: e.pageX, y: e.pageY, offsetX: e.offsetX, offsetY: e.offsetY
             }
         })}
         style={{
-            userSelect: "none",
-            cursor: "move",
             position: "absolute",
-            padding: "10px",
             left: model.position.x - model.position.offsetX + "px",
             top: model.position.y - model.position.offsetY + "px",
             backgroundColor: model.dragging ? "gold" : "deepskyblue"
         }}
-    >Drag Me!
+    >DRAG ME
     </div>
 
-const update = {
+const reducers = {
     drop: model => ({ dragging: false }),
     drag: (model, { position }) => ({ dragging: true, position }),
     move: (model, { x, y }) => model.dragging
@@ -131,14 +132,13 @@ const subscriptions = [
         actions.move({ x: e.pageX, y: e.pageY }))
 ]
 
-app({ model, view, update, subscriptions })
+app({ model, view, reducers, subscriptions })
 ```
 
 [View online](http://codepen.io/jbucaran/pen/apzYvo?editors=0010)
 </details>
 
-<details>
-<summary>Todo</summary>
+<details><summary>Todo</summary>
 
 ```jsx
 const FilterInfo = { All: 0, Todo: 1, Done: 2 }
@@ -157,7 +157,7 @@ app({
                 Show: {Object.keys(FilterInfo)
                     .filter(key => FilterInfo[key] !== model.filter)
                     .map(key =>
-                        <span><a data-no-routing href="#" onclick={_ => actions.filter({
+                        <span><a data-no-routing href="#" onClick={_ => actions.filter({
                             value: FilterInfo[key]
                         })}>{key}</a> </span>
                     )}
@@ -176,7 +176,7 @@ app({
                             color: t.done ? "gray" : "black",
                             textDecoration: t.done ? "line-through" : "none"
                         }}
-                            onclick={e => actions.toggle({
+                            onClick={e => actions.toggle({
                                 value: t.done,
                                 id: t.id
                             })}>{t.value}
@@ -186,15 +186,15 @@ app({
             <p>
                 <input
                     type="text"
-                    onkeyup={e => e.keyCode === 13 ? actions.add() : ""}
-                    oninput={e => actions.input({ value: e.target.value })}
+                    onKeyUp={e => e.keyCode === 13 ? actions.add() : ""}
+                    onInput={e => actions.input({ value: e.target.value })}
                     value={model.input}
                     placeholder={model.placeholder}
                 />{" "}
-                <button onclick={actions.add}>add</button>
+                <button onClick={actions.add}>add</button>
             </p>
         </div>,
-    update: {
+    reducers: {
         add: model => ({
             input: "",
             todos: model.todos.concat({
@@ -218,15 +218,13 @@ app({
 [View online](http://codepen.io/jbucaran/pen/zNxRLy?editors=0010)
 </details>
 
-[See more examples](https://hyperapp.gomix.me)
+[See more examples](https://hyperapp.gomix.me).
 
 ## Documentation
-* [h](#h)
-* [jsx](#jsx)
-* [hyperx](#hyperx)
-* [app](#app)
+* [h(tag, data, children)](#htag-data-children)
+* [app(options)](#appoptions)
     * [model](#model)
-    * [update](#update)
+    * [reducers](#reducers)
     * [view](#view)
         * [Lifecycle Methods](#lifecycle-methods)
     * [effects](#effects)
@@ -240,235 +238,36 @@ app({
         * [setLocation](#actionssetlocation)
         * [href](#href)
 
-## h
-`h` is a virtual node factory function.
+## h(tag, data, children)
+Creates a virtual DOM node.
+
+* `tag` is a tag name, e.g. `div` or a function that returns a tree of virtual nodes.
+* `data` is an object with attributes, styles, events, properties, [lifecycle methods](#lifecycle-methods), etc.
+* `children` is an array of children virtual nodes. (Optional)
+
+<details><summary><i>Example</i></summary>
 
 ```jsx
-app({
-    view: _ => h("a", { href: "#" }, "Hi")
-})
-```
-
-[View online](http://codepen.io/jbucaran/pen/vgvoKq?editors=0010)
-
-A virtual node has the following properties:
-
-| Property   | Type               | Description
-|:----------:|:------------------:|----------------------
-| tag        | String or Function  | The tag name, e.g. `div`. A function that returns a tree of virtual nodes is known as a child component.|
-| data       | Object | An object of DOM attributes, events, properties and lifecycle methods.
-| children   | ...Any?    | An array of children virtual nodes. If a node is a JavaScript [primitive value], it will be rendered as a [text node].
-
-[primitive value]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Primitive_values
-[text node]: https://developer.mozilla.org/en-US/docs/Web/API/Document/createTextNode
-
-## jsx
-[jsx] enables you to mix HTML and JavaScript.
-```jsx
-const link = <a href="#">Hi</a>
-```
-
-is equivalent to:
-```jsx
- const link = h("a", { href: "#" }, ["Hi"])
-```
-
-To use jsx with HyperApp follow the steps for your chosen module bundler.
-
-<details>
-<summary><a href="https://github.com/substack/node-browserify">Browserify</a></summary>
-
-Create a `.babelrc` file:
-```js
-{
-    "presets": ["es2015"],
-    "plugins": [
-        [
-            "transform-react-jsx",
-            {
-                "pragma": "h"
-            }
-        ]
-    ]
-}
-```
-
-Install development dependencies:
-<pre>
-npm i -S \
-    <a href="https://www.npmjs.com/package/babel-plugin-transform-react-jsx">babel-plugin-transform-react-jsx</a> \
-    <a href="https://www.npmjs.com/package/babel-preset-es2015">babel-preset-es2015</a> \
-    <a href="https://www.npmjs.com/package/babelify">babelify</a> \
-    <a href="https://www.npmjs.com/package/browserify">browserify</a> \
-    <a href="https://www.npmjs.com/package/bundle-collapser">bundle-collapser</a> \
-    <a href="https://www.npmjs.com/package/uglifyify">uglifyify</a> \
-    <a href="https://www.npmjs.com/package/uglifyjs">uglifyjs</a>
-</pre>
-
-Bundle your application:
-<pre>
-$(<a href="https://docs.npmjs.com/cli/bin">npm bin</a>)/browserify \
-    -t babelify \
-    -g uglifyify \
-    -p bundle-collapser/plugin index.js | uglifyjs > bundle.js
-</pre>
-
-[See boilerplate](https://gist.github.com/jbucaran/21bbf0bbb0fe97345505664883100706)
-</details>
-
-<details>
-<summary><a href="https://github.com/rollup/rollup">Rollup</a></summary>
-
-Create a `rollup.config.js` file:
-```jsx
-import babel from "rollup-plugin-babel"
-import resolve from "rollup-plugin-node-resolve"
-import uglify from "rollup-plugin-uglify"
-
-export default {
-	plugins: [
-		babel({
-			babelrc: false,
-			presets: ["es2015-rollup"],
-			plugins: [
-				["transform-react-jsx", { pragma: "h" }]
-			]
-		}),
-		resolve({
-			jsnext: true
-		}),
-		uglify()
-	]
-}
-```
-
-Install development dependencies:
-<pre>
-npm i -S \
-    <a href="https://www.npmjs.com/package/rollup">rollup</a> \
-    <a href="https://www.npmjs.com/package/rollup-plugin-babel">rollup-plugin-babel</a> \
-    <a href="https://www.npmjs.com/package/rollup-plugin-node-resolve">rollup-plugin-node-resolve</a> \
-    <a href="https://www.npmjs.com/package/rollup-plugin-uglify">rollup-plugin-uglify</a> \
-    <a href="https://www.npmjs.com/package/babel-preset-es2015-rollup">babel-preset-es2015-rollup</a> \
-    <a href="https://www.npmjs.com/package/babel-plugin-transform-react-jsx">babel-plugin-transform-react-jsx</a>
-</pre>
-
-Bundle your application:
-<pre>
-$(<a href="https://docs.npmjs.com/cli/bin">npm bin</a>)/rollup -cf iife -i index.js -o bundle.js
-</pre>
-
-[See boilerplate](https://gist.github.com/jbucaran/0c0da8f1256a0a66090151cfda777c2c)
-</details>
-
-
-<details>
-<summary><a href="https://github.com/webpack/webpack">Webpack</a></summary>
-
-Create a `.babelrc` file:
-```js
-{
-    "presets": ["es2015"],
-    "plugins": [
-        [
-            "transform-react-jsx",
-            {
-                "pragma": "h"
-            }
-        ]
-    ]
-}
-```
-
-Create a `webpack.config.js` file:
-```js
-module.exports = {
-    entry: "./index.js",
-    output: {
-        filename: "bundle.js",
-    },
-    module: {
-        loaders: [{
-            test: /\.js$/,
-            exclude: /node_modules/,
-            loader: "babel-loader"
-        }]
-    }
-}
-```
-
-Install development dependencies:
-<pre>
-npm i -S \
-    <a href="https://www.npmjs.com/package/webpack">webpack</a> \
-    <a href="https://www.npmjs.com/package/babel-core">babel-core</a> \
-    <a href="https://www.npmjs.com/package/babel-loader">babel-loader</a> \
-    <a href="https://www.npmjs.com/package/babel-preset-es2015">babel-preset-es2015</a> \
-    <a href="https://www.npmjs.com/package/babel-plugin-transform-react-jsx">babel-plugin-transform-react-jsx</a>
-</pre>
-
-Bundle your application:
-<pre>
-$(<a href="https://docs.npmjs.com/cli/bin">npm bin</a>)/webpack -p
-</pre>
-
-[See boilerplate](https://gist.github.com/jbucaran/6010a83891043a6e0c37a3cec684c08e)
-</details>
-
-## hyperx
-hyperx is a [template function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) factory, or ES6 alternative to [jsx].
-
-```jsx
-const { h, app } = require("hyperapp")
-const hyperx = require("hyperx")
-const html = hyperx(h)
-
 app({
     model: "Hi.",
-    view: model => html`<h1>${model}</h1>`
+    view: model => h("h1", {}, model)
 })
 ```
-[View online](https://gomix.com/#!/project/hyperapp-hyperx-example)
 
-<details>
-<summary>Setup Instructions</summary>
-
-Install hyperx:
-<pre>
-npm i -D <a href=https://npmjs.com/package/hyperx>hyperx</a>
-</pre>
-
-Install development dependencies:
-<pre>
-npm i -S \
-    <a href="https://www.npmjs.com/package/browserify">browserify</a> \
-    <a href="https://www.npmjs.com/package/hyperxify">hyperxify</a> \
-    <a href="https://www.npmjs.com/package/babelify">babelify</a> \
-    <a href="https://www.npmjs.com/package/uglifyify">uglifyify</a> \
-    <a href="https://www.npmjs.com/package/bundle-collapser">bundle-collapser</a>
-    <a href="https://www.npmjs.com/package/uglify-js">uglify-js</a>
-</pre>
-
-
-Bundle your application:
-<pre>
-$(<a href="https://docs.npmjs.com/cli/bin">npm bin</a>)/browserify \
-    -t hyperxify \
-    -t babelify \
-    -g uglifyify \
-    -p bundle-collapser/plugin index.js | uglifyjs > bundle.js
-</pre>
-
-[See boilerplate](https://gist.github.com/jbucaran/48c1edb4fb0ea1aa5415b6686cc7fb45)
+[View online](http://codepen.io/jbucaran/pen/VPqoYR?editors=0010)
 </details>
 
-## app
-Use `app` to start your app.
+[HyperApp User Guide]: https://hyperapp.gitbooks.io/hyperapp/content/quickstart/setup.html
+
+See the [HyperApp User Guide] for JSX/Hyperx setup instructions.
+
+## app(options)
+Starts the application.
 
 <pre>
 app({
     <a href="#model">model</a>,
-    <a href="#update">update</a>,
+    <a href="#reducers">reducers</a>,
     <a href="#view">view</a>,
     <a href="#effects">effects</a>,
     <a href="#subscriptions">subscriptions</a>,
@@ -480,38 +279,44 @@ app({
 ### model
 The model is a primitive type, array or object that represents the state of your application. HyperApp applications use a single model architecture.
 
-### update
-Update is an object composed of functions called _reducers_. A reducer describes how to derive the next model from the current model.
-
 ```jsx
-const update = {
-    increment: model => model + 1,
-    decrement: model => model - 1
+const model = {
+    count: 0
 }
 ```
 
-A reducer can return an entirely new model or part of a model. If it returns part of a model, that part will be merged with the current model.
+### reducers
+Reducers are actions that describe how to derive a new model from the current model.
+
+```jsx
+const reducers = {
+    add: model => model + 1,
+    sub: model => model - 1
+}
+```
+
+A reducer can return a new model or part of a model. If it returns part of a model, that part will be merged with the current model.
 
 A reducer can be triggered inside a [view](#view), [effect](#effects) or [subscription](#subscriptions).
 
-A reducer has a signature `(model, data, params)`:
+A reducer has the following signature: `(model, data, params)`.
 
-* `model`: the current model.
-* `data`: the data sent to the reducer.
+* `model` is the current model.
+* `data` os the data sent to the reducer.
 
-If the [router](#router) is used, reducers receives an additional argument:
+When using the [router](#router), reducers receives an additional argument:
 
 <a name="params"></a>
 
-* `params`: an object with the matched route parameters.
+* `params` is an object with the matched route parameters.
 
 ### view
-A function that returns a virtual node tree using [jsx](#jsx), [hyperx](#hyperx) or [`h`](#h).
+A view is a function that returns a virtual element tree. See [`h`](#h).
 
-A view has a signature `(model, actions)`:
+A view has the following signature: `(model, actions)`.
 
-* `model`: the current model.
-* `actions`: an object used to trigger [reducers](update) and [effects](effects).
+* `model` is the current model.
+* `actions` is an object used to trigger [reducers](#reducers) and [effects](#effects).
 
 To send actions:
 
@@ -519,8 +324,8 @@ To send actions:
 actions.action(data)
 ```
 
-* `data`: any data you want to send to `action`.
-* `action`: the name of the reducer or effect.
+* `data` is the data you want to send to `action`.
+* `action` is the name of a [reducer](#reducers) or [effect](#effects).
 
 <details>
 <summary><i>Example</i></summary>
@@ -528,26 +333,25 @@ actions.action(data)
 ```jsx
 app({
     model: true,
-    view: (model, actions) => <button onclick={actions.toggle}>{model+""}</button>,
-    update: {
+    view: (model, actions) => <button onClick={actions.toggle}>{model+""}</button>,
+    reducers: {
         toggle: model => !model
     }
 })
 ```
-
 [View online](http://codepen.io/jbucaran/pen/ZLGGzy?editors=0010)
 </details>
 
-#### Lifecycle Methods
-The lifecycle methods are functions that can be attached to virtual nodes in order to access their real DOM elements.
+### Lifecycle Methods
+Lifecycle methods are functions that can be attached to virtual nodes in order to access actual DOM elements when they are created, updated or before they are removed.
 
-* oncreate(e : `HTMLElement`)
-* onupdate(e : `HTMLElement`)
-* onremove(e : `HTMLElement`)
+* onCreate(e : `HTMLElement`)
+* onUpdate(e : `HTMLElement`)
+* onRemove(e : `HTMLElement`)
 
 ```jsx
 app({
-    view: _ => <div oncreate={e => console.log(e)}>Hi.</div>
+    view: _ => <div onCreate={e => console.log(e)}></div>
 })
 ```
 
@@ -566,31 +370,32 @@ const repaint = (canvas, model) => {
 
 app({
     model: { x: 0, y: 0 },
-    view: model => <canvas
-        width="600"
-        height="300"
-        onupdate={e => repaint(e, model)} />,
-    update: {
-        move: (model) => ({ x: model.x + 1, y: model.y + 1 })
+    view: model =>
+        <canvas
+            width="600"
+            height="300"
+            onUpdate={e => repaint(e, model)}
+        />,
+    reducers: {
+        move: model => ({ x: model.x + 1, y: model.y + 1 })
     },
     subscriptions: [
       (_, actions) => setInterval(_ => actions.move(), 10)
     ]
 })
 ```
-
 [View online](http://codepen.io/jbucaran/pen/MJXMQZ?editors=0010)
 </details>
 
 ### effects
-Effects are actions that cause side effects and can be asynchronous, like writing to a database, or sending requests to servers.
+Effects are actions that cause side effects and are often asynchronous, like writing to a database, or sending requests to servers.
 
 Effects have the following signature: `(model, actions, data, error)`.
 
-* `model`: the current model.
-* `actions`: an object used to trigger [reducers](update) and [effects](effects).
-* `data`: the data sent to the effect.
-* `error`: a function you may call to throw an error.
+* `model` is the current model.
+* `actions` is an object used to trigger [reducers](#reducers) and [effects](#effects).
+* `data` is the data sent to the effect.
+* `error` is a function you can call to throw an error.
 
 <details>
 <summary><i>Example</i></summary>
@@ -605,12 +410,12 @@ const model = {
 
 const view = (model, actions) =>
     <button
-        onclick={actions.waitThenAdd}
+        onClick={actions.waitThenAdd}
         disabled={model.waiting}>{model.counter}
     </button>
 
 
-const update = {
+const reducers = {
     add: model => ({ counter: model.counter + 1 }),
     toggle: model => ({ waiting: !model.waiting})
 }
@@ -622,16 +427,15 @@ const effects = {
     }
 }
 
-app({ model, view, update, effects })
+app({ model, view, reducers, effects })
 ```
-
 [View online](http://codepen.io/jbucaran/pen/jyEKmw?editors=0010)
 </details>
 
 ### subscriptions
-Subscriptions are functions scheduled to run only once when the [DOM is ready](https://developer.mozilla.org/en-US/docs/Web/Events/DOMContentLoaded). Use a subscription to register global events, open a socket connection, attached mouse or keyboard event listeners, etc.
+Subscriptions are functions scheduled to run only once when the [DOM is ready](https://developer.mozilla.org/en-US/docs/Web/Events/DOMContentLoaded). Use a subscription to register global events, open a socket connection, attach mouse or keyboard event listeners, etc.
 
-A subscription has a signature `(model, actions, error)`.
+A subscription has the following signature: `(model, actions, error)`.
 
 <details>
 <summary><i>Example</i></summary>
@@ -639,7 +443,7 @@ A subscription has a signature `(model, actions, error)`.
 ```jsx
 app({
     model: { x: 0, y: 0 },
-    update: {
+    reducers: {
         move: (_, { x, y }) => ({ x, y })
     },
     view: model => <h1>{model.x}, {model.y}</h1>,
@@ -655,17 +459,16 @@ app({
 [View online](http://codepen.io/jbucaran/pen/Bpyraw?editors=0010)
 </details>
 
-
 ### hooks
 Hooks are function handlers that can be used to inspect your application, implement middleware, loggers, etc. There are three: `onUpdate`, `onAction`, and `onError`.
 
-#### onUpdate
-Called when the model changes. Signature: `(lastModel, newModel, data)`.
+##### onUpdate
+Called when the model changes. Signature: `(oldModel, newModel, data)`.
 
-#### onAction
+##### onAction
 Called when an action (reducer or effect) is triggered. Signature: `(name, data)`.
 
-#### onError
+##### onError
 Called when you use the `error` function inside a subscription or effect. If you don't use this hook, the default behavior is to throw. Signature: `(err)`.
 
 <details>
@@ -676,10 +479,10 @@ app({
     model: true,
     view: (model, actions) =>
         <div>
-            <button onclick={actions.doSomething}>Log</button>
-            <button onclick={actions.boom}>Error</button>
+            <button onClick={actions.doSomething}>Log</button>
+            <button onClick={actions.boom}>Error</button>
         </div>,
-    update: {
+    reducers: {
         doSomething: model => !model,
     },
     effects: {
@@ -700,15 +503,15 @@ app({
 </details>
 
 ### root
-The root is the HTML element container of your application. If none is given, a `div` element is appended to document.body and used as the container.
+The root is the container of your application. If none is given, a `div` element is appended to document.body and used as the container.
 
 ### router
-The router is a function with a signature `(render, options)`:
+The router is any function with the following signature: `(render, options)`.
 
-* `render`: a function that can render a [view](#view).
-* `options`: the same options object passed to [`app`](#app)
+* `render` is a function capable to render a [view](#view).
+* `options` is the options object passed to [`app`](#appoptions).
 
-HyperApp provides a router out of the box.
+You can define your own router or use the one provided with HyperApp.
 ```jsx
 import { h, app, router } from "hyperapp"
 ```
@@ -725,9 +528,9 @@ app({
 })
 ```
 
-In this case, the `view` property is used as a dictionary to look up views by route.
+The `view` property is used as a dictionary of routes/views.
 
-The key is a route and the value is the [view](#view) function.
+The key is the route and the value is the [view](#view) function.
 
 <details>
 <summary><i>Example</i></summary>
@@ -751,21 +554,21 @@ app({
 [View online](https://hyperapp-routing.gomix.me)
 </details>
 
-* `/`: match the index route or use as a wildcard to select the view when no route matches.
+* `/` match the index route or use as a wildcard to select the view when no route matches.
 
-* `/:key`: match a route using the regular expression `[A-Za-z0-9]+`. The matched key is passed to the view function via [`params`](#params).
+* `/:key` match a route using the regular expression `[A-Za-z0-9]+`. The matched key is passed to the view function via [`params`](#params).
 
-### actions.setLocation
+#### actions.setLocation
 Call `actions.setLocation(path)` to update the [location.pathname](https://developer.mozilla.org/en-US/docs/Web/API/Location). If the path matches an existing route, the corresponding view will be rendered. Requires the default [Router](#router).
 
 <details>
 <summary><i>Example</i></summary>
 
 ```jsx
-const Page = ({ title, target, onclick }) =>
+const Page = ({ title, target, onClick }) =>
     <div>
         <h1>{title}</h1>
-        <button onclick={onclick}>{target}</button>
+        <button onClick={onClick}>{target}</button>
     </div>
 
 app({
@@ -774,14 +577,14 @@ app({
             <Page
                 title="Home"
                 target="About"
-                onclick={_ => actions.setLocation("/about")}>
+                onClick={_ => actions.setLocation("/about")}>
             </Page>
         ,
         "/about": (model, actions) =>
             <Page
                 title="About"
                 target="Home"
-                onclick={_ => actions.setLocation("/")}>
+                onClick={_ => actions.setLocation("/")}>
             </Page>
     },
     router

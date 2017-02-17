@@ -112,6 +112,25 @@ describe("App", () => {
         fireDOMLoaded()
 
     })
+
+
+    it("does not render bools (true)", () => {
+        app({
+            view: _ => html`<div id="foo">${true}</div>`
+        })
+        expect(document.getElementById("foo").innerHTML).toEqual("")
+    })
+
+    // this is a bug in hyperx, that converts false values to strings
+    // making it impossible for our vdom to know whether the user meant
+    // the string "false" or the primitive value false
+    it.skip("does not render bools (false)", () => {
+        app({
+            view: _ => html`<div id="foo">${false}</div>`
+        })
+        expect(document.getElementById("foo").innerHTML).toEqual("")
+    })
+
 })
 
 describe("Views", () => {

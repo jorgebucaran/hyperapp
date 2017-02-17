@@ -7,6 +7,12 @@ export default function (tag, data) {
 	children.shift()
 	var head = children[0]
 
+	for (var name in data) {
+		if (name[0] === "o" && name[1] === "n") {
+			data[name.toLowerCase()] = data[name]
+		}
+	}
+
 	children = Array.isArray(head) || head === undefined ? head : children
 
 	if (typeof tag === "function") {
@@ -30,6 +36,7 @@ function svg(tag, data, children) {
 
 	for (var i = 0; i < children.length; i++) {
 		var node = children[i]
+
 		if (node.data) {
 			svg(node.tag, node.data, node.children)
 		}

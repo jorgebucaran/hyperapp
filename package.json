@@ -1,7 +1,7 @@
 {
   "name": "hyperapp",
   "description": "1kb JavaScript library for building frontend applications.",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "main": "dist/hyperapp.js",
   "jsnext:main": "src/index.js",
   "module": "src/index.js",

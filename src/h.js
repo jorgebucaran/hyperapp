@@ -16,8 +16,7 @@ export default function (tag, data) {
 	children = Array.isArray(head) || head === undefined ? head : children
 
 	if (typeof tag === "function") {
-		data.children = children || []
-		return tag(data)
+		return tag(data, children || [])
 	}
 
 	if (tag === "svg") {

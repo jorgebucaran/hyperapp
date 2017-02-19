@@ -1,10 +1,6 @@
-export default function (tag, data) {
+export default function (tag, data, ...children) {
 	data = data || {}
 
-	var children = []
-	children.push.apply(children, arguments)
-	children.shift()
-	children.shift()
 	var head = children[0]
 
 	for (var name in data) {

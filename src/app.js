@@ -13,13 +13,16 @@ export default function (options) {
 	var node
 	var root
 
-	var hooks = merge({
-		onAction: Function.prototype,
-		onUpdate: Function.prototype,
-		onError: function (err) {
-			throw err
-		}
-	}, options.hooks)
+	var hooks = merge(
+		{
+			onAction: Function.prototype,
+			onUpdate: Function.prototype,
+			onError: function (err) {
+				throw err
+			}
+		},
+		options.hooks
+	)
 
 	for (var name in merge(reducers, effects)) {
 		(function (name) {
@@ -36,19 +39,23 @@ export default function (options) {
 
 				hooks.onUpdate(_model, model, data)
 			}
-		}(name))
+		})(name)
 	}
 
 	ready(function () {
-		root = options.root || document.body.appendChild(document.createElement("div"))
+		root = options.root ||
+			document.body.appendChild(document.createElement("div"))
 
 		if (typeof view === "function") {
 			render(model, view)
 		}
 
-		router(function (newView) {
-			render(model, view = newView ? newView : view, node)
-		}, options)
+		router(
+			function (newView) {
+				render(model, view = newView ? newView : view, node)
+			},
+			options
+		)
 
 		for (var key in subs) {
 			subs[key](model, actions, hooks.onError)
@@ -89,22 +96,25 @@ export default function (options) {
 	}
 
 	function defer(fn, data) {
-		setTimeout(function () {
-			fn(data)
-		}, 0)
+		setTimeout(
+			function () {
+				fn(data)
+			},
+			0
+		)
 	}
 
 	function shouldUpdate(a, b) {
-		return a.tag !== b.tag
-			|| typeof a !== typeof b
-			|| isPrimitive(typeof a) && a !== b
+		return a.tag !== b.tag ||
+			typeof a !== typeof b ||
+			isPrimitive(typeof a) && a !== b
 	}
 
 	function createElementFrom(node) {
 		var element
+		
 		if (isPrimitive(typeof node)) {
 			element = document.createTextNode(node)
-
 		} else {
 			element = node.data && node.data.ns
 				? document.createElementNS(node.data.ns, node.tag)
@@ -162,12 +172,14 @@ export default function (options) {
 
 	function updateElementData(element, data, oldData) {
 		for (var name in merge(oldData, data)) {
-			var value = data[name], oldValue = oldData[name]
+			var value = data[name]
+			var oldValue = oldData[name]
+			var realValue = element[name]
 
 			if (value === undefined) {
 				removeElementData(element, name, oldValue)
 
-			} else if (value !== oldValue) {
+			} else if (value !== oldValue || typeof realValue === "boolean" && realValue !== value) {
 				name === "onupdate"
 					? defer(value, element)
 					: setElementData(element, name, value, oldValue)
@@ -196,7 +208,10 @@ export default function (options) {
 			parent.removeChild(element)
 
 		} else if (shouldUpdate(node, oldNode)) {
-			parent.replaceChild(createElementFrom(node), parent.childNodes[index])
+			parent.replaceChild(
+				createElementFrom(node),
+				parent.childNodes[index]
+			)
 
 		} else if (node.tag) {
 			var element = parent.childNodes[index]

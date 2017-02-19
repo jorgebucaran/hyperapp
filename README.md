@@ -2,6 +2,7 @@
 [![circleci](https://circleci.com/gh/hyperapp/hyperapp/tree/master.svg?style=shield)](https://circleci.com/gh/hyperapp/hyperapp/tree/master)
 [![travis](https://img.shields.io/travis/hyperapp/hyperapp/master.svg)](https://travis-ci.org/hyperapp/hyperapp)
 [![codecov](https://img.shields.io/codecov/c/github/hyperapp/hyperapp/master.svg)](https://codecov.io/gh/hyperapp/hyperapp)
+[![CDNJS version](https://img.shields.io/cdnjs/v/hyperapp.svg)](https://cdnjs.com/libraries/hyperapp)
 [![version](https://img.shields.io/npm/v/hyperapp.svg)](https://www.npmjs.org/package/hyperapp)
 [![slack](https://hyperappjs.herokuapp.com/badge.svg)](https://hyperappjs.herokuapp.com)
 

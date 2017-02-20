@@ -349,12 +349,6 @@ Lifecycle methods are functions that can be attached to virtual nodes in order t
 * onupdate(e : `HTMLElement`)
 * onremove(e : `HTMLElement`)
 
-```jsx
-app({
-    view: _ => <div oncreate={e => console.log(e)}></div>
-})
-```
-
 <details>
 <summary><i>Example</i></summary>
 

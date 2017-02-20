@@ -296,14 +296,14 @@ const reducers = {
 }
 ```
 
-A reducer can return a new model or part of a model. If it returns part of a model, that part will be merged with the current model.
+A reducer can return a new model or part of a model. If it returns part of a model, it will be merged with the current model.
 
 A reducer can be triggered inside a [view](#view), [effect](#effects) or [subscription](#subscriptions).
 
 A reducer has the following signature: `(model, data, params)`.
 
 * `model` is the current model.
-* `data` os the data sent to the reducer.
+* `data` is the data sent to the reducer.
 
 When using the [router](#router), reducers receives an additional argument:
 
@@ -312,7 +312,7 @@ When using the [router](#router), reducers receives an additional argument:
 * `params` is an object with the matched route parameters.
 
 ### view
-A view is a function that returns a virtual element tree. See [`h`](#h).
+A view is a function that returns a virtual DOM tree. See [`h`](#h).
 
 A view has the following signature: `(model, actions)`.
 
@@ -346,13 +346,13 @@ app({
 ### Lifecycle Methods
 Lifecycle methods are functions that can be attached to virtual nodes in order to access actual DOM elements when they are created, updated or before they are removed.
 
-* onCreate(e : `HTMLElement`)
-* onUpdate(e : `HTMLElement`)
-* onRemove(e : `HTMLElement`)
+* oncreate(e : `HTMLElement`)
+* onupdate(e : `HTMLElement`)
+* onremove(e : `HTMLElement`)
 
 ```jsx
 app({
-    view: _ => <div onCreate={e => console.log(e)}></div>
+    view: _ => <div oncreate={e => console.log(e)}></div>
 })
 ```
 
@@ -375,7 +375,7 @@ app({
         <canvas
             width="600"
             height="300"
-            onUpdate={e => repaint(e, model)}
+            onupdate={e => repaint(e, model)}
         />,
     reducers: {
         move: model => ({ x: model.x + 1, y: model.y + 1 })
@@ -411,7 +411,7 @@ const model = {
 
 const view = (model, actions) =>
     <button
-        onClick={actions.waitThenAdd}
+        onclick={actions.waitThenAdd}
         disabled={model.waiting}>{model.counter}
     </button>
 
@@ -480,8 +480,8 @@ app({
     model: true,
     view: (model, actions) =>
         <div>
-            <button onClick={actions.doSomething}>Log</button>
-            <button onClick={actions.boom}>Error</button>
+            <button onclick={actions.doSomething}>Log</button>
+            <button onclick={actions.boom}>Error</button>
         </div>,
     reducers: {
         doSomething: model => !model,
@@ -509,8 +509,8 @@ The root is the container of your application. If none is given, a `div` element
 ### router
 The router is any function with the following signature: `(render, options)`.
 
-* `render` is a function capable to render a [view](#view).
-* `options` is the options object passed to [`app`](#appoptions).
+* `render` is a function provided by HyperApp capable to render a [view](#view).
+* `options` is the same object passed to [`app`](#appoptions).
 
 You can define your own router or use the one provided with HyperApp.
 ```jsx
@@ -557,10 +557,10 @@ app({
 
 * `/` match the index route or use as a wildcard to select the view when no route matches.
 
-* `/:key` match a route using the regular expression `[A-Za-z0-9]+`. The matched key is passed to the view function via [`params`](#params).
+* `/:key` match a route using the regular expression `[A-Za-z0-9]+`. The matched key is passed to the [view](#view) function via [`params`](#params).
 
 #### actions.setLocation
-Call `actions.setLocation(path)` to update the [location.pathname](https://developer.mozilla.org/en-US/docs/Web/API/Location). If the path matches an existing route, the corresponding view will be rendered. Requires the default [Router](#router).
+Call `actions.setLocation(path)` to update the [location.pathname](https://developer.mozilla.org/en-US/docs/Web/API/Location). If the path matches an existing route, the corresponding view will be rendered. Available if you are using the default [Router](#router).
 
 <details>
 <summary><i>Example</i></summary>
@@ -569,7 +569,7 @@ Call `actions.setLocation(path)` to update the [location.pathname](https://devel
 const Page = ({ title, target, onClick }) =>
     <div>
         <h1>{title}</h1>
-        <button onClick={onClick}>{target}</button>
+        <button onclick={onClick}>{target}</button>
     </div>
 
 app({
@@ -578,14 +578,14 @@ app({
             <Page
                 title="Home"
                 target="About"
-                onClick={_ => actions.setLocation("/about")}>
+                onclick={_ => actions.setLocation("/about")}>
             </Page>
         ,
         "/about": (model, actions) =>
             <Page
                 title="About"
                 target="Home"
-                onClick={_ => actions.setLocation("/")}>
+                onclick={_ => actions.setLocation("/")}>
             </Page>
     },
     router

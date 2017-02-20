@@ -95,13 +95,14 @@ export default function (options) {
 	}
 
 	function shouldUpdate(a, b) {
-		return a.tag !== b.tag
+		return /*a !== b || */a.tag !== b.tag
 			|| typeof a !== typeof b
 			|| isPrimitive(typeof a) && a !== b
 	}
 
 	function createElementFrom(node) {
 		var element
+
 		if (isPrimitive(typeof node)) {
 			element = document.createTextNode(node)
 
@@ -120,8 +121,8 @@ export default function (options) {
 
 			for (var i = 0; i < node.children.length; i++) {
 				var childNode = node.children[i]
-
-				if (childNode !== undefined && typeof childNode !== "boolean") {
+				if (/*childNode !== null &&*/ childNode !== undefined
+					&& typeof childNode !== "boolean") {
 					element.appendChild(createElementFrom(childNode))
 				}
 			}
@@ -184,11 +185,11 @@ export default function (options) {
 			parent.appendChild(createElementFrom(node))
 
 		} else if (node === undefined) {
-			while (index > 0 && !parent.childNodes[index]) {
+			var element = parent.childNodes[index]
+
+			while (index > 0 && !element) {
 				index--
 			}
-
-			var element = parent.childNodes[index]
 
 			if (oldNode && oldNode.data) {
 				var hook = oldNode.data.onremove
@@ -200,7 +201,17 @@ export default function (options) {
 			parent.removeChild(element)
 
 		} else if (shouldUpdate(node, oldNode)) {
-			parent.replaceChild(createElementFrom(node), parent.childNodes[index])
+			var element = parent.childNodes[index]
+
+			if (element === undefined) {
+				parent.appendChild(createElementFrom(node))
+
+			} else if (typeof node === "boolean") {
+				parent.removeChild(element)
+
+			} else {
+				parent.replaceChild(createElementFrom(node), element)
+			}
 
 		} else if (node.tag) {
 			var element = parent.childNodes[index]

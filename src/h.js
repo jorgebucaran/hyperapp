@@ -5,6 +5,7 @@ export default function(tag, data) {
     children.push.apply(children, arguments)
     children.shift()
     children.shift()
+    // var children = children.push.apply(children, arguments).splice(2)
     var head = children[0]
 
     children = Array.isArray(head) || head === undefined ? head : children

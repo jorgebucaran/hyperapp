@@ -8,7 +8,7 @@ insert_final_newline = true
 indent_style = tab
 
 [*.{diff,md}]
-trim_trailing_whitespace = false
+trim_trailing_whitespace = true
 
 [*.json]
 indent_style = space

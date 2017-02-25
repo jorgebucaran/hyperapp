@@ -224,7 +224,7 @@ No software is free of bugs. If you're not sure if something is a bug or not, pl
 
 ## Documentation
 
-HyperApp's documentation is located in the [wiki](https://github.com/hyperapp/hyperapp/wiki). Feel free to contribute new content or improve any of the existing pages.
+All documentation, guides and API reference are located in the [wiki](https://github.com/hyperapp/hyperapp/wiki). Feel free to contribute new content and improve the existing pages.
 
 ## License
 

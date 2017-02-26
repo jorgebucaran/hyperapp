@@ -22,7 +22,6 @@ describe("Router", () => {
             "/home": _ => "Tokyo",
             "/repos/hyperapp": _ => "Godzilla",
             "/h/y/p/e/r/a/p/p": _ => "Supersonic",
-            "*": _ => "Boston",
         }
 
         Object.keys(view).forEach(path => {
@@ -31,6 +30,19 @@ describe("Router", () => {
                 path,
                 expected: view[path]
             })
+        })
+    })
+
+    it("defaults non matching route", () => {
+        const view = {
+            "/": _ => "Earth",
+            "*": _ => "Boston",
+        }
+
+        matchRouteWithPath({
+            view,
+            path: "/will/not/match",
+            expected: view["*"]
         })
     })
 

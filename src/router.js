@@ -61,7 +61,11 @@ export default function (render, options) {
             }
         }
 
-        return routes["*"] || function(m,a) { return "404 Not Found" }
+        if (!routes["*"]) {
+          throw 'No matching route for ' + path
+        }
+
+        return routes["*"]
     }
 
     function regexify(path) {

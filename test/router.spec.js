@@ -18,9 +18,11 @@ describe("Router", () => {
 
     it("matches complete routes", () => {
         const view = {
+            "/": _ => "Earth",
             "/home": _ => "Tokyo",
             "/repos/hyperapp": _ => "Godzilla",
             "/h/y/p/e/r/a/p/p": _ => "Supersonic",
+            "*": _ => "Boston",
         }
 
         Object.keys(view).forEach(path => {
@@ -34,10 +36,10 @@ describe("Router", () => {
 
     it("matches routes w/ slugs", () => {
         const view = {
-            "/": _ => true,
             "/:key": (model, actions, { key }) => `Key:${key}`,
             "/repos/:id": (model, actions, { id }) => `Repos/Id:${id}`,
             "/:a/:b/:c": (model, actions, { a, b, c }) => `a:${a}/b:${b}/c:${c}`,
+            "*": _ => true,
         };
 
         matchRouteWithPath({
@@ -61,7 +63,7 @@ describe("Router", () => {
         matchRouteWithPath({
             view,
             path: "/not/going/to/match",
-            expected: view["/"]
+            expected: view["*"]
         })
     })
 

@@ -7,7 +7,7 @@ export default function (options) {
 	var reducers = options.reducers || {}
 	var subs = options.subscriptions
 
-	var router = options.router || Function.prototype
+	var router = options.router
 
 	var node
 	var root
@@ -21,57 +21,60 @@ export default function (options) {
 		}
 	}, options.hooks)
 
-	initialize(actions, effects)
-	initialize(actions, reducers,  true)
+	initializeActions(actions, effects, false)
+	initializeActions(actions, reducers, true)
 
-	ready(function () {
+	domContentLoaded(function () {
 		root = options.root || document.body.appendChild(document.createElement("div"))
 
 		if (typeof view === "function") {
 			render(model, view)
 		}
 
-		router(function (newView) {
-			render(model, view = newView ? newView : view, node)
-		}, options)
+		if (router) {
+			router(function (newView) {
+				render(model, view = newView ? newView : view, node)
+			}, options)
+		}
 
 		for (var key in subs) {
 			subs[key](model, actions, hooks.onError)
 		}
 	})
 
-	function initialize(_actions, namespace, isReducer, _name) {
-		Object.keys(namespace).forEach(function (key) {
-			if (!_actions[key]) {
-				_actions[key] = {}
+	function initializeActions(container, group, shouldUpdate, lastName) {
+		Object.keys(group).forEach(function (key) {
+			if (!container[key]) {
+				container[key] = {}
 			}
 
-			var name = _name ? _name + "." + key : key
-			var prop = namespace[key]
+			var name = lastName ? lastName + "." + key : key
+			var action = group[key]
 
-			if (typeof prop === "function") {
-				_actions[key] = function (data) {
+			if (typeof action === "function") {
+				container[key] = function (data) {
 					hooks.onAction(name, data)
 
-					if (isReducer) {
-						hooks.onUpdate(model, model = merge(model, prop(model, data)), data)
+					if (shouldUpdate) {
+						hooks.onUpdate(model, model = merge(model, action(model, data)), data)
 						render(model, view, node)
 						return actions
+
 					} else {
-						return prop(model, actions, data, hooks.onError)
+						return action(model, actions, data, hooks.onError)
 					}
 				}
 			} else {
-				initialize(_actions[key], prop, isReducer, name)
+				initializeActions(container[key], action, shouldUpdate, name)
 			}
 		})
 	}
 
-	function ready(cb) {
+	function domContentLoaded(initApp) {
 		if (document.readyState !== "loading") {
-			cb()
+			initApp()
 		} else {
-			document.addEventListener("DOMContentLoaded", cb)
+			document.addEventListener("DOMContentLoaded", initApp)
 		}
 	}
 
@@ -166,6 +169,7 @@ export default function (options) {
 
 		} else if (name[0] === "o" && name[1] === "n") {
 			var event = name.substr(2)
+
 			element.removeEventListener(event, oldValue)
 			element.addEventListener(event, value)
 
@@ -173,8 +177,10 @@ export default function (options) {
 			if (value === "false" || value === false) {
 				element.removeAttribute(name)
 				element[name] = false
+
 			} else {
 				element.setAttribute(name, value)
+
 				if (element.namespaceURI !== "http://www.w3.org/2000/svg") {
 					element[name] = value
 				}
@@ -194,8 +200,11 @@ export default function (options) {
 			} else if (name === "onupdate") {
 				defer(value, element)
 
-			} else if (value !== oldValue
-				|| typeof realValue === "boolean" && realValue !== value) {
+			} else if (
+				value !== oldValue
+				|| typeof realValue === "boolean"
+				&& realValue !== value
+			) {
 				setElementData(element, name, value, oldValue)
 			}
 		}
@@ -207,6 +216,7 @@ export default function (options) {
 
 		} else if (node === undefined) {
 			var element = parent.childNodes[index]
+
 			batch.push(parent.removeChild.bind(parent, element))
 
 			if (oldNode && oldNode.data && oldNode.data.onremove) {
@@ -215,11 +225,13 @@ export default function (options) {
 
 		} else if (shouldUpdate(node, oldNode)) {
 			var element = parent.childNodes[index]
+
 			if (typeof node === "boolean") {
 				parent.removeChild(element)
 
 			} else {
 				var newElement = createElementFrom(node)
+
 				if (element === undefined) {
 					parent.appendChild(newElement)
 				} else {
@@ -229,12 +241,14 @@ export default function (options) {
 
 		} else if (node.tag) {
 			var element = parent.childNodes[index]
+
 			updateElementData(element, node.data, oldNode.data)
 
 			var len = node.children.length, oldLen = oldNode.children.length
 
 			for (var i = 0; i < len || i < oldLen; i++) {
 				var child = node.children[i]
+
 				if (child !== null) {
 					patch(element, child, oldNode.children[i], i)
 				}

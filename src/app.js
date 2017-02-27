@@ -59,7 +59,6 @@ export default function (options) {
 						hooks.onUpdate(model, model = merge(model, action(model, data)), data)
 						render(model, view, node)
 						return actions
-
 					} else {
 						return action(model, actions, data, hooks.onError)
 					}
@@ -71,7 +70,7 @@ export default function (options) {
 	}
 
 	function domContentLoaded(initApp) {
-		if (document.readyState !== "loading") {
+		if (document.readyState[0] !== "l") {
 			initApp()
 		} else {
 			document.addEventListener("DOMContentLoaded", initApp)
@@ -117,9 +116,9 @@ export default function (options) {
 	}
 
 	function shouldUpdate(a, b) {
-		return a.tag !== b.tag
-			|| typeof a !== typeof b
-			|| isPrimitive(a) && a !== b
+		return a.tag !== b.tag ||
+			typeof a !== typeof b ||
+			isPrimitive(a) && a !== b
 	}
 
 	function createElementFrom(node) {
@@ -144,7 +143,11 @@ export default function (options) {
 			for (var i = 0; i < node.children.length; i++) {
 				var childNode = node.children[i]
 
-				if (childNode !== undefined && typeof childNode !== "boolean" && childNode !== null) {
+				if (
+					childNode !== undefined &&
+					typeof childNode !== "boolean" &&
+					childNode !== null
+				) {
 					element.appendChild(createElementFrom(childNode))
 				}
 			}

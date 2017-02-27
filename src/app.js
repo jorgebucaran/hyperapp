@@ -38,8 +38,8 @@ export default function (options) {
 			} else recurseActions(isReducer, pointer[key], actionPointer[key], name)
 		}
 	}
-	recurseActions(0, effects, actions, '')
-	recurseActions(1, reducers, actions, '')
+	recurseActions(0, effects, actions)
+	recurseActions(1, reducers, actions)
 
 	ready(function () {
 		root = options.root || document.body.appendChild(document.createElement("div"))

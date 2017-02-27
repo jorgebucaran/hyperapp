@@ -135,7 +135,7 @@ describe("App", () => {
 })
 
 describe("Namespaces", () => {
-	it("", () => {
+	it("creates collections of actions organized by a namespace key", () => {
 		app({
 			model: true,
 			reducers: {
@@ -155,7 +155,7 @@ describe("Namespaces", () => {
 		})
 	})
 
-	it("", () => {
+	it("does not overwrite actions when both reducers and effects use the same parent namespace key", () => {
 		app({
 			model: true,
 			effects: {
@@ -367,6 +367,41 @@ describe("Views", () => {
 
 		expect(el).not.toBe(null)
 		expect(el.style.color).toBe("")
+	})
+})
+
+describe("Actions", () => {
+	it("returns a copy of the actions object for reducers", () => {
+		app({
+			model: 1,
+			view: _ => h("div", {}, ""),
+			reducers: {
+				foo: model => model + 1,
+				bar: model => model * 2
+			},
+			effects: {
+				foo: (model, actions) => {
+					expect(model).toBe(1)
+					actions.bar().baz()
+					expect(model).toBe(4)
+				}
+			},
+			subscriptions: [
+				(_, actions) => actions.foo()
+			]
+		})
+	})
+
+	it("returns the return value of the effect for effects", () => {
+		app({
+			view: _ => h("div", {}, ""),
+			effects: {
+				foo: _ => "bar"
+			},
+			subscriptions: [
+				(_, actions) => expect(actions.foo()).toBe("bar")
+			]
+		})
 	})
 })
 

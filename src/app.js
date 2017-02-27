@@ -42,23 +42,26 @@ export default function (options) {
 
 	function createActions(isReducer, namespace, _actions, _name) {
 		Object.keys(namespace).forEach(function (key) {
-			_actions[key] = {}
+			if (!_actions[key]) {
+				_actions[key] = {}
+			}
 
 			var name = _name ? _name + '.' + key : key
+			var prop = namespace[key]
 
-			if (namespace[key] instanceof Function) {
+			if (typeof prop === "function") {
 				_actions[key] = function (data) {
 					hooks.onAction(name, data)
-					
+
 					if (isReducer) {
-						hooks.onUpdate(model, model = merge(model, namespace[key](model, data)), data)
+						hooks.onUpdate(model, model = merge(model, prop(model, data)), data)
 						render(model, view, node)
 					} else {
-						namespace[key](model, actions, data, hooks.onError)
+						prop(model, actions, data, hooks.onError)
 					}
 				}
 			} else {
-				createActions(isReducer, namespace[key], _actions[key], name)
+				createActions(isReducer, prop, _actions[key], name)
 			}
 		})
 	}

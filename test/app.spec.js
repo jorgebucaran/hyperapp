@@ -154,6 +154,38 @@ describe("Namespaces", () => {
 			view: _ => h("div", {}, "")
 		})
 	})
+
+	it("", () => {
+		app({
+			model: true,
+			effects: {
+				foo: {
+					bar: {
+						qux: (model, actions, data) => {
+							expect(model).toBe(true)
+							expect(data).toBe("foo.bar.qux")
+						}
+					}
+				}
+			},
+			reducers: {
+				foo: {
+					bar: {
+						baz: (model, data) => {
+							expect(model).toBe(true)
+							expect(data).toBe("foo.bar.baz")
+							return model
+						}
+					}
+				}
+			},
+			subscriptions: [
+				(_, actions) => actions.foo.bar.baz("foo.bar.baz"),
+				(_, actions) => actions.foo.bar.qux("foo.bar.qux"),
+			],
+			view: _ => h("div", {}, "")
+		})
+	})
 })
 
 describe("Views", () => {

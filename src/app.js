@@ -49,7 +49,7 @@ export default function (options) {
 			if (namespace[key] instanceof Function) {
 				_actions[key] = function (data) {
 					hooks.onAction(name, data)
-					
+
 					if (isReducer) {
 						hooks.onUpdate(model, model = merge(model, namespace[key](model, data)), data)
 						render(model, view, node)

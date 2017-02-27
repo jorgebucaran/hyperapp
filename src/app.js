@@ -5,7 +5,6 @@ export default function (options) {
 	var actions = {}
 	var effects = options.effects || {}
 	var reducers = options.reducers || options.update || {}
-
 	var subs = options.subscriptions
 
 	var router = options.router || Function.prototype
@@ -22,25 +21,8 @@ export default function (options) {
 		}
 	}, options.hooks)
 
-	function recurseActions (isReducer, pointer, actionPointer, _name) {
-		for (var key in pointer) {
-			if (!actionPointer[key]) actionPointer[key] = {}
-			var name = _name ? _name + '.' + key : key
-			if (pointer[key] instanceof Function) {
-				(function (key, name) {
-					actionPointer[key] = function (data) {
-						hooks.onAction(name, data)
-						if (isReducer) {
-							hooks.onUpdate(model, model = merge(model, pointer[key](model, data)), data)
-							render(model, view, node)
-						} else return pointer[key](model, actions, data, hooks.onError)
-					}
-				})(key, name)
-			} else recurseActions(isReducer, pointer[key], actionPointer[key], name)
-		}
-	}
-	recurseActions(0, effects, actions)
-	recurseActions(1, reducers, actions)
+	createActions(0, effects, actions)
+	createActions(1, reducers, actions)
 
 	ready(function () {
 		root = options.root || document.body.appendChild(document.createElement("div"))
@@ -57,6 +39,29 @@ export default function (options) {
 			subs[key](model, actions, hooks.onError)
 		}
 	})
+
+	function createActions(isReducer, namespace, _actions, _name) {
+		Object.keys(namespace).forEach(function (key) {
+			_actions[key] = {}
+
+			var name = _name ? _name + '.' + key : key
+
+			if (namespace[key] instanceof Function) {
+				_actions[key] = function (data) {
+					hooks.onAction(name, data)
+					
+					if (isReducer) {
+						hooks.onUpdate(model, model = merge(model, namespace[key](model, data)), data)
+						render(model, view, node)
+					} else {
+						namespace[key](model, actions, data, hooks.onError)
+					}
+				}
+			} else {
+				createActions(isReducer, namespace[key], _actions[key], name)
+			}
+		})
+	}
 
 	function ready(cb) {
 		if (document.readyState !== "loading") {

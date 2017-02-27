@@ -72,13 +72,13 @@ describe("App", () => {
 
 		const model = firstValue
 
-		const view = (model, update) =>
+		const view = (model, actions) =>
 			html`<div><input oninput=${e =>
-				update.fire(e.target.value)} value=${model}/><p>${model}</p></div>`
+				actions.fire(e.target.value)} value=${model}/><p>${model}</p></div>`
 
-		const update = { fire: (_, value) => value }
+		const reducers = { fire: (_, value) => value }
 
-		app({ model, view, update })
+		app({ model, view, reducers })
 
 		const input = document.getElementsByTagName('input')[0];
 
@@ -344,7 +344,7 @@ describe("Views", () => {
 
 	it("removes element data", () => {
 		const model = 0
-		const update = {
+		const reducers = {
 			add: (model, data) => model + data
 		}
 		const subscriptions = [(_, msg) => msg.add(2)]
@@ -361,7 +361,7 @@ describe("Views", () => {
 			})
 			, "...")
 
-		app({ model, view, update, subscriptions })
+		app({ model, view, reducers, subscriptions })
 
 		var el = document.getElementById("test")
 
@@ -429,7 +429,7 @@ describe("Hooks", () => {
 
 	const view = (model) => html`<div>${model}</div>`
 
-	const update = { add: (model, data) => model + data }
+	const reducers = { add: (model, data) => model + data }
 
 	const subscriptions = [(_, msg) => msg.add(2)]
 
@@ -440,7 +440,7 @@ describe("Hooks", () => {
 			onUpdate: (prev, model) => { guard = { prev, model } }
 		}
 
-		app({ model, view, update, subscriptions, hooks })
+		app({ model, view, reducers, subscriptions, hooks })
 
 		fireDOMLoaded()
 
@@ -454,7 +454,7 @@ describe("Hooks", () => {
 			onAction: (name, data) => { guard = { name, data } }
 		}
 
-		app({ model, view, update, subscriptions, hooks })
+		app({ model, view, reducers, subscriptions, hooks })
 
 		fireDOMLoaded()
 
@@ -520,7 +520,7 @@ describe("Hooks", () => {
 
 describe("Lifecycle methods", () => {
 	const model = 0
-	const update = {
+	const reducers = {
 		add: (model, data) => model + data
 	}
 	const subscriptions = [(_, msg) => msg.add(2)]
@@ -544,7 +544,7 @@ describe("Lifecycle methods", () => {
 
 		const view = (model) => html`<div onupdate=${e => guard = e}></div>`
 
-		app({ model, update, subscriptions, view })
+		app({ model, reducers, subscriptions, view })
 
 		fireDOMLoaded()
 
@@ -575,7 +575,7 @@ describe("Lifecycle methods", () => {
 
 		const view = model => html`${model === 0 ? a : b}`
 
-		app({ model, view, update, subscriptions })
+		app({ model, view, reducers, subscriptions })
 
 		fireDOMLoaded()
 

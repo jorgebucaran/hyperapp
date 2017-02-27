@@ -12,6 +12,7 @@ export default function (options) {
 
 	var node
 	var root
+	var batch = []
 
 	var hooks = merge({
 		onAction: Function.prototype,
@@ -65,6 +66,12 @@ export default function (options) {
 
 	function render(model, view, lastNode) {
 		patch(root, node = view(model, actions), lastNode, 0)
+
+		for (var i = 0; i < batch.length; i++) {
+			batch[i]()
+		}
+
+		batch = []
 	}
 
 	function merge(a, b) {
@@ -102,6 +109,7 @@ export default function (options) {
 
 	function createElementFrom(node) {
 		var element
+
 		if (isPrimitive(typeof node)) {
 			element = document.createTextNode(node)
 
@@ -182,50 +190,42 @@ export default function (options) {
 	}
 
 	function patch(parent, node, oldNode, index) {
-		if (node === null) {
-			return
-		}
-
 		if (oldNode === undefined) {
 			parent.appendChild(createElementFrom(node))
 
 		} else if (node === undefined) {
-			while (index > 0 && !parent.childNodes[index]) {
-				index--
-			}
-
 			var element = parent.childNodes[index]
+			batch.push(parent.removeChild.bind(parent, element))
 
-			if (oldNode && oldNode.data) {
-				var hook = oldNode.data.onremove
-				if (hook) {
-					defer(hook, element)
-				}
+			if (oldNode && oldNode.data && oldNode.data.onremove) {
+				defer(oldNode.data.onremove, element)
 			}
-
-			parent.removeChild(element)
 
 		} else if (shouldUpdate(node, oldNode)) {
 			var element = parent.childNodes[index]
-
 			if (typeof node === "boolean") {
 				parent.removeChild(element)
 
-			} else if (element === undefined) {
-				parent.appendChild(createElementFrom(node))
-
 			} else {
-				parent.replaceChild(createElementFrom(node), element)
+				var newElement = createElementFrom(node)
+				if (element === undefined) {
+					parent.appendChild(newElement)
+				} else {
+					parent.replaceChild(newElement, element)
+				}
 			}
+
 		} else if (node.tag) {
 			var element = parent.childNodes[index]
-
 			updateElementData(element, node.data, oldNode.data)
 
 			var len = node.children.length, oldLen = oldNode.children.length
 
 			for (var i = 0; i < len || i < oldLen; i++) {
-				patch(element, node.children[i], oldNode.children[i], i)
+				var child = node.children[i]
+				if (child !== null) {
+					patch(element, child, oldNode.children[i], i)
+				}
 			}
 		}
 	}

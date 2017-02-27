@@ -22,21 +22,20 @@ export default function (options) {
 	}, options.hooks)
 
 	function recurseActions (isReducer, pointer, actionPointer, _name) {
-		for (var key in pointer) {
+		Object.keys(pointer).forEach(function (key) {
 			if (!actionPointer[key]) actionPointer[key] = {}
 			var name = _name ? _name + '.' + key : key
-			if (pointer[key] instanceof Function) {
-				(function (key, name) {
-					actionPointer[key] = function (data) {
-						hooks.onAction(name, data)
-						if (isReducer) {
-							hooks.onUpdate(model, model = merge(model, pointer[key](model, data)), data)
-							render(model, view, node)
-						} else return pointer[key](model, actions, data, hooks.onError)
-					}
-				})(key, name)
-			} else recurseActions(isReducer, pointer[key], actionPointer[key], name)
-		}
+			var reference = pointer[key]
+			if (typeof reference === 'function') {
+				actionPointer[key] = function (data) {
+					hooks.onAction(name, data)
+					if (isReducer) {
+						hooks.onUpdate(model, model = merge(model, reference(model, data)), data)
+						render(model, view, node)
+					} else return reference(model, actions, data, hooks.onError)
+				}
+			} else recurseActions(isReducer, reference, actionPointer[key], name)
+		})
 	}
 	recurseActions(0, effects, actions)
 	recurseActions(1, reducers, actions)

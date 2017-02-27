@@ -88,7 +88,7 @@ export default function (options) {
 	function merge(a, b) {
 		var obj = {}, key
 
-		if (isPrimitive(typeof b) || Array.isArray(b)) {
+		if (isPrimitive(b) || Array.isArray(b)) {
 			return b
 		}
 
@@ -103,6 +103,7 @@ export default function (options) {
 	}
 
 	function isPrimitive(type) {
+		type = typeof type
 		return type === "string" || type === "number" || type === "boolean"
 	}
 
@@ -115,13 +116,13 @@ export default function (options) {
 	function shouldUpdate(a, b) {
 		return a.tag !== b.tag
 			|| typeof a !== typeof b
-			|| isPrimitive(typeof a) && a !== b
+			|| isPrimitive(a) && a !== b
 	}
 
 	function createElementFrom(node) {
 		var element
 
-		if (isPrimitive(typeof node)) {
+		if (isPrimitive(node)) {
 			element = document.createTextNode(node)
 
 		} else {

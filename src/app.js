@@ -4,7 +4,7 @@ export default function (options) {
 
 	var actions = {}
 	var effects = options.effects || {}
-	var reducers = options.reducers || options.update || {}
+	var reducers = options.reducers || {}
 	var subs = options.subscriptions
 
 	var router = options.router || Function.prototype
@@ -21,8 +21,8 @@ export default function (options) {
 		}
 	}, options.hooks)
 
-	createActions(false, effects, actions)
-	createActions(true, reducers, actions)
+	initialize(actions, effects)
+	initialize(actions, reducers,  true)
 
 	ready(function () {
 		root = options.root || document.body.appendChild(document.createElement("div"))
@@ -40,30 +40,29 @@ export default function (options) {
 		}
 	})
 
-	function createActions(isReducer, collection, container, name) {
-		Object.keys(collection).forEach(function (namespace) {
-			if (!container[namespace]) {
-				container[namespace] = {}
+	function initialize(_actions, namespace, isReducer, _name) {
+		Object.keys(namespace).forEach(function (key) {
+			if (!_actions[key]) {
+				_actions[key] = {}
 			}
 
-			var action = collection[namespace]
+			var name = _name ? _name + "." + key : key
+			var prop = namespace[key]
 
-			if (typeof action === "function") {
-				name = name ? name + "." + namespace : namespace
-
-				container[namespace] = function (data) {
+			if (typeof prop === "function") {
+				_actions[key] = function (data) {
 					hooks.onAction(name, data)
 
 					if (isReducer) {
-						hooks.onUpdate(model, model = merge(model, action(model, data)), data)
+						hooks.onUpdate(model, model = merge(model, prop(model, data)), data)
 						render(model, view, node)
 						return actions
 					} else {
-						return action(model, actions, data, hooks.onError)
+						return prop(model, actions, data, hooks.onError)
 					}
 				}
 			} else {
-				createActions(isReducer, action, container[namespace], name)
+				initialize(_actions[key], prop, isReducer, name)
 			}
 		})
 	}
@@ -175,7 +174,7 @@ export default function (options) {
 				element[name] = false
 			} else {
 				element.setAttribute(name, value)
-				if (element.nsURI !== "http://www.w3.org/2000/svg") {
+				if (element.namespaceURI !== "http://www.w3.org/2000/svg") {
 					element[name] = value
 				}
 			}

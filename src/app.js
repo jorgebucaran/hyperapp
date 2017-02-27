@@ -21,8 +21,8 @@ export default function (options) {
 		}
 	}, options.hooks)
 
-	createActions(0, effects, actions)
-	createActions(1, reducers, actions)
+	createActions(false, effects, actions)
+	createActions(true, reducers, actions)
 
 	ready(function () {
 		root = options.root || document.body.appendChild(document.createElement("div"))
@@ -40,28 +40,30 @@ export default function (options) {
 		}
 	})
 
-	function createActions(isReducer, namespace, _actions, _name) {
-		Object.keys(namespace).forEach(function (key) {
-			if (!_actions[key]) {
-				_actions[key] = {}
+	function createActions(isReducer, collection, container, name) {
+		Object.keys(collection).forEach(function (namespace) {
+			if (!container[namespace]) {
+				container[namespace] = {}
 			}
 
-			var name = _name ? _name + '.' + key : key
-			var prop = namespace[key]
+			var action = collection[namespace]
 
-			if (typeof prop === "function") {
-				_actions[key] = function (data) {
+			if (typeof action === "function") {
+				name = name ? name + "." + namespace : namespace
+
+				container[namespace] = function (data) {
 					hooks.onAction(name, data)
 
 					if (isReducer) {
-						hooks.onUpdate(model, model = merge(model, prop(model, data)), data)
+						hooks.onUpdate(model, model = merge(model, action(model, data)), data)
 						render(model, view, node)
+						return actions
 					} else {
-						prop(model, actions, data, hooks.onError)
+						return action(model, actions, data, hooks.onError)
 					}
 				}
 			} else {
-				createActions(isReducer, prop, _actions[key], name)
+				createActions(isReducer, action, container[namespace], name)
 			}
 		})
 	}
@@ -173,7 +175,7 @@ export default function (options) {
 				element[name] = false
 			} else {
 				element.setAttribute(name, value)
-				if (element.namespaceURI !== "http://www.w3.org/2000/svg") {
+				if (element.nsURI !== "http://www.w3.org/2000/svg") {
 					element[name] = value
 				}
 			}

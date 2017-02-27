@@ -132,7 +132,28 @@ describe("App", () => {
 		})
 		expect(document.getElementById("foo").innerHTML).toEqual("")
 	})
+})
 
+describe("Namespaces", () => {
+	it("", () => {
+		app({
+			model: true,
+			reducers: {
+				foo: {
+					bar: {
+						baz: (model, data) => {
+							expect(model).toBe(true)
+							expect(data).toBe("foo.bar.baz")
+						}
+					}
+				}
+			},
+			subscriptions: [
+				(_, actions) => actions.foo.bar.baz("foo.bar.baz")
+			],
+			view: _ => h("div", {}, "")
+		})
+	})
 })
 
 describe("Views", () => {

@@ -86,7 +86,7 @@ export default function (app) {
 	}
 
 	function use(app) {
-		if (app.model) {
+		if (app.model !== undefined) {
 			model = merge(model, app.model)
 		}
 

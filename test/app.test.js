@@ -1,16 +1,9 @@
 /* global beforeEach, describe, it, expect */
 
 import { app, h } from "../src"
+import { expectHTMLToBe } from "./util"
 
-const expectHTMLToBe = body =>
-	expect(document.body.innerHTML).toBe(body
-		.replace(/\r?\n|\r|\t/g, "")
-		.replace(/\s+</g, "<")
-		.replace(/>\s+/g, ">"))
-
-beforeEach(() => {
-	document.body.innerHTML = ""
-})
+beforeEach(() => document.body.innerHTML = "")
 
 describe("app", () => {
 	describe("architecture", () => {
@@ -36,11 +29,6 @@ describe("app", () => {
 			const event = document.createEvent("Event")
 			event.initEvent("DOMContentLoaded", true, true)
 			window.document.dispatchEvent(event)
-		})
-
-		it("creates an empty div if no view is given", () => {
-			app({})
-			expect(document.body.innerHTML).toBe("<div></div>")
 		})
 
 		it("toggles class attributes", () => {
@@ -275,6 +263,50 @@ describe("app", () => {
 		})
 	})
 
+	describe("view", () => {
+		it("creates an empty div if no view is given", () => {
+			app({})
+			expect(document.body.innerHTML).toBe("<div></div>")
+		})
+
+		it("sets inline styles", () => {
+			app({
+				view: model => h("div", {
+					id: "foo",
+					style: {
+						backgroundColor: "red"
+					}
+				}, "foo")
+			})
+
+			expectHTMLToBe(`
+				<div>
+					<div id="foo" style="background-color: red;">
+						foo
+					</div>
+				</div>
+			`)
+		})
+
+		it("won't crash if data is null/undefined", () => {
+			app({
+				view: model => h("div", null, [
+					h("div", undefined, "foo")
+				])
+			})
+
+			expectHTMLToBe(`
+				<div>
+					<div>
+						<div>
+							foo
+						</div>
+					</div>
+				</div>
+			`)
+		})
+	})
+
 	describe("actions", () => {
 		describe("reducers", () => {
 			it("renders view when model changes", () => {
@@ -290,10 +322,36 @@ describe("app", () => {
 				})
 
 				expectHTMLToBe(`
-				<div>
-					<div>2</div>
-				</div>
-			`)
+					<div>
+						<div>2</div>
+					</div>
+				`)
+			})
+
+			it("returns actions object", () => {
+				app({
+					model: 1,
+					view: model => h("div", {}, model),
+					reducers: {
+						foo1: model => model + 1,
+						foo2: model => model + 1
+					},
+					effects: {
+						bar: (model, actions) => {
+							actions.foo1().foo2()
+							expectHTMLToBe(`
+								<div>
+									<div>
+										3
+									</div>
+								</div>
+							`)
+						}
+					},
+					subscriptions: [
+						(_, actions) => actions.bar()
+					]
+				})
 			})
 		})
 
@@ -319,10 +377,21 @@ describe("app", () => {
 					]
 				})
 			})
+
+			it("has same return value as wrapped effect function", () => {
+				app({
+					effects: {
+						foo: _ => "foo"
+					},
+					subscriptions: [
+						(_, actions) => expect(actions.foo()).toBe("foo")
+					]
+				})
+			})
 		})
 
-		describe("namespaces", () => {
-			it("collects actions by namespace key", () => {
+		describe("nested actions", () => {
+			it("collects actions by namespace/key", () => {
 				app({
 					model: true,
 					reducers: {

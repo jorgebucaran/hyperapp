@@ -2,13 +2,11 @@
 
 import { app, h } from "../src"
 
-const trim = s => s
-	.replace(/\r?\n|\r|\t/g, "")
-	.replace(/\s+</g, "<")
-	.replace(/>\s+/g, ">")
-
 const expectHTMLToBe = body =>
-	expect(document.body.innerHTML).toBe(trim(body))
+	expect(document.body.innerHTML).toBe(body
+		.replace(/\r?\n|\r|\t/g, "")
+		.replace(/\s+</g, "<")
+		.replace(/>\s+/g, ">"))
 
 beforeEach(() => {
 	document.body.innerHTML = ""

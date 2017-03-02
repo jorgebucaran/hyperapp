@@ -26,7 +26,41 @@ describe("Router", () => {
 		expect(r.subscriptions.length).toBe(1)
 	})
 
-	it("selects the index route", () => {
+	it("renders default route", () => {
+		window.history.pushState = _ => _
+
+		app({
+			view: {
+				"*": model => h("div", {}, "foo"),
+			},
+			plugins: [Router],
+			subscriptions: [
+				(_, actions) => {
+					expectHTMLToBe(`
+						<div>
+							<div>foo</div>
+						</div>
+					`)
+
+					actions.router.go("/bar")
+					expectHTMLToBe(`
+						<div>
+							<div>foo</div>
+						</div>
+					`)
+
+					actions.router.go("/baz")
+					expectHTMLToBe(`
+						<div>
+							<div>foo</div>
+						</div>
+					`)
+				}
+			]
+		})
+	})
+
+	it("renders the index route", () => {
 		app({
 			view: {
 				"/": model => h("div", {}, "foo")
@@ -41,7 +75,7 @@ describe("Router", () => {
 		`)
 	})
 
-	it("selects a matching route", () => {
+	it("renders matched route", () => {
 		window.location.pathname = "/foo/bar/baz"
 
 		app({
@@ -58,7 +92,7 @@ describe("Router", () => {
 		`)
 	})
 
-	it("matches route :key/s", () => {
+	it("collects matched route keys", () => {
 		window.location.pathname = "/FOO/BAR/BAZ"
 
 		app({

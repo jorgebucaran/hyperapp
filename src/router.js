@@ -36,41 +36,41 @@ export default function (options) {
 			}
 		}
 	}
+}
 
-	function match(routes, path) {
-		for (var route in routes) {
-			if (route === "*") {
-				continue
-			}
-
-			var re = regexify(route), params = {}, match
-
-			path.replace(new RegExp(re.re, "g"), function () {
-				for (var i = 1; i < arguments.length - 2; i++) {
-					params[re.keys.shift()] = arguments[i]
-				}
-
-				match = function (model, actions) {
-					return routes[route](model, actions, params)
-				}
-			})
-
-			if (match) {
-				return match
-			}
+function match(routes, path) {
+	for (var route in routes) {
+		if (route === "*") {
+			continue
 		}
 
-		return routes["*"]
+		var re = regexify(route), params = {}, match
+
+		path.replace(new RegExp(re.re, "g"), function () {
+			for (var i = 1; i < arguments.length - 2; i++) {
+				params[re.keys.shift()] = arguments[i]
+			}
+
+			match = function (model, actions) {
+				return routes[route](model, actions, params)
+			}
+		})
+
+		if (match) {
+			return match
+		}
 	}
 
-	function regexify(path) {
-		var keys = [], re = "^" + path
-			.replace(/\//g, "\\/")
-			.replace(/:([A-Za-z0-9_]+)/g, function (_, key) {
-				keys.push(key)
-				return "([A-Za-z0-9_]+)"
-			}) + "/?$"
+	return routes["*"]
+}
 
-		return { re: re, keys: keys }
-	}
+function regexify(path) {
+	var keys = [], re = "^" + path
+		.replace(/\//g, "\\/")
+		.replace(/:([A-Za-z0-9_]+)/g, function (_, key) {
+			keys.push(key)
+			return "([A-Za-z0-9_]+)"
+		}) + "/?$"
+
+	return { re: re, keys: keys }
 }

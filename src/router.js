@@ -39,6 +39,10 @@ export default function (options) {
 
 	function match(routes, path) {
 		for (var route in routes) {
+			if (route === "*") {
+				continue
+			}
+
 			var re = regexify(route), params = {}, match
 
 			path.replace(new RegExp(re.re, "g"), function () {
@@ -56,7 +60,7 @@ export default function (options) {
 			}
 		}
 
-		return routes["/"]
+		return routes["*"]
 	}
 
 	function regexify(path) {

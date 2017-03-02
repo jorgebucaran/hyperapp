@@ -1,48 +1,47 @@
-export default function (options) {
-	var model = options.model
-	var view = options.view
+export default function (app) {
+	var view = app.view || function () {
+		return ""
+	}
 
+	var model
 	var actions = {}
-	var effects = options.effects || {}
-	var reducers = options.reducers || {}
-	var subs = options.subscriptions
-
-	var router = options.router
-
+	var reducers
+	var effects
+	var subscriptions = []
+	var hooks = []
+	var plugins = app.plugins
 	var node
 	var root
 	var batch = []
 
-	var hooks = merge({
-		onAction: Function.prototype,
-		onUpdate: Function.prototype,
-		onError: function (err) {
+	var onError = function (err) {
+		if (!hook("onError", function (fn) {
+			fn(err)
+		})) {
 			throw err
 		}
-	}, options.hooks)
+	}
 
-	initializeActions(actions, effects, false)
-	initializeActions(actions, reducers, true)
+	use(app)
 
-	domContentLoaded(function () {
-		root = options.root || document.body.appendChild(document.createElement("div"))
+	for (var key in plugins) {
+		use(plugins[key](app))
+	}
 
-		if (typeof view === "function") {
-			render(model, view)
-		}
+	init(actions, effects, false)
+	init(actions, reducers, true)
 
-		if (router) {
-			router(function (newView) {
-				render(model, view = newView ? newView : view, node)
-			}, options)
-		}
+	load(function () {
+		root = app.root || document.body.appendChild(document.createElement("div"))
 
-		for (var key in subs) {
-			subs[key](model, actions, hooks.onError)
+		render(model, view)
+
+		for (var key in subscriptions) {
+			subscriptions[key](model, actions, onError)
 		}
 	})
 
-	function initializeActions(container, group, shouldUpdate, lastName) {
+	function init(container, group, shouldRender, lastName) {
 		Object.keys(group).forEach(function (key) {
 			if (!container[key]) {
 				container[key] = {}
@@ -53,32 +52,72 @@ export default function (options) {
 
 			if (typeof action === "function") {
 				container[key] = function (data) {
-					hooks.onAction(name, data)
+					hook("onAction", function (fn) {
+						fn(name, data)
+					})
 
-					if (shouldUpdate) {
-						hooks.onUpdate(model, model = merge(model, action(model, data)), data)
-						render(model, view, node)
+					if (shouldRender) {
+						var oldModel = model
+						model = merge(model, action(model, data))
+
+						hook("onUpdate", function (fn) {
+							fn(oldModel, model, data)
+						})
+
+						render(model, view)
+
 						return actions
 					} else {
-						return action(model, actions, data, hooks.onError)
+						return action(model, actions, data, onError)
 					}
 				}
 			} else {
-				initializeActions(container[key], action, shouldUpdate, name)
+				init(container[key], action, shouldRender, name)
 			}
 		})
 	}
 
-	function domContentLoaded(initApp) {
+	function load(fn) {
 		if (document.readyState[0] !== "l") {
-			initApp()
+			fn()
 		} else {
-			document.addEventListener("DOMContentLoaded", initApp)
+			document.addEventListener("DOMContentLoaded", fn)
 		}
 	}
 
-	function render(model, view, lastNode) {
-		patch(root, node = view(model, actions), lastNode, 0)
+	function use(app) {
+		if (app.model) {
+			model = merge(model, app.model)
+		}
+
+		reducers = merge(reducers, app.reducers)
+		effects = merge(effects, app.effects)
+
+		if (app.subscriptions) {
+			subscriptions = subscriptions.concat(app.subscriptions)
+		}
+
+		if (app.hooks) {
+			hooks.push(app.hooks)
+		}
+	}
+
+	function hook(name, fn) {
+		for (var key in hooks) {
+			var hookfn = hooks[key][name]
+			if (hookfn) {
+				fn(hookfn)
+			}
+		}
+		return hookfn !== undefined
+	}
+
+	function render(model, view) {
+		hook("onRender", function (fn) {
+			view = fn(model, view)
+		})
+
+		patch(root, node, node = view(model, actions), 0)
 
 		for (var i = 0; i < batch.length; i++) {
 			batch[i]()
@@ -141,15 +180,7 @@ export default function (options) {
 			}
 
 			for (var i = 0; i < node.children.length; i++) {
-				var childNode = node.children[i]
-
-				if (
-					childNode !== undefined &&
-					typeof childNode !== "boolean" &&
-					childNode !== null
-				) {
-					element.appendChild(createElementFrom(childNode))
-				}
+				element.appendChild(createElementFrom(node.children[i]))
 			}
 		}
 
@@ -213,7 +244,7 @@ export default function (options) {
 		}
 	}
 
-	function patch(parent, node, oldNode, index) {
+	function patch(parent, oldNode, node, index) {
 		if (oldNode === undefined) {
 			parent.appendChild(createElementFrom(node))
 
@@ -227,20 +258,7 @@ export default function (options) {
 			}
 
 		} else if (shouldUpdate(node, oldNode)) {
-			var element = parent.childNodes[index]
-
-			if (typeof node === "boolean") {
-				parent.removeChild(element)
-
-			} else {
-				var newElement = createElementFrom(node)
-
-				if (element === undefined) {
-					parent.appendChild(newElement)
-				} else {
-					parent.replaceChild(newElement, element)
-				}
-			}
+			parent.replaceChild(createElementFrom(node), parent.childNodes[index])
 
 		} else if (node.tag) {
 			var element = parent.childNodes[index]
@@ -252,9 +270,7 @@ export default function (options) {
 			for (var i = 0; i < len || i < oldLen; i++) {
 				var child = node.children[i]
 
-				if (child !== null) {
-					patch(element, child, oldNode.children[i], i)
-				}
+				patch(element, oldNode.children[i], child, i)
 			}
 		}
 	}

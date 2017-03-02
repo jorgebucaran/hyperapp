@@ -1,73 +1,73 @@
-export default function (render, options) {
-    var routes = options.view
+export default function (options) {
+	var routes = options.view
 
-    function setLocation(data) {
-        render(match(routes, data))
-        history.pushState({}, "", data)
-    }
+	return {
+		model: {
+			router: {
+				location: location.pathname
+			}
+		},
+		effects: {
+			router: {
+				go: function (model, actions, data) {
+					actions.router.setLocation(data)
+					history.pushState({}, "", data)
+				}
+			}
+		},
+		reducers: {
+			router: {
+				setLocation: function (model, data) {
+					model.router.location = data
+					return model
+				}
+			}
+		},
+		subscriptions: [
+			function (model, actions) {
+				window.addEventListener("popstate", function () {
+					actions.router.setLocation(location.pathname)
+				})
+			}
+		],
+		hooks: {
+			onRender: function (model, view) {
+				console.log(model.router.location)
+				return match(routes, model.router.location)
+			}
+		}
+	}
 
-    window.addEventListener("popstate", function () {
-        render(match(routes, location.pathname))
-    })
+	function match(routes, path) {
+		for (var route in routes) {
+			var re = regexify(route), params = {}, match
 
-    window.addEventListener("click", function (e) {
-        if (e.metaKey || e.shiftKey || e.ctrlKey || e.altKey) {
-            return
-        }
+			path.replace(new RegExp(re.re, "g"), function () {
+				for (var i = 1; i < arguments.length - 2; i++) {
+					params[re.keys.shift()] = arguments[i]
+				}
 
-        var target = e.target
+				match = function (model, actions) {
+					return routes[route](model, actions, params)
+				}
+			})
 
-        while (target && target.localName !== "a") {
-            target = target.parentNode
-        }
+			if (match) {
+				return match
+			}
+		}
 
-        if (target && target.host === location.host
-            && !target.hasAttribute("data-no-routing")) {
+		return routes["/"]
+	}
 
-            var element = document.querySelector(target.hash === "" ? element : target.hash)
+	function regexify(path) {
+		var keys = [], re = "^" + path
+			.replace(/\//g, "\\/")
+			.replace(/:([A-Za-z0-9_]+)/g, function (_, key) {
+				keys.push(key)
+				return "([A-Za-z0-9_]+)"
+			}) + "/?$"
 
-            if (element) {
-                element.scrollIntoView(true)
-            } else {
-                e.preventDefault()
-                setLocation(target.pathname)
-            }
-        }
-    })
-
-    render(match(routes, location.pathname))
-
-    function match(routes, path) {
-        for (var route in routes) {
-            var re = regexify(route), params = {}, match
-
-            path.replace(new RegExp(re.re, "g"), function () {
-                for (var i = 1; i < arguments.length - 2; i++) {
-                    params[re.keys.shift()] = arguments[i]
-                }
-
-                match = function (model, actions) {
-                    actions.setLocation = setLocation
-                    return routes[route](model, actions, params)
-                }
-            })
-
-            if (match) {
-                return match
-            }
-        }
-
-        return routes["/"]
-    }
-
-    function regexify(path) {
-        var keys = [], re = "^" + path
-            .replace(/\//g, "\\/")
-            .replace(/:([A-Za-z0-9_]+)/g, function (_, key) {
-                keys.push(key)
-                return "([A-Za-z0-9_]+)"
-            }) + "/?$"
-
-        return { re: re, keys: keys }
-    }
+		return { re: re, keys: keys }
+	}
 }

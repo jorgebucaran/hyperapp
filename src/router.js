@@ -24,7 +24,7 @@ export default function (options) {
 			}
 		},
 		subscriptions: [
-			function (model, actions) {
+			function (_, actions) {
 				window.addEventListener("popstate", function () {
 					actions.router.setLocation(location.pathname)
 				})
@@ -32,7 +32,6 @@ export default function (options) {
 		],
 		hooks: {
 			onRender: function (model, view) {
-				console.log(model.router.location)
 				return match(routes, model.router.location)
 			}
 		}

@@ -61,9 +61,9 @@ app({
     },
     view: (model, actions) =>
         <div>
-            <button onClick={actions.add}>+</button>
+            <button onclick={actions.add}>+</button>
             <h1>{model}</h1>
-            <button onClick={actions.sub} disabled={model <= 0}>-</button>
+            <button onclick={actions.sub} disabled={model <= 0}>-</button>
         </div>
 })
 ```
@@ -82,7 +82,7 @@ app({
     view: (model, actions) =>
         <div>
             <h1>Hi{model ? " " + model : ""}.</h1>
-            <input onInput={e => actions.text(e.target.value)} />
+            <input oninput={e => actions.text(e.target.value)} />
         </div>
 })
 ```
@@ -102,7 +102,7 @@ const model = {
 
 const view = (model, actions) =>
     <div
-        onMouseDown={e => actions.drag({
+        onmousedown={e => actions.drag({
             position: {
                 x: e.pageX, y: e.pageY, offsetX: e.offsetX, offsetY: e.offsetY
             }
@@ -155,7 +155,7 @@ app({
                 Show: {Object.keys(FilterInfo)
                     .filter(key => FilterInfo[key] !== model.filter)
                     .map(key =>
-                        <span><a data-no-routing href="#" onClick={_ => actions.filter({
+                        <span><a data-no-routing href="#" onclick={_ => actions.filter({
                             value: FilterInfo[key]
                         })}>{key}</a> </span>
                     )}
@@ -174,7 +174,7 @@ app({
                             color: t.done ? "gray" : "black",
                             textDecoration: t.done ? "line-through" : "none"
                         }}
-                            onClick={e => actions.toggle({
+                            onclick={e => actions.toggle({
                                 value: t.done,
                                 id: t.id
                             })}>{t.value}
@@ -184,12 +184,12 @@ app({
             <p>
                 <input
                     type="text"
-                    onKeyUp={e => e.keyCode === 13 ? actions.add() : ""}
-                    onInput={e => actions.input({ value: e.target.value })}
+                    onkeyup={e => e.keyCode === 13 ? actions.add() : ""}
+                    oninput={e => actions.input({ value: e.target.value })}
                     value={model.input}
                     placeholder={model.placeholder}
                 />{" "}
-                <button onClick={actions.add}>add</button>
+                <button onclick={actions.add}>add</button>
             </p>
         </div>,
     reducers: {

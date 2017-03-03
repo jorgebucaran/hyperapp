@@ -1,76 +1,71 @@
 export default function (options) {
-	var routes = options.view
-
 	return {
 		model: {
+			router: match(options.view, location.pathname)
+		},
+		reducers: {
 			router: {
-				location: location.pathname
+				match: function (_, data) {
+					return {
+						router: match(options.view, data)
+					}
+				}
 			}
 		},
 		effects: {
 			router: {
-				go: function (model, actions, data) {
-					actions.router.setLocation(data)
+				go: function (_, actions, data) {
 					history.pushState({}, "", data)
+					actions.router.match(data)
 				}
 			}
 		},
-		reducers: {
-			router: {
-				setLocation: function (model, data) {
-					model.router.location = data
-					return model
-				}
+		hooks: {
+			onRender: function (model) {
+				return options.view[model.router.match]
 			}
 		},
 		subscriptions: [
 			function (_, actions) {
-				window.addEventListener("popstate", function () {
-					actions.router.setLocation(location.pathname)
+				addEventListener("popstate", function () {
+					actions.router.match(location.pathname)
 				})
 			}
-		],
-		hooks: {
-			onRender: function (model, view) {
-				return match(routes, model.router.location)
-			}
-		}
+		]
 	}
 }
 
 function match(routes, path) {
+	var match, params = {}
+
 	for (var route in routes) {
+		var keys = []
+
 		if (route === "*") {
 			continue
 		}
 
-		var re = regexify(route), params = {}, match
+		path.replace(new RegExp("^" + route
+			.replace(/\//g, "\\/")
+			.replace(/:([A-Za-z0-9_]+)/g, function (_, key) {
+				keys.push(key)
+				return "([A-Za-z0-9_]+)"
+			}) + "/?$", "g"), function () {
 
-		path.replace(new RegExp(re.re, "g"), function () {
-			for (var i = 1; i < arguments.length - 2; i++) {
-				params[re.keys.shift()] = arguments[i]
-			}
-
-			match = function (model, actions) {
-				return routes[route](model, actions, params)
-			}
-		})
+				for (var i = 1; i < arguments.length - 2; i++) {
+					params[keys.shift()] = arguments[i]
+				}
+				match = route
+			})
 
 		if (match) {
-			return match
+			break
 		}
 	}
 
-	return routes["*"]
+	return {
+		match: match || "*",
+		params: params
+	}
 }
 
-function regexify(path) {
-	var keys = [], re = "^" + path
-		.replace(/\//g, "\\/")
-		.replace(/:([A-Za-z0-9_]+)/g, function (_, key) {
-			keys.push(key)
-			return "([A-Za-z0-9_]+)"
-		}) + "/?$"
-
-	return { re: re, keys: keys }
-}

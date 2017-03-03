@@ -13,19 +13,6 @@ beforeEach(() => {
 })
 
 describe("Router", () => {
-	it("extends model and actions with router props and methods", () => {
-		const r = Router({})
-		expect(Object.keys(r)).toEqual([
-			"model", "effects", "reducers", "subscriptions", "hooks"
-		])
-
-		expect(r.model.router.location).toBe("/")
-		expect(typeof r.effects.router.go).toBe("function")
-		expect(typeof r.reducers.router.setLocation).toBe("function")
-		expect(typeof r.hooks.onRender).toBe("function")
-		expect(r.subscriptions.length).toBe(1)
-	})
-
 	it("renders default route", () => {
 		window.history.pushState = _ => _
 
@@ -97,9 +84,9 @@ describe("Router", () => {
 
 		app({
 			view: {
-				"/:foo/:bar/:baz": (model, _, params) =>
-					h("ul", {}, Object.keys(params).map(key =>
-						h("li", {}, params[key])))
+				"/:foo/:bar/:baz": model =>
+					h("ul", {}, Object.keys(model.router.params).map(key =>
+						h("li", {}, model.router.params[key])))
 			},
 			plugins: [Router]
 		})

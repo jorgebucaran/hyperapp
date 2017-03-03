@@ -14,11 +14,12 @@ export default function (app) {
 	var root
 	var batch = []
 
-	var onError = function (err) {
-		if (!hook("onError", function (fn) {
-			fn(err)
-		})) {
-			throw err
+	var onError = function (error) {
+		for (var hookKey in hooks.onError) {
+			hooks.onError[hookKey](error)
+		}
+		if (!hookKey) {
+			throw error
 		}
 	}
 
@@ -52,17 +53,17 @@ export default function (app) {
 
 			if (typeof action === "function") {
 				container[key] = function (data) {
-					hook("onAction", function (fn) {
-						fn(name, data)
-					})
+					for (var hookKey in hooks.onAction) {
+						hooks.onAction[hookKey](name, data)
+					}
 
 					if (shouldRender) {
 						var oldModel = model
 						model = merge(model, action(model, data))
 
-						hook("onUpdate", function (fn) {
-							fn(oldModel, model, data)
-						})
+						for (var hookKey in hooks.onUpdate) {
+							hooks.onUpdate[hookKey](oldModel, model, data)
+						}
 
 						render(model, view)
 
@@ -97,25 +98,21 @@ export default function (app) {
 			subscriptions = subscriptions.concat(app.subscriptions)
 		}
 
-		if (app.hooks) {
-			hooks.push(app.hooks)
+		var _hooks = app.hooks
+		if (_hooks) {
+			Object.keys(_hooks).forEach(function (key) {
+				if (!hooks[key]) {
+					hooks[key] = []
+				}
+				hooks[key].push(_hooks[key])
+			})
 		}
 	}
-
-	function hook(name, fn) {
-		for (var key in hooks) {
-			var hookfn = hooks[key][name]
-			if (hookfn) {
-				fn(hookfn)
-			}
-		}
-		return hookfn !== undefined
-	}
-
+	
 	function render(model, view) {
-		hook("onRender", function (fn) {
-			view = fn(model, view)
-		})
+		for (var i in hooks.onRender) {
+			view = hooks.onRender[i](model, view)
+		}
 
 		patch(root, node, node = view(model, actions), 0)
 

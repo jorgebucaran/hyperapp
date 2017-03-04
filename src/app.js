@@ -3,14 +3,45 @@ export default function (app) {
     return ""
   }
 
-  var model, actions = {}, reducers, effects
-
+  var model
+  var actions = {}
   var subscriptions = []
   var hooks = {
     onError: [],
     onAction: [],
     onUpdate: [],
     onRender: []
+  }
+
+  var plugins = [app].concat((app.plugins || []).map(function (plugin) {
+    return plugin(app)
+  }))
+
+  var node
+  var root
+  var batch = []
+
+  for (var i = 0; i < plugins.length; i++) {
+    var plugin = plugins[i]
+
+    if (plugin.model !== undefined) {
+      model = merge(model, plugin.model)
+    }
+
+    if (plugin.actions) {
+      init(actions, plugin.actions)
+    }
+
+    if (plugin.subscriptions) {
+      subscriptions = subscriptions.concat(plugin.subscriptions)
+    }
+
+    var _hooks = plugin.hooks
+    if (_hooks) {
+      Object.keys(_hooks).forEach(function (key) {
+        hooks[key].push(_hooks[key])
+      })
+    }
   }
 
   function onError(error) {
@@ -23,52 +54,7 @@ export default function (app) {
     }
   }
 
-  var plugins = app.plugins || []
-
-  var node
-  var root
-  var batch = []
-
-  use(app)
-
-  for (var i = 0; i < plugins.length; i++) {
-    use(plugins[i](app))
-  }
-
-  init(actions, effects, false)
-  init(actions, reducers, true)
-
-  load(function () {
-    root = app.root || document.body.appendChild(document.createElement("div"))
-
-    render(model, view)
-
-    for (var i = 0; i < subscriptions.length; i++) {
-      subscriptions[i](model, actions, onError)
-    }
-  })
-
-  function use(app) {
-    if (app.model !== undefined) {
-      model = merge(model, app.model)
-    }
-
-    reducers = merge(reducers, app.reducers)
-    effects = merge(effects, app.effects)
-
-    if (app.subscriptions) {
-      subscriptions = subscriptions.concat(app.subscriptions)
-    }
-
-    var _hooks = app.hooks
-    if (_hooks) {
-      Object.keys(_hooks).forEach(function (key) {
-        hooks[key].push(_hooks[key])
-      })
-    }
-  }
-
-  function init(container, group, shouldRender, lastName) {
+  function init(container, group, lastName) {
     Object.keys(group).forEach(function (key) {
       if (!container[key]) {
         container[key] = {}
@@ -84,26 +70,38 @@ export default function (app) {
             hooks.onAction[i](name, data)
           }
 
-          if (shouldRender) {
-            var oldModel = model
-            model = merge(model, action(model, data))
+          var result = action(model, data, actions, onError)
 
+          if (typeof result === "function") { // effects
+            result(function then(fn) {
+              fn(model)
+              return {
+                then: then
+              }
+            })
+          } else { // reducers
             for (i = 0; i < hooks.onUpdate.length; i++) {
-              hooks.onUpdate[i](oldModel, model, data)
+              hooks.onUpdate[i](model, result, data)
             }
-
+            model = merge(model, result)
             render(model, view)
-
-            return actions
-          } else {
-            return action(model, actions, data, onError)
           }
         }
       } else {
-        init(container[key], action, shouldRender, name)
+        init(container[key], action, name)
       }
     })
   }
+
+  load(function () {
+    root = app.root || document.body.appendChild(document.createElement("div"))
+
+    render(model, view)
+
+    for (var i = 0; i < subscriptions.length; i++) {
+      subscriptions[i](model, actions, onError)
+    }
+  })
 
   function load(fn) {
     if (document.readyState[0] !== "l") {
@@ -192,7 +190,7 @@ export default function (app) {
   }
 
   function removeElementData(element, name, value) {
-    // Template functions like Hyperx add a className attribute to nodes.
+    // Hyperx adds a className attribute to nodes we must handle.
 
     element.removeAttribute(name === "className" ? "class" : name)
 
@@ -220,10 +218,9 @@ export default function (app) {
 
       } else {
         element.setAttribute(name, value)
-
-        // SVG elmeent's properties are read only in strict mode.
-
         if (element.namespaceURI !== "http://www.w3.org/2000/svg") {
+          // SVG element's props are read only in strict mode.
+
           element[name] = value
         }
       }
@@ -243,7 +240,9 @@ export default function (app) {
         defer(value, element)
 
       } else if (
-        value !== oldValue || typeof realValue === "boolean" && realValue !== value
+        value !== oldValue ||
+        typeof realValue === "boolean" &&
+        realValue !== value
       ) {
         // This prevents cases where the node's data is out of sync with
         // the element's. For example, a list of checkboxes in which one

@@ -64,4 +64,3 @@ function match(routes, path) {
     params: params
   }
 }
-

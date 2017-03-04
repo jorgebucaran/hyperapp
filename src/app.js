@@ -1,261 +1,291 @@
-export default function (options) {
-	var model = options.model
-	var view = options.view
+export default function (app) {
+  var view = app.view || function () {
+    return ""
+  }
 
-	var actions = {}
-	var effects = options.effects || {}
-	var reducers = options.reducers || {}
-	var subs = options.subscriptions
+  var model, actions = {}, reducers, effects
 
-	var router = options.router
+  var subscriptions = []
+  var hooks = {
+    onError: [],
+    onAction: [],
+    onUpdate: [],
+    onRender: []
+  }
 
-	var node
-	var root
-	var batch = []
+  function onError(error) {
+    for (var i = 0; i < hooks.onError.length; i++) {
+      hooks.onError[i](error)
+    }
 
-	var hooks = merge({
-		onAction: Function.prototype,
-		onUpdate: Function.prototype,
-		onError: function (err) {
-			throw err
-		}
-	}, options.hooks)
+    if (i <= 0) {
+      throw error
+    }
+  }
 
-	initializeActions(actions, effects, false)
-	initializeActions(actions, reducers, true)
+  var plugins = app.plugins || []
 
-	domContentLoaded(function () {
-		root = options.root || document.body.appendChild(document.createElement("div"))
+  var node
+  var root
+  var batch = []
 
-		if (typeof view === "function") {
-			render(model, view)
-		}
+  use(app)
 
-		if (router) {
-			router(function (newView) {
-				render(model, view = newView ? newView : view, node)
-			}, options)
-		}
+  for (var i = 0; i < plugins.length; i++) {
+    use(plugins[i](app))
+  }
 
-		for (var key in subs) {
-			subs[key](model, actions, hooks.onError)
-		}
-	})
+  init(actions, effects, false)
+  init(actions, reducers, true)
 
-	function initializeActions(container, group, shouldUpdate, lastName) {
-		Object.keys(group).forEach(function (key) {
-			if (!container[key]) {
-				container[key] = {}
-			}
+  load(function () {
+    root = app.root || document.body.appendChild(document.createElement("div"))
 
-			var name = lastName ? lastName + "." + key : key
-			var action = group[key]
+    render(model, view)
 
-			if (typeof action === "function") {
-				container[key] = function (data) {
-					hooks.onAction(name, data)
+    for (var i = 0; i < subscriptions.length; i++) {
+      subscriptions[i](model, actions, onError)
+    }
+  })
 
-					if (shouldUpdate) {
-						hooks.onUpdate(model, model = merge(model, action(model, data)), data)
-						render(model, view, node)
-						return actions
-					} else {
-						return action(model, actions, data, hooks.onError)
-					}
-				}
-			} else {
-				initializeActions(container[key], action, shouldUpdate, name)
-			}
-		})
-	}
+  function use(app) {
+    if (app.model !== undefined) {
+      model = merge(model, app.model)
+    }
 
-	function domContentLoaded(initApp) {
-		if (document.readyState[0] !== "l") {
-			initApp()
-		} else {
-			document.addEventListener("DOMContentLoaded", initApp)
-		}
-	}
+    reducers = merge(reducers, app.reducers)
+    effects = merge(effects, app.effects)
 
-	function render(model, view, lastNode) {
-		patch(root, node = view(model, actions), lastNode, 0)
+    if (app.subscriptions) {
+      subscriptions = subscriptions.concat(app.subscriptions)
+    }
 
-		for (var i = 0; i < batch.length; i++) {
-			batch[i]()
-		}
+    var _hooks = app.hooks
+    if (_hooks) {
+      Object.keys(_hooks).forEach(function (key) {
+        hooks[key].push(_hooks[key])
+      })
+    }
+  }
 
-		batch = []
-	}
+  function init(container, group, shouldRender, lastName) {
+    Object.keys(group).forEach(function (key) {
+      if (!container[key]) {
+        container[key] = {}
+      }
 
-	function merge(a, b) {
-		var obj = {}, key
+      var name = lastName ? lastName + "." + key : key
+      var action = group[key]
+      var i
 
-		if (isPrimitive(b) || Array.isArray(b)) {
-			return b
-		}
+      if (typeof action === "function") {
+        container[key] = function (data) {
+          for (i = 0; i < hooks.onAction.length; i++) {
+            hooks.onAction[i](name, data)
+          }
 
-		for (key in a) {
-			obj[key] = a[key]
-		}
-		for (key in b) {
-			obj[key] = b[key]
-		}
+          if (shouldRender) {
+            var oldModel = model
+            model = merge(model, action(model, data))
 
-		return obj
-	}
+            for (i = 0; i < hooks.onUpdate.length; i++) {
+              hooks.onUpdate[i](oldModel, model, data)
+            }
 
-	function isPrimitive(type) {
-		type = typeof type
-		return type === "string" || type === "number" || type === "boolean"
-	}
+            render(model, view)
 
-	function defer(fn, data) {
-		setTimeout(function () {
-			fn(data)
-		}, 0)
-	}
+            return actions
+          } else {
+            return action(model, actions, data, onError)
+          }
+        }
+      } else {
+        init(container[key], action, shouldRender, name)
+      }
+    })
+  }
 
-	function shouldUpdate(a, b) {
-		return a.tag !== b.tag ||
-			typeof a !== typeof b ||
-			isPrimitive(a) && a !== b
-	}
+  function load(fn) {
+    if (document.readyState[0] !== "l") {
+      fn()
+    } else {
+      document.addEventListener("DOMContentLoaded", fn)
+    }
+  }
 
-	function createElementFrom(node) {
-		var element
+  function render(model, view) {
+    for (i = 0; i < hooks.onRender.length; i++) {
+      view = hooks.onRender[i](model, view)
+    }
 
-		if (isPrimitive(node)) {
-			element = document.createTextNode(node)
+    patch(root, node, node = view(model, actions), 0)
 
-		} else {
-			element = node.data && node.data.ns
-				? document.createElementNS(node.data.ns, node.tag)
-				: document.createElement(node.tag)
+    for (var i = 0; i < batch.length; i++) {
+      batch[i]()
+    }
 
-			for (var name in node.data) {
-				if (name === "oncreate") {
-					defer(node.data[name], element)
-				} else {
-					setElementData(element, name, node.data[name])
-				}
-			}
+    batch = []
+  }
 
-			for (var i = 0; i < node.children.length; i++) {
-				var childNode = node.children[i]
+  function merge(a, b) {
+    var obj = {}
+    var key
 
-				if (
-					childNode !== undefined &&
-					typeof childNode !== "boolean" &&
-					childNode !== null
-				) {
-					element.appendChild(createElementFrom(childNode))
-				}
-			}
-		}
+    if (isPrimitive(b) || Array.isArray(b)) {
+      return b
+    }
 
-		return element
-	}
+    for (key in a) {
+      obj[key] = a[key]
+    }
+    for (key in b) {
+      obj[key] = b[key]
+    }
 
-	function removeElementData(element, name, value) {
-		element.removeAttribute(name === "className" ? "class" : name)
+    return obj
+  }
 
-		if (typeof value === "boolean" || value === "true" || value === "false") {
-			element[name] = false
-		}
-	}
+  function isPrimitive(type) {
+    type = typeof type
+    return type === "string" || type === "number" || type === "boolean"
+  }
 
-	function setElementData(element, name, value, oldValue) {
-		if (name === "style") {
-			for (var i in value) {
-				element.style[i] = value[i]
-			}
+  function defer(fn, data) {
+    setTimeout(function () {
+      fn(data)
+    }, 0)
+  }
 
-		} else if (name[0] === "o" && name[1] === "n") {
-			var event = name.substr(2)
+  function shouldUpdate(a, b) {
+    return a.tag !== b.tag || typeof a !== typeof b || isPrimitive(a) && a !== b
+  }
 
-			element.removeEventListener(event, oldValue)
-			element.addEventListener(event, value)
+  function createElementFrom(node) {
+    var element
 
-		} else {
-			if (value === "false" || value === false) {
-				element.removeAttribute(name)
-				element[name] = false
+    // There are only two types of nodes. A string node, which is
+    // converted into a Text node or an object that describes an
+    // HTML element and may also contain children.
 
-			} else {
-				element.setAttribute(name, value)
+    if (typeof node === "string") {
+      element = document.createTextNode(node)
 
-				if (element.namespaceURI !== "http://www.w3.org/2000/svg") {
-					element[name] = value
-				}
-			}
-		}
-	}
+    } else {
+      element = node.data && node.data.ns
+        ? document.createElementNS(node.data.ns, node.tag)
+        : document.createElement(node.tag)
 
-	function updateElementData(element, data, oldData) {
-		for (var name in merge(oldData, data)) {
-			var value = data[name]
-			var oldValue = oldData[name]
-			var realValue = element[name]
+      for (var name in node.data) {
+        if (name === "oncreate") {
+          defer(node.data[name], element)
+        } else {
+          setElementData(element, name, node.data[name])
+        }
+      }
 
-			if (value === undefined) {
-				removeElementData(element, name, oldValue)
+      for (var i = 0; i < node.children.length; i++) {
+        element.appendChild(createElementFrom(node.children[i]))
+      }
+    }
 
-			} else if (name === "onupdate") {
-				defer(value, element)
+    return element
+  }
 
-			} else if (
-				value !== oldValue
-				|| typeof realValue === "boolean"
-				&& realValue !== value
-			) {
-				setElementData(element, name, value, oldValue)
-			}
-		}
-	}
+  function removeElementData(element, name, value) {
+    // Template functions like Hyperx add a className attribute to nodes.
 
-	function patch(parent, node, oldNode, index) {
-		if (oldNode === undefined) {
-			parent.appendChild(createElementFrom(node))
+    element.removeAttribute(name === "className" ? "class" : name)
 
-		} else if (node === undefined) {
-			var element = parent.childNodes[index]
+    if (typeof value === "boolean" || value === "true" || value === "false") {
+      element[name] = false
+    }
+  }
 
-			batch.push(parent.removeChild.bind(parent, element))
+  function setElementData(element, name, value, oldValue) {
+    if (name === "style") {
+      for (var i in value) {
+        element.style[i] = value[i]
+      }
 
-			if (oldNode && oldNode.data && oldNode.data.onremove) {
-				defer(oldNode.data.onremove, element)
-			}
+    } else if (name[0] === "o" && name[1] === "n") {
+      var event = name.substr(2)
 
-		} else if (shouldUpdate(node, oldNode)) {
-			var element = parent.childNodes[index]
+      element.removeEventListener(event, oldValue)
+      element.addEventListener(event, value)
 
-			if (typeof node === "boolean") {
-				parent.removeChild(element)
+    } else {
+      if (value === "false" || value === false) {
+        element.removeAttribute(name)
+        element[name] = false
 
-			} else {
-				var newElement = createElementFrom(node)
+      } else {
+        element.setAttribute(name, value)
 
-				if (element === undefined) {
-					parent.appendChild(newElement)
-				} else {
-					parent.replaceChild(newElement, element)
-				}
-			}
+        // SVG elmeent's properties are read only in strict mode.
 
-		} else if (node.tag) {
-			var element = parent.childNodes[index]
+        if (element.namespaceURI !== "http://www.w3.org/2000/svg") {
+          element[name] = value
+        }
+      }
+    }
+  }
 
-			updateElementData(element, node.data, oldNode.data)
+  function updateElementData(element, data, oldData) {
+    for (var name in merge(oldData, data)) {
+      var value = data[name]
+      var oldValue = oldData[name]
+      var realValue = element[name]
 
-			var len = node.children.length, oldLen = oldNode.children.length
+      if (value === undefined) {
+        removeElementData(element, name, oldValue)
 
-			for (var i = 0; i < len || i < oldLen; i++) {
-				var child = node.children[i]
+      } else if (name === "onupdate") {
+        defer(value, element)
 
-				if (child !== null) {
-					patch(element, child, oldNode.children[i], i)
-				}
-			}
-		}
-	}
+      } else if (
+        value !== oldValue || typeof realValue === "boolean" && realValue !== value
+      ) {
+        // This prevents cases where the node's data is out of sync with
+        // the element's. For example, a list of checkboxes in which one
+        // of the elements is recycled.
+
+        setElementData(element, name, value, oldValue)
+      }
+    }
+  }
+
+  function patch(parent, oldNode, node, index) {
+    if (oldNode === undefined) {
+      parent.appendChild(createElementFrom(node))
+
+    } else if (node === undefined) {
+      var element = parent.childNodes[index]
+
+      // Removing a child one at a time updates the DOM, so we end up
+      // with an index out of date that needs to be adjusted. Instead,
+      // collect all the elements and delete them in a batch.
+
+      batch.push(parent.removeChild.bind(parent, element))
+
+      if (oldNode && oldNode.data && oldNode.data.onremove) {
+        defer(oldNode.data.onremove, element)
+      }
+
+    } else if (shouldUpdate(node, oldNode)) {
+      parent.replaceChild(createElementFrom(node), parent.childNodes[index])
+
+    } else if (node.tag) {
+      var element = parent.childNodes[index]
+
+      updateElementData(element, node.data, oldNode.data)
+
+      var len = node.children.length, oldLen = oldNode.children.length
+
+      for (var i = 0; i < len || i < oldLen; i++) {
+        var child = node.children[i]
+
+        patch(element, oldNode.children[i], child, i)
+      }
+    }
+  }
 }

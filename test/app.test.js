@@ -6,195 +6,28 @@ import { expectHTMLToBe } from "./util"
 beforeEach(() => document.body.innerHTML = "")
 
 describe("app", () => {
-  describe("architecture", () => {
-    it("boots on DOMContentLoaded", done => {
-      Object.defineProperty(document, "readyState", {
-        writable: true
-      })
-
-      window.document.readyState = "loading"
-
-      app({
-        model: "foo",
-        subscriptions: [
-          model => {
-            expect(model).toEqual("foo")
-            done()
-          }
-        ]
-      })
-
-      window.document.readyState = "complete"
-
-      const event = document.createEvent("Event")
-      event.initEvent("DOMContentLoaded", true, true)
-      window.document.dispatchEvent(event)
+  it("boots on DOMContentLoaded", done => {
+    Object.defineProperty(document, "readyState", {
+      writable: true
     })
 
-    it("toggles class attributes", () => {
-      app({
-        model: true,
-        view: model => h("div", model ? { class: "foo" } : {}, "bar"),
-        actions: {
-          toggle: model => !model
-        },
-        subscriptions: [
-          (_, actions) => {
-            expectHTMLToBe(`
-							<div>
-								<div class="foo">
-									bar
-								</div>
-							</div>
-						`)
+    window.document.readyState = "loading"
 
-            actions.toggle()
-
-            expectHTMLToBe(`
-							<div>
-								<div>
-									bar
-								</div>
-							</div>
-						`)
-          }
-        ]
-      })
+    app({
+      model: "foo",
+      subscriptions: [
+        model => {
+          expect(model).toEqual("foo")
+          done()
+        }
+      ]
     })
 
-    it("updates/removes element data", () => {
-      app({
-        model: false,
-        view: model => h("div", model
-          ? { id: "xuuq", foo: true } : {
-            id: "quux",
-            class: "foo",
-            style: {
-              color: "red"
-            },
-            foo: true,
-            baz: false
-          }, "bar"
-        ),
-        actions: {
-          toggle: model => !model
-        },
-        subscriptions: [
-          (_, actions) => {
-            expectHTMLToBe(`
-							<div>
-								<div id="quux" class="foo" style="color: red;" foo="true">
-									bar
-								</div>
-							</div>
-						`)
+    window.document.readyState = "complete"
 
-            actions.toggle()
-
-            expectHTMLToBe(`
-							<div>
-								<div id="xuuq" foo="true">
-									bar
-								</div>
-							</div>
-						`)
-          }
-        ]
-      })
-    })
-
-    it("removes node/s when a container's number of children is different", () => {
-      app({
-        model: true,
-        actions: {
-          toggle: model => !model
-        },
-        view: model => model
-          ? h("div", {}, h("h1", {}, "foo"), h("h2", {}, "bar"))
-          : h("div", {}, h("h1", {}, "foo")),
-        subscriptions: [(_, actions) => actions.toggle()]
-      })
-
-      expectHTMLToBe(`
-				<div>
-					<div>
-						<h1>foo</h1>
-					</div>
-				</div>
-			`)
-    })
-  })
-  
-  describe("lifecycle methods", () => {
-    it("fires oncreate", done => {
-      app({
-        model: 1,
-        view: model => h("div", {
-          oncreate: e => {
-            expect(model).toBe(1)
-            done()
-          }
-        })
-      })
-    })
-
-    it("fires onupdate", done => {
-      app({
-        model: 1,
-        view: model => h("div", {
-          onupdate: e => {
-            expect(model).toBe(2)
-            done()
-          }
-        }),
-        actions: {
-          add: model => model + 1
-        },
-        subscriptions: [
-          (_, actions) => actions.add()
-        ]
-      })
-    })
-
-    it("fires onremove", done => {
-      const treeA = h("ul", {},
-        h("li", {}, "foo"),
-        h("li", {
-          onremove: _ => {
-            done()
-          }
-        }, "bar"))
-
-      const treeB = h("ul", {}, h("li", {}, "foo"))
-
-      app({
-        model: true,
-        view: _ => _ ? treeA : treeB,
-        actions: {
-          toggle: model => !model
-        },
-        subscriptions: [
-          (_, actions) => actions.toggle()
-        ]
-      })
-    })
-  })
-
-  describe("root", () => {
-    it("appends view to given root", () => {
-      app({
-        root: document.body.appendChild(document.createElement("main")),
-        view: _ => h("div", {}, "foo")
-      })
-
-      expectHTMLToBe(`
-				<main>
-					<div>
-						foo
-					</div>
-				</main>
-			`)
-    })
+    const event = document.createEvent("Event")
+    event.initEvent("DOMContentLoaded", true, true)
+    window.document.dispatchEvent(event)
   })
 
   describe("model", () => {
@@ -305,11 +138,103 @@ describe("app", () => {
 				</div>
 			`)
     })
+
+    it("toggles class attributes", () => {
+      app({
+        model: true,
+        view: model => h("div", model ? { class: "foo" } : {}, "bar"),
+        actions: {
+          toggle: model => !model
+        },
+        subscriptions: [
+          (_, actions) => {
+            expectHTMLToBe(`
+							<div>
+								<div class="foo">
+									bar
+								</div>
+							</div>
+						`)
+
+            actions.toggle()
+
+            expectHTMLToBe(`
+							<div>
+								<div>
+									bar
+								</div>
+							</div>
+						`)
+          }
+        ]
+      })
+    })
+
+    it("updates/removes element data", () => {
+      app({
+        model: false,
+        view: model => h("div", model
+          ? { id: "xuuq", foo: true } : {
+            id: "quux",
+            class: "foo",
+            style: {
+              color: "red"
+            },
+            foo: true,
+            baz: false
+          }, "bar"
+        ),
+        actions: {
+          toggle: model => !model
+        },
+        subscriptions: [
+          (_, actions) => {
+            expectHTMLToBe(`
+							<div>
+								<div id="quux" class="foo" style="color: red;" foo="true">
+									bar
+								</div>
+							</div>
+						`)
+
+            actions.toggle()
+
+            expectHTMLToBe(`
+							<div>
+								<div id="xuuq" foo="true">
+									bar
+								</div>
+							</div>
+						`)
+          }
+        ]
+      })
+    })
+
+    it("removes node/s when a container's number of children is different", () => {
+      app({
+        model: true,
+        actions: {
+          toggle: model => !model
+        },
+        view: model => model
+          ? h("div", {}, h("h1", {}, "foo"), h("h2", {}, "bar"))
+          : h("div", {}, h("h1", {}, "foo")),
+        subscriptions: [(_, actions) => actions.toggle()]
+      })
+
+      expectHTMLToBe(`
+				<div>
+					<div>
+						<h1>foo</h1>
+					</div>
+				</div>
+			`)
+    })
   })
 
   describe("actions", () => {
-
-    it("renders the view when the model changes", () => {
+    it("returns a new model to update the view", () => {
       app({
         model: 1,
         view: model => h("div", {}, model),
@@ -328,7 +253,61 @@ describe("app", () => {
 				`)
     })
 
-    describe("nested actions", () => {
+    it("updates the view asynchronously", done => {
+      app({
+        model: 1,
+        view: model => h("div", {}, model),
+        actions: {
+          change: (model, data) => model + data,
+          delayAndChange: (model, data, actions) => {
+            setTimeout(_ => {
+              actions.change(data)
+
+              expectHTMLToBe(`
+                <div>
+                  <div>
+                    ${model + data}
+                  </div>
+                </div>
+              `)
+
+              done()
+            }, 20)
+          }
+        },
+        subscriptions: [
+          (_, actions) => actions.delayAndChange(10)
+        ]
+      })
+    })
+
+    it("returns a promise to be .then() chained", done => {
+      app({
+        model: 1,
+        view: model => h("div", {}, model),
+        actions: {
+          change: (model, data) => model + data,
+          delay: _ => new Promise(resolve => setTimeout(_ => resolve(), 20)),
+          delayAndChange: (model, data, actions) => {
+            actions.delay().then(_ => {
+              actions.change(data)
+              expectHTMLToBe(`
+                  <div>
+                    <div>
+                      ${model + data}
+                    </div>
+                  </div>
+              `)
+            })
+          }
+        },
+        subscriptions: [
+          (_, actions) => actions.delayAndChange(10)
+        ]
+      })
+    })
+
+    describe("nested", () => {
       it("collects actions by namespace/key", () => {
         app({
           model: true,
@@ -349,7 +328,6 @@ describe("app", () => {
         })
       })
     })
-
   })
 
   describe("hooks", () => {
@@ -651,6 +629,77 @@ describe("app", () => {
     })
   })
 
+  describe("root", () => {
+    it("appends view to given root", () => {
+      app({
+        root: document.body.appendChild(document.createElement("main")),
+        view: _ => h("div", {}, "foo")
+      })
+
+      expectHTMLToBe(`
+				<main>
+					<div>
+						foo
+					</div>
+				</main>
+			`)
+    })
+  })
+
+  describe("lifecycle methods", () => {
+    it("fires oncreate", done => {
+      app({
+        model: 1,
+        view: model => h("div", {
+          oncreate: e => {
+            expect(model).toBe(1)
+            done()
+          }
+        })
+      })
+    })
+
+    it("fires onupdate", done => {
+      app({
+        model: 1,
+        view: model => h("div", {
+          onupdate: e => {
+            expect(model).toBe(2)
+            done()
+          }
+        }),
+        actions: {
+          add: model => model + 1
+        },
+        subscriptions: [
+          (_, actions) => actions.add()
+        ]
+      })
+    })
+
+    it("fires onremove", done => {
+      const treeA = h("ul", {},
+        h("li", {}, "foo"),
+        h("li", {
+          onremove: _ => {
+            done()
+          }
+        }, "bar"))
+
+      const treeB = h("ul", {}, h("li", {}, "foo"))
+
+      app({
+        model: true,
+        view: _ => _ ? treeA : treeB,
+        actions: {
+          toggle: model => !model
+        },
+        subscriptions: [
+          (_, actions) => actions.toggle()
+        ]
+      })
+    })
+  })
 })
 
 

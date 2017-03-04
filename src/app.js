@@ -72,14 +72,10 @@ export default function (app) {
 
           var result = action(model, data, actions, onError)
 
-          if (typeof result === "function") { // effects
-            result(function then(fn) {
-              fn(model)
-              return {
-                then: then
-              }
-            })
-          } else { // reducers
+          if (result === undefined || typeof result.then === "function") {
+            return result
+
+          } else {
             for (i = 0; i < hooks.onUpdate.length; i++) {
               hooks.onUpdate[i](model, result, data)
             }

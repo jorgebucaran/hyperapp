@@ -1,39 +1,39 @@
 {
-	"name": "hyperapp",
-	"description": "1kb JavaScript library for building frontend applications.",
-	"version": "0.6.0",
-	"main": "dist/hyperapp.js",
-	"jsnext:main": "src/index.js",
-	"module": "src/index.js",
-	"license": "MIT",
-	"repository": "hyperapp/hyperapp",
-	"files": [
-		"src",
-		"dist"
-	],
-	"author": "Jorge Bucaran",
-	"keywords": [
-		"hyperx",
-		"hyperscript",
-		"jsx",
-		"react",
-		"elm",
-		"virtual-dom"
-	],
-	"scripts": {
-		"test": "jest --coverage --no-cache",
-		"build": "rollup -cm -n hyperapp -f umd -i src/index.js -o dist/hyperapp.js",
-		"prepublish": "npm run build",
-		"release": "npm run build && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
-	},
-	"babel": {
-		"presets": "es2015"
-	},
-	"devDependencies": {
-		"babel-preset-es2015": "^6.22.0",
-		"hyperx": "^2.0.5",
-		"jest": "^18.1.0",
-		"rollup": "^0.41.4",
-		"rollup-plugin-uglify": "^1.0.1"
-	}
+  "name": "hyperapp",
+  "description": "1kb JavaScript library for building frontend applications.",
+  "version": "0.6.0",
+  "main": "dist/hyperapp.js",
+  "jsnext:main": "src/index.js",
+  "module": "src/index.js",
+  "license": "MIT",
+  "repository": "hyperapp/hyperapp",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "author": "Jorge Bucaran",
+  "keywords": [
+    "hyperx",
+    "hyperscript",
+    "jsx",
+    "react",
+    "elm",
+    "virtual-dom"
+  ],
+  "scripts": {
+    "test": "jest --coverage --no-cache",
+    "build": "rollup -cm -n hyperapp -f umd -i src/index.js -o dist/hyperapp.js",
+    "prepublish": "npm run build",
+    "release": "npm run build && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
+  },
+  "babel": {
+    "presets": "es2015"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.22.0",
+    "hyperx": "^2.0.5",
+    "jest": "^19.0.2",
+    "rollup": "^0.41.4",
+    "rollup-plugin-uglify": "^1.0.1"
+  }
 }

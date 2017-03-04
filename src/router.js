@@ -1,81 +1,71 @@
-export default function (render, options) {
-    var routes = options.view
-
-    function setLocation(data) {
-        render(match(routes, data))
-        history.pushState({}, "", data)
-    }
-
-    window.addEventListener("popstate", function () {
-        render(match(routes, location.pathname))
-    })
-
-    window.addEventListener("click", function (e) {
-        if (e.metaKey || e.shiftKey || e.ctrlKey || e.altKey) {
-            return
-        }
-
-        var target = e.target
-
-        while (target && target.localName !== "a") {
-            target = target.parentNode
-        }
-
-        if (target && target.host === location.host
-            && !target.hasAttribute("data-no-routing")) {
-
-            var element = document.querySelector(target.hash === "" ? element : target.hash)
-
-            if (element) {
-                element.scrollIntoView(true)
-            } else {
-                e.preventDefault()
-                setLocation(target.pathname)
-            }
-        }
-    })
-
-    render(match(routes, location.pathname))
-
-    function match(routes, path) {
-        for (var route in routes) {
-            var re = regexify(route), params = {}, match
-
-            if (route === "*") {
-                continue
-            }
-
-            path.replace(new RegExp(re.re, "g"), function () {
-                for (var i = 1; i < arguments.length - 2; i++) {
-                    params[re.keys.shift()] = arguments[i]
-                }
-
-                match = function (model, actions) {
-                    actions.setLocation = setLocation
-                    return routes[route](model, actions, params)
-                }
-            })
-
-            if (match) {
-                return match
-            }
-        }
-
-        if (!routes["*"]) {
-          throw 'No matching route for ' + path
-        }
-
-        return routes["*"]
-    }
-
-    function regexify(path) {
-        var keys = [], re = "^" + path
-            .replace(/\//g, "\\/")
-            .replace(/:([A-Za-z0-9_]+)/g, function (_, key) {
-                keys.push(key)
-                return "([A-Za-z0-9_]+)"
-            }) + "/?$"
-
-        return { re: re, keys: keys }
-    }
+export default function (options) {
+	return {
+		model: {
+			router: match(options.view, location.pathname)
+		},
+		reducers: {
+			router: {
+				match: function (_, data) {
+					return {
+						router: match(options.view, data)
+					}
+				}
+			}
+		},
+		effects: {
+			router: {
+				go: function (_, actions, data) {
+					history.pushState({}, "", data)
+					actions.router.match(data)
+				}
+			}
+		},
+		hooks: {
+			onRender: function (model) {
+				return options.view[model.router.match]
+			}
+		},
+		subscriptions: [
+			function (_, actions) {
+				addEventListener("popstate", function () {
+					actions.router.match(location.pathname)
+				})
+			}
+		]
+	}
 }
+
+function match(routes, path) {
+	var match, params = {}
+
+	for (var route in routes) {
+		var keys = []
+
+		if (route === "*") {
+			continue
+		}
+
+		path.replace(new RegExp("^" + route
+			.replace(/\//g, "\\/")
+			.replace(/:([A-Za-z0-9_]+)/g, function (_, key) {
+				keys.push(key)
+				return "([A-Za-z0-9_]+)"
+			}) + "/?$", "g"), function () {
+
+				for (var i = 1; i < arguments.length - 2; i++) {
+					params[keys.shift()] = arguments[i]
+				}
+				match = route
+			})
+
+		if (match) {
+			break
+		}
+	}
+
+	return {
+		match: match || "*",
+		params: params
+	}
+}
+

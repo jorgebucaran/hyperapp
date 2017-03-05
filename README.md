@@ -96,7 +96,10 @@ app({
 const model = {
   dragging: false,
   position: {
-    x: 0, y: 0, offsetX: 0, offsetY: 0
+    x: 0,
+    y: 0,
+    offsetX: 0,
+    offsetY: 0
   }
 }
 
@@ -127,7 +130,8 @@ const view = (model, actions) =>
       top: model.position.y - model.position.offsetY + "px",
       backgroundColor: model.dragging ? "gold" : "deepskyblue"
     }}
-  >DRAG ME
+  >
+    Drag Me
   </div>
 
 app({ model, view, actions, subscriptions })
@@ -155,31 +159,40 @@ app({
         Show: {Object.keys(FilterInfo)
           .filter(key => FilterInfo[key] !== model.filter)
           .map(key =>
-            <span><a data-no-routing href="#" onclick={_ => actions.filter({
-              value: FilterInfo[key]
-            })}>{key}</a> </span>
+            <span>
+              <a
+                href="#"
+                onclick={_ => actions.filter({
+                  value: FilterInfo[key]
+                })}
+              >{key}</a>
+            </span>
           )}
       </p>
 
-      <p><ul>
-        {model.todos
-          .filter(t =>
-            model.filter === FilterInfo.Done
-              ? t.done :
+      <p>
+        <ul>
+          {model.todos
+            .filter(t =>
+              model.filter === FilterInfo.Done
+                ? t.done :
               model.filter === FilterInfo.Todo
                 ? !t.done :
-                model.filter === FilterInfo.All)
-          .map(t =>
-            <li style={{
-              color: t.done ? "gray" : "black",
-              textDecoration: t.done ? "line-through" : "none"
-            }}
-              onclick={e => actions.toggle({
-                value: t.done,
-                id: t.id
-              })}>{t.value}
-            </li>)}
-      </ul></p>
+              model.filter === FilterInfo.All)
+            .map(t =>
+              <li style={{
+                color: t.done ? "gray" : "black",
+                textDecoration: t.done ? "line-through" : "none"
+              }}
+                onclick={e => actions.toggle({
+                  value: t.done,
+                  id: t.id
+                })}
+              >
+                {t.value}
+              </li>)}
+        </ul>
+      </p>
 
       <p>
         <input

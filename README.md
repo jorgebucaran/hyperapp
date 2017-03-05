@@ -55,7 +55,7 @@ app({
 ```jsx
 app({
     model: 0,
-    reducers: {
+    actions: {
         add: model => model + 1,
         sub: model => model - 1
     },
@@ -76,7 +76,7 @@ app({
 ```jsx
 app({
     model: "",
-    reducers: {
+    actions: {
         text: (_, value) => value
     },
     view: (model, actions) =>
@@ -100,6 +100,20 @@ const model = {
     }
 }
 
+const actions = {
+    drop: model => ({ dragging: false }),
+    drag: (model, { position }) => ({ dragging: true, position }),
+    move: (model, { x, y }) => model.dragging
+        ? ({ position: { ...model.position, x, y } })
+        : model
+}
+
+const subscriptions = [
+    (_, actions) => addEventListener("mouseup", actions.drop),
+    (_, actions) => addEventListener("mousemove", e =>
+        actions.move({ x: e.pageX, y: e.pageY }))
+]
+
 const view = (model, actions) =>
     <div
         onmousedown={e => actions.drag({
@@ -116,21 +130,7 @@ const view = (model, actions) =>
     >DRAG ME
     </div>
 
-const reducers = {
-    drop: model => ({ dragging: false }),
-    drag: (model, { position }) => ({ dragging: true, position }),
-    move: (model, { x, y }) => model.dragging
-        ? ({ position: { ...model.position, x, y } })
-        : model
-}
-
-const subscriptions = [
-    (_, actions) => addEventListener("mouseup", actions.drop),
-    (_, actions) => addEventListener("mousemove", e =>
-        actions.move({ x: e.pageX, y: e.pageY }))
-]
-
-app({ model, view, reducers, subscriptions })
+app({ model, view, actions, subscriptions })
 ```
 
 [View online](http://codepen.io/jbucaran/pen/apzYvo?editors=0010)
@@ -192,7 +192,7 @@ app({
                 <button onclick={actions.add}>add</button>
             </p>
         </div>,
-    reducers: {
+    actions: {
         add: model => ({
             input: "",
             todos: model.todos.concat({

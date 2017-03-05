@@ -79,6 +79,7 @@ export default function (app) {
             for (i = 0; i < hooks.onUpdate.length; i++) {
               hooks.onUpdate[i](model, result, data)
             }
+
             model = merge(model, result)
             render(model, view)
           }

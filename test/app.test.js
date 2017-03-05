@@ -291,6 +291,7 @@ describe("app", () => {
           delayAndChange: (model, data, actions) => {
             actions.delay().then(_ => {
               actions.change(data)
+
               expectHTMLToBe(`
                   <div>
                     <div>
@@ -298,6 +299,8 @@ describe("app", () => {
                     </div>
                   </div>
               `)
+
+              done()
             })
           }
         },
@@ -307,25 +310,23 @@ describe("app", () => {
       })
     })
 
-    describe("nested", () => {
-      it("collects actions by namespace/key", () => {
-        app({
-          model: true,
-          actions: {
-            foo: {
-              bar: {
-                baz: (model, data) => {
-                  expect(model).toBe(true)
-                  expect(data).toBe("foo.bar.baz")
-                }
+    it("collects actions by namespace/key", () => {
+      app({
+        model: true,
+        actions: {
+          foo: {
+            bar: {
+              baz: (model, data) => {
+                expect(model).toBe(true)
+                expect(data).toBe("foo.bar.baz")
               }
             }
-          },
-          subscriptions: [
-            (_, actions) => actions.foo.bar.baz("foo.bar.baz")
-          ],
-          view: _ => h("div", {}, "")
-        })
+          }
+        },
+        subscriptions: [
+          (_, actions) => actions.foo.bar.baz("foo.bar.baz")
+        ],
+        view: _ => h("div", {}, "")
       })
     })
   })
@@ -358,13 +359,15 @@ describe("app", () => {
                 data: {},
                 children: ["bogus"]
               })
+
               return view
+
             } else {
               expect(model).toBe("bar")
               done()
+
+              return view
             }
-
-
           }
         }
       })
@@ -421,6 +424,63 @@ describe("app", () => {
               expect(err).toBe("foo")
             }
           }
+        ]
+      })
+    })
+
+    it("allows multiple listeners on the same hook", () => {
+      let count = 0
+
+      const PluginA = _ => ({
+        hooks: {
+          onAction: (action, data) => {
+            expect(action).toBe("foo")
+            expect(data).toBe("bar")
+            expect(++count).toBe(2)
+          },
+          onUpdate: (oldModel, newModel) => {
+            expect(oldModel).toBe("foo")
+            expect(newModel).toBe("foobar")
+            expect(++count).toBe(5)
+          }
+        }
+      })
+
+      const PluginB = _ => ({
+        hooks: {
+          onAction: (action, data) => {
+            expect(action).toBe("foo")
+            expect(data).toBe("bar")
+            expect(++count).toBe(3)
+          },
+          onUpdate: (oldModel, newModel) => {
+            expect(oldModel).toBe("foo")
+            expect(newModel).toBe("foobar")
+            expect(++count).toBe(6)
+          }
+        }
+      })
+
+      app({
+        model: "foo",
+        plugins: [PluginA, PluginB],
+        actions: {
+          foo: (model, data) => model + data
+        },
+        hooks: {
+          onAction: (action, data) => {
+            expect(action).toBe("foo")
+            expect(data).toBe("bar")
+            expect(++count).toBe(1)
+          },
+          onUpdate: (oldModel, newModel) => {
+            expect(oldModel).toBe("foo")
+            expect(newModel).toBe("foobar")
+            expect(++count).toBe(4)
+          }
+        },
+        subscriptions: [
+          (_, actions) => actions.foo("bar")
         ]
       })
     })
@@ -701,7 +761,3 @@ describe("app", () => {
     })
   })
 })
-
-
-
-

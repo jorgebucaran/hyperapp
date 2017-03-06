@@ -3,7 +3,7 @@
 .vscode/
 
 # Logs
-.log*
+*.log*
 yarn.lock
 
 # Misc

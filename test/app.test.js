@@ -707,11 +707,11 @@ describe("app", () => {
   })
 
   describe("lifecycle methods", () => {
-    it("fires oncreate", done => {
+    it("fires onCreate", done => {
       app({
         model: 1,
         view: model => h("div", {
-          oncreate: e => {
+          onCreate: e => {
             expect(model).toBe(1)
             done()
           }
@@ -719,11 +719,11 @@ describe("app", () => {
       })
     })
 
-    it("fires onupdate", done => {
+    it("fires onUpdate", done => {
       app({
         model: 1,
         view: model => h("div", {
-          onupdate: e => {
+          onUpdate: e => {
             expect(model).toBe(2)
             done()
           }
@@ -737,11 +737,11 @@ describe("app", () => {
       })
     })
 
-    it("fires onremove", done => {
+    it("fires onRemove", done => {
       const treeA = h("ul", {},
         h("li", {}, "foo"),
         h("li", {
-          onremove: _ => {
+          onRemove: _ => {
             done()
           }
         }, "bar"))

@@ -171,7 +171,7 @@ export default function (app) {
         : document.createElement(node.tag)
 
       for (var name in node.data) {
-        if (name === "oncreate") {
+        if (name === "onCreate") {
           defer(node.data[name], element)
         } else {
           setElementData(element, name, node.data[name])
@@ -203,7 +203,7 @@ export default function (app) {
       }
 
     } else if (name[0] === "o" && name[1] === "n") {
-      var event = name.substr(2)
+      var event = name.substr(2).toLowerCase()
 
       element.removeEventListener(event, oldValue)
       element.addEventListener(event, value)
@@ -233,7 +233,7 @@ export default function (app) {
       if (value === undefined) {
         removeElementData(element, name, oldValue)
 
-      } else if (name === "onupdate") {
+      } else if (name === "onUpdate") {
         defer(value, element)
 
       } else if (
@@ -263,8 +263,8 @@ export default function (app) {
 
       batch.push(parent.removeChild.bind(parent, element))
 
-      if (oldNode && oldNode.data && oldNode.data.onremove) {
-        defer(oldNode.data.onremove, element)
+      if (oldNode && oldNode.data && oldNode.data.onRemove) {
+        defer(oldNode.data.onRemove, element)
       }
 
     } else if (shouldUpdate(node, oldNode)) {

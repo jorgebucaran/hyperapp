@@ -203,7 +203,7 @@ export default function (app) {
       }
 
     } else if (name[0] === "o" && name[1] === "n") {
-      var event = name.substr(2)
+      var event = name.substr(2).toLowerCase()
 
       element.removeEventListener(event, oldValue)
       element.addEventListener(event, value)

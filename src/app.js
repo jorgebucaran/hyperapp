@@ -208,7 +208,7 @@ export default function (app) {
       element.removeEventListener(event, oldValue)
       element.addEventListener(event, value)
 
-    } else if (name === "value" && "selectionEnd" in element && "selectionStart" in element) {
+    } else if (name === "value" && "selectionEnd" in element) {
       var selectionEnd = element.selectionEnd
       var selectionStart = element.selectionStart
 

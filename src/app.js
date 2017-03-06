@@ -213,8 +213,7 @@ export default function (app) {
       var selectionStart = element.selectionStart
 
       element.setAttribute(name, value)
-      element.setAttribute("selectionEnd", selectionEnd)
-      element.setAttribute("selectionStart", selectionStart)
+      element.setSelectionRange(selectionStart, selectionEnd)
 
     } else {
       if (value === "false" || value === false) {

@@ -215,7 +215,7 @@ describe("app", () => {
       app({
         model: "foo",
         actions: {
-          toggle: model => "fOo"
+          changeValue: model => "bar"
         },
         view: model => h("input", { class: "selection-test", value: model }),
         subscriptions: [
@@ -228,7 +228,7 @@ describe("app", () => {
             inputEl.selectionStart = 2;
             inputEl.selectionEnd = 2;
 
-            actions.toggle()
+            actions.changeValue()
 
             expect(inputEl.selectionStart).toBe(2)
             expect(inputEl.selectionEnd).toBe(2)

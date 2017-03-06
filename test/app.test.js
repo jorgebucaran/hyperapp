@@ -211,6 +211,32 @@ describe("app", () => {
       })
     })
 
+    it("keeps selectionStart and selectionEnd properties intact on update", () => {
+      app({
+        model: "foo",
+        actions: {
+          toggle: model => "fOo"
+        },
+        view: model => h("input", { class: "selection-test", value: model }),
+        subscriptions: [
+          (_, actions) => {
+            const inputEl = document.querySelector(".selection-test")
+
+            expect(inputEl.selectionStart).toBe(0)
+            expect(inputEl.selectionEnd).toBe(0)
+
+            inputEl.selectionStart = 2;
+            inputEl.selectionEnd = 2;
+
+            actions.toggle()
+
+            expect(inputEl.selectionStart).toBe(2)
+            expect(inputEl.selectionEnd).toBe(2)
+          }
+        ]
+      })
+    })
+
     it("removes node/s when a container's number of children is different", () => {
       app({
         model: true,

@@ -25,7 +25,7 @@ export default function (app) {
     var plugin = plugins[i]
 
     if (plugin.model !== undefined) {
-      model = merge(model, plugin.model)
+      updateModel(model, plugin.model)
     }
 
     if (plugin.actions) {
@@ -65,12 +65,14 @@ export default function (app) {
       var i
 
       if (typeof action === "function") {
-        container[key] = function (data) {
+        container[key] = function (data, modelFragment, localActions) {
+          modelFragment = modelFragment || model
+          localActions = localActions || actions
           for (i = 0; i < hooks.onAction.length; i++) {
             hooks.onAction[i](name, data)
           }
 
-          var result = action(model, data, actions, onError)
+          var result = action(modelFragment, data, localActions, onError)
 
           if (result === undefined || typeof result.then === "function") {
             return result
@@ -80,7 +82,7 @@ export default function (app) {
               hooks.onUpdate[i](model, result, data)
             }
 
-            model = merge(model, result)
+            updateModel(modelFragment, result)
             render(model, view)
           }
         }
@@ -122,8 +124,8 @@ export default function (app) {
     batch = []
   }
 
-  function merge(a, b) {
-    var obj = {}
+  function merge(a, b, into) {
+    var obj = into? a: {}
     var key
 
     if (isPrimitive(b) || Array.isArray(b)) {
@@ -138,6 +140,12 @@ export default function (app) {
     }
 
     return obj
+  }
+
+  function updateModel(modelFragment, newModelFragment) {
+    var isRoot = modelFragment === model;
+    var merged = merge(modelFragment, newModelFragment, !isRoot);
+    model = isRoot? merged: model;
   }
 
   function isPrimitive(type) {

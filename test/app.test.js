@@ -329,6 +329,47 @@ describe("app", () => {
         view: _ => h("div", {}, "")
       })
     })
+
+    it("allows to pass a model fragment into an action", () => {
+      app({
+        model: {
+          todos: [{id: 1}]
+        },
+        actions: {
+          updateTodo: (todo, text) => ({text})
+        },
+        view: model => h("div", {}, `${model.todos[0].text}`),
+        subscriptions: [
+          (model, actions) => actions.updateTodo('foo', model.todos[0])
+        ]
+      })
+
+      expectHTMLToBe(`
+					<div>
+						<div>foo</div>
+					</div>
+				`)
+    })
+
+    it("passes scoped actions when they are passed", () => {
+      app({
+        model: {
+          todos: [{id: 1}]
+        },
+        actions: {
+          todos: {
+            update: (_, d, actions) => {
+              expect(Object.keys(actions)).toEqual(['update'])
+            }
+          },
+          other: _ => _
+        },
+        view: _ => h("div", {}, ''),
+        subscriptions: [
+          (model, actions) => actions.todos.update('foo', model, actions.todos)
+        ]
+      })
+    })
   })
 
   describe("hooks", () => {

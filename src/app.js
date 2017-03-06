@@ -209,11 +209,8 @@ export default function (app) {
       element.addEventListener(event, value)
 
     } else if (name === "value" && "selectionEnd" in element) {
-      var selectionEnd = element.selectionEnd
-      var selectionStart = element.selectionStart
-
       element.setAttribute(name, value)
-      element.setSelectionRange(selectionStart, selectionEnd)
+      element.setSelectionRange(element.selectionStart, element.selectionEnd)
 
     } else {
       if (value === "false" || value === false) {

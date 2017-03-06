@@ -61,9 +61,9 @@ app({
   },
   view: (model, actions) =>
     <div>
-      <button onclick={actions.add}>+</button>
+      <button onClick={actions.add}>+</button>
       <h1>{model}</h1>
-      <button onclick={actions.sub} disabled={model <= 0}>-</button>
+      <button onClick={actions.sub} disabled={model <= 0}>-</button>
     </div>
 })
 ```
@@ -82,7 +82,7 @@ app({
   view: (model, actions) =>
     <div>
       <h1>Hi{model ? " " + model : ""}.</h1>
-      <input oninput={e => actions.text(e.target.value)} />
+      <input onInput={e => actions.text(e.target.value)} />
     </div>
 })
 ```
@@ -119,7 +119,7 @@ const subscriptions = [
 
 const view = (model, actions) =>
   <div
-    onmousedown={e => actions.drag({
+    onMouseDown={e => actions.drag({
       position: {
         x: e.pageX, y: e.pageY, offsetX: e.offsetX, offsetY: e.offsetY
       }
@@ -162,7 +162,7 @@ app({
             <span>
               <a
                 href="#"
-                onclick={_ => actions.filter({
+                onClick={_ => actions.filter({
                   value: FilterInfo[key]
                 })}
               >{key}</a>
@@ -184,7 +184,7 @@ app({
                 color: t.done ? "gray" : "black",
                 textDecoration: t.done ? "line-through" : "none"
               }}
-                onclick={e => actions.toggle({
+                onClick={e => actions.toggle({
                   value: t.done,
                   id: t.id
                 })}
@@ -197,12 +197,12 @@ app({
       <p>
         <input
           type="text"
-          onkeyup={e => e.keyCode === 13 ? actions.add() : ""}
-          oninput={e => actions.input({ value: e.target.value })}
+          onKeyUp={e => e.keyCode === 13 ? actions.add() : ""}
+          onInput={e => actions.input({ value: e.target.value })}
           value={model.input}
           placeholder={model.placeholder}
-        />{" "}
-        <button onclick={actions.add}>add</button>
+        />
+        <button onClick={actions.add}>add</button>
       </p>
     </div>,
   actions: {

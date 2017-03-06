@@ -252,8 +252,11 @@ export default function (app) {
 
   function patch(parent, oldNode, node, index) {
     if (oldNode === undefined) {
-      parent.appendChild(createElementFrom(node))
-
+      if (parent.children.length > index) {
+        parent.insertBefore(createElementFrom(node), parent.children[index])
+      } else {
+        parent.appendChild(createElementFrom(node))
+      }
     } else if (node === undefined) {
       var element = parent.childNodes[index]
 
@@ -277,10 +280,14 @@ export default function (app) {
 
       var len = node.children.length, oldLen = oldNode.children.length
 
-      for (var i = 0; i < len || i < oldLen; i++) {
+      for (var i = 0, j = 0; i < len || j < oldLen; i++) {
         var child = node.children[i]
-
-        patch(element, oldNode.children[i], child, i)
+        if (child && child.data && child.data._insert) {
+          patch(element, undefined, child, i)
+        } else {
+          patch(element, oldNode.children[j], child, i)
+          j++
+        }
       }
     }
   }

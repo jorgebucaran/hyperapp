@@ -15,7 +15,7 @@ export default function (app) {
     onRender: []
   }
 
-  var node
+  var node, nodeElement
   var root
   var batch = []
   var plugins = app.plugins || []
@@ -111,7 +111,7 @@ export default function (app) {
       view = hooks.onRender[i](model, view)
     }
 
-    patch(root, node, node = view(model, actions), 0)
+    nodeElement = patch(root, nodeElement, node, node = view(model, actions))
 
     for (var i = 0; i < batch.length; i++) {
       batch[i]()
@@ -224,11 +224,9 @@ export default function (app) {
     }
   }
 
-  function patch(parent, oldNode, node, index) {
-    var element = parent.childNodes[index]
-
+  function patch(parent, element, oldNode, node) {
     if (oldNode === undefined) {
-      parent.appendChild(createElementFrom(node))
+      element = parent.appendChild(createElementFrom(node))
 
     } else if (node === undefined) {
       batch.push(parent.removeChild.bind(parent, element))
@@ -245,7 +243,9 @@ export default function (app) {
       if (typeof node === "string") {
         element.textContent = node
       } else {
-        parent.replaceChild(createElementFrom(node), element)
+        var newElement = createElementFrom(node)
+        parent.replaceChild(newElement, element)
+        element = newElement
       }
     } else if (node.tag) {
       updateElementData(element, node.data, oldNode.data)
@@ -254,8 +254,10 @@ export default function (app) {
       var oldLen = oldNode.children.length
 
       for (var i = 0; i < len || i < oldLen; i++) {
-        patch(element, oldNode.children[i], node.children[i], i)
+        patch(element, element.childNodes[i], oldNode.children[i], node.children[i])
       }
     }
+
+    return element
   }
 }

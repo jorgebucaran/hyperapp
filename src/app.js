@@ -124,28 +124,33 @@ export default function (app) {
     batch = []
   }
 
-  function merge(a, b, into) {
-    var obj = into? a: {}
-    var key
+  function merge(a, b) {
+    var obj = {}
 
     if (isPrimitive(b) || Array.isArray(b)) {
       return b
     }
 
-    for (key in a) {
-      obj[key] = a[key]
-    }
-    for (key in b) {
-      obj[key] = b[key]
-    }
+    assign(obj, a)
+    assign(obj, b)
 
     return obj
   }
 
+  function assign(obj, src) {
+    var key
+    for(key in src) {
+      obj[key] = src[key]
+    }
+  }
+
   function updateModel(modelFragment, newModelFragment) {
     var isRoot = modelFragment === model;
-    var merged = merge(modelFragment, newModelFragment, !isRoot);
-    model = isRoot? merged: model;
+    var merged = isRoot
+      ? merge(modelFragment, newModelFragment)
+      : assign(modelFragment, newModelFragment)
+
+    model = isRoot? merged: model
   }
 
   function isPrimitive(type) {
@@ -206,9 +211,7 @@ export default function (app) {
 
   function setElementData(element, name, value, oldValue) {
     if (name === "style") {
-      for (var i in value) {
-        element.style[i] = value[i]
-      }
+      assign(element.style, value)
 
     } else if (name[0] === "o" && name[1] === "n") {
       var event = name.substr(2)

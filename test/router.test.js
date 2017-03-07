@@ -80,7 +80,7 @@ describe("Router", () => {
   })
 
   it("collects matched route keys", () => {
-    window.location.pathname = "/FOO/BAR/BAZ-BAZ"
+    window.location.pathname = "/FOO/BAR/BAZ"
 
     app({
       view: {
@@ -96,7 +96,50 @@ describe("Router", () => {
 				<ul>
 					<li>FOO</li>
 					<li>BAR</li>
-					<li>BAZ-BAZ</li>
+					<li>BAZ</li>
+				</ul>
+			</div>
+		`)
+  })
+
+  it("collects matched route keys separated with dash", () => {
+    window.location.pathname = "/FOO-BAR"
+
+    app({
+      view: {
+        "/:foo-:bar": model =>
+          h("ul", {}, Object.keys(model.router.params).map(key =>
+            h("li", {}, model.router.params[key])))
+      },
+      plugins: [Router]
+    })
+
+    expectHTMLToBe(`
+			<div>
+				<ul>
+					<li>FOO</li>
+					<li>BAR</li>
+				</ul>
+			</div>
+		`)
+  })
+
+  it("collects matched route key with dash", () => {
+    window.location.pathname = "/FOO-BAR"
+
+    app({
+      view: {
+        "/:foo": model =>
+          h("ul", {}, Object.keys(model.router.params).map(key =>
+            h("li", {}, model.router.params[key])))
+      },
+      plugins: [Router]
+    })
+
+    expectHTMLToBe(`
+			<div>
+				<ul>
+					<li>FOO-BAR</li>
 				</ul>
 			</div>
 		`)

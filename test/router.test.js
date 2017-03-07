@@ -80,7 +80,7 @@ describe("Router", () => {
   })
 
   it("collects matched route keys", () => {
-    window.location.pathname = "/FOO/BAR/BAZ"
+    window.location.pathname = "/FOO/BAR/BAZ-BAZ"
 
     app({
       view: {
@@ -96,7 +96,7 @@ describe("Router", () => {
 				<ul>
 					<li>FOO</li>
 					<li>BAR</li>
-					<li>BAZ</li>
+					<li>BAZ-BAZ</li>
 				</ul>
 			</div>
 		`)

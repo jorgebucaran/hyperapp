@@ -138,8 +138,7 @@ export default function (app) {
   }
 
   function assign(obj, src) {
-    var key
-    for(key in src) {
+    for(var key in src) {
       obj[key] = src[key]
     }
   }

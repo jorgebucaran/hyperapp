@@ -208,10 +208,6 @@ export default function (app) {
       element.removeEventListener(event, oldValue)
       element.addEventListener(event, value)
 
-    } else if (name === "value" && "selectionEnd" in element) {
-      element.setAttribute(name, value)
-      element.setSelectionRange(element.selectionStart, element.selectionEnd)
-
     } else {
       if (value === "false" || value === false) {
         element.removeAttribute(name)
@@ -222,7 +218,19 @@ export default function (app) {
         if (element.namespaceURI !== "http://www.w3.org/2000/svg") {
           // SVG element's props are read only in strict mode.
 
+          var oldSelStart, oldSelEnd
+          var type = element.type
+
+          if (type && type.substr(0, 4) === "text") {
+            oldSelStart = element.selectionStart
+            oldSelEnd = element.selectionEnd
+          }
+
           element[name] = value
+
+          if (oldSelStart >= 0) {
+            element.setSelectionRange(oldSelStart, oldSelEnd)
+          }
         }
       }
     }

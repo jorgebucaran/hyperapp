@@ -211,7 +211,7 @@ describe("app", () => {
       })
     })
 
-    it("keeps selectionStart and selectionEnd properties intact on update", () => {
+    it("keeps selectionStart and selectionEnd properties on text inputs intact on update", () => {
       app({
         model: "foo",
         actions: {
@@ -236,6 +236,33 @@ describe("app", () => {
         ]
       })
     })
+
+    it("keeps selectionStart and selectionEnd properties on textarea elements intact on update", () => {
+      app({
+        model: "foo",
+        actions: {
+          changeValue: model => "bar"
+        },
+        view: model => h("textarea", { class: "selection-test", value: model }),
+        subscriptions: [
+          (_, actions) => {
+            const textareaEl = document.querySelector(".selection-test")
+
+            expect(textareaEl.selectionStart).toBe(0)
+            expect(textareaEl.selectionEnd).toBe(0)
+
+            textareaEl.selectionStart = 2;
+            textareaEl.selectionEnd = 2;
+
+            actions.changeValue()
+
+            expect(textareaEl.selectionStart).toBe(2)
+            expect(textareaEl.selectionEnd).toBe(2)
+          }
+        ]
+      })
+    })
+
 
     it("removes node/s when a container's number of children is different", () => {
       app({

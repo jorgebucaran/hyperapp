@@ -11,20 +11,17 @@ export default function (options) {
             router: match(options.view, data)
           }
         },
-        go: function (_, data, actions) {
+        go: function (model, data, actions) {
           history.pushState({}, "", data)
           actions.router.match(data)
+          var route = match(options.view, data).match
+          if (typeof options.view[route][1] === 'function') {
+            options.view[route][1](model, actions)
+          }
         }
       }
     },
     hooks: {
-      onUpdate: function (oldModel, newModel, data, actions) {
-        if(newModel.router && newModel.router.match !== lastMatch) {
-          lastMatch = newModel.router.match
-          if (typeof options.view[newModel.router.match][1] === 'function')
-            options.view[newModel.router.match][1](newModel, actions)
-        }
-      },
       onRender: function (model) {
         return options.view[model.router.match][0]
       }

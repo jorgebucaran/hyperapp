@@ -45,7 +45,7 @@ function match(routes, path) {
       .replace(/\//g, "\\/")
       .replace(/:([A-Za-z0-9_]+)/g, function (_, key) {
         keys.push(key)
-        return "([A-Za-z0-9_]+)"
+        return "([-A-Za-z0-9_]+)"
       }) + "/?$", "g"), function () {
 
         for (var i = 1; i < arguments.length - 2; i++) {

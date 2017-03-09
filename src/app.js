@@ -156,7 +156,7 @@ export default function (app) {
   }
 
   function shouldUpdate(a, b) {
-    return a.tag !== b.tag || typeof a !== typeof b || isPrimitive(a) && a !== b || isElement(a) && a.isSameNode(b)
+    return a.tag !== b.tag || typeof a !== typeof b || isPrimitive(a) && a !== b || isElement(a) && !a.isSameNode(b)
   }
 
   function createElementFrom(node) {

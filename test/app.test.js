@@ -1,7 +1,7 @@
 /* global beforeEach, describe, it, expect */
 
 import { app, h } from "../src"
-import { expectHTMLToBe } from "./util"
+import { expectHTMLToBe, empty } from "./util"
 
 beforeEach(() => document.body.innerHTML = "")
 
@@ -700,6 +700,37 @@ describe("app", () => {
 				<main>
 					<div>
 						foo
+					</div>
+				</main>
+			`)
+    })
+    it("app returns root which makes app composable", () => {
+      app({
+        root: document.body.appendChild(document.createElement("main")),
+        view: _ => app({view: _ => 'composed'})
+      })
+
+      expectHTMLToBe(`
+				<main>
+					<div>
+						composed
+					</div>
+				</main>
+			`)
+    })
+    it("app is 'lazy' if provided a root that is not in the document", () => {
+      empty()
+      const root = app({
+        root: h('main'),
+        view: _ => app({view: _ => 'composed', root: h('div')})
+      })
+
+      expectHTMLToBe(``)
+      document.body.appendChild(root)
+      expectHTMLToBe(`
+				<main>
+					<div>
+						composed
 					</div>
 				</main>
 			`)

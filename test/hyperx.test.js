@@ -2,6 +2,7 @@
 
 import { app, h } from "../src"
 import hyperx from "hyperx"
+import {empty} from "./util"
 const html = hyperx(h)
 
 describe("hyperx", () => {
@@ -42,6 +43,7 @@ describe("hyperx", () => {
   })
 
   it("classname vs class (see #128)", () => {
+    empty()
     app({
       model: true,
       view: (model, actions) => html`<div>${model
@@ -59,6 +61,28 @@ describe("hyperx", () => {
 
           expect(document.body.innerHTML)
             .toBe(`<div><div><div classname="foo">bar</div></div></div>`)
+        }
+      ]
+    })
+  })
+
+  it("renders inline HTMLElements", () => {
+    empty()
+    const p = document.createElement('p')
+    p.appendChild(document.createTextNode('visible'))
+    app({
+      model: true,
+      actions: {
+        toggle: model => !model
+      },
+      view: model => html`<div>${ model ? p : ''}</div>`,
+      subscriptions: [
+        (_, actions) => {
+          expect(document.body.innerHTML).toBe(`<div><div><p>visible</p></div></div>`)
+
+          actions.toggle()
+
+          expect(document.body.innerHTML).toBe(`<div><div></div></div>`)
         }
       ]
     })

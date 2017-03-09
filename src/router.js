@@ -1,4 +1,5 @@
 export default function (options) {
+  var lastMatch;
   return {
     model: {
       router: match(options.view, location.pathname)
@@ -17,8 +18,15 @@ export default function (options) {
       }
     },
     hooks: {
+      onUpdate: function (oldModel, newModel, data, actions) {
+        if(newModel.router && newModel.router.match !== lastMatch) {
+          lastMatch = newModel.router.match
+          if (typeof options.view[newModel.router.match][1] === 'function')
+            options.view[newModel.router.match][1](newModel, actions)
+        }
+      },
       onRender: function (model) {
-        return options.view[model.router.match]
+        return options.view[model.router.match][0]
       }
     },
     subscriptions: [

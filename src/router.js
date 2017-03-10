@@ -1,5 +1,4 @@
 export default function (options) {
-  var lastMatch;
   return {
     model: {
       router: match(options.view, location.pathname)
@@ -11,17 +10,19 @@ export default function (options) {
             router: match(options.view, data)
           }
         },
-        go: function (model, data, actions) {
+        go: function (_, data, actions) {
           history.pushState({}, "", data)
           actions.router.match(data)
-          var route = match(options.view, data).match
-          if (typeof options.view[route][1] === 'function') {
-            options.view[route][1](model, actions)
-          }
         }
       }
     },
     hooks: {
+      onUpdate: function (oldModel, newModel, data, actions) {
+        if(newModel.router && oldModel.router.path !== newModel.router.path &&
+            typeof options.view[newModel.router.match][1] === 'function') {
+          options.view[newModel.router.match][1](newModel, actions)
+        }
+      },
       onRender: function (model) {
         return options.view[model.router.match][0]
       }
@@ -31,7 +32,25 @@ export default function (options) {
         addEventListener("popstate", function () {
           actions.router.match(location.pathname)
         })
-      }
+      },
+      function (_, actions) {
+        addEventListener("click", function (e) {
+          if (e.metaKey || e.shiftKey || e.ctrlKey || e.altKey) return
+          var target = e.target
+          while (target && target.localName !== "a") {
+            target = target.parentNode
+          }
+          if (target && target.host === location.host && !target.hasAttribute("data-no-routing")) {
+            var element = document.querySelector(target.hash === "" ? element : target.hash)
+            if (element) {
+              element.scrollIntoView(true)
+            } else {
+              e.preventDefault()
+              actions.router.go(target.pathname)
+            }
+          }
+        })
+      },
     ]
   }
 }
@@ -66,6 +85,7 @@ function match(routes, path) {
 
   return {
     match: match || "*",
-    params: params
+    params: params,
+    path: path
   }
 }

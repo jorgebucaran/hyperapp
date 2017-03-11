@@ -212,12 +212,9 @@ export default function (app) {
       element.setAttribute(name, value)
 
       if (element.namespaceURI !== SVG_NS) {
-        var oldSelStart, oldSelEnd
-        var type = element.type
-
-        if (type && type.substr(0, 4) === "text") {
-          oldSelStart = element.selectionStart
-          oldSelEnd = element.selectionEnd
+        if (name === "value" && "selectionEnd" in element) {
+          var oldSelStart = element.selectionStart
+          var oldSelEnd = element.selectionEnd
         }
 
         element[name] = value

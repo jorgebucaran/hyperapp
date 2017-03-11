@@ -80,13 +80,13 @@ describe("Router", () => {
   })
 
   it("collects matched route keys", () => {
-    window.location.pathname = "/FOO/BAR/BAZ"
+    window.location.pathname = "/beep/bop/boop"
 
     app({
       view: {
         "/:foo/:bar/:baz": model =>
           h("ul", {}, Object.keys(model.router.params).map(key =>
-            h("li", {}, model.router.params[key])))
+            h("li", {}, `${key}:${model.router.params[key]}`)))
       },
       plugins: [Router]
     })
@@ -94,22 +94,22 @@ describe("Router", () => {
     expectHTMLToBe(`
 			<div>
 				<ul>
-					<li>FOO</li>
-					<li>BAR</li>
-					<li>BAZ</li>
+					<li>foo:beep</li>
+					<li>bar:bop</li>
+					<li>baz:boop</li>
 				</ul>
 			</div>
 		`)
   })
 
   it("collects matched route keys separated with dash", () => {
-    window.location.pathname = "/FOO-BAR"
+    window.location.pathname = "/beep-bop-boop"
 
     app({
       view: {
-        "/:foo-:bar": model =>
+        "/:foo-:bar-:baz": model =>
           h("ul", {}, Object.keys(model.router.params).map(key =>
-            h("li", {}, model.router.params[key])))
+            h("li", {}, `${key}:${model.router.params[key]}`)))
       },
       plugins: [Router]
     })
@@ -117,30 +117,29 @@ describe("Router", () => {
     expectHTMLToBe(`
 			<div>
 				<ul>
-					<li>FOO</li>
-					<li>BAR</li>
-				</ul>
+          <li>foo:beep</li>
+          <li>bar:bop</li>
+          <li>baz:boop</li>
+        </ul>
 			</div>
 		`)
   })
 
   it("collects matched route key with dash", () => {
-    window.location.pathname = "/FOO-BAR"
+    window.location.pathname = "/beep-bop-boop"
 
     app({
       view: {
-        "/:foo": model =>
-          h("ul", {}, Object.keys(model.router.params).map(key =>
-            h("li", {}, model.router.params[key])))
+        "/:foo": model => h("div", {}, model.router.params.foo)
       },
       plugins: [Router]
     })
 
     expectHTMLToBe(`
 			<div>
-				<ul>
-					<li>FOO-BAR</li>
-				</ul>
+				<div>
+          beep-bop-boop
+        </div>
 			</div>
 		`)
   })
@@ -161,6 +160,7 @@ describe("Router", () => {
     })
 
     window.location.pathname = "/foo"
+
     firePopstate()
 
     expectHTMLToBe(`

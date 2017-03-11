@@ -61,18 +61,57 @@ describe("app", () => {
 			`)
     })
 
-    it("renders an svg tag", () => {
+    it("creates an svg element", () => {
       app({
-        view: _ => h("svg", {}, "foo")
+        view: _ => h("svg", { id: "foo" }, "bar")
       })
 
-      expectHTMLToBe(`
-				<div>
-					<svg ns="http://www.w3.org/2000/svg">
-						foo
-					</svg>
-				</div>
-			`)
+      const elm = document.getElementById("foo")
+      expect(elm.namespaceURI).toBe("http://www.w3.org/2000/svg")
+    })
+
+    it("creates svg elements recursively", () => {
+      const SVG_NS = "http://www.w3.org/2000/svg"
+
+      app({
+        view: _ => h("div", {}, [
+          h("p", { id: "foo" }, "foo"),
+          h("svg", { id: "bar" }, [
+            h("quux", {}, [
+              h("beep", {}, [
+                h("ping", {}),
+                h("pong", {})
+              ]),
+              h("bop", {}),
+              h("boop", {}, [
+                h("ping", {}),
+                h("pong", {})
+              ])
+            ]),
+            h("xuuq", {}, [
+              h("beep", {}),
+              h("bop", {}, [
+                h("ping", {}),
+                h("pong", {})
+              ]),
+              h("boop", {})
+            ])
+          ]),
+          h("p", { id: "baz" }, "baz")
+        ])
+      })
+
+      expect(document.getElementById("foo").namespaceURI).not.toBe(SVG_NS)
+      expect(document.getElementById("baz").namespaceURI).not.toBe(SVG_NS)
+
+      const svg = document.getElementById("bar")
+      expect(svg.namespaceURI).toBe(SVG_NS)
+      expectChildren(svg)
+
+      function expectChildren(svgElement) {
+        Array.from(svgElement.childNodes).forEach(node =>
+          expectChildren(node, expect(node.namespaceURI).toBe(SVG_NS)))
+      }
     })
 
     it("can render conditionally / ignores bool/null children", () => {

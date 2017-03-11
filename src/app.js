@@ -27,7 +27,7 @@ export default function (app) {
     var plugin = plugins[i]
 
     if (plugin.model !== undefined) {
-      model = merge(model, plugin.model)
+      updateModel(model, plugin.model)
     }
 
     if (plugin.actions) {
@@ -67,12 +67,14 @@ export default function (app) {
       var i
 
       if (typeof action === "function") {
-        container[key] = function (data) {
+        container[key] = function (data, modelFragment, localActions) {
+          modelFragment = modelFragment || model
+          localActions = localActions || actions
           for (i = 0; i < hooks.onAction.length; i++) {
             hooks.onAction[i](name, data)
           }
 
-          var result = action(model, data, actions, onError)
+          var result = action(modelFragment, data, localActions, onError)
 
           if (result === undefined || typeof result.then === "function") {
             return result
@@ -82,7 +84,7 @@ export default function (app) {
               hooks.onUpdate[i](model, result, data)
             }
 
-            model = merge(model, result)
+            updateModel(modelFragment, result)
             render(model, view)
           }
         }
@@ -126,20 +128,30 @@ export default function (app) {
 
   function merge(a, b) {
     var obj = {}
-    var key
 
     if (isPrimitive(b) || Array.isArray(b)) {
       return b
     }
 
-    for (key in a) {
-      obj[key] = a[key]
-    }
-    for (key in b) {
-      obj[key] = b[key]
-    }
+    assign(obj, a)
+    assign(obj, b)
 
     return obj
+  }
+
+  function assign(obj, src) {
+    for(var key in src) {
+      obj[key] = src[key]
+    }
+  }
+
+  function updateModel(modelFragment, newModelFragment) {
+    var isRoot = modelFragment === model;
+    var merged = isRoot
+      ? merge(modelFragment, newModelFragment)
+      : assign(modelFragment, newModelFragment)
+
+    model = isRoot? merged: model
   }
 
   function isPrimitive(type) {
@@ -195,9 +207,7 @@ export default function (app) {
 
   function setElementData(element, name, value, oldValue) {
     if (name === "style") {
-      for (var i in value) {
-        element.style[i] = value[i]
-      }
+      assign(element.style, value)
 
     } else if (name[0] === "o" && name[1] === "n") {
       var event = name.substr(2).toLowerCase()

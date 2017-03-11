@@ -254,54 +254,26 @@ describe("app", () => {
       app({
         model: "foo",
         actions: {
-          changeValue: model => "bar"
+          setText: model => "bar"
         },
-        view: model => h("input", { class: "selection-test", value: model }),
+        view: model => h("input", { id: "foo", value: model }),
         subscriptions: [
           (_, actions) => {
-            const inputEl = document.querySelector(".selection-test")
+            const input = document.getElementById("foo")
 
-            expect(inputEl.selectionStart).toBe(0)
-            expect(inputEl.selectionEnd).toBe(0)
+            expect(input.selectionStart).toBe(0)
+            expect(input.selectionEnd).toBe(0)
 
-            inputEl.selectionStart = 2;
-            inputEl.selectionEnd = 2;
+            input.setSelectionRange(2, 2)
 
-            actions.changeValue()
+            actions.setText()
 
-            expect(inputEl.selectionStart).toBe(2)
-            expect(inputEl.selectionEnd).toBe(2)
+            expect(input.selectionStart).toBe(2)
+            expect(input.selectionEnd).toBe(2)
           }
         ]
       })
     })
-
-    it("keeps selectionStart and selectionEnd properties on textarea elements intact on update", () => {
-      app({
-        model: "foo",
-        actions: {
-          changeValue: model => "bar"
-        },
-        view: model => h("textarea", { class: "selection-test", value: model }),
-        subscriptions: [
-          (_, actions) => {
-            const textareaEl = document.querySelector(".selection-test")
-
-            expect(textareaEl.selectionStart).toBe(0)
-            expect(textareaEl.selectionEnd).toBe(0)
-
-            textareaEl.selectionStart = 2;
-            textareaEl.selectionEnd = 2;
-
-            actions.changeValue()
-
-            expect(textareaEl.selectionStart).toBe(2)
-            expect(textareaEl.selectionEnd).toBe(2)
-          }
-        ]
-      })
-    })
-
 
     it("removes node/s when a container's number of children is different", () => {
       app({

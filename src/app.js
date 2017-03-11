@@ -1,28 +1,27 @@
 export default function (app) {
-  var view = app.view || function () {
+  const view = app.view || function () {
     return ""
   }
 
   var model
-  var actions = {}
-  var subscriptions = []
-  var hooks = {
+  const actions = {}
+  let subscriptions = []
+  const hooks = {
     onError: [],
     onAction: [],
     onUpdate: [],
     onRender: []
   }
 
-  var plugins = [app].concat((app.plugins || []).map(function (plugin) {
+  const plugins = [app].concat((app.plugins || []).map(function (plugin) {
     return plugin(app)
   }))
 
-  var node
-  var root
-  var batch = []
+  let node
+  let root
+  let batch = []
 
-  for (var i = 0; i < plugins.length; i++) {
-    var plugin = plugins[i]
+  plugins.forEach((plugin) => {
 
     if (plugin.model !== undefined) {
       model = merge(model, plugin.model)
@@ -36,21 +35,21 @@ export default function (app) {
       subscriptions = subscriptions.concat(plugin.subscriptions)
     }
 
-    var _hooks = plugin.hooks
+    const _hooks = plugin.hooks
     if (_hooks) {
       Object.keys(_hooks).forEach(function (key) {
         hooks[key].push(_hooks[key])
       })
     }
-  }
+  });
 
   function onError(error) {
-    for (var i = 0; i < hooks.onError.length; i++) {
-      hooks.onError[i](error)
-    }
+    if (hooks.onError && hooks.onError.length > 0) {
+      hooks.onError.forEach((hook) => {
+        hook(error)
+      });
 
-    if (i <= 0) {
-      throw error
+        throw error
     }
   }
 
@@ -60,8 +59,8 @@ export default function (app) {
         container[key] = {}
       }
 
-      var name = lastName ? lastName + "." + key : key
-      var action = group[key]
+      const name = lastName ? lastName + "." + key : key
+      const action = group[key]
       var i
 
       if (typeof action === "function") {
@@ -70,7 +69,7 @@ export default function (app) {
             hooks.onAction[i](name, data)
           }
 
-          var result = action(model, data, actions, onError)
+          const result = action(model, data, actions, onError)
 
           if (result === undefined || typeof result.then === "function") {
             return result
@@ -95,9 +94,9 @@ export default function (app) {
 
     render(model, view)
 
-    for (var i = 0; i < subscriptions.length; i++) {
-      subscriptions[i](model, actions, onError)
-    }
+    subscriptions.forEach((subscription) => {
+      subscription(model, actions, onError)
+    });
   })
 
   function load(fn) {
@@ -109,15 +108,15 @@ export default function (app) {
   }
 
   function render(model, view) {
-    for (i = 0; i < hooks.onRender.length; i++) {
-      view = hooks.onRender[i](model, view)
-    }
+    hooks.onRender.forEach((render) => {
+      view = render(model, view)
+    });
 
     patch(root, node, node = view(model, actions), 0)
 
-    for (var i = 0; i < batch.length; i++) {
-      batch[i]()
-    }
+    batch.forEach((b) => {
+      b();
+    });
 
     batch = []
   }
@@ -178,9 +177,9 @@ export default function (app) {
         }
       }
 
-      for (var i = 0; i < node.children.length; i++) {
-        element.appendChild(createElementFrom(node.children[i]))
-      }
+      node.children.forEach((child) =>  {
+        element.appendChild(createElementFrom(child))
+      });
     }
 
     return element

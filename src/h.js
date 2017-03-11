@@ -42,24 +42,9 @@ export default function (tag, data) {
     return tag(data, children)
   }
 
-  if (tag === "svg") {
-    svg(tag, data, children)
-  }
-
   return {
     tag: tag,
     data: data || {},
     children: children
-  }
-}
-
-function svg(tag, data, children) {
-  data.ns = "http://www.w3.org/2000/svg"
-
-  for (var i = 0; i < children.length; i++) {
-    var node = children[i]
-    if (node.data) {
-      svg(node.tag, node.data, node.children)
-    }
   }
 }

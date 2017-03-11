@@ -129,36 +129,6 @@ describe("h", () => {
         children: []
       }]
     })
-
-  })
-
-  it("creates a vnode with a svg namespace if tag is svg", () => {
-
-    expect(
-      h("svg", {}, "foo")
-    ).toEqual({
-      tag: "svg",
-      data: {
-        ns: "http://www.w3.org/2000/svg"
-      },
-      children: ["foo"]
-    })
-
-    expect(
-      h("svg", {}, h("circle", {}))
-    ).toEqual({
-      tag: "svg",
-      data: {
-        ns: "http://www.w3.org/2000/svg"
-      },
-      children: [{
-        tag: "circle",
-        data: {
-          ns: "http://www.w3.org/2000/svg"
-        },
-        children: []
-      }]
-    })
   })
 })
 

@@ -1,3 +1,5 @@
+var SVG_NS = "http://www.w3.org/2000/svg"
+
 export default function (app) {
   var view = app.view || function () {
     return ""
@@ -91,7 +93,9 @@ export default function (app) {
   }
 
   return load(function () {
-    root = app.root ? createElementFrom(app.root) : document.body.appendChild(document.createElement("div"))
+    if (!app.root) {
+      document.body.appendChild(root)
+    }
 
     render(model, view)
 
@@ -99,15 +103,18 @@ export default function (app) {
       subscriptions[i](model, actions, onError)
     }
 
-    return root
   })
 
   function load(fn) {
-    if (document.readyState[0] !== "l" || app.root) {
-      return fn()
+    root = app.root ? createElementFrom(app.root) : document.createElement("div")
+
+    if (document.readyState[0] !== "l") {
+      fn()
     } else {
       document.addEventListener("DOMContentLoaded", fn)
     }
+
+    return root
   }
 
   function render(model, view) {
@@ -161,7 +168,7 @@ export default function (app) {
     return a.tag !== b.tag || typeof a !== typeof b || isPrimitive(a) && a !== b || isElement(a) && !a.isSameNode(b)
   }
 
-  function createElementFrom(node) {
+  function createElementFrom(node, isSVG) {
     var element
     if (isElement(node)) {
       return node
@@ -173,8 +180,8 @@ export default function (app) {
       element = document.createTextNode(node)
 
     } else {
-      element = node.data && node.data.ns
-        ? document.createElementNS(node.data.ns, node.tag)
+      element = (isSVG = isSVG || node.tag === "svg")
+        ? document.createElementNS(SVG_NS, node.tag)
         : document.createElement(node.tag)
 
       for (var name in node.data) {
@@ -186,7 +193,7 @@ export default function (app) {
       }
 
       for (var i = 0; i < node.children.length; i++) {
-        element.appendChild(createElementFrom(node.children[i]))
+        element.appendChild(createElementFrom(node.children[i], isSVG))
       }
     }
 
@@ -194,13 +201,8 @@ export default function (app) {
   }
 
   function removeElementData(element, name, value) {
-    // Hyperx adds a className attribute to nodes we must handle.
-
-    element.removeAttribute(name === "className" ? "class" : name)
-
-    if (typeof value === "boolean" || value === "true" || value === "false") {
-      element[name] = false
-    }
+    element[name] = value
+    element.removeAttribute(name)
   }
 
   function setElementData(element, name, value, oldValue) {
@@ -215,17 +217,22 @@ export default function (app) {
       element.removeEventListener(event, oldValue)
       element.addEventListener(event, value)
 
+    } else if (value === false) {
+      removeElementData(element, name, value)
+
     } else {
-      if (value === "false" || value === false) {
-        element.removeAttribute(name)
-        element[name] = false
+      element.setAttribute(name, value)
 
-      } else {
-        element.setAttribute(name, value)
-        if (element.namespaceURI !== "http://www.w3.org/2000/svg") {
-          // SVG element's props are read only in strict mode.
+      if (element.namespaceURI !== SVG_NS) {
+        if (element.type === "text") {
+          var oldSelStart = element.selectionStart
+          var oldSelEnd = element.selectionEnd
+        }
 
-          element[name] = value
+        element[name] = value
+
+        if (oldSelStart >= 0) {
+          element.setSelectionRange(oldSelStart, oldSelEnd)
         }
       }
     }
@@ -238,7 +245,7 @@ export default function (app) {
       var realValue = element[name]
 
       if (value === undefined) {
-        removeElementData(element, name, oldValue)
+        removeElementData(element, name, value)
 
       } else if (name === "onUpdate") {
         defer(value, element)

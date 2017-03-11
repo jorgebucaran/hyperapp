@@ -61,18 +61,57 @@ describe("app", () => {
 			`)
     })
 
-    it("renders an svg tag", () => {
+    it("creates an svg element", () => {
       app({
-        view: _ => h("svg", {}, "foo")
+        view: _ => h("svg", { id: "foo" }, "bar")
       })
 
-      expectHTMLToBe(`
-				<div>
-					<svg ns="http://www.w3.org/2000/svg">
-						foo
-					</svg>
-				</div>
-			`)
+      const elm = document.getElementById("foo")
+      expect(elm.namespaceURI).toBe("http://www.w3.org/2000/svg")
+    })
+
+    it("creates svg elements recursively", () => {
+      const SVG_NS = "http://www.w3.org/2000/svg"
+
+      app({
+        view: _ => h("div", {}, [
+          h("p", { id: "foo" }, "foo"),
+          h("svg", { id: "bar" }, [
+            h("quux", {}, [
+              h("beep", {}, [
+                h("ping", {}),
+                h("pong", {})
+              ]),
+              h("bop", {}),
+              h("boop", {}, [
+                h("ping", {}),
+                h("pong", {})
+              ])
+            ]),
+            h("xuuq", {}, [
+              h("beep", {}),
+              h("bop", {}, [
+                h("ping", {}),
+                h("pong", {})
+              ]),
+              h("boop", {})
+            ])
+          ]),
+          h("p", { id: "baz" }, "baz")
+        ])
+      })
+
+      expect(document.getElementById("foo").namespaceURI).not.toBe(SVG_NS)
+      expect(document.getElementById("baz").namespaceURI).not.toBe(SVG_NS)
+
+      const svg = document.getElementById("bar")
+      expect(svg.namespaceURI).toBe(SVG_NS)
+      expectChildren(svg)
+
+      function expectChildren(svgElement) {
+        Array.from(svgElement.childNodes).forEach(node =>
+          expectChildren(node, expect(node.namespaceURI).toBe(SVG_NS)))
+      }
     })
 
     it("can render conditionally / ignores bool/null children", () => {
@@ -206,6 +245,31 @@ describe("app", () => {
 								</div>
 							</div>
 						`)
+          }
+        ]
+      })
+    })
+
+    it("keeps selectionStart and selectionEnd properties on text inputs intact on update", () => {
+      app({
+        model: "foo",
+        actions: {
+          setText: model => "bar"
+        },
+        view: model => h("input", { id: "foo", value: model }),
+        subscriptions: [
+          (_, actions) => {
+            const input = document.getElementById("foo")
+
+            expect(input.selectionStart).toBe(0)
+            expect(input.selectionEnd).toBe(0)
+
+            input.setSelectionRange(2, 2)
+
+            actions.setText()
+
+            expect(input.selectionStart).toBe(2)
+            expect(input.selectionEnd).toBe(2)
           }
         ]
       })
@@ -705,10 +769,12 @@ describe("app", () => {
 			`)
     })
     it("app returns root which makes app composable", () => {
-      app({
-        root: document.body.appendChild(document.createElement("main")),
+      const main = document.createElement("main")
+      document.body.appendChild(main)
+      expect(app({
+        root: main,
         view: _ => app({view: _ => 'composed'})
-      })
+      })).toBe(main)
 
       expectHTMLToBe(`
 				<main>

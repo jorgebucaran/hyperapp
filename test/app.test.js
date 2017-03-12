@@ -801,6 +801,70 @@ describe("app", () => {
 				</main>
 			`)
     })
+    it("app can render properly when a composed app is removed", () => {
+      empty()
+
+      const component = (model) => app({
+        model: model,
+        view: model => h('i', {}, model),
+        root: h('b'),
+      })
+
+      const outer = app({
+        model: [],
+        view: model => {
+          return h('div', {id: 'outer'}, model.concat(h('i', {}, 'x')))
+        },
+        actions: {
+          add: model => (model.push(component(model.length)), model),
+          shift: model => (model.shift(), model),
+          pop: model => (model.pop(), model)
+        },
+        subscriptions: (model, actions) => {
+          expectHTMLToBe(`
+            <div>
+              <div id="outer">
+                <i>x</i>
+              </div>
+            </div>`)
+
+          actions.add()
+          actions.add()
+          actions.add()
+
+          expectHTMLToBe(`
+            <div>
+              <div id="outer">
+                <b><i>0</i></b>
+                <b><i>1</i></b>
+                <b><i>2</i></b>
+                <i>x</i>
+              </div>
+            </div>`)
+
+          actions.shift()
+
+          expectHTMLToBe(`
+            <div>
+              <div id="outer">
+                <b><i>1</i></b>
+                <b><i>2</i></b>
+                <i>x</i>
+              </div>
+            </div>`)
+
+          actions.pop()
+
+          expectHTMLToBe(`
+            <div>
+              <div id="outer">
+                <b><i>1</i></b>
+                <i>x</i>
+              </div>
+            </div>`)
+        }
+      })
+    })
   })
 
   describe("lifecycle methods", () => {

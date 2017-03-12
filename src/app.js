@@ -165,7 +165,10 @@ export default function (app) {
   }
 
   function shouldUpdate(a, b) {
-    return a.tag !== b.tag || typeof a !== typeof b || isPrimitive(a) && a !== b || isElement(a) && !a.isSameNode(b)
+    return (a && a.tag) !== (b && b.tag)
+      || typeof a !== typeof b
+      || isPrimitive(a) && a !== b
+      || isElement(a) && a !== b
   }
 
   function createElementFrom(node, isSVG) {
@@ -265,16 +268,16 @@ export default function (app) {
   }
 
   function patch(parent, oldNode, node, index) {
-    if (oldNode === undefined || !parent.childNodes[index]) {
+    var element
+    if (oldNode === undefined) {
       parent.appendChild(createElementFrom(node))
 
     } else if (node === undefined) {
-      var element = parent.childNodes[index]
+      element = parent.childNodes[index]
 
       // Removing a child one at a time updates the DOM, so we end up
       // with an index out of date that needs to be adjusted. Instead,
       // collect all the elements and delete them in a batch.
-
       batch.push(parent.removeChild.bind(parent, element))
 
       if (oldNode && oldNode.data && oldNode.data.onRemove) {
@@ -282,10 +285,10 @@ export default function (app) {
       }
 
     } else if (shouldUpdate(node, oldNode)) {
-      parent.replaceChild(createElementFrom(node), parent.childNodes[index])
+      parent.replaceChild(createElementFrom(node), parent.childNodes[ index ])
 
     } else if (node.tag) {
-      var element = parent.childNodes[index]
+      element = parent.childNodes[index]
 
       updateElementData(element, node.data, oldNode.data)
 
@@ -293,8 +296,8 @@ export default function (app) {
 
       for (var i = 0; i < len || i < oldLen; i++) {
         var child = node.children[i]
-
-        patch(element, oldNode.children[i], child, i)
+        if (child === element.childNodes[i]) continue
+        patch(element, oldNode.children[ i ], child, i)
       }
     }
   }

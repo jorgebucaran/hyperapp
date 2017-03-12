@@ -556,6 +556,20 @@ describe("app", () => {
         subscriptions: [done]
       })
     })
+
+    it("have the correct signature", () => {
+      const model = {testmodel: {}}
+      const actions = {testaction: () => {}}
+      const root = document.createElement('div')
+      app({
+        root, model, actions,
+        subscriptions: [(_model, _actions, onError, _root) => {
+          expect(Object.keys(_model)).toContain('testmodel')
+          expect(Object.keys(_actions)).toContain('testaction')
+          expect(_root).toBe(root)
+        }]
+      })
+    })
   })
 
   describe("plugins", () => {

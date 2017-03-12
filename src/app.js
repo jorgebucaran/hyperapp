@@ -100,7 +100,7 @@ export default function (app) {
     render(model, view)
 
     for (var i = 0; i < subscriptions.length; i++) {
-      subscriptions[i](model, actions, onError)
+      subscriptions[i](model, actions, onError, root)
     }
 
   })

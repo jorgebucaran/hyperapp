@@ -26,6 +26,9 @@
     "prepublish": "npm run build",
     "release": "npm run build && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
   },
+  "jest": {
+    "coveragePathIgnorePatterns": ["/node_modules/", "/test/"]
+  },
   "babel": {
     "presets": "es2015"
   },

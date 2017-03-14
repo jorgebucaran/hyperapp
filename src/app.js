@@ -92,22 +92,29 @@ export default function (app) {
     })
   }
 
-  load(function () {
-    root = app.root || document.body.appendChild(document.createElement("div"))
+  return load(function () {
+    if (!app.root) {
+      document.body.appendChild(root)
+    }
 
     render(model, view)
 
     for (var i = 0; i < subscriptions.length; i++) {
-      subscriptions[i](model, actions, onError)
+      subscriptions[i](model, actions, onError, root)
     }
+
   })
 
   function load(fn) {
+    root = app.root ? createElementFrom(app.root) : document.createElement("div")
+
     if (document.readyState[0] !== "l") {
       fn()
     } else {
       document.addEventListener("DOMContentLoaded", fn)
     }
+
+    return root
   }
 
   function render(model, view) {
@@ -147,6 +154,10 @@ export default function (app) {
     return type === "string" || type === "number" || type === "boolean"
   }
 
+  function isElement(node) {
+    return node instanceof window.HTMLElement
+  }
+
   function defer(fn, data) {
     setTimeout(function () {
       fn(data)
@@ -154,16 +165,20 @@ export default function (app) {
   }
 
   function shouldUpdate(a, b) {
-    return a.tag !== b.tag || typeof a !== typeof b || isPrimitive(a) && a !== b
+    return (a && a.tag) !== (b && b.tag)
+      || typeof a !== typeof b
+      || isPrimitive(a) && a !== b
+      || isElement(a) && a !== b
   }
 
   function createElementFrom(node, isSVG) {
     var element
-
+    if (isElement(node)) {
+      return node
+    }
     // There are only two types of nodes. A string node, which is
     // converted into a Text node or an object that describes an
     // HTML element and may also contain children.
-
     if (typeof node === "string") {
       element = document.createTextNode(node)
 
@@ -253,16 +268,16 @@ export default function (app) {
   }
 
   function patch(parent, oldNode, node, index) {
+    var element
     if (oldNode === undefined) {
       parent.appendChild(createElementFrom(node))
 
     } else if (node === undefined) {
-      var element = parent.childNodes[index]
+      element = parent.childNodes[index]
 
       // Removing a child one at a time updates the DOM, so we end up
       // with an index out of date that needs to be adjusted. Instead,
       // collect all the elements and delete them in a batch.
-
       batch.push(parent.removeChild.bind(parent, element))
 
       if (oldNode && oldNode.data && oldNode.data.onRemove) {
@@ -270,10 +285,10 @@ export default function (app) {
       }
 
     } else if (shouldUpdate(node, oldNode)) {
-      parent.replaceChild(createElementFrom(node), parent.childNodes[index])
+      parent.replaceChild(createElementFrom(node), parent.childNodes[ index ])
 
     } else if (node.tag) {
-      var element = parent.childNodes[index]
+      element = parent.childNodes[index]
 
       updateElementData(element, node.data, oldNode.data)
 
@@ -281,6 +296,17 @@ export default function (app) {
 
       for (var i = 0; i < len || i < oldLen; i++) {
         var child = node.children[i]
+        var sibling = oldNode.children[i]
+        if (isElement(child)
+          && isElement(sibling)
+          && sibling.compareDocumentPosition(child) === sibling.DOCUMENT_POSITION_FOLLOWING
+        ) {
+          sibling.parentElement.replaceChild(child, sibling)
+          oldNode.children.splice(i, 1)
+          oldLen -= 1
+          i -= 1
+          continue
+        }
 
         patch(element, oldNode.children[i], child, i)
       }

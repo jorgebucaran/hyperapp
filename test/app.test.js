@@ -1,7 +1,7 @@
 /* global beforeEach, describe, it, expect */
 
 import { app, h } from "../src"
-import { expectHTMLToBe } from "./util"
+import { expectHTMLToBe, empty } from "./util"
 
 beforeEach(() => document.body.innerHTML = "")
 
@@ -556,6 +556,20 @@ describe("app", () => {
         subscriptions: [done]
       })
     })
+
+    it("have the correct signature", () => {
+      const model = {testmodel: {}}
+      const actions = {testaction: () => {}}
+      const root = document.createElement('div')
+      app({
+        root, model, actions,
+        subscriptions: [(_model, _actions, onError, _root) => {
+          expect(Object.keys(_model)).toContain('testmodel')
+          expect(Object.keys(_actions)).toContain('testaction')
+          expect(_root).toBe(root)
+        }]
+      })
+    })
   })
 
   describe("plugins", () => {
@@ -767,6 +781,103 @@ describe("app", () => {
 					</div>
 				</main>
 			`)
+    })
+    it("app returns root which makes app composable", () => {
+      const main = document.createElement("main")
+      document.body.appendChild(main)
+      expect(app({
+        root: main,
+        view: _ => app({view: _ => 'composed'})
+      })).toBe(main)
+
+      expectHTMLToBe(`
+				<main>
+					<div>
+						composed
+					</div>
+				</main>
+			`)
+    })
+    it("app is 'lazy' if provided a root that is not in the document", () => {
+      empty()
+      const root = app({
+        root: h('main'),
+        view: _ => app({view: _ => 'composed', root: h('div')})
+      })
+
+      expectHTMLToBe(``)
+      document.body.appendChild(root)
+      expectHTMLToBe(`
+				<main>
+					<div>
+						composed
+					</div>
+				</main>
+			`)
+    })
+    it("app can render properly when a composed app is removed", () => {
+      empty()
+
+      const component = (model) => app({
+        model: model,
+        view: model => h('i', {}, model),
+        root: h('b'),
+      })
+
+      const outer = app({
+        model: [],
+        view: model => {
+          return h('div', {id: 'outer'}, model.concat(h('i', {}, 'x')))
+        },
+        actions: {
+          add: model => (model.push(component(model.length)), model),
+          shift: model => (model.shift(), model),
+          pop: model => (model.pop(), model)
+        },
+        subscriptions: (model, actions) => {
+          expectHTMLToBe(`
+            <div>
+              <div id="outer">
+                <i>x</i>
+              </div>
+            </div>`)
+
+          actions.add()
+          actions.add()
+          actions.add()
+
+          expectHTMLToBe(`
+            <div>
+              <div id="outer">
+                <b><i>0</i></b>
+                <b><i>1</i></b>
+                <b><i>2</i></b>
+                <i>x</i>
+              </div>
+            </div>`)
+
+          actions.shift()
+
+          expectHTMLToBe(`
+            <div>
+              <div id="outer">
+                <b><i>1</i></b>
+                <b><i>2</i></b>
+                <i>x</i>
+              </div>
+            </div>`)
+
+          actions.pop()
+
+          expectHTMLToBe(`
+            <div>
+              <div id="outer">
+                <b><i>1</i></b>
+                <i>x</i>
+              </div>
+            </div>`)
+        }
+      })
     })
   })
 

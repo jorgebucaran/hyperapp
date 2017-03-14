@@ -296,8 +296,19 @@ export default function (app) {
 
       for (var i = 0; i < len || i < oldLen; i++) {
         var child = node.children[i]
-        if (child === element.childNodes[i]) continue
-        patch(element, oldNode.children[ i ], child, i)
+        var sibling = oldNode.children[i]
+        if (isElement(child)
+          && isElement(sibling)
+          && sibling.compareDocumentPosition(child) === sibling.DOCUMENT_POSITION_FOLLOWING
+        ) {
+          sibling.parentElement.replaceChild(child, sibling)
+          oldNode.children.splice(i, 1)
+          oldLen -= 1
+          i -= 1
+          continue
+        }
+
+        patch(element, oldNode.children[i], child, i)
       }
     }
   }

@@ -17,14 +17,8 @@ export default function (options) {
       }
     },
     hooks: {
-      onUpdate: function (oldModel, newModel, data, actions) {
-        if(newModel.router && oldModel.router.path !== newModel.router.path &&
-            typeof options.view[newModel.router.match][1] === 'function') {
-          options.view[newModel.router.match][1](newModel, actions)
-        }
-      },
       onRender: function (model) {
-        return options.view[model.router.match][0]
+        return options.view[model.router.match]
       }
     },
     subscriptions: [

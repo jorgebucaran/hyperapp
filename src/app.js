@@ -184,7 +184,7 @@ export default function (app) {
     return element
   }
 
-  function removeElementData(element, name, value, x) {
+  function removeElementData(element, name, value) {
     element[name] = value
     element.removeAttribute(name)
   }

@@ -195,6 +195,12 @@ export default function (app) {
 
   function setElementData(element, name, value, oldValue) {
     if (name === "style") {
+      for (var i in oldValue) {
+        if (!(i in value)) {
+          element.style[i] = ""
+        }
+      }
+
       for (var i in value) {
         element.style[i] = value[i]
       }

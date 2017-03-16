@@ -253,12 +253,12 @@ export default function (app) {
   }
 
   function patch(parent, oldNode, node, index) {
+    var element = parent.childNodes[index]
+
     if (oldNode === undefined) {
       parent.appendChild(createElementFrom(node))
 
     } else if (node === undefined) {
-      var element = parent.childNodes[index]
-
       // Removing a child one at a time updates the DOM, so we end up
       // with an index out of date that needs to be adjusted. Instead,
       // collect all the elements and delete them in a batch.
@@ -270,19 +270,19 @@ export default function (app) {
       }
 
     } else if (shouldUpdate(node, oldNode)) {
-      parent.replaceChild(createElementFrom(node), parent.childNodes[index])
+      if (typeof node === "string") {
+        element.textContent = node
+      } else {
+        parent.replaceChild(createElementFrom(node), element)
+      }
 
     } else if (node.tag) {
-      var element = parent.childNodes[index]
-
       updateElementData(element, node.data, oldNode.data)
 
       var len = node.children.length, oldLen = oldNode.children.length
 
       for (var i = 0; i < len || i < oldLen; i++) {
-        var child = node.children[i]
-
-        patch(element, oldNode.children[i], child, i)
+        patch(element, oldNode.children[i], node.children[i], i)
       }
     }
   }

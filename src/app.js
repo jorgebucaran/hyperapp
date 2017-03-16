@@ -188,13 +188,18 @@ export default function (app) {
     return element
   }
 
-  function removeElementData(element, name, value) {
+  function removeElementData(element, name, value, x) {
     element[name] = value
     element.removeAttribute(name)
   }
 
   function setElementData(element, name, value, oldValue) {
-    if (name === "style") {
+    name = name.toLowerCase()
+
+    if (!value) {
+      removeElementData(element, name, value, oldValue)
+
+    } else if (name === "style") {
       for (var i in oldValue) {
         if (!(i in value)) {
           element.style[i] = ""
@@ -204,16 +209,6 @@ export default function (app) {
       for (var i in value) {
         element.style[i] = value[i]
       }
-
-    } else if (name[0] === "o" && name[1] === "n") {
-      var event = name.substr(2).toLowerCase()
-
-      element.removeEventListener(event, oldValue)
-      element.addEventListener(event, value)
-
-    } else if (value === false) {
-      removeElementData(element, name, value)
-
     } else {
       element.setAttribute(name, value)
 
@@ -238,21 +233,16 @@ export default function (app) {
       var oldValue = oldData[name]
       var realValue = element[name]
 
-      if (value === undefined) {
-        removeElementData(element, name, value)
+      // if (value === undefined) {
+      //   removeElementData(element, name, value)
 
-      } else if (name === "onUpdate") {
+      // } else
+      if (name === "onUpdate") {
         defer(value, element)
 
       } else if (
-        value !== oldValue ||
-        typeof realValue === "boolean" &&
-        realValue !== value
+        value !== oldValue || typeof realValue === "boolean" && realValue !== value
       ) {
-        // This prevents cases where the node's data is out of sync with
-        // the element's. For example, a list of checkboxes in which one
-        // of the elements is recycled.
-
         setElementData(element, name, value, oldValue)
       }
     }

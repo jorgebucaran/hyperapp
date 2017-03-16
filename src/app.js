@@ -74,7 +74,7 @@ export default function (app) {
 
           var result = action(model, data, actions, onError)
 
-          if (result === undefined || typeof result.then === "function") {
+          if (result == null || typeof result.then === "function") {
             return result
 
           } else {

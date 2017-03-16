@@ -160,10 +160,6 @@ export default function (app) {
   function createElementFrom(node, isSVG) {
     var element
 
-    // There are only two types of nodes. A string node, which is
-    // converted into a Text node or an object that describes an
-    // HTML element and may also contain children.
-
     if (typeof node === "string") {
       element = document.createTextNode(node)
 
@@ -233,10 +229,6 @@ export default function (app) {
       var oldValue = oldData[name]
       var realValue = element[name]
 
-      // if (value === undefined) {
-      //   removeElementData(element, name, value)
-
-      // } else
       if (name === "onUpdate") {
         defer(value, element)
 

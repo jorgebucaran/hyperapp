@@ -213,7 +213,16 @@ describe("app", () => {
       app({
         model: false,
         view: model => h("div", model
-          ? { id: "xuuq", foo: true } : {
+          ?
+          {
+            id: "xuuq",
+            foo: true,
+            style: {
+              width: "100px"
+            }
+          }
+          :
+          {
             id: "quux",
             class: "foo",
             style: {
@@ -240,7 +249,7 @@ describe("app", () => {
 
             expectHTMLToBe(`
 							<div>
-								<div id="xuuq" foo="true">
+								<div id="xuuq" style="width: 100px;" foo="true">
 									bar
 								</div>
 							</div>

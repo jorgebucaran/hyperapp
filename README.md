@@ -55,7 +55,7 @@ app({
 ```jsx
 app({
   model: 0,
-  actions: {
+  reducers: { // actions
     add: model => model + 1,
     sub: model => model - 1
   },
@@ -76,7 +76,7 @@ app({
 ```jsx
 app({
   model: "",
-  actions: {
+  reducers: { // actions
     text: (_, value) => value
   },
   view: (model, actions) =>
@@ -205,7 +205,7 @@ app({
         <button onClick={actions.add}>add</button>
       </p>
     </div>,
-  actions: {
+  reducers: { // actions
     add: model => ({
       input: "",
       todos: model.todos.concat({

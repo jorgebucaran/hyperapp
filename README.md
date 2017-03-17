@@ -37,7 +37,7 @@ No software is free of bugs. If you're not sure if something is a bug or not, [f
 
 ## Documentation
 
-See the [Wiki](/wiki).
+See the [Wiki](https://github.com/hyperapp/hyperapp/wiki).
 
 ## Community
 

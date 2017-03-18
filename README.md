@@ -1,8 +1,8 @@
 # [hyperapp](https://hyperapp.glitch.me)
 [![travis](https://img.shields.io/travis/hyperapp/hyperapp/master.svg)](https://travis-ci.org/hyperapp/hyperapp)
 [![codecov](https://img.shields.io/codecov/c/github/hyperapp/hyperapp/master.svg)](https://codecov.io/gh/hyperapp/hyperapp)
-[![CDNJS version](https://img.shields.io/cdnjs/v/hyperapp.svg?colorB=713CC1)](https://cdnjs.com/libraries/hyperapp)
-[![version](https://img.shields.io/npm/v/hyperapp.svg?colorB=713CC1)](https://www.npmjs.org/package/hyperapp)
+[![CDNJS version](https://img.shields.io/cdnjs/v/hyperapp.svg?colorB=1A62D6)](https://cdnjs.com/libraries/hyperapp)
+[![version](https://img.shields.io/npm/v/hyperapp.svg?colorB=1A62D6)](https://www.npmjs.org/package/hyperapp)
 [![slack](https://hyperappjs.herokuapp.com/badge.svg)](https://hyperappjs.herokuapp.com)
 
 HyperApp is a JavaScript library for building frontend applications.

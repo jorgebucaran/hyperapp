@@ -218,7 +218,8 @@ describe("app", () => {
             id: "xuuq",
             foo: true,
             style: {
-              width: "100px"
+              width: "100px",
+              height: "200px"
             }
           }
           :
@@ -226,7 +227,8 @@ describe("app", () => {
             id: "quux",
             class: "foo",
             style: {
-              color: "red"
+              color: "red",
+              height: "100px"
             },
             foo: true,
             baz: false
@@ -239,7 +241,7 @@ describe("app", () => {
           (_, actions) => {
             expectHTMLToBe(`
 							<div>
-								<div id="quux" class="foo" style="color: red;" foo="true">
+								<div id="quux" class="foo" style="color: red; height: 100px;" foo="true">
 									bar
 								</div>
 							</div>
@@ -249,7 +251,7 @@ describe("app", () => {
 
             expectHTMLToBe(`
 							<div>
-								<div id="xuuq" style="width: 100px;" foo="true">
+								<div id="xuuq" style="height: 200px; width: 100px;" foo="true">
 									bar
 								</div>
 							</div>

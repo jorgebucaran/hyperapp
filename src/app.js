@@ -15,16 +15,13 @@ export default function (app) {
     onRender: []
   }
 
-  var plugins = [app].concat((app.plugins || []).map(function (plugin) {
-    return plugin(app)
-  }))
-
   var node
   var root
   var batch = []
+  var plugins = app.plugins || []
 
-  for (var i = 0; i < plugins.length; i++) {
-    var plugin = plugins[i]
+  for (var i = -1; i < plugins.length; i++) {
+    var plugin = i < 0 ? app : plugins[i](app)
 
     if (plugin.model !== undefined) {
       model = merge(model, plugin.model)

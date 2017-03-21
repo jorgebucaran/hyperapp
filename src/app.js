@@ -107,7 +107,7 @@ export default function (app) {
   }
 
   function render(model, view) {
-    for (i = 0; i < hooks.onRender.length; i++) {
+    for (var i = 0; i < hooks.onRender.length; i++) {
       view = hooks.onRender[i](model, view)
     }
 
@@ -122,16 +122,15 @@ export default function (app) {
 
   function merge(a, b) {
     var obj = {}
-    var key
 
     if (isPrimitive(b) || Array.isArray(b)) {
       return b
     }
 
-    for (key in a) {
+    for (var key in a) {
       obj[key] = a[key]
     }
-    for (key in b) {
+    for (var key in b) {
       obj[key] = b[key]
     }
 
@@ -223,14 +222,14 @@ export default function (app) {
         defer(value, element)
 
       } else if (
-        value !== oldValue || typeof realValue === "boolean" && realValue !== value
+        value !== oldValue || realValue !== value
       ) {
         setElementData(element, name, value, oldValue)
       }
     }
   }
 
-  function patch(parent, oldNode, node, index/*, keys*/) {
+  function patch(parent, oldNode, node, index) {
     var element = parent.childNodes[index]
 
     if (oldNode === undefined) {

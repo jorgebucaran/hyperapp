@@ -71,11 +71,10 @@ export default function (app) {
 
       var name = lastName ? lastName + "." + key : key
       var action = group[key]
-      var i
 
       if (typeof action === "function") {
         container[key] = function (data) {
-          for (i = 0; i < hooks.onAction.length; i++) {
+          for (var i = 0; i < hooks.onAction.length; i++) {
             hooks.onAction[i](name, data)
           }
 
@@ -85,7 +84,7 @@ export default function (app) {
             return result
 
           } else {
-            for (i = 0; i < hooks.onUpdate.length; i++) {
+            for (var i = 0; i < hooks.onUpdate.length; i++) {
               hooks.onUpdate[i](model, result, data)
             }
 
@@ -150,18 +149,12 @@ export default function (app) {
     }, 0)
   }
 
-  function shouldUpdate(a, b) {
-    return a.tag !== b.tag || typeof a !== typeof b || isPrimitive(a) && a !== b
-  }
-
   function createElementFrom(node, isSVG) {
-    var element
-
     if (typeof node === "string") {
-      element = document.createTextNode(node)
+      var element = document.createTextNode(node)
 
     } else {
-      element = (isSVG = isSVG || node.tag === "svg")
+      var element = (isSVG = isSVG || node.tag === "svg")
         ? document.createElementNS(SVG_NS, node.tag)
         : document.createElement(node.tag)
 
@@ -237,7 +230,7 @@ export default function (app) {
     }
   }
 
-  function patch(parent, oldNode, node, index) {
+  function patch(parent, oldNode, node, index/*, keys*/) {
     var element = parent.childNodes[index]
 
     if (oldNode === undefined) {
@@ -250,13 +243,16 @@ export default function (app) {
         defer(oldNode.data.onRemove, element)
       }
 
-    } else if (shouldUpdate(node, oldNode)) {
+    } else if (
+      node.tag !== oldNode.tag ||
+      typeof node !== typeof oldNode ||
+      isPrimitive(node) && node !== oldNode
+    ) {
       if (typeof node === "string") {
         element.textContent = node
       } else {
         parent.replaceChild(createElementFrom(node), element)
       }
-
     } else if (node.tag) {
       updateElementData(element, node.data, oldNode.data)
 

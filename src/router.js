@@ -61,6 +61,7 @@ function match(routes, path) {
 
   return {
     match: match || "*",
-    params: params
+    params: params,
+    path: path
   }
 }

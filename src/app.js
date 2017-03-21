@@ -52,7 +52,7 @@ export default function (app) {
       subscriptions[i](model, actions, onError)
     }
   })
-  
+
   function onError(error) {
     for (var i = 0; i < hooks.onError.length; i++) {
       hooks.onError[i](error)
@@ -244,10 +244,6 @@ export default function (app) {
       parent.appendChild(createElementFrom(node))
 
     } else if (node === undefined) {
-      // Removing a child one at a time updates the DOM, so we end up
-      // with an index out of date that needs to be adjusted. Instead,
-      // collect all the elements and delete them in a batch.
-
       batch.push(parent.removeChild.bind(parent, element))
 
       if (oldNode && oldNode.data && oldNode.data.onRemove) {

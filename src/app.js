@@ -43,6 +43,16 @@ export default function (app) {
     }
   }
 
+  load(function () {
+    root = app.root || document.body.appendChild(document.createElement("div"))
+
+    render(model, view)
+
+    for (var i = 0; i < subscriptions.length; i++) {
+      subscriptions[i](model, actions, onError)
+    }
+  })
+  
   function onError(error) {
     for (var i = 0; i < hooks.onError.length; i++) {
       hooks.onError[i](error)
@@ -88,16 +98,6 @@ export default function (app) {
       }
     })
   }
-
-  load(function () {
-    root = app.root || document.body.appendChild(document.createElement("div"))
-
-    render(model, view)
-
-    for (var i = 0; i < subscriptions.length; i++) {
-      subscriptions[i](model, actions, onError)
-    }
-  })
 
   function load(fn) {
     if (document.readyState[0] !== "l") {

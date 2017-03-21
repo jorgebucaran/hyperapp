@@ -23,7 +23,7 @@ export default function (app) {
   for (var i = -1; i < plugins.length; i++) {
     var plugin = i < 0 ? app : plugins[i](app)
 
-    if (plugin.model !== undefined) {
+    if (plugin.model != null) {
       model = merge(model, plugin.model)
     }
 

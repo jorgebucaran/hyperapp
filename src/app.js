@@ -15,7 +15,8 @@ export default function (app) {
     onRender: []
   }
 
-  var node, nodeElement
+  var node
+  var element
   var root
   var batch = []
   var plugins = app.plugins || []
@@ -111,7 +112,7 @@ export default function (app) {
       view = hooks.onRender[i](model, view)
     }
 
-    nodeElement = patch(root, nodeElement, node, node = view(model, actions))
+    element = patch(root, element, node, node = view(model, actions))
 
     for (var i = 0; i < batch.length; i++) {
       batch[i]()
@@ -216,9 +217,7 @@ export default function (app) {
       if (name === "onUpdate") {
         defer(value, element)
 
-      } else if (
-        value !== oldValue || realValue !== value
-      ) {
+      } else if (value !== oldValue || realValue !== value) {
         setElementData(element, name, value, oldValue)
       }
     }
@@ -243,9 +242,9 @@ export default function (app) {
       if (typeof node === "string") {
         element.textContent = node
       } else {
-        var newElement = createElementFrom(node)
-        parent.replaceChild(newElement, element)
-        element = newElement
+        var i = createElementFrom(node)
+        parent.replaceChild(i, element)
+        element = i
       }
     } else if (node.tag) {
       updateElementData(element, node.data, oldNode.data)

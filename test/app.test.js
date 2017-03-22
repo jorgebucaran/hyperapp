@@ -780,9 +780,9 @@ describe("app", () => {
 			`)
     })
 
-    it("appends view to given non-empty root", () => {
-      var main = document.createElement("main")
-      main.appendChild(document.createElement('div'))
+    it("appends view to a non-empty root", () => {
+      const main = document.createElement("main")
+      main.appendChild(document.createElement("span"))
 
       app({
         root: document.body.appendChild(main),
@@ -791,7 +791,7 @@ describe("app", () => {
 
       expectHTMLToBe(`
         <main>
-          <div></div>
+          <span></span>
           <div>
             foo
           </div>
@@ -800,13 +800,13 @@ describe("app", () => {
     })
 
     it("updates view in a mutated root", () => {
-      var main = document.createElement("main")
+      const main = document.createElement("main")
 
       app({
         root: document.body.appendChild(main),
-        model: 'foo',
+        model: "foo",
         actions: {
-          bar: model => 'bar'
+          bar: model => "bar"
         },
         subscriptions: [
           (_, actions) => {
@@ -818,9 +818,11 @@ describe("app", () => {
               </main>
             `)
 
-            main.insertBefore(document.createElement('header'), main.firstElementChild)
-            main.appendChild(document.createElement('footer'))
+            main.insertBefore(document.createElement("header"), main.firstChild)
+            main.appendChild(document.createElement("footer"))
+
             actions.bar()
+
             expectHTMLToBe(`
               <main>
                 <header></header>

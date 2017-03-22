@@ -22,23 +22,23 @@ export default function (app) {
 
   for (var i = -1; i < plugins.length; i++) {
     var plugin = i < 0 ? app : plugins[i](app)
+    var obj = plugin.model
 
-    if (plugin.model != null) {
-      model = merge(model, plugin.model)
+    if (obj != null) {
+      model = merge(model, obj)
     }
 
-    if (plugin.actions) {
-      init(actions, plugin.actions)
+    if (obj = plugin.actions) {
+      init(actions, obj)
     }
 
-    if (plugin.subscriptions) {
-      subscriptions = subscriptions.concat(plugin.subscriptions)
+    if (obj = plugin.subscriptions) {
+      subscriptions = subscriptions.concat(obj)
     }
 
-    var _hooks = plugin.hooks
-    if (_hooks) {
-      Object.keys(_hooks).forEach(function (key) {
-        hooks[key].push(_hooks[key])
+    if (obj = plugin.hooks) {
+      Object.keys(obj).forEach(function (key) {
+        hooks[key].push(obj[key])
       })
     }
   }
@@ -121,9 +121,9 @@ export default function (app) {
   }
 
   function merge(a, b) {
-    var obj = {}, type = typeof b
+    var obj = {}
 
-    if (type === "string" || type === "number" || type === "boolean" || Array.isArray(b)) {
+    if (typeof b !== "object" || Array.isArray(b)) {
       return b
     }
 

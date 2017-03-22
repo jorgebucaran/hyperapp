@@ -25,21 +25,21 @@ describe("Router", () => {
         (_, actions) => {
           expectHTMLToBe(`
 						<div>
-							<div>foo</div>
+							foo
 						</div>
 					`)
 
           actions.router.go("/bar")
           expectHTMLToBe(`
 						<div>
-							<div>foo</div>
+							foo
 						</div>
 					`)
 
           actions.router.go("/baz")
           expectHTMLToBe(`
 						<div>
-							<div>foo</div>
+							foo
 						</div>
 					`)
         }
@@ -57,7 +57,7 @@ describe("Router", () => {
 
     expectHTMLToBe(`
 			<div>
-				<div>foo</div>
+				foo
 			</div>
 		`)
   })
@@ -74,7 +74,7 @@ describe("Router", () => {
 
     expectHTMLToBe(`
 			<div>
-				<div>foobarbaz</div>
+				foobarbaz
 			</div>
 		`)
   })
@@ -92,13 +92,11 @@ describe("Router", () => {
     })
 
     expectHTMLToBe(`
-			<div>
-				<ul>
-					<li>foo:beep</li>
-					<li>bar:bop</li>
-					<li>baz:boop</li>
-				</ul>
-			</div>
+      <ul>
+        <li>foo:beep</li>
+        <li>bar:bop</li>
+        <li>baz:boop</li>
+      </ul>
 		`)
   })
 
@@ -115,13 +113,11 @@ describe("Router", () => {
     })
 
     expectHTMLToBe(`
-			<div>
-				<ul>
-          <li>foo:beep</li>
-          <li>bar:bop</li>
-          <li>baz:boop</li>
-        </ul>
-			</div>
+      <ul>
+        <li>foo:beep</li>
+        <li>bar:bop</li>
+        <li>baz:boop</li>
+      </ul>
 		`)
   })
 
@@ -136,11 +132,9 @@ describe("Router", () => {
     })
 
     expectHTMLToBe(`
-			<div>
-				<div>
-          beep-bop-boop
-        </div>
-			</div>
+      <div>
+        beep-bop-boop
+      </div>
 		`)
   })
 
@@ -165,7 +159,7 @@ describe("Router", () => {
 
     expectHTMLToBe(`
 			<div>
-				<div>foo</div>
+				foo
 			</div>
 		`)
   })
@@ -188,21 +182,21 @@ describe("Router", () => {
             actions.router.go("/foo")
             expectHTMLToBe(`
 							<div>
-								<div>foo</div>
+								foo
 							</div>
 						`)
 
             actions.router.go("/bar")
             expectHTMLToBe(`
 							<div>
-								<div>bar</div>
+								bar
 							</div>
 						`)
 
             actions.router.go("/baz")
             expectHTMLToBe(`
 							<div>
-								<div>baz</div>
+								baz
 							</div>
 						`)
           }

@@ -1,6 +1,7 @@
 var SVG_NS = "http://www.w3.org/2000/svg"
 
 export default function (app) {
+
   var view = app.view || function () {
     return ""
   }
@@ -107,6 +108,7 @@ export default function (app) {
     }
   }
 
+
   function render(model, view) {
     for (var i = 0; i < hooks.onRender.length; i++) {
       view = hooks.onRender[i](model, view)
@@ -138,12 +140,6 @@ export default function (app) {
     return obj
   }
 
-  function defer(fn, data) {
-    setTimeout(function () {
-      fn(data)
-    }, 0)
-  }
-
   function createElementFrom(node, isSVG) {
     if (typeof node === "string") {
       var element = document.createTextNode(node)
@@ -154,9 +150,7 @@ export default function (app) {
         : document.createElement(node.tag)
 
       for (var name in node.data) {
-        if (name === "onCreate") {
-          defer(node.data[name], element)
-        } else {
+        if (name !== "onCreate") {
           setElementData(element, name, node.data[name])
         }
       }
@@ -164,6 +158,10 @@ export default function (app) {
       for (var i = 0; i < node.children.length; i++) {
         element.appendChild(createElementFrom(node.children[i], isSVG))
       }
+
+      // call onCreate handler *after* child nodes are added,
+      // so they'll be available to the handler for manipulation
+      if (node.data.onCreate) node.data.onCreate(element)
     }
 
     return element
@@ -171,8 +169,8 @@ export default function (app) {
 
   function setElementData(element, name, value, oldValue) {
     name = name.toLowerCase()
-
-    if (!value) {
+    if (name === "key") {}
+    else if (!value) {
       element[name] = value
       element.removeAttribute(name)
 
@@ -211,7 +209,7 @@ export default function (app) {
       var realValue = element[name]
 
       if (name === "onUpdate") {
-        defer(value, element)
+        value(element)
 
       } else if (value !== oldValue || realValue !== value) {
         setElementData(element, name, value, oldValue)
@@ -219,32 +217,102 @@ export default function (app) {
     }
   }
 
-  function patch(parent, element, oldNode, node) {
+  function batchRemove (parent, element, node) {
+    batch.push(function () {
+      if (node.data && node.data.onRemove) node.data.onRemove(element)
+      parent.removeChild(element)
+    })
+  }
+
+  function patch (parent, element, oldNode, newNode) {
     if (oldNode == null) {
-      element = parent.appendChild(createElementFrom(node))
+      var n = createElementFrom(newNode)
+      parent.insertBefore(n, element)
+      element = n
 
-    } else if (node == null) {
-      batch.push(function () {
-        if (oldNode.data && oldNode.data.onRemove) {
-          oldNode.data.onRemove(element)
-        }
-        parent.removeChild(element)
-      })
-    } else if (node.tag && node.tag === oldNode.tag) {
-      updateElementData(element, node.data, oldNode.data)
+    } else if (
+      newNode.tag !== oldNode.tag ||
+      typeof newNode !== typeof oldNode ||
+      typeof newNode === "string" && newNode !== oldNode
+    ) {
+      var n = createElementFrom(newNode)
+      parent.replaceChild(n, element)
+      element = n
 
-      var len = node.children.length
-      var oldLen = oldNode.children.length
-
-      for (var i = 0; i < len || i < oldLen; i++) {
-        patch(element, element.childNodes[i], oldNode.children[i], node.children[i])
-      }
-
-    } else if (node !== oldNode) {
-      var i = element
-      parent.replaceChild(element = createElementFrom(node), i)
+    } else if (oldNode.tag){
+      updateElementData(element, newNode.data, oldNode.data)
+      patchChildren(element, oldNode, newNode)
     }
 
     return element
+  }
+
+  function patchChildren(element, oldNode, newNode) {
+    // We need to index all keyed nodes in oldChildren in order to
+    // distinguish new keyed nodes from nodes to reuse in newChildren
+    var oldLen = oldNode.children.length
+    var newLen = newNode.children.length
+    var oldChildren = []
+    var oldKeys = {}
+
+    for (var i = 0; i < oldLen; i++) {
+      if (oldNode.children[i].data && oldNode.children[i].data.key) {
+        oldKeys[oldNode.children[i].data.key] = true;
+      }
+      oldChildren[i] = [element.childNodes[i], oldNode.children[i]]
+    }
+
+    var newIndex = 0
+    var oldIndex = 0
+    var cache = {}
+
+    while (newIndex < newLen || oldIndex < oldLen) {
+      var newChild = newNode.children[newIndex]
+      var oldChildElem = oldChildren[oldIndex][0]
+      var oldChild = oldChildren[oldIndex][1]
+      var newKey = newChild && (newChild.data != null) && oldKeys[newChild.data.key] ? newChild.data.key : null
+      var oldKey = (oldChild && (oldChild.data != null) && oldChild.data.key) || null
+
+
+      if (
+        newChild != null &&
+        newKey != null &&
+        cache[newKey]
+      ) {
+        var i = cache[newKey]
+        element.insertBefore(i[0], oldChildElem)
+        patch(element, i[0], i[1], newChild)
+        delete cache[newKey]
+        newIndex++
+
+      } else if (
+        oldChild == null ||
+        (oldKey != null && newKey == null)
+      ) {
+        patch(element, oldChildElem, null, newChild)
+        newIndex++
+
+      } else if (
+        newChild == null ||
+        (oldKey == null && newKey != null)
+      ) {
+        batchRemove(element, oldChildElem, oldChild)
+        oldIndex++
+
+      } else if (oldKey == newKey) {
+        patch(element, oldChildElem, oldChild, newChild)
+        oldIndex++
+        newIndex++
+
+      } else {
+        cache[oldKey] = oldChildren[oldIndex]
+        oldIndex++
+
+      }
+    }
+
+    for (var key in cache) {
+      batchRemove(element, cache[key][0], cache[key][1])
+    }
   }
 }

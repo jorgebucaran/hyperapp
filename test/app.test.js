@@ -779,6 +779,62 @@ describe("app", () => {
 				</main>
 			`)
     })
+
+    it("appends view to given non-empty root", () => {
+      var main = document.createElement("main")
+      main.appendChild(document.createElement('div'))
+
+      app({
+        root: document.body.appendChild(main),
+        view: _ => h("div", {}, "foo")
+      })
+
+      expectHTMLToBe(`
+        <main>
+          <div></div>
+          <div>
+            foo
+          </div>
+        </main>
+      `)
+    })
+
+    it("updates view in a mutated root", () => {
+      var main = document.createElement("main")
+
+      app({
+        root: document.body.appendChild(main),
+        model: 'foo',
+        actions: {
+          bar: model => 'bar'
+        },
+        subscriptions: [
+          (_, actions) => {
+            expectHTMLToBe(`
+              <main>
+                <div>
+                  foo
+                </div>
+              </main>
+            `)
+
+            main.insertBefore(document.createElement('header'), main.firstElementChild)
+            main.appendChild(document.createElement('footer'))
+            actions.bar()
+            expectHTMLToBe(`
+              <main>
+                <header></header>
+                <div>
+                  bar
+                </div>
+                <footer></footer>
+              </main>
+            `)
+          }
+        ],
+        view: model => h("div", {}, model)
+      })
+    })
   })
 
   describe("lifecycle methods", () => {

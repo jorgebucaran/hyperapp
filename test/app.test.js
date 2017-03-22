@@ -39,7 +39,7 @@ describe("app", () => {
 
       expectHTMLToBe(`
 				<div>
-					<div>foo</div>
+					foo
 				</div>
 			`)
     })
@@ -51,13 +51,11 @@ describe("app", () => {
       })
 
       expectHTMLToBe(`
-				<div>
-					<ul>
-						<li>foo</li>
-						<li>bar</li>
-						<li>baz</li>
-					</ul>
-				</div>
+        <ul>
+          <li>foo</li>
+          <li>bar</li>
+          <li>baz</li>
+        </ul>
 			`)
     })
 
@@ -124,21 +122,19 @@ describe("app", () => {
       })
 
       expectHTMLToBe(`
-				<div>
-					<div>
-						<h1></h1>
-						<h2></h2>
-						<h3></h3>
-					</div>
-				</div>
+        <div>
+          <h1></h1>
+          <h2></h2>
+          <h3></h3>
+        </div>
 			`)
     })
   })
 
   describe("view", () => {
-    it("creates an empty div if no view is given", () => {
-      app({})
-      expect(document.body.innerHTML).toBe("<div></div>")
+    it("embeds view in the document.body if no root is given", () => {
+      app({ view: _ => "foo" })
+      expect(document.body.innerHTML).toBe("foo")
     })
 
     it("can use inline styles", () => {
@@ -152,11 +148,9 @@ describe("app", () => {
       })
 
       expectHTMLToBe(`
-				<div>
-					<div id="foo" style="background-color: red;">
-						foo
-					</div>
-				</div>
+        <div id="foo" style="background-color: red;">
+          foo
+        </div>
 			`)
     })
 
@@ -168,13 +162,11 @@ describe("app", () => {
       })
 
       expectHTMLToBe(`
-				<div>
-					<div>
-						<div>
-							foo
-						</div>
-					</div>
-				</div>
+        <div>
+          <div>
+            foo
+          </div>
+        </div>
 			`)
     })
 
@@ -188,21 +180,17 @@ describe("app", () => {
         subscriptions: [
           (_, actions) => {
             expectHTMLToBe(`
-							<div>
-								<div class="foo">
-									bar
-								</div>
-							</div>
+              <div class="foo">
+                bar
+              </div>
 						`)
 
             actions.toggle()
 
             expectHTMLToBe(`
-							<div>
-								<div>
-									bar
-								</div>
-							</div>
+              <div>
+                bar
+              </div>
 						`)
           }
         ]
@@ -240,21 +228,17 @@ describe("app", () => {
         subscriptions: [
           (_, actions) => {
             expectHTMLToBe(`
-							<div>
-								<div id="quux" class="foo" style="color: red; height: 100px;" foo="true">
-									bar
-								</div>
-							</div>
+              <div id="quux" class="foo" style="color: red; height: 100px;" foo="true">
+                bar
+              </div>
 						`)
 
             actions.toggle()
 
             expectHTMLToBe(`
-							<div>
-								<div id="xuuq" style="height: 200px; width: 100px;" foo="true">
-									bar
-								</div>
-							</div>
+              <div id="xuuq" style="height: 200px; width: 100px;" foo="true">
+                bar
+              </div>
 						`)
           }
         ]
@@ -299,11 +283,9 @@ describe("app", () => {
       })
 
       expectHTMLToBe(`
-				<div>
-					<div>
-						<h1>foo</h1>
-					</div>
-				</div>
+        <div>
+          <h1>foo</h1>
+        </div>
 			`)
     })
   })
@@ -322,10 +304,10 @@ describe("app", () => {
       })
 
       expectHTMLToBe(`
-					<div>
-						<div>2</div>
-					</div>
-				`)
+        <div>
+          2
+        </div>
+      `)
     })
 
     it("updates the view asynchronously", done => {
@@ -340,9 +322,7 @@ describe("app", () => {
 
               expectHTMLToBe(`
                 <div>
-                  <div>
-                    ${model + data}
-                  </div>
+                  ${model + data}
                 </div>
               `)
 
@@ -368,11 +348,9 @@ describe("app", () => {
               actions.change(data)
 
               expectHTMLToBe(`
-                  <div>
-                    <div>
-                      ${model + data}
-                    </div>
-                  </div>
+                <div>
+                  ${model + data}
+                </div>
               `)
 
               done()
@@ -615,9 +593,7 @@ describe("app", () => {
             actions.add()
             expectHTMLToBe(`
 							<div>
-								<div>
-									3
-								</div>
+                3
 							</div>
 						`)
           }
@@ -634,9 +610,7 @@ describe("app", () => {
           (_, actions) => {
             expectHTMLToBe(`
 							<div>
-								<div>
-									1
-								</div>
+                1
 							</div>
 						`)
 
@@ -644,9 +618,7 @@ describe("app", () => {
 
             expectHTMLToBe(`
 							<div>
-								<div>
-									2
-								</div>
+                2
 							</div>
 						`)
           }
@@ -675,9 +647,7 @@ describe("app", () => {
           (_, actions) => {
             expectHTMLToBe(`
 							<div>
-								<div>
-									true
-								</div>
+                true
 							</div>
 						`)
 
@@ -685,9 +655,7 @@ describe("app", () => {
 
             expectHTMLToBe(`
 							<div>
-								<div>
-									false
-								</div>
+                false
 							</div>
 						`)
           }
@@ -715,15 +683,13 @@ describe("app", () => {
       })
 
       expectHTMLToBe(`
-				<div>
-					<bar>
-						<foo>
-							<div>
-								foo
-							</div>
-						</foo>
-					</bar>
-				</div>
+        <bar>
+          <foo>
+            <div>
+              foo
+            </div>
+          </foo>
+        </bar>
 			`)
     })
 

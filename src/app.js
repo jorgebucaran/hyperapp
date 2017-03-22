@@ -45,7 +45,7 @@ export default function (app) {
   }
 
   load(function () {
-    root = app.root || document.body.appendChild(document.createElement("div"))
+    root = app.root || document.body
 
     render(model, view)
 

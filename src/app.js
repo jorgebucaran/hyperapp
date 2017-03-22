@@ -121,9 +121,9 @@ export default function (app) {
   }
 
   function merge(a, b) {
-    var obj = {}
+    var obj = {}, type = typeof b
 
-    if (isPrimitive(b) || Array.isArray(b)) {
+    if (type === "string" || type === "number" || type === "boolean" || Array.isArray(b)) {
       return b
     }
 
@@ -135,11 +135,6 @@ export default function (app) {
     }
 
     return obj
-  }
-
-  function isPrimitive(type) {
-    type = typeof type
-    return type === "string" || type === "number" || type === "boolean"
   }
 
   function defer(fn, data) {
@@ -245,7 +240,7 @@ export default function (app) {
     } else if (
       node.tag !== oldNode.tag ||
       typeof node !== typeof oldNode ||
-      isPrimitive(node) && node !== oldNode
+      typeof node === "string" && node !== oldNode
     ) {
       if (typeof node === "string") {
         element.textContent = node
@@ -255,7 +250,8 @@ export default function (app) {
     } else if (node.tag) {
       updateElementData(element, node.data, oldNode.data)
 
-      var len = node.children.length, oldLen = oldNode.children.length
+      var len = node.children.length
+      var oldLen = oldNode.children.length
 
       for (var i = 0; i < len || i < oldLen; i++) {
         patch(element, oldNode.children[i], node.children[i], i)

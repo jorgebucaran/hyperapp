@@ -224,10 +224,10 @@ export default function (app) {
   }
 
   function patch(parent, element, oldNode, node) {
-    if (oldNode === undefined) {
+    if (oldNode == null) {
       element = parent.appendChild(createElementFrom(node))
 
-    } else if (node === undefined) {
+    } else if (node == null) {
       batch.push(parent.removeChild.bind(parent, element))
 
       if (oldNode && oldNode.data && oldNode.data.onRemove) {

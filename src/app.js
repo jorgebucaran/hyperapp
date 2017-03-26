@@ -230,19 +230,7 @@ export default function (app) {
         defer(oldNode.data.onRemove, element)
       }
 
-    } else if (
-      node.tag !== oldNode.tag ||
-      typeof node !== typeof oldNode ||
-      typeof node === "string" && node !== oldNode
-    ) {
-      if (typeof node === "string") {
-        element.textContent = node
-      } else {
-        var i = createElementFrom(node)
-        parent.replaceChild(i, element)
-        element = i
-      }
-    } else if (node.tag) {
+    } else if (node.tag && node.tag === oldNode.tag) {
       updateElementData(element, node.data, oldNode.data)
 
       var len = node.children.length
@@ -250,6 +238,15 @@ export default function (app) {
 
       for (var i = 0; i < len || i < oldLen; i++) {
         patch(element, element.childNodes[i], oldNode.children[i], node.children[i])
+      }
+
+    } else if (node !== oldNode) {
+      if (typeof node === "string") {
+        element.textContent = node
+      } else {
+        var i = createElementFrom(node)
+        parent.replaceChild(i, element)
+        element = i
       }
     }
 

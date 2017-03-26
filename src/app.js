@@ -169,16 +169,12 @@ export default function (app) {
     return element
   }
 
-  function removeElementData(element, name, value) {
-    element[name] = value
-    element.removeAttribute(name)
-  }
-
   function setElementData(element, name, value, oldValue) {
     name = name.toLowerCase()
 
     if (!value) {
-      removeElementData(element, name, value, oldValue)
+      element[name] = value
+      element.removeAttribute(name)
 
     } else if (name === "style") {
       for (var i in oldValue) {

@@ -224,12 +224,12 @@ export default function (app) {
       element = parent.appendChild(createElementFrom(node))
 
     } else if (node == null) {
-      batch.push(parent.removeChild.bind(parent, element))
-
-      if (oldNode && oldNode.data && oldNode.data.onRemove) {
-        defer(oldNode.data.onRemove, element)
-      }
-
+      batch.push(function () {
+        if (oldNode && oldNode.data && oldNode.data.onRemove) {
+          oldNode.data.onRemove(element)
+        }
+        parent.removeChild(element)
+      })
     } else if (node.tag && node.tag === oldNode.tag) {
       updateElementData(element, node.data, oldNode.data)
 

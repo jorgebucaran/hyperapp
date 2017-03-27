@@ -225,7 +225,7 @@ export default function (app) {
 
     } else if (node == null) {
       batch.push(function () {
-        if (oldNode && oldNode.data && oldNode.data.onRemove) {
+        if (oldNode.data && oldNode.data.onRemove) {
           oldNode.data.onRemove(element)
         }
         parent.removeChild(element)

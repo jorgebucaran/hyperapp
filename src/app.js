@@ -241,9 +241,8 @@ export default function (app) {
       }
 
     } else if (node !== oldNode) {
-      var i = createElementFrom(node)
-      parent.replaceChild(i, element)
-      element = i
+      var i = element
+      parent.replaceChild(element = createElementFrom(node), i)
     }
 
     return element

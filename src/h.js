@@ -1,7 +1,11 @@
-var i, node, children, stack = []
+var i
+var node
+var children
+var stack = []
 
 export default function (tag, data) {
-  var canConcat, oldCanConcat
+  var canConcat
+  var oldCanConcat
 
   children = []
   i = arguments.length
@@ -38,13 +42,11 @@ export default function (tag, data) {
     }
   }
 
-  if (typeof tag === "function") {
-    return tag(data, children)
-  }
-
-  return {
-    tag: tag,
-    data: data || {},
-    children: children
-  }
+  return typeof tag === "string"
+    ? {
+      tag: tag,
+      data: data || {},
+      children: children
+    }
+    : tag(data, children)
 }

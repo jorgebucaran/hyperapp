@@ -241,13 +241,9 @@ export default function (app) {
       }
 
     } else if (node !== oldNode) {
-      if (typeof node === "string") {
-        element.textContent = node
-      } else {
-        var i = createElementFrom(node)
-        parent.replaceChild(i, element)
-        element = i
-      }
+      var i = createElementFrom(node)
+      parent.replaceChild(i, element)
+      element = i
     }
 
     return element

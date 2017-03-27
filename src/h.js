@@ -22,15 +22,14 @@ export default function (tag, data) {
         stack.push(node[i])
       }
     } else if (node != null && node !== true && node !== false) {
-      // Ignore nulls and booleans; this is conditional rendering.
+      // Ignore nodes that are null, undefined or booleans.
 
       if (typeof node === "number") {
         node = node + ""
       }
 
-      // Concatenate contiguous number/string nodes into one string.
-      // The idea is to avoid creating unnecessary text nodes.
-
+      // Concatenate contiguous text nodes.
+      
       canConcat = typeof node === "string"
 
       if (canConcat && oldCanConcat) {

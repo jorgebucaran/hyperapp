@@ -7,18 +7,17 @@ export default function (app) {
 
   var model
   var actions = {}
-  var subscriptions = []
   var hooks = {
     onError: [],
     onAction: [],
     onUpdate: [],
     onRender: []
   }
+  var subscriptions = []
 
   var node
-  var element
   var root
-  var batch = []
+  var element
   var plugins = app.plugins || []
 
   for (var i = -1; i < plugins.length; i++) {
@@ -38,8 +37,8 @@ export default function (app) {
     }
 
     if (obj = plugin.hooks) {
-      Object.keys(obj).forEach(function (key) {
-        hooks[key].push(obj[key])
+      Object.keys(obj).map(function (key) {
+        (hooks[key] ? hooks[key] : hooks[key] = []).push(obj[key])
       })
     }
   }
@@ -49,76 +48,68 @@ export default function (app) {
 
     render(model, view)
 
-    for (var i = 0; i < subscriptions.length; i++) {
-      subscriptions[i](model, actions, onError)
-    }
+    subscriptions.map(function (cb) {
+      cb(model, actions, error)
+    })
   })
 
-  function onError(error) {
-    for (var i = 0; i < hooks.onError.length; i++) {
-      hooks.onError[i](error)
-    }
-
-    if (i <= 0) {
+  function error(error) {
+    if (hooks.onError.length === 0) {
       throw error
     }
+
+    hooks.onError.map(function (cb) {
+      cb(error)
+    })
   }
 
   function init(container, group, lastName) {
-    Object.keys(group).forEach(function (key) {
-      if (!container[key]) {
-        container[key] = {}
-      }
-
+    Object.keys(group).map(function (key) {
       var name = lastName ? lastName + "." + key : key
       var action = group[key]
 
       if (typeof action === "function") {
         container[key] = function (data) {
-          for (var i = 0; i < hooks.onAction.length; i++) {
-            hooks.onAction[i](name, data)
-          }
+          hooks.onAction.map(function (cb) {
+            cb(name, data)
+          })
 
-          var result = action(model, data, actions, onError)
+          var result = action(model, data, actions, error)
 
           if (result == null || typeof result.then === "function") {
             return result
 
           } else {
-            for (var i = 0; i < hooks.onUpdate.length; i++) {
-              hooks.onUpdate[i](model, result, data)
-            }
+            hooks.onUpdate.map(function (cb) {
+              cb(model, result, data)
+            })
 
             model = merge(model, result)
             render(model, view)
           }
         }
       } else {
-        init(container[key], action, name)
+        init(container[key]
+          ? container[key]
+          : container[key] = {}, action, name)
       }
     })
   }
 
-  function load(fn) {
+  function load(cb) {
     if (document.readyState[0] !== "l") {
-      fn()
+      cb()
     } else {
-      document.addEventListener("DOMContentLoaded", fn)
+      document.addEventListener("DOMContentLoaded", cb)
     }
   }
 
   function render(model, view) {
-    for (var i = 0; i < hooks.onRender.length; i++) {
-      view = hooks.onRender[i](model, view)
-    }
+    hooks.onRender.map(function (cb) {
+      view = cb(model, view)
+    })
 
     element = patch(root, element, node, node = view(model, actions))
-
-    for (var i = 0; i < batch.length; i++) {
-      batch[i]()
-    }
-
-    batch = []
   }
 
   function merge(a, b) {
@@ -128,20 +119,14 @@ export default function (app) {
       return b
     }
 
-    for (var key in a) {
-      obj[key] = a[key]
+    for (var i in a) {
+      obj[i] = a[i]
     }
-    for (var key in b) {
-      obj[key] = b[key]
+    for (var i in b) {
+      obj[i] = b[i]
     }
 
     return obj
-  }
-
-  function defer(fn, data) {
-    setTimeout(function () {
-      fn(data)
-    }, 0)
   }
 
   function createElementFrom(node, isSVG) {
@@ -155,7 +140,7 @@ export default function (app) {
 
       for (var name in node.data) {
         if (name === "onCreate") {
-          defer(node.data[name], element)
+          node.data[name](element)
         } else {
           setElementData(element, name, node.data[name])
         }
@@ -172,7 +157,8 @@ export default function (app) {
   function setElementData(element, name, value, oldValue) {
     name = name.toLowerCase()
 
-    if (!value) {
+    if (name === "key") {
+    } else if (!value) {
       element[name] = value
       element.removeAttribute(name)
 
@@ -204,14 +190,14 @@ export default function (app) {
     }
   }
 
-  function updateElementData(element, data, oldData) {
+  function updateElementData(element, oldData, data) {
     for (var name in merge(oldData, data)) {
       var value = data[name]
       var oldValue = oldData[name]
       var realValue = element[name]
 
       if (name === "onUpdate") {
-        defer(value, element)
+        value(element)
 
       } else if (value !== oldValue || realValue !== value) {
         setElementData(element, name, value, oldValue)
@@ -219,27 +205,122 @@ export default function (app) {
     }
   }
 
+  function getKeyFrom(node) {
+    if (node && (node = node.data)) {
+      return node.key
+    }
+  }
+
+  function removeElement(parent, element, node) {
+    if (node.data.onRemove) {
+      node.data.onRemove(element)
+    }
+    parent.removeChild(element)
+  }
+
   function patch(parent, element, oldNode, node) {
     if (oldNode == null) {
-      element = parent.appendChild(createElementFrom(node))
+      element = parent.insertBefore(createElementFrom(node), element)
 
-    } else if (node == null) {
-      batch.push(function () {
-        if (oldNode.data && oldNode.data.onRemove) {
-          oldNode.data.onRemove(element)
-        }
-        parent.removeChild(element)
-      })
     } else if (node.tag && node.tag === oldNode.tag) {
-      updateElementData(element, node.data, oldNode.data)
+      updateElementData(element, oldNode.data, node.data)
 
       var len = node.children.length
       var oldLen = oldNode.children.length
+      var reusableChildren = {}
+      var oldElements = []
+      var newKeys = {}
 
-      for (var i = 0; i < len || i < oldLen; i++) {
-        patch(element, element.childNodes[i], oldNode.children[i], node.children[i])
+      for (var i = 0; i < oldLen; i++) {
+        var oldElement = element.childNodes[i]
+        oldElements[i] = oldElement
+
+        var oldChild = oldNode.children[i]
+        var oldKey = getKeyFrom(oldChild)
+
+        if (null != oldKey) {
+          reusableChildren[oldKey] = [oldElement, oldChild]
+        }
       }
 
+      var i = 0
+      var j = 0
+
+      while (j < len) {
+        var oldElement = oldElements[i]
+        var oldChild = oldNode.children[i]
+        var newChild = node.children[j]
+
+        var oldKey = getKeyFrom(oldChild)
+        if (newKeys[oldKey]) {
+          i++
+          continue
+        }
+
+        var newKey = getKeyFrom(newChild)
+
+        var reusableChild = reusableChildren[newKey]
+        var reusableElement = 0
+        var reusableNode = 0
+
+        if (reusableChild) {
+          reusableElement = reusableChild[0]
+          reusableNode = reusableChild[1]
+        }
+
+        if (null == oldKey && null == newKey) {
+          patch(element, oldElement, oldChild, newChild)
+          j++
+          i++
+
+        } else if (null == oldKey && null != newKey) {
+          if (reusableElement) {
+            element.insertBefore(reusableElement, oldElement)
+            patch(element, reusableElement, reusableNode, newChild)
+          } else {
+            patch(element, oldElement, null, newChild)
+          }
+
+          j++
+          newKeys[newKey] = newChild
+
+        } else if (null != oldKey && null == newKey) {
+          i++
+
+        } else {
+          if (oldKey === newKey) {
+            patch(element, reusableElement, reusableNode, newChild)
+            i++
+
+          } else if (reusableElement) {
+            element.insertBefore(reusableElement, oldElement)
+            patch(element, reusableElement, reusableNode, newChild)
+
+          } else {
+            patch(element, oldElement, null, newChild)
+          }
+
+          j++
+          newKeys[newKey] = newChild
+        }
+      }
+
+      while (i < oldLen) {
+        var oldChild = oldNode.children[i]
+        var oldKey = getKeyFrom(oldChild)
+        if (null == oldKey) {
+          removeElement(element, oldElements[i], oldChild)
+        }
+        i++
+      }
+
+      for (var i in reusableChildren) {
+        var reusableChild = reusableChildren[i]
+        var reusableNode = reusableChild[1]
+        if (!newKeys[reusableNode.data.key]) {
+          removeElement(element, reusableChild[0], reusableNode)
+        }
+      }
     } else if (node !== oldNode) {
       var i = element
       parent.replaceChild(element = createElementFrom(node), i)

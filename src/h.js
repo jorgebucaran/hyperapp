@@ -29,7 +29,7 @@ export default function (tag, data) {
       }
 
       // Concatenate contiguous text nodes.
-      
+
       canConcat = typeof node === "string"
 
       if (canConcat && oldCanConcat) {

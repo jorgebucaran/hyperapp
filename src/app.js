@@ -5,6 +5,7 @@ export default function (app) {
     return ""
   }
 
+  var emitter = emitter()
   var model
   var actions = {}
   var hooks = {
@@ -329,6 +330,26 @@ export default function (app) {
     }
 
     return element
+  }
+
+  function emitter(all) {
+    all = all || Object.create(null)
+
+    return {
+      on(type, handler) {
+        (all[type] || (all[type] = [])).push(handler)
+      },
+
+      off(type, handler) {
+        let e = all[type] || (all[type] = [])
+        e.splice(e.indexOf(handler) >>> 0, 1)
+      },
+
+      emit(type, ...evt) {
+        (all[type] || []).map((handler) => { handler(...evt) })
+        (all['*'] || []).map((handler) => { handler(type, ...evt) })
+      }
+    }
   }
 }
 

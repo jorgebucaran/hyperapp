@@ -78,9 +78,7 @@ export default function (app) {
   }
 
   function render(model, view) {
-    emitter.emit('render', model, view, function(response) {
-      view = response
-    })
+    view = emitter.stack('render', model, view)
 
     element = patch(root, element, node, node = view(model, actions))
   }
@@ -322,6 +320,13 @@ export default function (app) {
         var handler = function(cb) { cb.apply(null, args) }
         ;(all[type] || []).map(handler)
         ;(all['*'] || []).map(handler)
+      },
+
+      stack: function(type) {
+        var args = Array.prototype.slice.call(arguments, 1);
+        return (all[type] || []).reduce(function(result, handler) {
+          return handler.apply(null, args.concat(result))
+        }, args.pop());
       }
     }
   }

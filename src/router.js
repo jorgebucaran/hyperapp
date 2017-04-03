@@ -10,8 +10,8 @@ export default function (app) {
         }
       }
     },
-    beforeRender: function (model, _, done) {
-      done(app.view[model.router.match])
+    beforeRender: function (model, view) {
+      return app.view[model.router.match]
     },
     onLoad: function (_, actions) {
       addEventListener("popstate", function () {

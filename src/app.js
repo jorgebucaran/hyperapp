@@ -11,7 +11,6 @@ export default function (app) {
   var hooks = {
     onRender: []
   }
-  var loaders = []
 
   var node
   var root
@@ -30,14 +29,14 @@ export default function (app) {
       init(actions, obj)
     }
 
-    if (obj = plugin.onLoad) {
-      loaders.push(obj)
     }
 
     if (obj = plugin.hooks) {
       Object.keys(obj).map(function (key) {
         hooks[key].push(obj[key])
       })
+    if (obj = plugin.onLoad) {
+      emitter.on('load', obj)
     }
   }
 
@@ -46,9 +45,7 @@ export default function (app) {
 
     render(model, view)
 
-    loaders.map(function (cb) {
-      cb(model, actions, emitter)
-    })
+    emitter.emit('load', model, actions, emitter)
   })
 
   function init(container, group, lastName) {

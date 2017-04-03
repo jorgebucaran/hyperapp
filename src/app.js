@@ -9,9 +9,6 @@ export default function (app) {
   var model
   var actions = {}
   var hooks = {
-    onError: [],
-    onAction: [],
-    onUpdate: [],
     onRender: []
   }
   var loaders = []
@@ -54,16 +51,6 @@ export default function (app) {
     })
   })
 
-  function error(error) {
-    if (hooks.onError.length === 0) {
-      throw error
-    }
-
-    hooks.onError.map(function (cb) {
-      cb(error)
-    })
-  }
-
   function init(container, group, lastName) {
     Object.keys(group).map(function (key) {
       var name = lastName ? lastName + "." + key : key
@@ -71,19 +58,16 @@ export default function (app) {
 
       if (typeof action === "function") {
         container[key] = function (data) {
-          hooks.onAction.map(function (cb) {
-            cb(name, data)
-          })
+          emitter.emit('action:'+name, data)
+          emitter.emit('actions', name, data)
 
-          var result = action(model, data, actions, error)
+          var result = action(model, data, actions, emitter)
 
           if (result == null || typeof result.then === "function") {
             return result
 
           } else {
-            hooks.onUpdate.map(function (cb) {
-              cb(model, result, data)
-            })
+            emitter.emit('update', model, result, data)
 
             model = merge(model, result)
             render(model, view)
@@ -346,9 +330,9 @@ export default function (app) {
       },
 
       emit: function(type) {
-        var args = Array.prototype.slice.call(arguments, 1)
-        (all[type] || []).map(function(handler) { handler(args) })
-        (all['*'] || []).map(function(handler) { handler(type, args) })
+        var args = Array.prototype.slice.call(arguments, 1);
+        (all[type] || []).map(function(handler) { handler.apply(null, args) });
+        (all['*'] || []).map(function(handler) { handler.apply(null, args) });
       }
     }
   }

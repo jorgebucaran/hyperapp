@@ -8,9 +8,6 @@ export default function (app) {
   var emitter = emitter()
   var model
   var actions = {}
-  var hooks = {
-    onRender: []
-  }
 
   var node
   var root
@@ -29,12 +26,10 @@ export default function (app) {
       init(actions, obj)
     }
 
+    if (obj = plugin.beforeRender) {
+      emitter.on('render', plugin.beforeRender)
     }
 
-    if (obj = plugin.hooks) {
-      Object.keys(obj).map(function (key) {
-        hooks[key].push(obj[key])
-      })
     if (obj = plugin.onLoad) {
       emitter.on('load', obj)
     }
@@ -87,8 +82,8 @@ export default function (app) {
   }
 
   function render(model, view) {
-    hooks.onRender.map(function (cb) {
-      view = cb(model, view)
+    emitter.emit('render', model, view, function(response) {
+      view = response
     })
 
     element = patch(root, element, node, node = view(model, actions))

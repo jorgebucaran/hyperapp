@@ -173,7 +173,9 @@ export default function (app) {
         element.style[i] = value[i]
       }
     } else {
-      element.setAttribute(name, value)
+      if (typeof value !== "function") {
+        element.setAttribute(name, value)
+      }
 
       if (element.namespaceURI !== SVG_NS) {
         if (element.type === "text") {

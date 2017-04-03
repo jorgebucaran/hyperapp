@@ -1,115 +1,78 @@
-var SVG_NS = "http://www.w3.org/2000/svg"
-
 export default function (app) {
-  var view = app.view || function () {
-    return ""
-  }
-
-  var model
+  var state = {}
+  var view = app.view
   var actions = {}
-  var hooks = {
-    onError: [],
-    onAction: [],
-    onUpdate: [],
-    onRender: []
-  }
-  var subscriptions = []
-
+  var events = {}
   var node
-  var root
   var element
-  var plugins = app.plugins || []
 
-  for (var i = -1; i < plugins.length; i++) {
-    var plugin = i < 0 ? app : plugins[i](app)
-    var obj = plugin.model
+  for (var i = -1, plugins = app.plugins || []; i < plugins.length; i++) {
+    var plugin = plugins[i] ? plugins[i](app) : app
 
-    if (obj != null) {
-      model = merge(model, obj)
+    if (plugin.state != null) {
+      state = merge(state, plugin.state)
     }
 
-    if (obj = plugin.actions) {
-      init(actions, obj)
-    }
+    init(actions, plugin.actions)
 
-    if (obj = plugin.subscriptions) {
-      subscriptions = subscriptions.concat(obj)
-    }
-
-    if (obj = plugin.hooks) {
-      Object.keys(obj).map(function (key) {
-        hooks[key].push(obj[key])
-      })
-    }
-  }
-
-  load(function () {
-    root = app.root || document.body
-
-    render(model, view)
-
-    subscriptions.map(function (cb) {
-      cb(model, actions, error)
-    })
-  })
-
-  function error(error) {
-    if (hooks.onError.length === 0) {
-      throw error
-    }
-
-    hooks.onError.map(function (cb) {
-      cb(error)
+    Object.keys(plugin.events || []).map(function (key) {
+      events[key] = (events[key] || []).concat(plugin.events[key])
     })
   }
 
-  function init(container, group, lastName) {
-    Object.keys(group).map(function (key) {
+  if (document.readyState[0] !== "l") {
+    load()
+  } else {
+    addEventListener("DOMContentLoaded", load)
+  }
+
+  function init(namespace, children, lastName) {
+    Object.keys(children || []).map(function (key) {
+      var action = children[key]
       var name = lastName ? lastName + "." + key : key
-      var action = group[key]
 
       if (typeof action === "function") {
-        container[key] = function (data) {
-          hooks.onAction.map(function (cb) {
-            cb(name, data)
-          })
-
-          var result = action(model, data, actions, error)
+        namespace[key] = function (data) {
+          var result = action(state, emit("action", {
+            name: name,
+            data: data
+          }).data, actions, emit)
 
           if (result == null || typeof result.then === "function") {
             return result
-
-          } else {
-            hooks.onUpdate.map(function (cb) {
-              cb(model, result, data)
-            })
-
-            model = merge(model, result)
-            render(model, view)
           }
+
+          render(state = merge(state, emit("update", result)), view)
         }
       } else {
-        init(container[key]
-          ? container[key]
-          : container[key] = {}, action, name)
+        init(namespace[key] || (namespace[key] = {}), action, name)
       }
     })
   }
 
-  function load(cb) {
-    if (document.readyState[0] !== "l") {
-      cb()
-    } else {
-      document.addEventListener("DOMContentLoaded", cb)
-    }
+  function load() {
+    render(state, view)
+    emit("loaded", emit)
   }
 
-  function render(model, view) {
-    hooks.onRender.map(function (cb) {
-      view = cb(model, view)
+  function emit(name, data) {
+    (events[name] || []).map(function (cb) {
+      var result = cb(state, actions, data, emit)
+      if (result != null) {
+        data = result
+      }
     })
 
-    element = patch(root, element, node, node = view(model, actions))
+    return data
+  }
+
+  function render(state, view) {
+    element = patch(
+      app.root || (app.root = document.body),
+      element,
+      node,
+      node = emit("render", view)(state, actions)
+    )
   }
 
   function merge(a, b) {
@@ -135,8 +98,12 @@ export default function (app) {
 
     } else {
       var element = (isSVG = isSVG || node.tag === "svg")
-        ? document.createElementNS(SVG_NS, node.tag)
+        ? document.createElementNS("http://www.w3.org/2000/svg", node.tag)
         : document.createElement(node.tag)
+
+      for (var i = 0; i < node.children.length;) {
+        element.appendChild(createElementFrom(node.children[i++], isSVG))
+      }
 
       for (var name in node.data) {
         if (name === "onCreate") {
@@ -145,63 +112,43 @@ export default function (app) {
           setElementData(element, name, node.data[name])
         }
       }
-
-      for (var i = 0; i < node.children.length; i++) {
-        element.appendChild(createElementFrom(node.children[i], isSVG))
-      }
     }
 
     return element
   }
 
   function setElementData(element, name, value, oldValue) {
-    name = name.toLowerCase()
-
     if (name === "key") {
-    } else if (!value) {
-      element[name] = value
-      element.removeAttribute(name)
-
-    } else if (name === "style") {
-      for (var i in oldValue) {
-        if (!(i in value)) {
-          element.style[i] = ""
-        }
-      }
-
-      for (var i in value) {
-        element.style[i] = value[i]
+    } else if ((name = name.toLowerCase()) === "style") {
+      for (var i in merge(oldValue, value = value || {})) {
+        element.style[i] = value[i] || ""
       }
     } else {
-      if (typeof value !== "function") {
-        element.setAttribute(name, value)
+      try {
+        element[name] = value
+      } catch (_) {
       }
 
-      if (element.namespaceURI !== SVG_NS) {
-        if (element.type === "text") {
-          var oldSelStart = element.selectionStart
-          var oldSelEnd = element.selectionEnd
-        }
-
-        element[name] = value
-
-        if (oldSelStart >= 0) {
-          element.setSelectionRange(oldSelStart, oldSelEnd)
+      if (typeof value !== "function") {
+        if (value) {
+          element.setAttribute(name, value)
+        } else {
+          element.removeAttribute(name)
         }
       }
     }
   }
 
   function updateElementData(element, oldData, data) {
+    debugger
     for (var name in merge(oldData, data)) {
       var value = data[name]
       var oldValue = oldData[name]
-      var realValue = element[name]
 
       if (name === "onUpdate") {
         value(element)
 
-      } else if (value !== oldValue || realValue !== value) {
+      } else if (value !== oldValue || value !== element[name]) {
         setElementData(element, name, value, oldValue)
       }
     }

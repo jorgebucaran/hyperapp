@@ -15,13 +15,11 @@ export default function (app) {
         return app.view[model.router.match]
       }
     },
-    subscriptions: [
-      function (_, actions) {
-        addEventListener("popstate", function () {
-          actions.router.match(location.pathname)
-        })
-      }
-    ]
+    onLoad: function (_, actions) {
+      addEventListener("popstate", function () {
+        actions.router.match(location.pathname)
+      })
+    }
   }
 
   function match(model, data) {

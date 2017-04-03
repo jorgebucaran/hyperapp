@@ -14,7 +14,7 @@ export default function (app) {
     onUpdate: [],
     onRender: []
   }
-  var subscriptions = []
+  var loaders = []
 
   var node
   var root
@@ -33,8 +33,8 @@ export default function (app) {
       init(actions, obj)
     }
 
-    if (obj = plugin.subscriptions) {
-      subscriptions = subscriptions.concat(obj)
+    if (obj = plugin.onLoad) {
+      loaders.push(obj)
     }
 
     if (obj = plugin.hooks) {
@@ -49,8 +49,8 @@ export default function (app) {
 
     render(model, view)
 
-    subscriptions.map(function (cb) {
-      cb(model, actions, error)
+    loaders.map(function (cb) {
+      cb(model, actions, emitter)
     })
   })
 
@@ -336,18 +336,19 @@ export default function (app) {
     all = all || Object.create(null)
 
     return {
-      on(type, handler) {
+      on: function(type, handler) {
         (all[type] || (all[type] = [])).push(handler)
       },
 
-      off(type, handler) {
-        let e = all[type] || (all[type] = [])
+      off: function(type, handler) {
+        var e = all[type] || (all[type] = [])
         e.splice(e.indexOf(handler) >>> 0, 1)
       },
 
-      emit(type, ...evt) {
-        (all[type] || []).map((handler) => { handler(...evt) })
-        (all['*'] || []).map((handler) => { handler(type, ...evt) })
+      emit: function(type) {
+        var args = Array.prototype.slice.call(arguments, 1)
+        (all[type] || []).map(function(handler) { handler(args) })
+        (all['*'] || []).map(function(handler) { handler(type, args) })
       }
     }
   }

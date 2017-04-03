@@ -26,13 +26,9 @@ export default function (app) {
       init(actions, obj)
     }
 
-    if (obj = plugin.beforeRender) {
-      emitter.on('render', plugin.beforeRender)
-    }
+    emitter.on('render', plugin.beforeRender)
 
-    if (obj = plugin.onLoad) {
-      emitter.on('load', obj)
-    }
+    emitter.on('load', plugin.onLoad)
   }
 
   load(function () {
@@ -322,9 +318,10 @@ export default function (app) {
       },
 
       emit: function(type) {
-        var args = Array.prototype.slice.call(arguments, 1);
-        (all[type] || []).map(function(handler) { handler.apply(null, args) });
-        (all['*'] || []).map(function(handler) { handler.apply(null, args) });
+        var args = Array.prototype.slice.call(arguments, 1)
+        var handler = function(cb) { cb.apply(null, args) }
+        ;(all[type] || []).map(handler)
+        ;(all['*'] || []).map(handler)
       }
     }
   }

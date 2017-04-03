@@ -58,7 +58,7 @@ test("replace child", () => {
   ])
 })
 
-test("insert child on top", () => {
+test("insert children on top", () => {
   TreeTest([
     {
       tree: h("main", {}, [
@@ -85,7 +85,7 @@ test("insert child on top", () => {
     {
       tree: h("main", {}, [
         h("div", { key: "c", onCreate: e => e.id = "c" }, "C"),
-        h("div", { key: "b", onCreate: e => e.id = "b" }, "B"),
+        h("div", { key: "b" }, "B"),
         h("div", { key: "a" }, "A")
       ]),
       html: `
@@ -95,9 +95,289 @@ test("insert child on top", () => {
           <div id="a">A</div>
         </main>
       `
+    },
+    {
+      tree: h("main", {}, [
+        h("div", { key: "d", onCreate: e => e.id = "d" }, "D"),
+        h("div", { key: "c" }, "C"),
+        h("div", { key: "b" }, "B"),
+        h("div", { key: "a" }, "A")
+      ]),
+      html: `
+        <main>
+          <div id="d">D</div>
+          <div id="c">C</div>
+          <div id="b">B</div>
+          <div id="a">A</div>
+        </main>
+      `
     }
   ])
 })
+
+test("replace keyed", () => {
+  TreeTest([
+    {
+      tree: h("main", {}, [
+        h("div", { key: "a", onCreate: e => e.id = "a" }, "A"),
+      ]),
+      html: `
+        <main>
+          <div id="a">A</div>
+        </main>
+      `
+    },
+    {
+      tree: h("main", {}, [
+        h("div", { key: "b", onCreate: e => e.id = "b" }, "B"),
+      ]),
+      html: `
+        <main>
+          <div id="b">B</div>
+        </main>
+      `
+    }
+  ])
+})
+
+test("reorder keyed", () => {
+  TreeTest([
+    {
+      tree: h("main", {}, [
+        h("div", { key: "a", onCreate: e => e.id = "a" }, "A"),
+        h("div", { key: "b", onCreate: e => e.id = "b" }, "B"),
+        h("div", { key: "c", onCreate: e => e.id = "c" }, "C"),
+        h("div", { key: "d", onCreate: e => e.id = "d" }, "D"),
+        h("div", { key: "e", onCreate: e => e.id = "e" }, "E"),
+      ]),
+      html: `
+        <main>
+          <div id="a">A</div>
+          <div id="b">B</div>
+          <div id="c">C</div>
+          <div id="d">D</div>
+          <div id="e">E</div>
+        </main>
+      `
+    },
+    {
+      tree: h("main", {}, [
+        h("div", { key: "e" }, "E"),
+        h("div", { key: "a" }, "A"),
+        h("div", { key: "b" }, "B"),
+        h("div", { key: "c" }, "C"),
+        h("div", { key: "d" }, "D")
+      ]),
+      html: `
+        <main>
+          <div id="e">E</div>
+          <div id="a">A</div>
+          <div id="b">B</div>
+          <div id="c">C</div>
+          <div id="d">D</div>
+        </main>
+      `
+    },
+    {
+      tree: h("main", {}, [
+        h("div", { key: "e" }, "E"),
+        h("div", { key: "d" }, "D"),
+        h("div", { key: "a" }, "A"),
+        h("div", { key: "c" }, "C"),
+        h("div", { key: "b" }, "B")
+
+      ]),
+      html: `
+        <main>
+          <div id="e">E</div>
+          <div id="d">D</div>
+          <div id="a">A</div>
+          <div id="c">C</div>
+          <div id="b">B</div>
+        </main>
+      `
+    },
+    {
+      tree: h("main", {}, [
+        h("div", { key: "c" }, "C"),
+        h("div", { key: "e" }, "E"),
+        h("div", { key: "b" }, "B"),
+        h("div", { key: "a" }, "A"),
+        h("div", { key: "d" }, "D"),
+
+      ]),
+      html: `
+        <main>
+          <div id="c">C</div>
+          <div id="e">E</div>
+          <div id="b">B</div>
+          <div id="a">A</div>
+          <div id="d">D</div>
+        </main>
+      `
+    }
+  ])
+})
+
+
+test("grow/shrink keyed", () => {
+  TreeTest([
+    {
+      tree: h("main", {}, [
+        h("div", { key: "a", onCreate: e => e.id = "a" }, "A"),
+        h("div", { key: "b", onCreate: e => e.id = "b" }, "B"),
+        h("div", { key: "c", onCreate: e => e.id = "c" }, "C"),
+        h("div", { key: "d", onCreate: e => e.id = "d" }, "D"),
+        h("div", { key: "e", onCreate: e => e.id = "e" }, "E"),
+      ]),
+      html: `
+        <main>
+          <div id="a">A</div>
+          <div id="b">B</div>
+          <div id="c">C</div>
+          <div id="d">D</div>
+          <div id="e">E</div>
+        </main>
+      `
+    },
+    {
+      tree: h("main", {}, [
+        h("div", { key: "a" }, "A"),
+        h("div", { key: "c" }, "C"),
+        h("div", { key: "d" }, "D")
+      ]),
+      html: `
+        <main>
+          <div id="a">A</div>
+          <div id="c">C</div>
+          <div id="d">D</div>
+        </main>
+      `
+    },
+    {
+      tree: h("main", {}, [
+        h("div", { key: "d" }, "D")
+      ]),
+      html: `
+        <main>
+          <div id="d">D</div>
+        </main>
+      `
+    },
+    {
+      tree: h("main", {}, [
+        h("div", { key: "a", onCreate: e => e.id = "a" }, "A"),
+        h("div", { key: "b", onCreate: e => e.id = "b" }, "B"),
+        h("div", { key: "c", onCreate: e => e.id = "c" }, "C"),
+        h("div", { key: "d" }, "D"),
+        h("div", { key: "e", onCreate: e => e.id = "e" }, "E"),
+      ]),
+      html: `
+        <main>
+          <div id="a">A</div>
+          <div id="b">B</div>
+          <div id="c">C</div>
+          <div id="d">D</div>
+          <div id="e">E</div>
+        </main>
+      `
+    },
+    {
+      tree: h("main", {}, [
+        h("div", { key: "d" }, "D"),
+        h("div", { key: "c" }, "C"),
+        h("div", { key: "b" }, "B"),
+        h("div", { key: "a" }, "A")
+      ]),
+      html: `
+        <main>
+          <div id="d">D</div>
+          <div id="c">C</div>
+          <div id="b">B</div>
+          <div id="a">A</div>
+        </main>
+      `
+    },
+  ])
+})
+
+
+test("mixed keyed/non-keyed", () => {
+  TreeTest([
+    {
+      tree: h("main", {}, [
+        h("div", { key: "a", onCreate: e => e.id = "a" }, "A"),
+        h("div", {}, "B"),
+        h("div", {}, "C"),
+        h("div", { key: "d", onCreate: e => e.id = "d" }, "D"),
+        h("div", { key: "e", onCreate: e => e.id = "e" }, "E"),
+      ]),
+      html: `
+        <main>
+          <div id="a">A</div>
+          <div>B</div>
+          <div>C</div>
+          <div id="d">D</div>
+          <div id="e">E</div>
+        </main>
+      `
+    },
+    {
+      tree: h("main", {}, [
+        h("div", { key: "e" }, "E"),
+        h("div", {}, "C"),
+        h("div", {}, "B"),
+        h("div", { key: "d" }, "D"),
+        h("div", { key: "a" }, "A"),
+      ]),
+      html: `
+        <main>
+          <div id="e">E</div>
+          <div>C</div>
+          <div>B</div>
+          <div id="d">D</div>
+          <div id="a">A</div>
+        </main>
+      `
+    },
+    {
+      tree: h("main", {}, [
+        h("div", {}, "C"),
+        h("div", { key: "d" }, "D"),
+        h("div", { key: "a" }, "A"),
+        h("div", { key: "e" }, "E"),
+        h("div", {}, "B"),
+      ]),
+      html: `
+        <main>
+          <div>C</div>
+          <div id="d">D</div>
+          <div id="a">A</div>
+          <div id="e">E</div>
+          <div>B</div>
+        </main>
+      `
+    },
+    {
+      tree: h("main", {}, [
+        h("div", { key: "e" }, "E"),
+        h("div", { key: "d" }, "D"),
+        h("div", {}, "B"),
+        h("div", {}, "C"),
+      ]),
+      html: `
+        <main>
+          <div id="e">E</div>
+          <div id="d">D</div>
+          <div>B</div>
+          <div>C</div>
+        </main>
+      `
+    }
+  ])
+})
+
+
 
 // test("", () => {
 //   app({
@@ -136,22 +416,3 @@ test("insert child on top", () => {
 
 
 
-
-// test("remove old node/s if missing in the new tree", () => {
-//   app({
-//     model: true,
-//     actions: {
-//       toggle: model => !model
-//     },
-//     view: model => model
-//       ? h("div", {}, h("h1", {}, "foo"), h("h2", {}, "bar"))
-//       : h("div", {}, h("h1", {}, "foo")),
-//     subscriptions: [(_, actions) => actions.toggle()]
-//   })
-
-//   expectHTMLToBe(`
-//     <div>
-//       <h1>foo</h1>
-//     </div>
-//   `)
-// })

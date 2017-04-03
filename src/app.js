@@ -38,7 +38,7 @@ export default function (app) {
 
     if (obj = plugin.hooks) {
       Object.keys(obj).map(function (key) {
-        (hooks[key] ? hooks[key] : hooks[key] = []).push(obj[key])
+        hooks[key].push(obj[key])
       })
     }
   }

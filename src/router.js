@@ -10,18 +10,16 @@ export default function (app) {
         }
       }
     },
-    hooks: {
-      onRender: function (model) {
-        return app.view[model.router.match]
-      }
-    },
-    subscriptions: [
-      function (_, actions) {
+    subscriptions: {
+      "render": function (model, view) {
+        return view[model.router.match]
+      },
+      "load": function (_, actions) {
         addEventListener("popstate", function () {
           actions.router.match(location.pathname)
         })
       }
-    ]
+    }
   }
 
   function match(model, data) {

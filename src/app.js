@@ -5,15 +5,10 @@ export default function (app) {
     return ""
   }
 
+  var emit = {event: event, hook: hook}
   var model
   var actions = {}
-  var hooks = {
-    onError: [],
-    onAction: [],
-    onUpdate: [],
-    onRender: []
-  }
-  var subscriptions = []
+  var subscriptions = {}
 
   var node
   var root
@@ -32,36 +27,18 @@ export default function (app) {
       init(actions, obj)
     }
 
-    if (obj = plugin.subscriptions) {
-      subscriptions = subscriptions.concat(obj)
-    }
-
-    if (obj = plugin.hooks) {
-      Object.keys(obj).map(function (key) {
-        hooks[key].push(obj[key])
-      })
-    }
+    Object.keys(plugin.subscriptions || {}).forEach(function (type) {
+      (subscriptions[type] || (subscriptions[type] = [])).push(plugin.subscriptions[type])
+    })
   }
 
   load(function () {
     root = app.root || document.body
 
+    emit.event("load", model, actions)
+
     render(model, view)
-
-    subscriptions.map(function (cb) {
-      cb(model, actions, error)
-    })
   })
-
-  function error(error) {
-    if (hooks.onError.length === 0) {
-      throw error
-    }
-
-    hooks.onError.map(function (cb) {
-      cb(error)
-    })
-  }
 
   function init(container, group, lastName) {
     Object.keys(group).map(function (key) {
@@ -70,19 +47,16 @@ export default function (app) {
 
       if (typeof action === "function") {
         container[key] = function (data) {
-          hooks.onAction.map(function (cb) {
-            cb(name, data)
-          })
+          emit.event("action:"+name, data)
+          emit.event("action", name, data)
 
-          var result = action(model, data, actions, error)
+          var result = action(model, data, actions, emit)
 
           if (result == null || typeof result.then === "function") {
             return result
 
           } else {
-            hooks.onUpdate.map(function (cb) {
-              cb(model, result, data)
-            })
+            emit.event("update", model, result, data)
 
             model = merge(model, result)
             render(model, view)
@@ -105,9 +79,7 @@ export default function (app) {
   }
 
   function render(model, view) {
-    hooks.onRender.map(function (cb) {
-      view = cb(model, view)
-    })
+    view = emit.hook("render", model, view)
 
     element = patch(root, element, node, node = view(model, actions))
   }
@@ -329,6 +301,19 @@ export default function (app) {
     }
 
     return element
+  }
+
+  function event(type) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    (subscriptions[type] || []).forEach(function(cb) { cb.apply(null, args) });
+    (subscriptions["*"] || []).forEach(function(cb) { cb.apply(null, type) });
+  }
+
+  function hook(type) {
+    var args = Array.prototype.slice.call(arguments, 1)
+    return (subscriptions[type] || []).reduce(function(result, handler) {
+      return handler.apply(null, args.concat(result))
+    }, args.pop())
   }
 }
 

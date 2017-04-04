@@ -5,9 +5,10 @@ export default function (app) {
     return ""
   }
 
-  var emitter = emitter()
+  var emit = {event: event, hook: hook}
   var model
   var actions = {}
+  var subscriptions = {}
 
   var node
   var root
@@ -26,17 +27,17 @@ export default function (app) {
       init(actions, obj)
     }
 
-    emitter.on('render', plugin.beforeRender)
-
-    emitter.on('load', plugin.onLoad)
+    Object.keys(plugin.subscriptions || {}).forEach(function (type) {
+      (subscriptions[type] || (subscriptions[type] = [])).push(plugin.subscriptions[type])
+    })
   }
 
   load(function () {
     root = app.root || document.body
 
-    render(model, view)
+    emit.event("load", model, actions)
 
-    emitter.emit('load', model, actions, emitter)
+    render(model, view)
   })
 
   function init(container, group, lastName) {
@@ -46,16 +47,16 @@ export default function (app) {
 
       if (typeof action === "function") {
         container[key] = function (data) {
-          emitter.emit('action:'+name, data)
-          emitter.emit('actions', name, data)
+          emit.event("action:"+name, data)
+          emit.event("action", name, data)
 
-          var result = action(model, data, actions, emitter)
+          var result = action(model, data, actions, emit)
 
           if (result == null || typeof result.then === "function") {
             return result
 
           } else {
-            emitter.emit('update', model, result, data)
+            emit.event("update", model, result, data)
 
             model = merge(model, result)
             render(model, view)
@@ -78,7 +79,7 @@ export default function (app) {
   }
 
   function render(model, view) {
-    view = emitter.stack('render', model, view)
+    view = emit.hook("render", model, view)
 
     element = patch(root, element, node, node = view(model, actions))
   }
@@ -302,33 +303,17 @@ export default function (app) {
     return element
   }
 
-  function emitter(all) {
-    all = all || Object.create(null)
+  function event(type) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    (subscriptions[type] || []).forEach(function(cb) { cb.apply(null, args) });
+    (subscriptions["*"] || []).forEach(function(cb) { cb.apply(null, type) });
+  }
 
-    return {
-      on: function(type, handler) {
-        (all[type] || (all[type] = [])).push(handler)
-      },
-
-      off: function(type, handler) {
-        var e = all[type] || (all[type] = [])
-        e.splice(e.indexOf(handler) >>> 0, 1)
-      },
-
-      emit: function(type) {
-        var args = Array.prototype.slice.call(arguments, 1)
-        var handler = function(cb) { cb.apply(null, args) }
-        ;(all[type] || []).map(handler)
-        ;(all['*'] || []).map(handler)
-      },
-
-      stack: function(type) {
-        var args = Array.prototype.slice.call(arguments, 1);
-        return (all[type] || []).reduce(function(result, handler) {
-          return handler.apply(null, args.concat(result))
-        }, args.pop());
-      }
-    }
+  function hook(type) {
+    var args = Array.prototype.slice.call(arguments, 1)
+    return (subscriptions[type] || []).reduce(function(result, handler) {
+      return handler.apply(null, args.concat(result))
+    }, args.pop())
   }
 }
 

@@ -27,18 +27,9 @@
     "release": "npm run build && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
   },
   "babel": {
-    "presets": "es2015",
-    "plugins": [
-      [
-        "transform-react-jsx",
-        {
-          "pragma": "h"
-        }
-      ]
-    ]
+    "presets": "es2015"
   },
   "devDependencies": {
-    "babel-plugin-transform-react-jsx": "^6.23.0",
     "babel-preset-es2015": "^6.22.0",
     "jest": "^19.0.2",
     "rollup": "^0.41.4",

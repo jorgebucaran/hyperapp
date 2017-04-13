@@ -14,7 +14,7 @@ beforeEach(() => {
 test("/", () => {
   app({
     view: {
-      "/": state => <div>foo</div>
+      "/": state => h("div", {}, "foo")
     },
     plugins: [Router]
   })
@@ -28,7 +28,7 @@ test("/", () => {
 test("*", () => {
   app({
     view: {
-      "*": state => <div>foo</div>,
+      "*": state => h("div", {}, "foo"),
     },
     plugins: [Router],
     events: {

@@ -13,7 +13,7 @@ test("default root is document.body", () => {
 
 test("root", () => {
   app({
-    view: state => <div>foo</div>,
+    view: state => h("div", {}, "foo"),
     root: document.body.appendChild(document.createElement("main"))
   })
 
@@ -31,7 +31,7 @@ test("non-empty root", () => {
   main.appendChild(document.createElement("span"))
 
   app({
-    view: state => <div>foo</div>,
+    view: state => h("div", {}, "foo"),
     root: document.body.appendChild(main)
   })
 
@@ -51,7 +51,7 @@ test("mutated root", () => {
 
   app({
     state: "foo",
-    view: state => <div>{state}</div>,
+    view: state => h("div", {}, state),
     root: document.body.appendChild(main),
     actions: {
       bar: state => "bar"

@@ -6,7 +6,7 @@ beforeEach(() => document.body.innerHTML = "")
 test("update the state sync", () => {
   app({
     state: 1,
-    view: state => <div>{state}</div>,
+    view: state => h("div", {}, state),
     actions: {
       add: state => state + 1
     },
@@ -27,7 +27,7 @@ test("update the state sync", () => {
 test("update the state async", done => {
   app({
     state: 1,
-    view: state => <div>{state}</div>,
+    view: state => h("div", {}, state),
     actions: {
       change: (state, data) => state + data,
       delayAndChange: (state, data, actions) => {
@@ -54,7 +54,7 @@ test("update the state async", done => {
 test("update the state async by promise", done => {
   app({
     state: 1,
-    view: state => <div>{state}</div>,
+    view: state => h("div", {}, state),
     actions: {
       delay: state => new Promise(resolve => setTimeout(_ => resolve(), 20)),
       change: (state, data) => state + data,
@@ -81,6 +81,7 @@ test("update the state async by promise", done => {
 test("namespaced/nested actions", () => {
   app({
     state: true,
+    view: state => "",
     actions: {
       foo: {
         bar: {
@@ -93,7 +94,6 @@ test("namespaced/nested actions", () => {
     },
     events: {
       loaded: (state, actions) => actions.foo.bar.baz("foo.bar.baz")
-    },
-    view: state => ""
+    }
   })
 })

@@ -421,19 +421,19 @@ test("svg", () => {
 test("style", () => {
   TreeTest([
     {
-      tree: <div></div>,
+      tree: h("div"),
       html: `<div></div>`
     },
     {
-      tree: <div style={{ color: "red", fontSize: "1em" }}></div>,
+      tree: h("div", { style: { color: "red", fontSize: "1em" } }),
       html: `<div style="color: red; font-size: 1em;"></div>`
     },
     {
-      tree: <div style={{ color: "blue", float: "left" }}></div>,
+      tree: h("div", { style: { color: "blue", float: "left" } }),
       html: `<div style="color: blue; float: left;"></div>`
     },
     {
-      tree: <div></div>,
+      tree: h("div"),
       html: `<div style=""></div>`
     },
   ])
@@ -442,12 +442,66 @@ test("style", () => {
 test("update element data", () => {
   TreeTest([
     {
-      tree: <div id="foo" class="bar"></div>,
+      tree: h("div", { id: "foo", class: "bar" }),
       html: `<div id="foo" class="bar"></div>`
     },
     {
-      tree: <div id="foo" class="baz"></div>,
+      tree: h("div", { id: "foo", class: "baz" }),
       html: `<div id="foo" class="baz"></div>`
     }
   ])
+})
+
+test("onCreate", done => {
+  app({
+    state: 1,
+    view: state =>
+      h("div", {
+        onCreate: e => {
+          expect(state).toBe(1)
+          done()
+        }
+      })
+  })
+})
+
+test("onUpdate", done => {
+  app({
+    state: 1,
+    view: state =>
+      h("div", {
+        onUpdate: e => {
+          expect(state).toBe(2)
+          done()
+        }
+      }),
+    actions: {
+      add: state => state + 1
+    },
+    events: {
+      loaded: (state, actions) => actions.add()
+    }
+  })
+})
+
+test("onRemove", done => {
+  app({
+    state: true,
+    view: state => state
+      ?
+      h("ul", {}, [
+        h("li"),
+        h("li", { onRemove: done })
+      ])
+      :
+      h("ul", {}, [
+        h("li")
+      ]),
+    actions: {
+      toggle: state => !state
+    },
+    events: {
+      loaded: (state, actions) => actions.toggle()
+    }
+  })
 })

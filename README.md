@@ -20,14 +20,14 @@ HyperApp is a JavaScript library for building frontend applications.
 
 ## Hello World
 
+[CodePen](https://codepen.io/jbucaran/pen/Qdwpxy) · [Examples](https://hyperapp.glitch.me)
+
 ```jsx
 app({
   state: "Hello World",
   view: state => <h1>{state}</h1>
 })
 ```
-
-[See more examples](https://hyperapp.glitch.me).
 
 ## Issues
 

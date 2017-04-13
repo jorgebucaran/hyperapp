@@ -140,7 +140,6 @@ export default function (app) {
   }
 
   function updateElementData(element, oldData, data) {
-    debugger
     for (var name in merge(oldData, data)) {
       var value = data[name]
       var oldValue = oldData[name]

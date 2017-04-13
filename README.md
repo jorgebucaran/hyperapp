@@ -45,4 +45,4 @@ See the [Wiki](https://github.com/hyperapp/hyperapp/wiki).
 
 ## License
 
-HyperApp is MIT licensed. See [LICENSE](LICENSE).
+HyperApp is MIT licensed. See [LICENSE](LICENSE.md).

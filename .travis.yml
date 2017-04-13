@@ -7,7 +7,7 @@ env:
   - NODE_ENV=development
 
 before_install:
-  - npm i -g codecov node-pre-gyp
+  - npm i -g codecov
 
 install:
   - npm install

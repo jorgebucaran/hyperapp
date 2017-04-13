@@ -24,8 +24,8 @@ HyperApp is a JavaScript library for building frontend applications.
 
 ```jsx
 app({
-  model: "Hello World",
-  view: model => <h1>{model}</h1>
+  state: "Hello World",
+  view: state => <h1>{state}</h1>
 })
 ```
 

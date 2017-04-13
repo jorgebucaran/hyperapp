@@ -1,24 +1,23 @@
-import { app, h } from "../src"
+import { h, app } from "../src"
 import { expectHTMLToBe } from "./util"
 
 beforeEach(() => document.body.innerHTML = "")
 
 const TreeTest = trees => app({
-  model: 0,
-  view: model => trees[model].tree,
+  state: 0,
+  view: state => trees[state].tree,
   actions: {
-    next: model => (model + 1) % trees.length
+    next: state => (state + 1) % trees.length
   },
-  subscriptions: [
-    (_, actions) => {
-      trees.forEach(tree => {
-        expectHTMLToBe(tree.html)
+  events: {
+    loaded: (state, actions) => {
+      trees.map(tree => {
+        expectHTMLToBe`${tree.html}`
         actions.next()
       })
     }
-  ]
+  }
 })
-
 
 test("replace element", () => {
   TreeTest([
@@ -219,7 +218,6 @@ test("reorder keyed", () => {
   ])
 })
 
-
 test("grow/shrink keyed", () => {
   TreeTest([
     {
@@ -301,7 +299,6 @@ test("grow/shrink keyed", () => {
   ])
 })
 
-
 test("mixed keyed/non-keyed", () => {
   TreeTest([
     {
@@ -377,42 +374,80 @@ test("mixed keyed/non-keyed", () => {
   ])
 })
 
+test("svg", () => {
+  const SVG_NS = "http://www.w3.org/2000/svg"
 
+  app({
+    view: _ => h("div", {}, [
+      h("p", { id: "foo" }, "foo"),
+      h("svg", { id: "bar" }, [
+        h("quux", {}, [
+          h("beep", {}, [
+            h("ping", {}),
+            h("pong", {})
+          ]),
+          h("bop", {}),
+          h("boop", {}, [
+            h("ping", {}),
+            h("pong", {})
+          ])
+        ]),
+        h("xuuq", {}, [
+          h("beep", {}),
+          h("bop", {}, [
+            h("ping", {}),
+            h("pong", {})
+          ]),
+          h("boop", {})
+        ])
+      ]),
+      h("p", { id: "baz" }, "baz")
+    ])
+  })
 
-// test("", () => {
-//   app({
-//     model: true,
-//     actions: {
-//       toggle: model => !model
-//     },
-//     subscriptions: [
-//       (_, actions) => {
-//         expectHTMLToBe(`
-//           <main></main>
-//         `)
+  expect(document.getElementById("foo").namespaceURI).not.toBe(SVG_NS)
+  expect(document.getElementById("baz").namespaceURI).not.toBe(SVG_NS)
 
-//         actions.toggle()
+  const svg = document.getElementById("bar")
+  expect(svg.namespaceURI).toBe(SVG_NS)
+  expectChildren(svg)
 
-//         expectHTMLToBe(`
-//           <main>
-//             <p id="foo">A</p>
-//             <p>B</p>
-//             <p>C</p>
-//           </main>
-//         `)
-//       }
-//     ],
-//     view: model => model
-//       ?
-//       h("main", {}, [])
-//       :
-//       h("main", {}, [
-//         h("p", { key: "a", onCreate: e => e.id = "foo" }, "A"),
-//         h("p", { key: "b" }, "B"),
-//         h("p", { key: "c" }, "C")
-//       ]),
-//   })
-// })
+  function expectChildren(svgElement) {
+    Array.from(svgElement.childNodes).forEach(node =>
+      expectChildren(node, expect(node.namespaceURI).toBe(SVG_NS)))
+  }
+})
 
+test("style", () => {
+  TreeTest([
+    {
+      tree: <div></div>,
+      html: `<div></div>`
+    },
+    {
+      tree: <div style={{ color: "red", fontSize: "1em" }}></div>,
+      html: `<div style="color: red; font-size: 1em;"></div>`
+    },
+    {
+      tree: <div style={{ color: "blue", float: "left" }}></div>,
+      html: `<div style="color: blue; float: left;"></div>`
+    },
+    {
+      tree: <div></div>,
+      html: `<div style=""></div>`
+    },
+  ])
+})
 
-
+test("update element data", () => {
+  TreeTest([
+    {
+      tree: <div id="foo" class="bar"></div>,
+      html: `<div id="foo" class="bar"></div>`
+    },
+    {
+      tree: <div id="foo" class="baz"></div>,
+      html: `<div id="foo" class="baz"></div>`
+    }
+  ])
+})

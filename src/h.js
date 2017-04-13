@@ -1,16 +1,12 @@
-var i
-var node
-var children
-var stack = []
-
 export default function (tag, data) {
+  var node
   var canConcat
   var oldCanConcat
 
-  children = []
-  i = arguments.length
+  var stack = []
+  var children = []
 
-  while (i-- > 2) {
+  for (var i = arguments.length; i-- > 2;) {
     stack.push(arguments[i])
   }
 
@@ -22,20 +18,18 @@ export default function (tag, data) {
         stack.push(node[i])
       }
     } else if (node != null && node !== true && node !== false) {
-      // Ignore nodes that are null, undefined or booleans.
+      i = children.length
 
       if (typeof node === "number") {
         node = node + ""
       }
 
-      // Concatenate contiguous text nodes.
-
       canConcat = typeof node === "string"
 
       if (canConcat && oldCanConcat) {
-        children[children.length - 1] += node
+        children[i - 1] += node
       } else {
-        children.push(node)
+        children[i] = node
         oldCanConcat = canConcat
       }
     }

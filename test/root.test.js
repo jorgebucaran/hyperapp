@@ -1,41 +1,41 @@
-import { app, h } from "../src"
+import { h, app } from "../src"
 import { expectHTMLToBe } from "./util"
 
 beforeEach(() => document.body.innerHTML = "")
 
-test("append view to document.body if no root is given", () => {
+test("default root is document.body", () => {
   app({
-    view: _ => "foo"
+    view: state => "foo"
   })
 
-  expectHTMLToBe("foo")
+  expect(document.body.innerHTML).toBe("foo")
 })
 
-test("append view to a given root", () => {
+test("root", () => {
   app({
-    root: document.body.appendChild(document.createElement("main")),
-    view: _ => h("div", {}, "foo")
+    view: state => <div>foo</div>,
+    root: document.body.appendChild(document.createElement("main"))
   })
 
-  expectHTMLToBe(`
+  expectHTMLToBe`
     <main>
       <div>
         foo
       </div>
     </main>
-  `)
+  `
 })
 
-test("append view to a non-empty root", () => {
+test("non-empty root", () => {
   const main = document.createElement("main")
   main.appendChild(document.createElement("span"))
 
   app({
-    root: document.body.appendChild(main),
-    view: _ => h("div", {}, "foo")
+    view: state => <div>foo</div>,
+    root: document.body.appendChild(main)
   })
 
-  expectHTMLToBe(`
+  expectHTMLToBe`
     <main>
       <span>
       </span>
@@ -43,34 +43,35 @@ test("append view to a non-empty root", () => {
         foo
       </div>
     </main>
-  `)
+  `
 })
 
-test("update view in a mutated root", () => {
+test("mutated root", () => {
   const main = document.createElement("main")
 
   app({
+    state: "foo",
+    view: state => <div>{state}</div>,
     root: document.body.appendChild(main),
-    model: "foo",
     actions: {
-      bar: model => "bar"
+      bar: state => "bar"
     },
-    subscriptions: [
-      (_, actions) => {
-        expectHTMLToBe(`
+    events: {
+      loaded: (state, actions) => {
+        expectHTMLToBe`
           <main>
             <div>
               foo
             </div>
           </main>
-        `)
+        `
 
         main.insertBefore(document.createElement("header"), main.firstChild)
         main.appendChild(document.createElement("footer"))
 
         actions.bar()
 
-        expectHTMLToBe(`
+        expectHTMLToBe`
           <main>
             <header>
             </header>
@@ -80,9 +81,9 @@ test("update view in a mutated root", () => {
             <footer>
             </footer>
           </main>
-        `)
+        `
       }
-    ],
-    view: model => h("div", {}, model)
+    }
   })
 })
+

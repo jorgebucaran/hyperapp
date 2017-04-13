@@ -1,6 +1,6 @@
 import { h } from "../src"
 
-test("create an empty vnode", () => {
+test("empty vnode", () => {
   expect(
     h("div")
   ).toEqual({
@@ -10,7 +10,7 @@ test("create an empty vnode", () => {
   })
 })
 
-test("create a vnode with a single child", () => {
+test("vnode with a single child", () => {
   expect(
     h("div", {}, ["foo"])
   ).toEqual({
@@ -28,7 +28,7 @@ test("create a vnode with a single child", () => {
   })
 })
 
-test("concatenate multiple children string/number", () => {
+test("concatenate String/Number children", () => {
   expect(
     h("div", {}, "foo", "bar", "baz")
   ).toEqual({
@@ -66,8 +66,8 @@ test("concatenate multiple children string/number", () => {
   })
 })
 
-test("create a vnode with props data", () => {
-  const props = {
+test("vnode with data", () => {
+  const data = {
     id: "foo",
     class: "bar",
     style: {
@@ -75,16 +75,16 @@ test("create a vnode with props data", () => {
     }
   }
 
-  expect(h("div", props, "baz")
+  expect(h("div", data, "baz")
   ).toEqual({
     tag: "div",
-    data: props,
+    data,
     children: ["baz"]
   })
 
 })
 
-test("don't create children from null or boolean values", () => {
+test("skip null and Boolean children", () => {
   const expected = {
     tag: "div",
     data: {},
@@ -104,7 +104,7 @@ test("don't create children from null or boolean values", () => {
   ).toEqual(expected)
 })
 
-test("create a vnode from a component / tag function", () => {
+test("components", () => {
   const Component = (data, children) => h("div", data, children)
 
   expect(

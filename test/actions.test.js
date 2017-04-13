@@ -1,96 +1,99 @@
-import { app, h } from "../src"
+import { h, app } from "../src"
 import { expectHTMLToBe } from "./util"
 
 beforeEach(() => document.body.innerHTML = "")
 
-test("update the model to render the view", () => {
+test("update the state sync", () => {
   app({
-    model: 1,
-    view: model => h("div", {}, model),
+    state: 1,
+    view: state => <div>{state}</div>,
     actions: {
-      add: model => model + 1
+      add: state => state + 1
     },
-    subscriptions: [
-      (_, actions) => actions.add()
-    ]
-  })
+    events: {
+      loaded: (state, actions) => {
+        actions.add()
 
-  expectHTMLToBe(`
-    <div>
-      2
-    </div>
-  `)
+        expectHTMLToBe`
+          <div>
+            2
+          </div>
+        `
+      }
+    }
+  })
 })
 
-test("update the model async", done => {
+test("update the state async", done => {
   app({
-    model: 1,
-    view: model => h("div", {}, model),
+    state: 1,
+    view: state => <div>{state}</div>,
     actions: {
-      change: (model, data) => model + data,
-      delayAndChange: (model, data, actions) => {
+      change: (state, data) => state + data,
+      delayAndChange: (state, data, actions) => {
         setTimeout(_ => {
           actions.change(data)
 
-          expectHTMLToBe(`
+          expectHTMLToBe`
             <div>
-              ${model + data}
+              ${state + data}
             </div>
-          `)
+          `
 
           done()
-        }, 20)
+        }, 5)
       }
     },
-    subscriptions: [
-      (_, actions) => actions.delayAndChange(10)
-    ]
+    events: {
+      loaded: (state, actions) =>
+        actions.delayAndChange(Number.MAX_SAFE_INTEGER)
+    }
   })
 })
 
-test("return a promise", done => {
+test("update the state async by promise", done => {
   app({
-    model: 1,
-    view: model => h("div", {}, model),
+    state: 1,
+    view: state => <div>{state}</div>,
     actions: {
-      change: (model, data) => model + data,
-      delay: _ => new Promise(resolve => setTimeout(_ => resolve(), 20)),
-      delayAndChange: (model, data, actions) => {
+      delay: state => new Promise(resolve => setTimeout(_ => resolve(), 20)),
+      change: (state, data) => state + data,
+      delayAndChange: (state, data, actions) => {
         actions.delay().then(_ => {
           actions.change(data)
 
-          expectHTMLToBe(`
+          expectHTMLToBe`
             <div>
-              ${model + data}
+              ${state + data}
             </div>
-          `)
+          `
 
           done()
         })
       }
     },
-    subscriptions: [
-      (_, actions) => actions.delayAndChange(10)
-    ]
+    events: {
+      loaded: (state, actions) => actions.delayAndChange(Number.MAX_SAFE_INTEGER)
+    }
   })
 })
 
-test("namespaces/nested actions", () => {
+test("namespaced/nested actions", () => {
   app({
-    model: true,
+    state: true,
     actions: {
       foo: {
         bar: {
-          baz: (model, data) => {
-            expect(model).toBe(true)
+          baz: (state, data) => {
+            expect(state).toBe(true)
             expect(data).toBe("foo.bar.baz")
           }
         }
       }
     },
-    subscriptions: [
-      (_, actions) => actions.foo.bar.baz("foo.bar.baz")
-    ],
-    view: _ => h("div", {}, "")
+    events: {
+      loaded: (state, actions) => actions.foo.bar.baz("foo.bar.baz")
+    },
+    view: state => ""
   })
 })

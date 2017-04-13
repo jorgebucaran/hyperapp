@@ -44,7 +44,7 @@ test("loaded / DOMContentLoaded", done => {
 test("action", () => {
   app({
     state: "",
-    view: state => <div>{state}</div>,
+    view: state => h("div", {}, state),
     actions: {
       set: (state, data) => data
     },
@@ -69,7 +69,7 @@ test("action", () => {
 test("update", () => {
   app({
     state: 1,
-    view: state => <div>{state}</div>,
+    view: state => h("div", {}, state),
     actions: {
       add: state => state + 1
     },
@@ -90,7 +90,7 @@ test("update", () => {
 test("render", () => {
   app({
     state: 1,
-    view: state => <div>{state}</div>,
+    view: state => h("div", {}, state),
     events: {
       loaded: (state, actions) => {
         expectHTMLToBe`
@@ -102,7 +102,7 @@ test("render", () => {
         `
       },
       render: (state, actions, view) => state =>
-        <main>{view(state, actions)}</main>
+        h("main", {}, view(state, actions)),
     }
   })
 })

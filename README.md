@@ -4,6 +4,7 @@
 [![CDNJS](https://img.shields.io/cdnjs/v/hyperapp.svg?colorB=ff69b4)](https://cdnjs.com/libraries/hyperapp)
 [![npm](https://img.shields.io/npm/v/hyperapp.svg?colorB=ff69b4)](https://www.npmjs.org/package/hyperapp)
 [![Slack](https://hyperappjs.herokuapp.com/badge.svg)](https://hyperappjs.herokuapp.com "Join us")
+[![Size](http://img.badgesize.io/https://unpkg.com/hyperapp/dist/hyperapp.js?compression=gzip)](https://unpkg.com/hyperapp/dist/hyperapp.js)
 
 HyperApp is a JavaScript library for building frontend applications.
 

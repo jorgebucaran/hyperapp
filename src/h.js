@@ -1,37 +1,22 @@
 export default function (tag, data) {
   var node
-  var canConcat
-  var oldCanConcat
-
   var stack = []
   var children = []
 
   for (var i = arguments.length; i-- > 2;) {
-    stack.push(arguments[i])
+    stack[stack.length] = arguments[i]
   }
 
   while (stack.length) {
     if (Array.isArray(node = stack.pop())) {
-      i = node.length
-
-      while (i--) {
-        stack.push(node[i])
+      for (var i = node.length; i--;) {
+        stack[stack.length] = node[i]
       }
     } else if (node != null && node !== true && node !== false) {
-      i = children.length
-
       if (typeof node === "number") {
         node = node + ""
       }
-
-      canConcat = typeof node === "string"
-
-      if (canConcat && oldCanConcat) {
-        children[i - 1] += node
-      } else {
-        children[i] = node
-        oldCanConcat = canConcat
-      }
+      children[children.length] = node
     }
   }
 
@@ -43,3 +28,4 @@ export default function (tag, data) {
     }
     : tag(data, children)
 }
+

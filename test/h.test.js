@@ -28,21 +28,13 @@ test("vnode with a single child", () => {
   })
 })
 
-test("concatenate String/Number children", () => {
+test("positional String/Number children", () => {
   expect(
     h("div", {}, "foo", "bar", "baz")
   ).toEqual({
     tag: "div",
     data: {},
-    children: ["foobarbaz"]
-  })
-
-  expect(
-    h("div", {}, ["foo", "bar", "baz"])
-  ).toEqual({
-    tag: "div",
-    data: {},
-    children: ["foobarbaz"]
+    children: ["foo", "bar", "baz"]
   })
 
   expect(
@@ -50,7 +42,7 @@ test("concatenate String/Number children", () => {
   ).toEqual({
     tag: "div",
     data: {},
-    children: ["1foo2baz3"]
+    children: ["1", "foo", "2", "baz", "3"]
   })
 
   expect(
@@ -62,7 +54,7 @@ test("concatenate String/Number children", () => {
       tag: "div",
       data: {},
       children: ["bar"]
-    }, "bazquux"]
+    }, "baz", "quux"]
   })
 })
 
@@ -127,3 +119,4 @@ test("components", () => {
     }]
   })
 })
+

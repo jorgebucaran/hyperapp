@@ -1,6 +1,8 @@
 # IDE
 .idea/
 .vscode/
+code.asm
+hydrogen.cfg
 
 # Logs
 *.log*

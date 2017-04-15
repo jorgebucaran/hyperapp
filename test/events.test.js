@@ -102,7 +102,7 @@ test("render", () => {
         `
       },
       render: (state, actions, view) => state =>
-        h("main", {}, view(state, actions)),
+        h("main", {}, view(state, actions))
     }
   })
 })
@@ -111,11 +111,8 @@ test("custom event", () => {
   app({
     view: state => "",
     events: {
-      loaded: (state, actions, emit) =>
-        emit("foo", "foo")
-      ,
-      foo: (state, actions, data) =>
-        expect("foo").toBe(data)
+      loaded: (state, actions, emit) => emit("foo", "foo"),
+      foo: (state, actions, data) => expect("foo").toBe(data)
     }
   })
 })

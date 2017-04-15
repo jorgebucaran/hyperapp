@@ -1,9 +1,7 @@
 import { h } from "../src"
 
 test("empty vnode", () => {
-  expect(
-    h("div")
-  ).toEqual({
+  expect(h("div")).toEqual({
     tag: "div",
     data: {},
     children: []
@@ -11,17 +9,13 @@ test("empty vnode", () => {
 })
 
 test("vnode with a single child", () => {
-  expect(
-    h("div", {}, ["foo"])
-  ).toEqual({
+  expect(h("div", {}, ["foo"])).toEqual({
     tag: "div",
     data: {},
     children: ["foo"]
   })
 
-  expect(
-    h("div", {}, "foo")
-  ).toEqual({
+  expect(h("div", {}, "foo")).toEqual({
     tag: "div",
     data: {},
     children: ["foo"]
@@ -29,32 +23,31 @@ test("vnode with a single child", () => {
 })
 
 test("positional String/Number children", () => {
-  expect(
-    h("div", {}, "foo", "bar", "baz")
-  ).toEqual({
+  expect(h("div", {}, "foo", "bar", "baz")).toEqual({
     tag: "div",
     data: {},
     children: ["foo", "bar", "baz"]
   })
 
-  expect(
-    h("div", {}, 1, "foo", 2, "baz", 3)
-  ).toEqual({
+  expect(h("div", {}, 1, "foo", 2, "baz", 3)).toEqual({
     tag: "div",
     data: {},
     children: ["1", "foo", "2", "baz", "3"]
   })
 
-  expect(
-    h("div", {}, "foo", h("div", {}, "bar"), "baz", "quux")
-  ).toEqual({
+  expect(h("div", {}, "foo", h("div", {}, "bar"), "baz", "quux")).toEqual({
     tag: "div",
     data: {},
-    children: ["foo", {
-      tag: "div",
-      data: {},
-      children: ["bar"]
-    }, "baz", "quux"]
+    children: [
+      "foo",
+      {
+        tag: "div",
+        data: {},
+        children: ["bar"]
+      },
+      "baz",
+      "quux"
+    ]
   })
 })
 
@@ -67,13 +60,11 @@ test("vnode with data", () => {
     }
   }
 
-  expect(h("div", data, "baz")
-  ).toEqual({
+  expect(h("div", data, "baz")).toEqual({
     tag: "div",
     data,
     children: ["baz"]
   })
-
 })
 
 test("skip null and Boolean children", () => {
@@ -83,40 +74,31 @@ test("skip null and Boolean children", () => {
     children: []
   }
 
-  expect(
-    h("div", {}, true)
-  ).toEqual(expected)
+  expect(h("div", {}, true)).toEqual(expected)
 
-  expect(
-    h("div", {}, false)
-  ).toEqual(expected)
+  expect(h("div", {}, false)).toEqual(expected)
 
-  expect(
-    h("div", {}, null)
-  ).toEqual(expected)
+  expect(h("div", {}, null)).toEqual(expected)
 })
 
 test("components", () => {
   const Component = (data, children) => h("div", data, children)
 
-  expect(
-    h(Component, { id: "foo" }, "bar")
-  ).toEqual({
+  expect(h(Component, { id: "foo" }, "bar")).toEqual({
     tag: "div",
     data: { id: "foo" },
     children: ["bar"]
   })
 
-  expect(
-    h(Component, { id: "foo" }, [h(Component, { id: "bar" })])
-  ).toEqual({
+  expect(h(Component, { id: "foo" }, [h(Component, { id: "bar" })])).toEqual({
     tag: "div",
     data: { id: "foo" },
-    children: [{
-      tag: "div",
-      data: { id: "bar" },
-      children: []
-    }]
+    children: [
+      {
+        tag: "div",
+        data: { id: "bar" },
+        children: []
+      }
+    ]
   })
 })
-

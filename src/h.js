@@ -1,31 +1,23 @@
-function isValid(val) {
-  return (val != null && val !== true && val !== false)
-}
+export default function(tag, data) {
+  var node
+  var stack = []
+  var children = []
 
-function sanitize(val) {
-  return typeof val === 'number' ? val + '' : val
-}
+  for (var i = arguments.length; i-- > 2; ) {
+    stack[stack.length] = arguments[i]
+  }
 
-function addChild(children, val) {
-  if (Array.isArray(val)) {
-    for (var j = 0; j < val.length; j++) {
-      children.push(val[j])
+  while (stack.length) {
+    if (Array.isArray((node = stack.pop()))) {
+      for (var i = node.length; i--; ) {
+        stack[stack.length] = node[i]
+      }
+    } else if (node != null && node !== true && node !== false) {
+      if (typeof node === "number") {
+        node = node + ""
+      }
+      children[children.length] = node
     }
-  }
-  else if (isValid(val)) {
-    children.push(sanitize(val))
-  }
-}
-
-export default function(tag, data, values) {
-  var children = Array.isArray(values)
-    ? values
-    : isValid(values)
-      ? [sanitize(values)]
-      : []
-
-  for (var i = 3; i < arguments.length; i++) {
-    addChild(children, arguments[i])
   }
 
   return typeof tag === "string"

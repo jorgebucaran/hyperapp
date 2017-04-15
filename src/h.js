@@ -5,10 +5,7 @@ function addChild(children, val) {
     }
   }
   else if (val != null && val !== true && val !== false) {
-    if (typeof val === 'number') {
-      val = val + ''
-    }
-    children.push(val)
+    children.push(typeof val === 'number' ? val + '' : val)
   }
 }
 
@@ -21,11 +18,9 @@ export default function(tag, data, values) {
     }
   }
   else {
-    addChild(children, values)
-  }
-
-  for (var i = 3; i < arguments.length; i++) {
-    addChild(children, arguments[i])
+    for (var i = 2; i < arguments.length; i++) {
+      addChild(children, arguments[i])
+    }
   }
 
   return typeof tag === "string"

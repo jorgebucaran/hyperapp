@@ -100,7 +100,7 @@ test("don't overwrite actions in the same namespace", () => {
           }
         }
       }
-    },
+    }
   })
 
   app({

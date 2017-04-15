@@ -3,21 +3,22 @@ import { expectHTMLToBe } from "./util"
 
 beforeEach(() => document.body.innerHTML = "")
 
-const TreeTest = trees => app({
-  state: 0,
-  view: state => trees[state].tree,
-  actions: {
-    next: state => (state + 1) % trees.length
-  },
-  events: {
-    loaded: (state, actions) => {
-      trees.map(tree => {
-        expectHTMLToBe`${tree.html}`
-        actions.next()
-      })
+const TreeTest = trees =>
+  app({
+    state: 0,
+    view: state => trees[state].tree,
+    actions: {
+      next: state => (state + 1) % trees.length
+    },
+    events: {
+      loaded: (state, actions) => {
+        trees.map(tree => {
+          expectHTMLToBe`${tree.html}`
+          actions.next()
+        })
+      }
     }
-  }
-})
+  })
 
 test("replace element", () => {
   TreeTest([
@@ -28,16 +29,14 @@ test("replace element", () => {
     {
       tree: h("div", {}),
       html: `<div></div>`
-    },
+    }
   ])
 })
 
 test("replace child", () => {
   TreeTest([
     {
-      tree: h("main", {}, [
-        h("div", {}, "foo")
-      ]),
+      tree: h("main", {}, [h("div", {}, "foo")]),
       html: `
         <main>
           <div>foo</div>
@@ -45,15 +44,13 @@ test("replace child", () => {
       `
     },
     {
-      tree: h("main", {}, [
-        h("main", {}, "bar")
-      ]),
+      tree: h("main", {}, [h("main", {}, "bar")]),
       html: `
         <main>
           <main>bar</main>
         </main>
       `
-    },
+    }
   ])
 })
 
@@ -118,7 +115,7 @@ test("replace keyed", () => {
   TreeTest([
     {
       tree: h("main", {}, [
-        h("div", { key: "a", onCreate: e => e.id = "a" }, "A"),
+        h("div", { key: "a", onCreate: e => e.id = "a" }, "A")
       ]),
       html: `
         <main>
@@ -128,7 +125,7 @@ test("replace keyed", () => {
     },
     {
       tree: h("main", {}, [
-        h("div", { key: "b", onCreate: e => e.id = "b" }, "B"),
+        h("div", { key: "b", onCreate: e => e.id = "b" }, "B")
       ]),
       html: `
         <main>
@@ -147,7 +144,7 @@ test("reorder keyed", () => {
         h("div", { key: "b", onCreate: e => e.id = "b" }, "B"),
         h("div", { key: "c", onCreate: e => e.id = "c" }, "C"),
         h("div", { key: "d", onCreate: e => e.id = "d" }, "D"),
-        h("div", { key: "e", onCreate: e => e.id = "e" }, "E"),
+        h("div", { key: "e", onCreate: e => e.id = "e" }, "E")
       ]),
       html: `
         <main>
@@ -184,7 +181,6 @@ test("reorder keyed", () => {
         h("div", { key: "a" }, "A"),
         h("div", { key: "c" }, "C"),
         h("div", { key: "b" }, "B")
-
       ]),
       html: `
         <main>
@@ -202,8 +198,7 @@ test("reorder keyed", () => {
         h("div", { key: "e" }, "E"),
         h("div", { key: "b" }, "B"),
         h("div", { key: "a" }, "A"),
-        h("div", { key: "d" }, "D"),
-
+        h("div", { key: "d" }, "D")
       ]),
       html: `
         <main>
@@ -226,7 +221,7 @@ test("grow/shrink keyed", () => {
         h("div", { key: "b", onCreate: e => e.id = "b" }, "B"),
         h("div", { key: "c", onCreate: e => e.id = "c" }, "C"),
         h("div", { key: "d", onCreate: e => e.id = "d" }, "D"),
-        h("div", { key: "e", onCreate: e => e.id = "e" }, "E"),
+        h("div", { key: "e", onCreate: e => e.id = "e" }, "E")
       ]),
       html: `
         <main>
@@ -253,9 +248,7 @@ test("grow/shrink keyed", () => {
       `
     },
     {
-      tree: h("main", {}, [
-        h("div", { key: "d" }, "D")
-      ]),
+      tree: h("main", {}, [h("div", { key: "d" }, "D")]),
       html: `
         <main>
           <div id="d">D</div>
@@ -268,7 +261,7 @@ test("grow/shrink keyed", () => {
         h("div", { key: "b", onCreate: e => e.id = "b" }, "B"),
         h("div", { key: "c", onCreate: e => e.id = "c" }, "C"),
         h("div", { key: "d" }, "D"),
-        h("div", { key: "e", onCreate: e => e.id = "e" }, "E"),
+        h("div", { key: "e", onCreate: e => e.id = "e" }, "E")
       ]),
       html: `
         <main>
@@ -295,7 +288,7 @@ test("grow/shrink keyed", () => {
           <div id="a">A</div>
         </main>
       `
-    },
+    }
   ])
 })
 
@@ -307,7 +300,7 @@ test("mixed keyed/non-keyed", () => {
         h("div", {}, "B"),
         h("div", {}, "C"),
         h("div", { key: "d", onCreate: e => e.id = "d" }, "D"),
-        h("div", { key: "e", onCreate: e => e.id = "e" }, "E"),
+        h("div", { key: "e", onCreate: e => e.id = "e" }, "E")
       ]),
       html: `
         <main>
@@ -324,26 +317,26 @@ test("mixed keyed/non-keyed", () => {
         h("div", { key: "e" }, "E"),
         h("div", {}, "C"),
         h("div", {}, "B"),
+        h("div", { key: "d" }, "D"),
+        h("div", { key: "a" }, "A")
+      ]),
+      html: `
+        <main>
+          <div id="e">E</div>
+          <div>C</div>
+          <div>B</div>
+          <div id="d">D</div>
+          <div id="a">A</div>
+        </main>
+      `
+    },
+    {
+      tree: h("main", {}, [
+        h("div", {}, "C"),
         h("div", { key: "d" }, "D"),
         h("div", { key: "a" }, "A"),
-      ]),
-      html: `
-        <main>
-          <div id="e">E</div>
-          <div>C</div>
-          <div>B</div>
-          <div id="d">D</div>
-          <div id="a">A</div>
-        </main>
-      `
-    },
-    {
-      tree: h("main", {}, [
-        h("div", {}, "C"),
-        h("div", { key: "d" }, "D"),
-        h("div", { key: "a" }, "A"),
         h("div", { key: "e" }, "E"),
-        h("div", {}, "B"),
+        h("div", {}, "B")
       ]),
       html: `
         <main>
@@ -360,7 +353,7 @@ test("mixed keyed/non-keyed", () => {
         h("div", { key: "e" }, "E"),
         h("div", { key: "d" }, "D"),
         h("div", {}, "B"),
-        h("div", {}, "C"),
+        h("div", {}, "C")
       ]),
       html: `
         <main>
@@ -378,31 +371,23 @@ test("svg", () => {
   const SVG_NS = "http://www.w3.org/2000/svg"
 
   app({
-    view: _ => h("div", {}, [
-      h("p", { id: "foo" }, "foo"),
-      h("svg", { id: "bar" }, [
-        h("quux", {}, [
-          h("beep", {}, [
-            h("ping", {}),
-            h("pong", {})
+    view: _ =>
+      h("div", {}, [
+        h("p", { id: "foo" }, "foo"),
+        h("svg", { id: "bar" }, [
+          h("quux", {}, [
+            h("beep", {}, [h("ping", {}), h("pong", {})]),
+            h("bop", {}),
+            h("boop", {}, [h("ping", {}), h("pong", {})])
           ]),
-          h("bop", {}),
-          h("boop", {}, [
-            h("ping", {}),
-            h("pong", {})
+          h("xuuq", {}, [
+            h("beep", {}),
+            h("bop", {}, [h("ping", {}), h("pong", {})]),
+            h("boop", {})
           ])
         ]),
-        h("xuuq", {}, [
-          h("beep", {}),
-          h("bop", {}, [
-            h("ping", {}),
-            h("pong", {})
-          ]),
-          h("boop", {})
-        ])
-      ]),
-      h("p", { id: "baz" }, "baz")
-    ])
+        h("p", { id: "baz" }, "baz")
+      ])
   })
 
   expect(document.getElementById("foo").namespaceURI).not.toBe(SVG_NS)
@@ -414,7 +399,8 @@ test("svg", () => {
 
   function expectChildren(svgElement) {
     Array.from(svgElement.childNodes).forEach(node =>
-      expectChildren(node, expect(node.namespaceURI).toBe(SVG_NS)))
+      expectChildren(node, expect(node.namespaceURI).toBe(SVG_NS))
+    )
   }
 })
 
@@ -435,7 +421,7 @@ test("style", () => {
     {
       tree: h("div"),
       html: `<div style=""></div>`
-    },
+    }
   ])
 })
 
@@ -487,16 +473,10 @@ test("onUpdate", done => {
 test("onRemove", done => {
   app({
     state: true,
-    view: state => state
-      ?
-      h("ul", {}, [
-        h("li"),
-        h("li", { onRemove: done })
-      ])
-      :
-      h("ul", {}, [
-        h("li")
-      ]),
+    view: state =>
+      (state
+        ? h("ul", {}, [h("li"), h("li", { onRemove: done })])
+        : h("ul", {}, [h("li")])),
     actions: {
       toggle: state => !state
     },

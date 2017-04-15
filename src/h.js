@@ -1,15 +1,15 @@
-export default function (tag, data) {
+export default function(tag, data) {
   var node
   var stack = []
   var children = []
 
-  for (var i = arguments.length; i-- > 2;) {
+  for (var i = arguments.length; i-- > 2; ) {
     stack[stack.length] = arguments[i]
   }
 
   while (stack.length) {
-    if (Array.isArray(node = stack.pop())) {
-      for (var i = node.length; i--;) {
+    if (Array.isArray((node = stack.pop()))) {
+      for (var i = node.length; i--; ) {
         stack[stack.length] = node[i]
       }
     } else if (node != null && node !== true && node !== false) {
@@ -22,10 +22,9 @@ export default function (tag, data) {
 
   return typeof tag === "string"
     ? {
-      tag: tag,
-      data: data || {},
-      children: children
-    }
+        tag: tag,
+        data: data || {},
+        children: children
+      }
     : tag(data, children)
 }
-

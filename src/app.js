@@ -1,4 +1,4 @@
-export default function (app) {
+export default function(app) {
   var state = {}
   var view = app.view
   var actions = {}
@@ -15,7 +15,7 @@ export default function (app) {
 
     init(actions, plugin.actions)
 
-    Object.keys(plugin.events || []).map(function (key) {
+    Object.keys(plugin.events || []).map(function(key) {
       events[key] = (events[key] || []).concat(plugin.events[key])
     })
   }
@@ -27,22 +27,27 @@ export default function (app) {
   }
 
   function init(namespace, children, lastName) {
-    Object.keys(children || []).map(function (key) {
+    Object.keys(children || []).map(function(key) {
       var action = children[key]
       var name = lastName ? lastName + "." + key : key
 
       if (typeof action === "function") {
-        namespace[key] = function (data) {
-          var result = action(state, emit("action", {
-            name: name,
-            data: data
-          }).data, actions, emit)
+        namespace[key] = function(data) {
+          var result = action(
+            state,
+            emit("action", {
+              name: name,
+              data: data
+            }).data,
+            actions,
+            emit
+          )
 
           if (result == null || typeof result.then === "function") {
             return result
           }
 
-          render(state = merge(state, emit("update", result)), view)
+          render((state = merge(state, emit("update", result))), view)
         }
       } else {
         init(namespace[key] || (namespace[key] = {}), action, name)
@@ -56,7 +61,7 @@ export default function (app) {
   }
 
   function emit(name, data) {
-    (events[name] || []).map(function (cb) {
+    ;(events[name] || []).map(function(cb) {
       var result = cb(state, actions, data, emit)
       if (result != null) {
         data = result
@@ -71,7 +76,7 @@ export default function (app) {
       app.root || (app.root = document.body),
       element,
       node,
-      node = emit("render", view)(state, actions)
+      (node = emit("render", view)(state, actions))
     )
   }
 
@@ -95,13 +100,12 @@ export default function (app) {
   function createElementFrom(node, isSVG) {
     if (typeof node === "string") {
       var element = document.createTextNode(node)
-
     } else {
       var element = (isSVG = isSVG || node.tag === "svg")
         ? document.createElementNS("http://www.w3.org/2000/svg", node.tag)
         : document.createElement(node.tag)
 
-      for (var i = 0; i < node.children.length;) {
+      for (var i = 0; i < node.children.length; ) {
         element.appendChild(createElementFrom(node.children[i++], isSVG))
       }
 
@@ -120,14 +124,13 @@ export default function (app) {
   function setElementData(element, name, value, oldValue) {
     if (name === "key") {
     } else if ((name = name.toLowerCase()) === "style") {
-      for (var i in merge(oldValue, value = value || {})) {
+      for (var i in merge(oldValue, (value = value || {}))) {
         element.style[i] = value[i] || ""
       }
     } else {
       try {
         element[name] = value
-      } catch (_) {
-      }
+      } catch (_) {}
 
       if (typeof value !== "function") {
         if (value) {
@@ -146,7 +149,6 @@ export default function (app) {
 
       if (name === "onUpdate") {
         value(element)
-
       } else if (value !== oldValue || value !== element[name]) {
         setElementData(element, name, value, oldValue)
       }
@@ -169,7 +171,6 @@ export default function (app) {
   function patch(parent, element, oldNode, node) {
     if (oldNode == null) {
       element = parent.insertBefore(createElementFrom(node), element)
-
     } else if (node.tag && node.tag === oldNode.tag) {
       updateElementData(element, oldNode.data, node.data)
 
@@ -220,7 +221,6 @@ export default function (app) {
           patch(element, oldElement, oldChild, newChild)
           j++
           i++
-
         } else if (null == oldKey && null != newKey) {
           if (reusableElement) {
             element.insertBefore(reusableElement, oldElement)
@@ -231,19 +231,15 @@ export default function (app) {
 
           j++
           newKeys[newKey] = newChild
-
         } else if (null != oldKey && null == newKey) {
           i++
-
         } else {
           if (oldKey === newKey) {
             patch(element, reusableElement, reusableNode, newChild)
             i++
-
           } else if (reusableElement) {
             element.insertBefore(reusableElement, oldElement)
             patch(element, reusableElement, reusableNode, newChild)
-
           } else {
             patch(element, oldElement, null, newChild)
           }
@@ -271,7 +267,7 @@ export default function (app) {
       }
     } else if (node !== oldNode) {
       var i = element
-      parent.replaceChild(element = createElementFrom(node), i)
+      parent.replaceChild((element = createElementFrom(node)), i)
     }
 
     return element

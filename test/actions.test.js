@@ -73,7 +73,8 @@ test("update the state async by promise", done => {
       }
     },
     events: {
-      loaded: (state, actions) => actions.delayAndChange(Number.MAX_SAFE_INTEGER)
+      loaded: (state, actions) =>
+        actions.delayAndChange(Number.MAX_SAFE_INTEGER)
     }
   })
 })

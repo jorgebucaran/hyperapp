@@ -15,6 +15,12 @@ test("vnode with a single child", () => {
     children: ["foo"]
   })
 
+  expect(h("div", {}, [["foo"]])).toEqual({
+    tag: "div",
+    data: {},
+    children: ["foo"]
+  })
+
   expect(h("div", {}, "foo")).toEqual({
     tag: "div",
     data: {},

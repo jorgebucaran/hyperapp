@@ -4,7 +4,7 @@ function addChild(children, val) {
       children.push(val[j])
     }
   }
-  else if (val && val !== true) {
+  else if (val != null && val !== true && val !== false) {
     if (typeof val === 'number') {
       val = val + ''
     }

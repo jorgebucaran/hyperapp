@@ -1,19 +1,31 @@
-export default function(tag, data) {
+function addChild(children, val) {
+  if (Array.isArray(val)) {
+    for (var j = 0; j < val.length; j++) {
+      children.push(val[j])
+    }
+  }
+  else if (val && val !== true) {
+    if (typeof val === 'number') {
+      val = val + ''
+    }
+    children.push(val)
+  }
+}
+
+export default function(tag, data, values) {
   var children = []
 
-  for (var i = 2; i < arguments.length; i++) {
-    var val = arguments[i]
-    if (Array.isArray(val)) {
-      for (var j = 0; j < val.length; j++) {
-        children.push(val[j])
-      }
+  if (Array.isArray(values)) {
+    for (var i = 0; i < values.length; i++) {
+      addChild(children, values[i])
     }
-    else if (val && val !== true) {
-      if (typeof val === 'number') {
-        val = val + ''
-      }
-      children.push(val)
-    }
+  }
+  else {
+    addChild(children, values)
+  }
+
+  for (var i = 3; i < arguments.length; i++) {
+    addChild(children, arguments[i])
   }
 
   return typeof tag === "string"

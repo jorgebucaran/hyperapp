@@ -105,11 +105,11 @@ export default function (app) {
         element.appendChild(createElementFrom(node.children[i++], isSVG))
       }
 
-      for (var name in node.data) {
-        if (name === "onCreate") {
-          node.data[name](element)
+      for (var i in node.data) {
+        if (i === "onCreate") {
+          node.data[i](element)
         } else {
-          setElementData(element, name, node.data[name])
+          setElementData(element, i, node.data[i])
         }
       }
     }
@@ -277,4 +277,3 @@ export default function (app) {
     return element
   }
 }
-

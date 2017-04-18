@@ -374,7 +374,7 @@ test("svg", () => {
     view: _ =>
       h("div", {}, [
         h("p", { id: "foo" }, "foo"),
-        h("svg", { id: "bar" }, [
+        h("svg", { id: "bar", viewBox: "0 0 10 10" }, [
           h("quux", {}, [
             h("beep", {}, [h("ping", {}), h("pong", {})]),
             h("bop", {}),
@@ -395,6 +395,7 @@ test("svg", () => {
 
   const svg = document.getElementById("bar")
   expect(svg.namespaceURI).toBe(SVG_NS)
+  expect(svg.viewBox).toBe('0 0 10 10')
   expectChildren(svg)
 
   function expectChildren(svgElement) {

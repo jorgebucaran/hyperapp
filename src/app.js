@@ -122,8 +122,9 @@ export default function(app) {
   }
 
   function setElementData(element, name, value, oldValue) {
-    if (name === "key") {
-    } else if ((name = name.toLowerCase()) === "style") {
+    var attr = name.toLowerCase();
+    if (attr === "key") {
+    } else if (attr === "style") {
       for (var i in merge(oldValue, (value = value || {}))) {
         element.style[i] = value[i] || ""
       }

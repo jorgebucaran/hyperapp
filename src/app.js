@@ -130,7 +130,7 @@ export default function(app) {
       }
     } else {
       try {
-        element[name] = value
+        element[attr] = value
       } catch (_) {}
 
       if (typeof value !== "function") {

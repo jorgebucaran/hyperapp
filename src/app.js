@@ -6,17 +6,17 @@ export default function(app) {
   var node
   var element
 
-  for (var i = -1, mixins = app.mixins || []; i < mixins.length; i++) {
-    var mixin = mixins[i] ? mixins[i](app) : app
+  for (var i = -1, plugins = app.plugins || []; i < plugins.length; i++) {
+    var plugin = plugins[i] ? plugins[i](app) : app
 
-    if (mixin.state != null) {
-      state = merge(state, mixin.state)
+    if (plugin.state != null) {
+      state = merge(state, plugin.state)
     }
 
-    init(actions, mixin.actions)
+    init(actions, plugin.actions)
 
-    Object.keys(mixin.events || []).map(function(key) {
-      events[key] = (events[key] || []).concat(mixin.events[key])
+    Object.keys(plugin.events || []).map(function(key) {
+      events[key] = (events[key] || []).concat(plugin.events[key])
     })
   }
 
@@ -57,7 +57,7 @@ export default function(app) {
 
   function load() {
     render(state, view)
-    emit("loaded", emit)
+    emit("loaded")
   }
 
   function emit(name, data) {

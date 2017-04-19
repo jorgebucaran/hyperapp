@@ -21,8 +21,8 @@ export default function(app) {
       },
       render: function(state, actions, view, emit) {
         return view[
-          (state.router || (state.router = match(location.pathname, emit)))
-            .match
+          (state.router ||
+            (state.router = match(location.pathname, emit))).match
         ]
       }
     }

@@ -93,7 +93,7 @@ test("don't overwrite actions in the same namespace", () => {
     actions: {
       foo: {
         bar: {
-          baz: (state, data) => {
+          baz: (state, actions, data) => {
             expect(state).toBe(true)
             expect(data).toBe("foo.bar.baz")
             return state
@@ -109,7 +109,7 @@ test("don't overwrite actions in the same namespace", () => {
     actions: {
       foo: {
         bar: {
-          qux: (state, data) => {
+          qux: (state, actions, data) => {
             expect(state).toBe(true)
             expect(data).toBe("foo.bar.qux")
           }

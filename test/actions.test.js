@@ -29,8 +29,8 @@ test("update the state async", done => {
     state: 1,
     view: state => h("div", {}, state),
     actions: {
-      change: (state, data) => state + data,
-      delayAndChange: (state, data, actions) => {
+      change: (state, actions, data) => state + data,
+      delayAndChange: (state, actions, data) => {
         setTimeout(_ => {
           actions.change(data)
 
@@ -57,8 +57,8 @@ test("update the state async by promise", done => {
     view: state => h("div", {}, state),
     actions: {
       delay: state => new Promise(resolve => setTimeout(_ => resolve(), 20)),
-      change: (state, data) => state + data,
-      delayAndChange: (state, data, actions) => {
+      change: (state, actions, data) => state + data,
+      delayAndChange: (state, actions, data) => {
         actions.delay().then(_ => {
           actions.change(data)
 
@@ -86,7 +86,7 @@ test("namespaced/nested actions", () => {
     actions: {
       foo: {
         bar: {
-          baz: (state, data) => {
+          baz: (state, actions, data) => {
             expect(state).toBe(true)
             expect(data).toBe("foo.bar.baz")
           }

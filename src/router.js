@@ -2,12 +2,12 @@ export default function(app) {
   return {
     actions: {
       router: {
-        match: function(state, data, actions, emit) {
+        match: function(state, actions, data, emit) {
           return {
             router: match(data, emit)
           }
         },
-        go: function(state, data, actions) {
+        go: function(state, actions, data) {
           history.pushState({}, "", data)
           actions.router.match(data)
         }

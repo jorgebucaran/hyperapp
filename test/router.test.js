@@ -16,7 +16,7 @@ test("/", () => {
     view: {
       "/": state => h("div", {}, "foo")
     },
-    plugins: [Router]
+    mixins: [Router]
   })
 
   expectHTMLToBe`
@@ -28,9 +28,9 @@ test("/", () => {
 test("*", () => {
   app({
     view: {
-      "*": state => h("div", {}, "foo"),
+      "*": state => h("div", {}, "foo")
     },
-    plugins: [Router],
+    mixins: [Router],
     events: {
       loaded: (state, actions) => {
         actions.router.go("/bar")
@@ -62,7 +62,7 @@ test("routes", () => {
     view: {
       "/foo/bar/baz": state => h("div", {}, "foo", "bar", "baz")
     },
-    plugins: [Router]
+    mixins: [Router]
   })
 
   expectHTMLToBe`
@@ -78,10 +78,15 @@ test("route params", () => {
   app({
     view: {
       "/:foo/:bar/:baz": state =>
-        h("ul", {}, Object.keys(state.router.params).map(key =>
-          h("li", {}, `${key}:${state.router.params[key]}`)))
+        h(
+          "ul",
+          {},
+          Object.keys(state.router.params).map(key =>
+            h("li", {}, `${key}:${state.router.params[key]}`)
+          )
+        )
     },
-    plugins: [Router]
+    mixins: [Router]
   })
 
   expectHTMLToBe`
@@ -99,10 +104,15 @@ test("route params separated by a dash", () => {
   app({
     view: {
       "/:foo-:bar-:baz": state =>
-        h("ul", {}, Object.keys(state.router.params).map(key =>
-          h("li", {}, `${key}:${state.router.params[key]}`)))
+        h(
+          "ul",
+          {},
+          Object.keys(state.router.params).map(key =>
+            h("li", {}, `${key}:${state.router.params[key]}`)
+          )
+        )
     },
-    plugins: [Router]
+    mixins: [Router]
   })
 
   expectHTMLToBe`
@@ -121,7 +131,7 @@ test("routes with dashes into a single param key", () => {
     view: {
       "/:foo": state => h("div", {}, state.router.params.foo)
     },
-    plugins: [Router]
+    mixins: [Router]
   })
 
   expectHTMLToBe`
@@ -137,7 +147,7 @@ test("popstate", () => {
       "/": state => "",
       "/foo": state => h("div", {}, "foo")
     },
-    plugins: [Router]
+    mixins: [Router]
   })
 
   window.location.pathname = "/foo"
@@ -164,7 +174,7 @@ test("go", () => {
       "/bar": state => h("div", {}, "bar"),
       "/baz": state => h("div", {}, "baz")
     },
-    plugins: [Router],
+    mixins: [Router],
     events: {
       loaded: (state, actions) => {
         actions.router.go("/foo")

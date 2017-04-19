@@ -395,7 +395,7 @@ test("svg", () => {
 
   const svg = document.getElementById("bar")
   expect(svg.namespaceURI).toBe(SVG_NS)
-  expect(svg.getAttribute('viewBox')).toBe('0 0 10 10')
+  expect(svg.getAttribute("viewBox")).toBe("0 0 10 10")
   expectChildren(svg)
 
   function expectChildren(svgElement) {

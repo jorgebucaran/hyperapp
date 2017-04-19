@@ -35,11 +35,11 @@ export default function(app) {
         namespace[key] = function(data) {
           var result = action(
             state,
+            actions,
             emit("action", {
               name: name,
               data: data
             }).data,
-            actions,
             emit
           )
 

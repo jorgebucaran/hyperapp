@@ -46,7 +46,7 @@ test("action", () => {
     state: "",
     view: state => h("div", {}, state),
     actions: {
-      set: (state, data) => data
+      set: (state, actions, data) => data
     },
     events: {
       loaded: (state, actions) => {
@@ -124,7 +124,7 @@ test("nested action name", () => {
     actions: {
       foo: {
         bar: {
-          set: (state, data) => data
+          set: (state, actions, data) => data
         }
       }
     },

@@ -123,13 +123,13 @@ export default function(app) {
 
   function setElementData(element, name, value, oldValue) {
     if (name === "key") {
-    } else if ((name = name.toLowerCase()) === "style") {
+    } else if (name === "style") {
       for (var i in merge(oldValue, (value = value || {}))) {
         element.style[i] = value[i] || ""
       }
     } else {
       try {
-        element[name] = value
+        element[name.toLowerCase()] = value
       } catch (_) {}
 
       if (typeof value !== "function") {

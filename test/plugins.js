@@ -4,7 +4,7 @@ import { expectHTMLToBe } from "./util"
 beforeEach(() => document.body.innerHTML = "")
 
 test("extend the state", () => {
-  const Mixin = app => ({
+  const plugin = app => ({
     state: {
       bar: app.state.foo
     }
@@ -23,7 +23,7 @@ test("extend the state", () => {
         })
       }
     },
-    mixins: [Mixin]
+    plugins: [plugin]
   })
 })
 
@@ -47,12 +47,12 @@ test("extend events", () => {
     events: {
       loaded: _ => expect(++count).toBe(1)
     },
-    mixins: [A, B]
+    plugins: [A, B]
   })
 })
 
 test("extend actions", () => {
-  const Mixin = app => ({
+  const plugin = app => ({
     actions: {
       foo: {
         bar: {
@@ -84,12 +84,12 @@ test("extend actions", () => {
         `
       }
     },
-    mixins: [Mixin]
+    plugins: [plugin]
   })
 })
 
 test("don't overwrite actions in the same namespace", () => {
-  const Mixin = app => ({
+  const plugin = app => ({
     actions: {
       foo: {
         bar: {
@@ -122,6 +122,6 @@ test("don't overwrite actions in the same namespace", () => {
         (state, actions) => actions.foo.bar.qux("foo.bar.qux")
       ]
     },
-    mixins: [Mixin]
+    plugins: [plugin]
   })
 })

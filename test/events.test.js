@@ -111,7 +111,7 @@ test("custom event", () => {
   app({
     view: state => "",
     events: {
-      loaded: (state, actions, emit) => emit("foo", "foo"),
+      loaded: (state, actions, _, emit) => emit("foo", "foo"),
       foo: (state, actions, data) => expect("foo").toBe(data)
     }
   })

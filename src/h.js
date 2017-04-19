@@ -28,3 +28,4 @@ export default function(tag, data) {
       }
     : tag(data, children)
 }
+

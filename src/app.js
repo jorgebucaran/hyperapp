@@ -162,7 +162,7 @@ export default function(app) {
   }
 
   function removeElement(parent, element, node) {
-    if (node.data.onRemove) {
+    if (node.data && node.data.onRemove) {
       node.data.onRemove(element)
     }
     parent.removeChild(element)

@@ -111,6 +111,19 @@ test("insert children on top", () => {
   ])
 })
 
+test("remove text node", () => {
+  TreeTest([
+    {
+      tree: h("main", {}, [h("div", {}, ["foo"]), "bar"]),
+      html: `<main><div>foo</div>bar</main>`
+    },
+    {
+      tree: h("main", {}, [h("div", {}, ["foo"])]),
+      html: `<main><div>foo</div></main>`
+    }
+  ])
+})
+
 test("replace keyed", () => {
   TreeTest([
     {

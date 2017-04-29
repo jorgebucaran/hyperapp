@@ -28,7 +28,7 @@ test("/", () => {
 test("*", () => {
   app({
     view: {
-      "*": state => h("div", {}, "foo"),
+      "*": state => h("div", {}, "foo")
     },
     plugins: [Router],
     events: {
@@ -78,8 +78,13 @@ test("route params", () => {
   app({
     view: {
       "/:foo/:bar/:baz": state =>
-        h("ul", {}, Object.keys(state.router.params).map(key =>
-          h("li", {}, `${key}:${state.router.params[key]}`)))
+        h(
+          "ul",
+          {},
+          Object.keys(state.router.params).map(key =>
+            h("li", {}, `${key}:${state.router.params[key]}`)
+          )
+        )
     },
     plugins: [Router]
   })
@@ -99,8 +104,13 @@ test("route params separated by a dash", () => {
   app({
     view: {
       "/:foo-:bar-:baz": state =>
-        h("ul", {}, Object.keys(state.router.params).map(key =>
-          h("li", {}, `${key}:${state.router.params[key]}`)))
+        h(
+          "ul",
+          {},
+          Object.keys(state.router.params).map(key =>
+            h("li", {}, `${key}:${state.router.params[key]}`)
+          )
+        )
     },
     plugins: [Router]
   })

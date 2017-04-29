@@ -8,9 +8,9 @@ app({
 })
 ```
 
-The app function renders the given view and appends it to <samp>[document.body](https://developer.mozilla.org/en-US/docs/Web/API/Document/body)</samp>.
+The <samp>app</samp> function renders the given view and appends it to <samp>[document.body](https://developer.mozilla.org/en-US/docs/Web/API/Document/body)</samp>.
 
-To mount the application on a different element, use the <samp>[root](/docs/api.md#root)</samp> property.
+To mount the application on a different element, use the [root](/docs/api.md#root) property.
 
 ```jsx
 app({
@@ -21,7 +21,7 @@ app({
 
 ## View and State
 
-The <samp>[view](/docs/api.md#view)</samp> is a function of the state. It is called every time the state is modified to reconstruct the application's [virtual node](/docs/virtual-nodes.md) tree which is used to update the DOM.
+The [view](/docs/api.md#view) is a function of the state. It is called every time the state is modified to reconstruct the application's [virtual node](/docs/virtual-nodes.md) tree which is used to update the DOM.
 
 ```jsx
 app({
@@ -30,7 +30,7 @@ app({
 })
 ```
 
-Use the <samp>[state](/docs/api.md#state)</samp> to describe your application's data model.
+Use the [state](/docs/api.md#state) to describe your application's data model.
 
 ```jsx
 app({
@@ -44,7 +44,7 @@ app({
 
 ## Actions
 
-Use <samp>[actions](/docs/api.md#actions)</samp> to update the state.
+Use [actions](/docs/api.md#actions) to update the state.
 
 ```jsx
 app({
@@ -110,7 +110,7 @@ app({
 })
 ```
 
-An action may return a <samp>[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)</samp>. This enables you to use [async functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function).
+An action may return a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise). This enables you to use [async functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function).
 
 ```jsx
 const delay = seconds =>
@@ -157,7 +157,7 @@ app({
 
 ## Events
 
-Use <samp>[events](/docs/api.md#events)</samp> to get notified when your application is completely loaded, before a view is rendered, etc.
+Use [events](/docs/api.md#events) to get notified when your application is completely loaded, before a view is rendered, etc.
 
 ```jsx
 app({
@@ -197,7 +197,7 @@ For a practical example see the implementation of the [Router](https://github.co
 
 ### Custom Events
 
-To create custom events, use the <samp>[emit](/docs/api.md#emit)</samp> function which is passed as the last argument to actions and events.
+To create custom events, use the <samp>[emit](/docs/api.md#emit)</samp> function which is passed as the last argument to actions/events.
 
 ```jsx
 app({
@@ -217,7 +217,7 @@ app({
 
 ## Plugins
 
-Use <samp>[plugins](/docs/api.md#events)</samp> to share bits of functionality across your application.
+Use [plugins](/docs/api.md#events) to share bits of functionality across your application.
 
 ```jsx
 const Logger = () => ({

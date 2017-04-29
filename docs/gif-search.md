@@ -1,6 +1,6 @@
 # Gif Search
 
-In this section we'll learn how to implement a gif search using the [Giphy API](https://api.giphy.com/) and update the state asynchronously.
+In this section we'll implement a gif search using the [Giphy API](https://api.giphy.com/) and learn how to update the state asynchronously.
 
 [View Online](https://codepen.io/hyperapp/pen/LybmLe?editors=0010)
 
@@ -52,7 +52,7 @@ app({
 })
 ```
 
-The state stores a string of the gif URL and a boolean to know when the browser is fetching a new gif.
+The state has a string for the gif URL and a boolean to know when the browser is fetching a new gif.
 
 ```jsx
 state: {
@@ -83,7 +83,7 @@ if (state.isFetching || text === "") {
 
 Inside <samp>actions.search</samp> we use the <samp>[fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)</samp> API to request a gif URL from Giphy.
 
-When <samp>fetch</samp> is done, we receive the payload with the gif information inside a <samp>[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)</samp>.
+When <samp>fetch</samp> is done, we receive the payload with the gif information inside a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise).
 
 ```jsx
 fetch(
@@ -96,5 +96,5 @@ fetch(
   })
 ```
 
-We then toggle <samp>isFetching</samp> to indicate we're available to request a new URL and update the state using <samp>actions.setUrl</samp>.
+Finally, we toggle <samp>isFetching</samp> to indicate we're available to request a new URL and update the state using <samp>actions.setUrl</samp>.
 

@@ -2,7 +2,7 @@
 
 In this section we'll walk through a countdown timer example and use <samp>[events.loaded](/docs/api.md#events-loaded)</samp> to register global events.
 
-[View Online](https://codepen.io/hyperapp/pen/xdRjrL?editors=0010)
+[View Online](https://codepen.io/hyperapp/pen/evOZLv?editors=0010)
 
 ```jsx
 const pad = n => (n < 10 ? "0" + n : n)
@@ -51,7 +51,7 @@ app({
 })
 ```
 
-In this application, the state stores two properties: <samp>count</samp>, a number to track the seconds elapsed; and <samp>paused</samp>, a boolean to check if the clock is running or not.
+Tthe state consists of <samp>count</samp>, a number to track the seconds elapsed; and <samp>paused</samp>, a boolean to check if the clock is running or not.
 
 ```jsx
 state: {

@@ -9,10 +9,10 @@ The easiest way to get started with HyperApp is to grab the minified library fro
 You can use a specific version too.
 
 ```html
-<script src="https://unpkg.com/hyperapp@0.8.1"></script>
+<script src="https://unpkg.com/hyperapp@0.9.0"></script>
 ```
 
-Or try it on [CodePen](http://codepen.io/jbucaran/pen/Qdwpxy?editors=0010).
+Or try it on [CodePen](https://codepen.io/hyperapp/pen/Qdwpxy?editors=0010).
 
 ## Hello World
 
@@ -36,7 +36,7 @@ Create an <samp>index.html</samp> file, paste the code below and open it in your
 
 ## How does it work?
 
-The <samp>[h](/docs/api.md#h)</samp> function returns an object that represents a DOM element. This object is called a [virtual node](/docs/virtual-node.md).
+The <samp>[h](/docs/api.md#h)</samp> function returns an object that represents a DOM element. This object is known as a [virtual node](/docs/virtual-node.md).
 
 ```js
 {
@@ -50,7 +50,7 @@ The <samp>[app](/docs/api.md#app)</samp> function renders the view and mounts it
 
 ## Hyperx/JSX
 
-You may prefer [Hyperx](/docs/hyperx.md)/[JSX](/docs/jsx.md) to describe your views and compile them to <samp>h</samp> function calls using a [Build Pipeline](#build-pipeline).
+You may prefer [Hyperx](/docs/hyperx.md)/[JSX](/docs/jsx.md) to describe your views and compile them to <samp>h</samp> function calls using a [build pipeline](#build-pipeline).
 
 If you are already using Hyperx, you may skip the compilation step at the expense of slightly inferior performance.
 

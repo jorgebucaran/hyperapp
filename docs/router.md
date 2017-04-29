@@ -25,7 +25,7 @@ When the page loads or the browser fires a <samp>[popstate](https://developer.mo
 |-------------------------|-----------------------------------|
 | <samp>*</samp>          | Match if no other route matches.
 | <samp>/</samp>          | /
-| <samp>/:foo</samp>      | Match using the regular expression <samp>[A-Za-z0-9]+</samp>. The params are stored in <samp>[state.router.params](#router-params)</samp>.
+| <samp>/:foo</samp>      | Match using the regular expression <samp>[A-Za-z0-9]+</samp>.</br>The params are stored in <samp>[state.router.params](#router-params)</samp>.
 
 
 To navigate to a different route use <samp>[actions.router.go](#actions-go)</samp>.

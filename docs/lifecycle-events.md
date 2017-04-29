@@ -24,7 +24,7 @@ Called before the element is removed from the DOM.
 
 ## Examples
 
-Integration with [CodeMirror](https://codemirror.net/).
+This example shows how to create a [custom tag](/docs/custom-tags.md) to wrap [CodeMirror](https://codemirror.net/).
 
 <a name="cb1"><a/>[View Online](https://hyperapp-code-mirror.glitch.me)
 
@@ -34,7 +34,8 @@ const editor = CodeMirror(node)
 
 const Editor = props => {
   const setOptions = props =>
-    Object.keys(props).forEach(key => editor.setOption(key, props[key]))
+    Object.keys(props).forEach(key =>
+      editor.setOption(key, props[key]))
 
   return (
     <div
@@ -47,3 +48,4 @@ const Editor = props => {
   )
 }
 ```
+

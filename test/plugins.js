@@ -4,7 +4,7 @@ import { expectHTMLToBe } from "./util"
 beforeEach(() => document.body.innerHTML = "")
 
 test("extend the state", () => {
-  const Plugin = app => ({
+  const plugin = app => ({
     state: {
       bar: app.state.foo
     }
@@ -23,7 +23,7 @@ test("extend the state", () => {
         })
       }
     },
-    plugins: [Plugin]
+    plugins: [plugin]
   })
 })
 
@@ -52,7 +52,7 @@ test("extend events", () => {
 })
 
 test("extend actions", () => {
-  const Plugin = app => ({
+  const plugin = app => ({
     actions: {
       foo: {
         bar: {
@@ -84,16 +84,16 @@ test("extend actions", () => {
         `
       }
     },
-    plugins: [Plugin]
+    plugins: [plugin]
   })
 })
 
 test("don't overwrite actions in the same namespace", () => {
-  const Plugin = app => ({
+  const plugin = app => ({
     actions: {
       foo: {
         bar: {
-          baz: (state, data) => {
+          baz: (state, actions, data) => {
             expect(state).toBe(true)
             expect(data).toBe("foo.bar.baz")
             return state
@@ -109,7 +109,7 @@ test("don't overwrite actions in the same namespace", () => {
     actions: {
       foo: {
         bar: {
-          qux: (state, data) => {
+          qux: (state, actions, data) => {
             expect(state).toBe(true)
             expect(data).toBe("foo.bar.qux")
           }
@@ -122,6 +122,6 @@ test("don't overwrite actions in the same namespace", () => {
         (state, actions) => actions.foo.bar.qux("foo.bar.qux")
       ]
     },
-    plugins: [Plugin]
+    plugins: [plugin]
   })
 })

@@ -35,11 +35,11 @@ export default function(app) {
         namespace[key] = function(data) {
           var result = action(
             state,
+            actions,
             emit("action", {
               name: name,
               data: data
             }).data,
-            actions,
             emit
           )
 
@@ -57,7 +57,7 @@ export default function(app) {
 
   function load() {
     render(state, view)
-    emit("loaded", emit)
+    emit("loaded")
   }
 
   function emit(name, data) {
@@ -110,7 +110,7 @@ export default function(app) {
       }
 
       for (var i in node.data) {
-        if (i === "onCreate") {
+        if (i === "oncreate") {
           node.data[i](element)
         } else {
           setElementData(element, i, node.data[i])
@@ -129,7 +129,7 @@ export default function(app) {
       }
     } else {
       try {
-        element[name.toLowerCase()] = value
+        element[name] = value
       } catch (_) {}
 
       if (typeof value !== "function") {
@@ -147,7 +147,7 @@ export default function(app) {
       var value = data[name]
       var oldValue = oldData[name]
 
-      if (name === "onUpdate") {
+      if (name === "onupdate") {
         value(element)
       } else if (value !== oldValue || value !== element[name]) {
         setElementData(element, name, value, oldValue)
@@ -162,8 +162,8 @@ export default function(app) {
   }
 
   function removeElement(parent, element, node) {
-    if (node.data && node.data.onRemove) {
-      node.data.onRemove(element)
+    if (node.data && node.data.onremove) {
+      node.data.onremove(element)
     }
     parent.removeChild(element)
   }

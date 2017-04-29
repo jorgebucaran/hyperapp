@@ -3,12 +3,12 @@ import { expectHTMLToBe } from "./util"
 
 beforeEach(() => document.body.innerHTML = "")
 
-test("onCreate", done => {
+test("oncreate", done => {
   app({
     state: 1,
     view: state =>
       h("div", {
-        onCreate: e => {
+        oncreate: e => {
           expect(state).toBe(1)
           done()
         }
@@ -16,12 +16,12 @@ test("onCreate", done => {
   })
 })
 
-test("onUpdate", done => {
+test("onupdate", done => {
   app({
     state: 1,
     view: state =>
       h("div", {
-        onUpdate: e => {
+        onupdate: e => {
           expect(state).toBe(2)
           done()
         }
@@ -35,12 +35,12 @@ test("onUpdate", done => {
   })
 })
 
-test("onRemove", done => {
+test("onremove", done => {
   app({
     state: true,
     view: state =>
       (state
-        ? h("ul", {}, [h("li"), h("li", { onRemove: done })])
+        ? h("ul", {}, [h("li"), h("li", { onremove: done })])
         : h("ul", {}, [h("li")])),
     actions: {
       toggle: state => !state

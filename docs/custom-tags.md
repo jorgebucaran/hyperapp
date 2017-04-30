@@ -34,7 +34,7 @@ Custom tags are similar to stateless components in other frameworks.
 
 ## JSX
 
-Custom tags and [JSX](/docs/jsx.md) work well together.
+Custom tags and [JSX](/docs/jsx.md) integrate well together.
 
 ```jsx
 <main id="app">

@@ -17,7 +17,7 @@ For an in-depth introduction to JSX, see the official [documentation](https://fa
 
 ## Setup
 
-To use JSX with HyperApp, we'll use a compiler to transform JSX into native HyperApp <samp>[h](/docs/h.md#h)</samp> function calls and a bundler to create a single bundle.js file we can deliver to the browser.
+To use JSX with HyperApp, we'll use a compiler to transform JSX into native HyperApp [h](/docs/h.md#h) function calls and a bundler to create a single bundle.js file we can deliver to the browser.
 
 In a new directory, create an <samp>index.html</samp> file:
 

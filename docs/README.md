@@ -1,8 +1,29 @@
 # Documentation
 
 * [Getting Started](/docs/getting-started.md)
-  * [Hyperx](/docs/hyperx.md)
-  * [JSX](/docs/jsx.md)
+* [Hyperx](/docs/hyperx.md)
+* [JSX](/docs/jsx.md)
+* [Virtual Nodes](/docs/virtual-nodes.md)
+* [Custom Tags](/docs/custom-tags.md)
+* [Keys](/docs/keys.md)
+* [Applications](/docs/applications.md)
+  * [View and State](/docs/applications.md#view-and-state)
+  * [Actions](/docs/applications.md#actions)
+  * [Events](/docs/applications.md#events)
+  * [Plugins](/docs/applications.md#plugins)
+* [Lifecycle Events](/docs/lifecycle-events.md)
+* [Router](/docs/router.md)
+* [Tutorials](/docs/tutorials.md)
+  * [Counter](/docs/counter.md)
+  * [Countdown Timer](/docs/countdown-timer.md)
+  * [Gif Search](/docs/gif-search.md)
+* [API](/docs/api.md)
+
+
+<!--
+* [Getting Started](/docs/getting-started.md)
+* [Hyperx](/docs/hyperx.md)
+* [JSX](/docs/jsx.md)
 * [Virtual Nodes](/docs/virtual-nodes.md)
 * [Custom Tags](/docs/custom-tags.md)
 * [Applications](/docs/applications.md)
@@ -45,4 +66,4 @@
     * [root](/docs/api.md#root)
   * [emit](/docs/api.md#emit)
 
-
+-->

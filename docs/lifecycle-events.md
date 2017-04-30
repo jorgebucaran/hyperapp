@@ -8,25 +8,25 @@ They are useful for starting animations, wrapping third party libraries that req
 
 Type: <samp>([element](https://developer.mozilla.org/en-US/docs/Web/API/Element))</samp>
 
-Called after an element is created and added to the DOM.
+Fired after an element is created and added to the DOM.
 
 ## <a name="onupdate"></a> onupdate
 
 Type: <samp>([element](https://developer.mozilla.org/en-US/docs/Web/API/Element))</samp>
 
-Called when the element's data is updated.
+Fired when the element's data is updated.
 
 ## <a name="onremove"></a> onremove
 
 Type: <samp>([element](https://developer.mozilla.org/en-US/docs/Web/API/Element))</samp>
 
-Called before the element is removed from the DOM.
+Fired before the element is removed from the DOM.
 
 ## Examples
 
-This example shows how to create a [custom tag](/docs/custom-tags.md) to wrap [CodeMirror](https://codemirror.net/).
+This example shows how to create a [custom tag](/docs/custom-tags.md) to wrap the [CodeMirror](https://codemirror.net/) editor.
 
-<a name="cb1"><a/>[View Online](https://hyperapp-code-mirror.glitch.me)
+[Try it online](https://hyperapp-code-mirror.glitch.me)
 
 ```jsx
 const node = document.createElement("div")

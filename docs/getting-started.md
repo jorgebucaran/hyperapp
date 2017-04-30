@@ -36,7 +36,7 @@ Create an <samp>index.html</samp> file, paste the code below and open it in your
 
 ## How does it work?
 
-The [h](/docs/api.md#h) function returns an object that represents a DOM element. This object is known as a [virtual node](/docs/virtual-node.md).
+The [h](/docs/api.md#h) function returns an object that represents a DOM element. This object is known as a [virtual node](/docs/virtual-nodes.md).
 
 ```js
 {

@@ -68,5 +68,36 @@ data: {
 }
 ```
 
-Attributes also include [lifecycle events](/docs/lifecycle-events.md) and meta data such as [keys](/docs/keys.md).
+Attributes also include [lifecycle events](/docs/lifecycle-events.md) and meta data such as [keys](#keys).
+
+## Keys
+
+Every time your application is rendered, a virtual node tree is created from scratch.
+
+Keys help identify which nodes were added, changed or removed from the new/old tree.
+
+Use keys to tell the render algorithm to re-order the children instead of mutating them.
+
+```jsx
+<ul>
+  {urls.map((url, id) => (
+    <li key={id}>
+      <img src={url} />
+    </li>
+  ))}
+</ul>
+```
+
+For example, use keys to force an element to be created only once.
+
+```jsx
+<ul>
+  <li key="hyper">Hyper</li>
+  <li>Super</li>
+  <li>Ultra</li>
+</ul>
+```
+
+If new elements are added to the list, the position of the keyed element will change. Using a key in this way, we make sure <samp>Hyper</samp> is always inserted in the right position instead of mutating its siblings.
+
 

@@ -1,4 +1,4 @@
-# Router
+# Routing
 
 To add routing to your application, use the Router plugin.
 

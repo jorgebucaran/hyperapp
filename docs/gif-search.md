@@ -83,7 +83,7 @@ if (state.isFetching || text === "") {
 
 Inside <samp>actions.search</samp> we use the <samp>[fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)</samp> API to request a gif URL from Giphy.
 
-When <samp>fetch</samp> is done, we receive the payload with the gif information inside a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise).
+When <samp>fetch</samp> is done, we receive the payload with the gif information inside a [promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise).
 
 ```jsx
 fetch(

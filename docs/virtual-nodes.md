@@ -1,10 +1,12 @@
 # Virtual Nodes
 
-A virtual node is a JavaScript object that describes an HTML/DOM tree.
+A virtual node is an object that describes an HTML/DOM tree.
+
+It consists of a <samp>tag</samp>, e.g. <samp>div</samp>, <samp>svg</samp>, etc., <samp>data</samp> attributes and an array of <samp>children</samp>.
 
 ```js
 {
-  tag: "main",
+  tag: "div",
   data: {
     id: "app"
   },
@@ -16,18 +18,18 @@ A virtual node is a JavaScript object that describes an HTML/DOM tree.
 }
 ```
 
-The virtual DOM engine consumes this object to produce the following HTML.
+The virtual DOM engine consumes this object to produce an HTML tree.
 
 ```html
-<main id="app">
+<div id="app">
   <h1>Hi.</h1>
-</main>
+</div>
 ```
 
-To create virtual nodes you can use the <samp>[h](/docs/api.md#h)</samp> function:
+To create a virtual node use the [h](/docs/api.md#h) function:
 
 ```js
-h("main", { id: "app" }, [
+h("div", { id: "app" }, [
   h("h1", null, "Hi.")
 ])
 ```
@@ -35,17 +37,36 @@ h("main", { id: "app" }, [
 [Hyperx](/docs/hyperx.md):
 
 ```js
-const main = html`
-  <main id="app">
+const div = html`
+  <div id="app">
     <h1>Hi.</h1>
-  </main>`
+  </div>`
 ```
 
 or [JSX](/docs/jsx.md):
 
 ```jsx
-const main =
-  <main id="app">
+const div =
+  <div id="app">
     <h1>Hi.</h1>
-  </main>
+  </div>
 ```
+
+## Data Attributes
+
+Any valid HTML [attributes/properties](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes), [events](https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers), [styles](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference), etc.
+
+```js
+data: {
+  id: "myButton",
+  class: "PrimaryButton",
+  onclick: () => alert("Hi."),
+  disabled: false,
+  style: {
+    fontSize: "3em"
+  }
+}
+```
+
+Attributes also include [lifecycle events](/docs/lifecycle-events.md) and meta data such as [keys](/docs/keys.md).
+

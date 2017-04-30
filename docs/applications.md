@@ -1,6 +1,6 @@
 # Applications
 
-To create applications use the <samp>[app](/docs/api#app)</samp> function.
+To create applications use the [app](/docs/api#app) function.
 
 ```jsx
 app({
@@ -8,7 +8,7 @@ app({
 })
 ```
 
-The <samp>app</samp> function renders the given view and appends it to <samp>[document.body](https://developer.mozilla.org/en-US/docs/Web/API/Document/body)</samp>.
+The app function renders the given view and appends it to <samp>[document.body](https://developer.mozilla.org/en-US/docs/Web/API/Document/body)</samp>.
 
 To mount the application on a different element, use the [root](/docs/api.md#root) property.
 
@@ -110,7 +110,7 @@ app({
 })
 ```
 
-An action may return a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise). This enables you to use [async functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function).
+An action may return a [promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise). This enables you to use [async functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function).
 
 ```jsx
 const delay = seconds =>
@@ -197,7 +197,7 @@ For a practical example see the implementation of the [Router](https://github.co
 
 ### Custom Events
 
-To create custom events, use the <samp>[emit](/docs/api.md#emit)</samp> function which is passed as the last argument to actions/events.
+To create custom events, use the [emit](/docs/api.md#emit) function which is passed as the last argument to actions/events.
 
 ```jsx
 app({

@@ -17,7 +17,7 @@ const hello = html`
 
 ## Setup
 
-We'll use [hyperxify](https://github.com/substack/hyperxify) to transform Hyperx into native HyperApp <samp>[h](/docs/h.md#h)</samp> function calls and a bundler to create a single bundle.js file we can deliver to the browser.
+We'll use [hyperxify](https://github.com/substack/hyperxify) to transform Hyperx into native HyperApp [h](/docs/h.md#h) function calls and a bundler to create a single bundle.js file we can deliver to the browser.
 
 There are caveats, however, the ES6 module syntax is incompatible with hyperxify, so we must use the Node.js require function.
 

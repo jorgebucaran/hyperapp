@@ -36,7 +36,7 @@ Create an <samp>index.html</samp> file, paste the code below and open it in your
 
 ## How does it work?
 
-The <samp>[h](/docs/api.md#h)</samp> function returns an object that represents a DOM element. This object is known as a [virtual node](/docs/virtual-node.md).
+The [h](/docs/api.md#h) function returns an object that represents a DOM element. This object is known as a [virtual node](/docs/virtual-node.md).
 
 ```js
 {
@@ -46,11 +46,11 @@ The <samp>[h](/docs/api.md#h)</samp> function returns an object that represents 
 }
 ```
 
-The <samp>[app](/docs/api.md#app)</samp> function renders the view and mounts it on the DOM.
+The [app](/docs/api.md#app) function renders the view and mounts it on the DOM.
 
 ## Hyperx/JSX
 
-You may prefer [Hyperx](/docs/hyperx.md)/[JSX](/docs/jsx.md) to describe your views and compile them to <samp>h</samp> function calls using a [build pipeline](#build-pipeline).
+You may prefer [Hyperx](/docs/hyperx.md)/[JSX](/docs/jsx.md) to describe your views and compile them to h function calls using a [build pipeline](#build-pipeline).
 
 If you are already using Hyperx, you may skip the compilation step at the expense of slightly inferior performance.
 
@@ -94,7 +94,7 @@ To create applications ready for production you will be using:
 
 ### Why?
 
-To compile [Hyperx](/docs/hyperx.md) or [JSX](/docs/jsx.md) into native HyperApp <samp>[h](/docs/api.md#h)</samp> function calls.
+To compile [Hyperx](/docs/hyperx.md) or [JSX](/docs/jsx.md) into native HyperApp [h](/docs/api.md#h) function calls.
 
 The generated code is smaller and faster than the alternative: sending a parser down the wire and compiling the view in the user's browser.
 

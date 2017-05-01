@@ -24,8 +24,8 @@ When the page loads or the browser fires a <samp>[popstate](https://developer.mo
 |route                    | location.pathname    |
 |-------------------------|-----------------------------------|
 | <samp>*</samp>          | Match if no other route matches.
-| <samp>/</samp>          | /
-| <samp>/:foo</samp>      | Match <samp>[A-Za-z0-9]+</samp>. See <samp>[state.router.params](#router-params)</samp>.
+| <samp>/</samp>          | <samp>/</samp>
+| <samp>/:foo</samp>      | Match <samp>[A-Za-z0-9]+</samp>. See <samp>[params](#router-params)</samp>.
 
 
 To navigate to a different route use <samp>[actions.router.go](#actions-go)</samp>.
@@ -51,7 +51,7 @@ The matched route.
 ### <a name="actions-go"></a>go
 
 Type: <samp>([path](#router_go_path))</samp>
-* path: <samp>string</samp>
+* <samp>path: string</samp>
 
 Update <samp>[location.pathname](https://developer.mozilla.org/en-US/docs/Web/API/Location)</samp>.
 
@@ -60,9 +60,9 @@ Update <samp>[location.pathname](https://developer.mozilla.org/en-US/docs/Web/AP
 
 Type: <samp>([state](/docs/api.md#state), [actions](/docs/api.md#actions), [data](#events-route-data), [emit](/docs/api.md#emit)) | Array\<[Type](#events-route)\></samp>
 
-* <a name="events-route-data"></a>data
-  * [params](#state-params)
-  * [match](#state-match)
+* <a name="events-route-data"></a><samp>data</samp>
+  * <samp>[params](#state-params)</samp>
+  * <samp>[match](#state-match)</samp>
 
 Fired when a route is matched.
 

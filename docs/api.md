@@ -16,27 +16,30 @@
   * [root](#root)
 * [emit](#emit)
 
+This is the reference guide to HyperApp functions. This document is not a tutorial, for a step-by-step walk-through see [Getting Started](/docs/getting-started.md).
+
+
 ## <a name="h"></a> h
 
 Type: <samp>([tag](#h-tag), [data](#h-data), [children](#h-children)): [vnode]</samp>
 
 [vnode]: /docs/virtual-nodes.md
 
-* <a name="h-tag"></a>tag: <samp>string | ([props](#h-data), [children](#h-children)): [vnode]</samp>
-* <a name="h-data"></a>data: [attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes), [styles](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference), [events](https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers), [lifecycle events](/docs/lifecycle-events.md), etc.
-* <a name="h-children"></a>children: <samp>string | Array\<[vnode]\>
+* <a name="h-tag"></a><samp>tag: string | ([props](#h-data), [children](#h-children)): [vnode]</samp>
+* <a name="h-data"></a><samp>data</samp>: [attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes), [styles](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference), [events](https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers), [lifecycle events](/docs/lifecycle-events.md), etc.
+* <a name="h-children"></a><samp>children: string | Array\<[vnode]\>
 
 ## <a name="app"></a>app
 
 Type: <samp>([props](#app-props))</samp>
 
-* <a name="app-props"></a> props
-  * [state](#state)
-  * [view](#view)
-  * [actions](#actions)
-  * [events](#events)
-  * [plugins](#plugins)
-  * [root](#root)
+* <a name="app-props"></a> <samp>props</samp>
+  * <samp>[state](#state)</samp>
+  * <samp>[view](#view)</samp>
+  * <samp>[actions](#actions)</samp>
+  * <samp>[events](#events)</samp>
+  * <samp>[plugins](#plugins)</samp>
+  * <samp>[root](#root)</samp>
 
 <a name="app-props"></a>
 
@@ -53,7 +56,7 @@ Type: <samp>([state](#state), [actions](#actions)): [vnode]</samp>
 
 Type: <samp>([state](#state), [actions](#actions), [data](#actions-data), [emit](#emit))</samp>
 
-* <a name="actions-data"></a> data: <samp>any</samp>
+* <a name="actions-data"></a> <samp>data: any</samp>
 
 ### <a name="events"></a>events
 #### <a name="events-loaded"></a>loaded
@@ -67,8 +70,8 @@ Fired after the view is mounted on the DOM.
 Type: <samp>([state](#state), [actions](#actions), [data](#events-action-data), [emit](#emit)): [data](#events-action-data) | Array\<[Type](#events-action)\></samp>
 
 * <a name="events-action-data"></a>data
-  * name: <samp>string</samp>
-  * data: <samp>any</samp>
+  * <samp>name: string</samp>
+  * <samp>data: any</samp>
 
 Fired before an action is triggered.
 
@@ -76,7 +79,7 @@ Fired before an action is triggered.
 
 Type: <samp>([state](#state), [actions](#actions), [data](#events-update-data), [emit](#emit)): [data](#events-update-data) | Array\<[Type](#events-update)\></samp>
 
-* <a name="events-update-data"></a>data: the updated fragment of the state.
+* <a name="events-update-data"></a><samp>data</samp>: the updated fragment of the state.
 
 Fired before the state is updated.
 
@@ -84,7 +87,7 @@ Fired before the state is updated.
 
 Type: <samp>([state](#state), [actions](#actions), [data](#events-render-data), [emit](#emit)): [data](#events-render-data) | Array\<[Type](#events-render)\></samp>
 
-* <a name="events-render-data"></a>data: the [view](#view).
+* <a name="events-render-data"></a><samp>data: [view](#view)</samp>
 
 Fired before the view is rendered.
 
@@ -97,9 +100,9 @@ Type: <samp>Array\<[Plugin](#plugins-plugin)\></samp>
 Type: <samp>([props](#app-props)): [props](#plugin-props)</samp>
 
 * <a name="plugin-props"></a>props
-  * [state](#state)
-  * [actions](#actions)
-  * [events](#events)
+  * <samp>[state](#state)</samp>
+  * <samp>[actions](#actions)</samp>
+  * <samp>[events](#events)</samp>
 
 ### <a name="root"></a>root
 
@@ -109,5 +112,5 @@ Type: <samp>[Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) 
 
 Type: <samp>([event](#emit-event), [data](#emit-data)): [data](#emit-data)</samp>
 
-* <a name="emit-event"></a>event: <samp>string</samp>
-* <a name="emit-data"></a>data: <samp>any</samp>
+* <a name="emit-event"></a><samp>event: string</samp>
+* <a name="emit-data"></a><samp>data: any</samp>

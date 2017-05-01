@@ -60,7 +60,7 @@ state: {
 }
 ```
 
-The view displays the current count wrapped in a \<h1\> element and binds two buttons to <samp>actions.toggle</samp> and <samp>actions.reset</samp> respectively.
+The view displays the current count wrapped in a <samp>\<h1\></samp> element and binds two buttons to <samp>actions.toggle</samp> and <samp>actions.reset</samp> respectively.
 
 There's also some logic in <samp>humanizeTime</samp> to display the time in a familiar format like <samp>hh:mm:ss</samp>.
 
@@ -84,5 +84,3 @@ if (state.count === 0) {
   actions.drop()
 }
 ```
-
-

@@ -135,7 +135,7 @@ app({
 
 ### Namespaces
 
-Namespaces let you organize actions under categories and help reduce name collisions as your application grows large.
+Namespaces let you organize actions into categories and help reduce name collisions as your application grows larger.
 
 ```jsx
 app({
@@ -157,7 +157,7 @@ app({
 
 ## Events
 
-Use [events](/docs/api.md#events) to get notified when your application is completely loaded, before a view is rendered, etc.
+Use [events](/docs/api.md#events) to get notified when your application is completely loaded, an action is called, before a view is rendered etc.
 
 ```jsx
 app({
@@ -217,7 +217,7 @@ app({
 
 ## Plugins
 
-Use [plugins](/docs/api.md#events) to share bits of functionality across your application.
+Use [plugins](/docs/api.md#events) to represent and employ common functionality in your applications. Plugin <samp>state</samp>, <samp>actions</samp> and <samp>events</samp> gets merged with any application <samp>options</samp> at runtime by the <samp>app</samp> function.
 
 ```jsx
 const Logger = () => ({
@@ -239,5 +239,3 @@ app({
   plugins: [Logger]
 })
 ```
-
-

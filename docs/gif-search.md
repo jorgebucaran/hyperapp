@@ -73,7 +73,7 @@ The view consists of a text input and an <samp>img</samp> element to display the
 
 To handle user input, the <samp>onkeyup</samp> event was used, but <samp>onkeydown</samp> or <samp>oninput</samp> would have worked just as well.
 
-On every key stroke <samp>actions.search</samp> is called and a new gif is requested, but only if we're not between another fetch request or the text input is empty.
+On every key stroke <samp>actions.search</samp> is called and a new gif is requested, but only if a fetch is not already pending and the text input is not empty.
 
 ```jsx
 if (state.isFetching || text === "") {
@@ -96,5 +96,4 @@ fetch(
   })
 ```
 
-Finally, we toggle <samp>isFetching</samp> to indicate we're available to request a new URL and update the state using <samp>actions.setUrl</samp>.
-
+Once data has been received, the <samp>toggleFetching</samp> action is called (which allows further fetch requests to be made) and the state is updated by passing the fetched GIF url to <samp>actions.setUrl</samp>.

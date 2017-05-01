@@ -1,6 +1,6 @@
 # Getting Started
 
-The easiest way to get started with HyperApp is to grab the minified library from a CDN.
+The easiest way to get started with hyperapp is to grab the minified library from a CDN.
 
 ```html
 <script src="https://unpkg.com/hyperapp"></script>
@@ -16,27 +16,43 @@ Or try it on [CodePen](https://codepen.io/hyperapp/pen/Qdwpxy?editors=0010).
 
 ## Hello World
 
-Create an <samp>index.html</samp> file, paste the code below and open it in your browser. Or download it [here](https://rawgit.com/jbucaran/469c2e2aed3b9222bf6d307920741008/raw/8bd3ce171772808d240870374f343d7c278f9287/index.html).
+Create an html file, paste the code below and open it in your browser. Or download it [here](https://rawgit.com/jbucaran/469c2e2aed3b9222bf6d307920741008/raw/8bd3ce171772808d240870374f343d7c278f9287/index.html).
 
 ```html
 <body>
-  <script src="https://unpkg.com/hyperapp"></script>
-  <script>
+<script src="https://unpkg.com/hyperapp"></script>
+<script>
 
-  const { h, app } = hyperapp
+const { h, app } = hyperapp
 
-  app({
-    state: "Hi.",
-    view: state => h("h1", null, state)
-  })
+app({
+  state: "Hi.",
+  view: state => h("h1", null, state)
+})
 
-  </script>
+</script>
 </body>
 ```
 
-## How does it work?
+HyperApp is available on the global scope when using a CDN.
 
-The [h](/docs/api.md#h) function returns an object that represents a DOM element. This object is known as a [virtual node](/docs/virtual-nodes.md).
+```js
+const { h, app } = hyperapp
+```
+
+The state represents your application's data.
+
+```js
+state: "Hi."
+```
+
+And the view its user interface.
+
+```js
+view: state => h("h1", null, state)
+```
+
+The [h](/docs/api.md#h) function returns a [virtual node](/docs/virtual-nodes.md).
 
 ```js
 {
@@ -58,23 +74,23 @@ Here is the previous example rewritten in Hyperx.
 
 ```html
 <body>
-  <script src="https://unpkg.com/hyperapp"></script>
-  <script src="https://wzrd.in/standalone/hyperx"></script>
-  <script>
+<script src="https://unpkg.com/hyperapp"></script>
+<script src="https://wzrd.in/standalone/hyperx"></script>
+<script>
 
-  const { h, app } = hyperapp
-  const html = hyperx(h)
+const { h, app } = hyperapp
+const html = hyperx(h)
 
-  app({
-    state: "Hi.",
-    view: state => html`<h1>${state}</h1>`
-  })
+app({
+  state: "Hi.",
+  view: state => html`<h1>${state}</h1>`
+})
 
-  </script>
+</script>
 </body>
 ```
 
-This workflow is fine for simple demos, but not the best for real world applications.
+This workflow is fine for simple demos, but not recommended for real world applications.
 
 ## Build Pipeline
 
@@ -92,9 +108,7 @@ To create applications ready for production you will be using:
 * A **compiler** e.g. [Babel] or [Bublé]. It transforms modern JavaScript into code compatible with older browsers.
 * A **bundler**, e.g. [Webpack], [Rollup] or [Browserify]. It takes modules and their dependencies and generates a single bundle that can be delivered to the browser.
 
-### Why?
-
-To compile [Hyperx](/docs/hyperx.md) or [JSX](/docs/jsx.md) into native HyperApp [h](/docs/api.md#h) function calls.
+With a build pipeline you can compile [Hyperx](/docs/hyperx.md)/[JSX](/docs/jsx.md) into native [h](/docs/api.md#h) function calls.
 
 The generated code is smaller and faster than the alternative: sending a parser down the wire and compiling the view in the user's browser.
 
@@ -107,4 +121,20 @@ Hyperx/JSX in:
 Vanilla out:
 ```jsx
 h("main", { id: "app" }, "Hi.")
+```
+
+### Importing
+
+You will be using Node.js <samp>require</samp> or ES6 modules <samp>[import](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import)</samp> syntax to load HyperApp depending on your setup.
+
+ES6 modules:
+
+```jsx
+import { h, app } from "hyperapp"
+```
+
+CommonJS:
+
+```js
+const { h, app } = require("hyperapp")
 ```

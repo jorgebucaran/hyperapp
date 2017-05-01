@@ -2,13 +2,13 @@
 
 [Hyperx](https://github.com/substack/hyperx) is a standards-compliant ES6 tagged [template string function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#Tagged_template_literals) factory. It is a pure JavaScript alternative to [JSX](/docs/jsx.md).
 
-Hyperx is used as follows:
+Hyperx is used like this:
 
 ```js
 const hyperx = require("hyperx")
 const html = hyperx(h)
 
-const hello = html`
+const main = html`
   <div>
     <h1>Hello.</h1>
     <button onclick=${() => alert("Hi")}>Click</button>

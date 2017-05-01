@@ -1,6 +1,6 @@
 # Applications
 
-To create applications use the [app](/docs/api#app) function.
+To create an application use the [app](/docs/api#app) function.
 
 ```jsx
 app({

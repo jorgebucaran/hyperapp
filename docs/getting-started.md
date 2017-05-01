@@ -110,7 +110,7 @@ To create applications ready for production you will be using:
 
 With a build pipeline you can compile [Hyperx](/docs/hyperx.md)/[JSX](/docs/jsx.md) into native [h](/docs/api.md#h) function calls.
 
-The generated code is smaller and faster than the alternative: sending a parser down the wire and compiling the view in the user's browser.
+The generated code is smaller and faster than the alternative; which is to send a parser down the wire and compile views at runtime in the browser.
 
 Hyperx/JSX in:
 

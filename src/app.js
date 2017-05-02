@@ -217,21 +217,11 @@ export default function(app) {
           reusableNode = reusableChild[1]
         }
 
-        if (null == oldKey && null == newKey) {
-          patch(element, oldElement, oldChild, newChild)
-          j++
-          i++
-        } else if (null == oldKey && null != newKey) {
-          if (reusableElement) {
-            element.insertBefore(reusableElement, oldElement)
-            patch(element, reusableElement, reusableNode, newChild)
-          } else {
-            patch(element, oldElement, null, newChild)
+        if (null == newKey) {
+          if (null == oldKey) {
+            patch(element, oldElement, oldChild, newChild)
+            j++
           }
-
-          j++
-          newKeys[newKey] = newChild
-        } else if (null != oldKey && null == newKey) {
           i++
         } else {
           if (oldKey === newKey) {

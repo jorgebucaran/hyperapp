@@ -1,6 +1,6 @@
-# Applications
+# Core Concepts
 
-To create an application use the [app](/docs/api#app) function.
+To create an application use the [app](/docs/api.md#app) function.
 
 ```jsx
 app({

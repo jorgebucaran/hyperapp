@@ -2,7 +2,7 @@
 
 In this section we'll walk through a countdown timer example and use <samp>[events.loaded](/docs/api.md#events-loaded)</samp> to register global events.
 
-[View Online](https://codepen.io/hyperapp/pen/evOZLv?editors=0010)
+[Try it online](https://codepen.io/hyperapp/pen/evOZLv?editors=0010)
 
 ```jsx
 const pad = n => (n < 10 ? "0" + n : n)

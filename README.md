@@ -37,12 +37,11 @@ No software is free of bugs. If you're not sure if something is a bug or not, [f
 
 The documentation is located in the [/docs](/docs) directory.
 
-## Links
+## Community
 
 * [Slack](https://hyperappjs.herokuapp.com)
 * [/r/hyperapp](https://www.reddit.com/r/hyperapp)
 * [Twitter](https://twitter.com/hyperappjs)
-* [Examples](https://hyperapp.glitch.me)
 
 ## License
 

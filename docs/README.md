@@ -12,7 +12,7 @@
   * [Plugins](/docs/applications.md#plugins)
 * [Lifecycle Events](/docs/lifecycle-events.md)
 * [Virtual Nodes](/docs/virtual-nodes.md)
-  * [Keys](/docs/keys.md)
+  * [Keys](/docs/virtual-nodes.md#keys)
 * [Custom Tags](/docs/custom-tags.md)
 * [Routing](/docs/routing.md)
 * [Tutorials](/docs/tutorials.md)

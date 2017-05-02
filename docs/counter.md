@@ -2,7 +2,7 @@
 
 In this section we'll walk through a simple counter example.
 
-[View Online](https://codepen.io/hyperapp/pen/zNxZLP?editors=0010)
+[Try it online](https://codepen.io/hyperapp/pen/zNxZLP?editors=0010)
 
 ```jsx
 app({

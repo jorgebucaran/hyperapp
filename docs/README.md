@@ -4,6 +4,7 @@
 * [Hyperx](/docs/hyperx.md)
 * [JSX](/docs/jsx.md)
 * [Applications](/docs/applications.md)
+  * [Root](/docs/applications.md#root)
   * [View and State](/docs/applications.md#view-and-state)
   * [Actions](/docs/applications.md#actions)
   * [Events](/docs/applications.md#events)

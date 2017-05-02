@@ -98,6 +98,6 @@ For example, use keys to force an element to be created only once.
 </ul>
 ```
 
-If new elements are added to the list, the position of the keyed element will change. Using a key in this way, we make sure <samp>Hyper</samp> is always inserted in the right position instead of mutating its siblings.
+If new elements are added to the list, the position of the keyed element will change. Using a key in this way, <samp>hyper</samp> is always inserted in the right position instead of mutating its siblings for the same result.
 
 

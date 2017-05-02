@@ -40,7 +40,7 @@ HyperApp is available on the global scope when using a CDN.
 const { h, app } = hyperapp
 ```
 
-The state represents your application's data.
+The state represents the application's data.
 
 ```js
 state: "Hi."
@@ -68,7 +68,7 @@ The [app](/docs/api.md#app) function renders the view and mounts it on the DOM.
 
 You may prefer [Hyperx](/docs/hyperx.md)/[JSX](/docs/jsx.md) to describe your views and compile them to h function calls using a [build pipeline](#build-pipeline).
 
-If you are already using Hyperx, you may skip the compilation step at the expense of slightly inferior performance.
+With Hyperx, you may skip the compilation step at the expense of slightly inferior performance.
 
 Here is the previous example rewritten in Hyperx.
 
@@ -108,9 +108,9 @@ To create applications ready for production you will be using:
 * A **compiler** e.g. [Babel] or [Bublé]. It transforms modern JavaScript into code compatible with older browsers.
 * A **bundler**, e.g. [Webpack], [Rollup] or [Browserify]. It takes modules and their dependencies and generates a single bundle that can be delivered to the browser.
 
-With a build pipeline you can compile [Hyperx](/docs/hyperx.md)/[JSX](/docs/jsx.md) into native [h](/docs/api.md#h) function calls.
+With a build pipeline we are able to compile [Hyperx](/docs/hyperx.md)/[JSX](/docs/jsx.md) into native [h](/docs/api.md#h) function calls.
 
-The generated code is smaller and faster than the alternative; which is to send a parser down the wire and compile views at runtime in the browser.
+The generated code is smaller and faster than the alternative; which is to send the parser down the wire and compile the view in the browser.
 
 Hyperx/JSX in:
 
@@ -125,7 +125,7 @@ h("main", { id: "app" }, "Hi.")
 
 ### Importing
 
-You will be using Node.js <samp>require</samp> or ES6 modules <samp>[import](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import)</samp> syntax to load HyperApp depending on your setup.
+Depending on your setup you can use Node.js <samp>require</samp> or ES6 modules <samp>[import](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import)</samp> syntax to load HyperApp.
 
 ES6 modules:
 

@@ -10,6 +10,8 @@ app({
 
 The app function renders the given view and appends it to <samp>[document.body](https://developer.mozilla.org/en-US/docs/Web/API/Document/body)</samp>.
 
+## Root
+
 To mount the application on a different element, use the [root](/docs/api.md#root) property.
 
 ```jsx
@@ -217,7 +219,7 @@ app({
 
 ## Plugins
 
-Use [plugins](/docs/api.md#events) to represent and employ common functionality in your applications. Plugin <samp>state</samp>, <samp>actions</samp> and <samp>events</samp> gets merged with any application <samp>options</samp> at runtime by the <samp>app</samp> function.
+Use [plugins](/docs/api.md#events) to extend your application state, actions and events in a modular fashion.
 
 ```jsx
 const Logger = () => ({

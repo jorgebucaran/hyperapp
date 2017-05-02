@@ -20,6 +20,7 @@ app({
 
 When the page loads or the browser fires a <samp>[popstate](https://developer.mozilla.org/en-US/docs/Web/Events/popstate)</samp> event, the view whose key/route matches <samp>[location.pathname](https://developer.mozilla.org/en-US/docs/Web/API/Location)</samp> is rendered. If there is no match, <samp>*</samp> is used as a fallback.
 
+<a name="router-route"></a>
 
 |route                    | location.pathname    |
 |-------------------------|-----------------------------------|
@@ -58,7 +59,7 @@ Update <samp>[location.pathname](https://developer.mozilla.org/en-US/docs/Web/AP
 ## events
 ### <a name="events-route"></a>route
 
-Type: <samp>([state](/docs/api.md#state), [actions](/docs/api.md#actions), [data](#events-route-data), [emit](/docs/api.md#emit)) | Array\<[Type](#events-route)\></samp>
+Type: <samp>([state](/docs/api.md#state), [actions](/docs/api.md#actions), [data](#events-route-data), [emit](/docs/api.md#emit)) | [route](#events-route)\[\]</samp>
 
 * <a name="events-route-data"></a><samp>data</samp>
   * <samp>[params](#state-params)</samp>

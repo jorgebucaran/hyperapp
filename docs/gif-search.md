@@ -2,7 +2,7 @@
 
 In this section we'll implement a gif search using the [Giphy API](https://api.giphy.com/) and learn how to update the state asynchronously.
 
-[View Online](https://codepen.io/hyperapp/pen/LybmLe?editors=0010)
+[Try it online](https://codepen.io/hyperapp/pen/LybmLe?editors=0010)
 
 ```jsx
 const GIPHY_API_KEY = "dc6zaTOxFJmzC"
@@ -96,4 +96,4 @@ fetch(
   })
 ```
 
-Once data has been received, the <samp>toggleFetching</samp> action is called (which allows further fetch requests to be made) and the state is updated by passing the fetched GIF url to <samp>actions.setUrl</samp>.
+Once data has been received, <samp>actions.toggleFetching</samp> is called (which allows further fetch requests to be made) and the state is updated by passing the fetched gif URL to <samp>actions.setUrl</samp>.

@@ -5,7 +5,7 @@
   * [state](#state)
   * [view](#view)
   * [actions](#actions)
-    * [[_namespace._]action](#actions-action)
+    * [[namespace.]_foo_](#actions-foo)
   * [events](#events)
     * [loaded](#events-loaded)
     * [action](#events-action)
@@ -16,9 +16,6 @@
   * [root](#root)
 * [emit](#emit)
 
-This is the reference guide to HyperApp functions. This document is not a tutorial, for a step-by-step walk-through see [Getting Started](/docs/getting-started.md).
-
-
 ## <a name="h"></a> h
 
 Type: <samp>([tag](#h-tag), [data](#h-data), [children](#h-children)): [vnode]</samp>
@@ -26,8 +23,8 @@ Type: <samp>([tag](#h-tag), [data](#h-data), [children](#h-children)): [vnode]</
 [vnode]: /docs/virtual-nodes.md
 
 * <a name="h-tag"></a><samp>tag: string | ([props](#h-data), [children](#h-children)): [vnode]</samp>
-* <a name="h-data"></a><samp>data</samp>: [attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes), [styles](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference), [events](https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers), [lifecycle events](/docs/lifecycle-events.md), etc.
-* <a name="h-children"></a><samp>children: string | Array\<[vnode]\>
+* <a name="h-data"></a><samp>data: {}</samp>
+* <a name="h-children"></a><samp>children: string | [vnode]\[\]
 
 ## <a name="app"></a>app
 
@@ -52,7 +49,7 @@ Type: <samp>any</samp>
 Type: <samp>([state](#state), [actions](#actions)): [vnode]</samp>
 
 ### <a name="actions"></a>actions
-#### <a name="actions-action"></a>[_namespace._]action
+#### <a name="actions-foo"></a>[namespace.]_foo_
 
 Type: <samp>([state](#state), [actions](#actions), [data](#actions-data), [emit](#emit))</samp>
 
@@ -61,15 +58,15 @@ Type: <samp>([state](#state), [actions](#actions), [data](#actions-data), [emit]
 ### <a name="events"></a>events
 #### <a name="events-loaded"></a>loaded
 
-Type: <samp>([state](#state), [actions](#actions), _, [emit](#emit)) | Array\<[Type](#events-loaded)\></samp>
+Type: <samp>([state](#state), [actions](#actions), _, [emit](#emit)) | [events](#events-loaded)\[\]</samp>
 
 Fired after the view is mounted on the DOM.
 
 #### <a name="events-action"></a>action
 
-Type: <samp>([state](#state), [actions](#actions), [data](#events-action-data), [emit](#emit)): [data](#events-action-data) | Array\<[Type](#events-action)\></samp>
+Type: <samp>([state](#state), [actions](#actions), [data](#events-action-data), [emit](#emit)): [data](#events-action-data) | [action](#events-action)\[\]</samp>
 
-* <a name="events-action-data"></a>data
+* <a name="events-action-data"></a><samp>data</samp>
   * <samp>name: string</samp>
   * <samp>data: any</samp>
 
@@ -77,7 +74,7 @@ Fired before an action is triggered.
 
 #### <a name="events-update"></a>update
 
-Type: <samp>([state](#state), [actions](#actions), [data](#events-update-data), [emit](#emit)): [data](#events-update-data) | Array\<[Type](#events-update)\></samp>
+Type: <samp>([state](#state), [actions](#actions), [data](#events-update-data), [emit](#emit)): [data](#events-update-data) | [update](#events-update)\[\]</samp>
 
 * <a name="events-update-data"></a><samp>data</samp>: the updated fragment of the state.
 
@@ -85,15 +82,13 @@ Fired before the state is updated.
 
 #### <a name="events-render"></a>render
 
-Type: <samp>([state](#state), [actions](#actions), [data](#events-render-data), [emit](#emit)): [data](#events-render-data) | Array\<[Type](#events-render)\></samp>
-
-* <a name="events-render-data"></a><samp>data: [view](#view)</samp>
+Type: <samp>([state](#state), [actions](#actions), [view](#view), [emit](#emit)): [view](#view) | [render](#events-render)\[\]</samp>
 
 Fired before the view is rendered.
 
 ### <a name="plugins"></a>plugins
 
-Type: <samp>Array\<[Plugin](#plugins-plugin)\></samp>
+Type: <samp>[Plugin](#plugins-plugin)\[\]</samp>
 
 #### <a name="plugins-plugin"></a>Plugin
 

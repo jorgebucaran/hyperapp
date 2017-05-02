@@ -1,5 +1,6 @@
 # Documentation
 
+* [Index](/docs/index.md)
 * [Getting Started](/docs/getting-started.md)
 * [Hyperx](/docs/hyperx.md)
 * [JSX](/docs/jsx.md)

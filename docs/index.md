@@ -11,8 +11,7 @@ Below is an alphabetical list of several terms and concepts used across the docu
 
 ##### B
 [babel](https://github.com/babel/babel)<br/>
-[<samp>.babelrc</samp>](https://babeljs.io/docs/usage/babelrc/)<br/>
-[<samp>document.body</samp>](https://developer.mozilla.org/en-US/docs/Web/API/Document/body)<br/>
+[.babelrc](https://babeljs.io/docs/usage/babelrc/)<br/>
 [build pipeline](/docs/getting-started.md#build-pipeline)<br/>
 [buble](https://gitlab.com/Rich-Harris/buble)<br/>
 [browserify](https://github.com/substack/node-browserify)<br/>
@@ -29,7 +28,7 @@ Below is an alphabetical list of several terms and concepts used across the docu
 [events, lifecycle](/docs/lifecycle-events.md)<br/>
 
 ##### F
-[<samp>fetch</samp>](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)<br/>
+[fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)<br/>
 
 ##### G
 [<samp>actions.router.go</samp>](/docs/routing.md#actions-go)<br/>

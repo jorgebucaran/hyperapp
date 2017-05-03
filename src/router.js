@@ -21,8 +21,8 @@ export default function(app) {
       },
       render: function(state, actions, view, emit) {
         return view[
-          (state.router ||
-            (state.router = match(location.pathname, emit))).match
+          (state.router || (state.router = match(location.pathname, emit)))
+            .match
         ]
       }
     }
@@ -37,13 +37,12 @@ export default function(app) {
 
       if (!match && route !== "*") {
         data.replace(
-          new RegExp(
+          RegExp(
             "^" +
               route
                 .replace(/\//g, "\\/")
                 .replace(/:([A-Za-z0-9_]+)/g, function(_, key) {
                   keys.push(key)
-
                   return "([-A-Za-z0-9_]+)"
                 }) +
               "/?$",

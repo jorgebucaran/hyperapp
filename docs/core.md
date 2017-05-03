@@ -1,6 +1,6 @@
 # Core Concepts
 
-To create an application use the [app](/docs/api.md#app) function.
+To create an application use the [<samp>app</samp>](/docs/api.md#app) function.
 
 ```jsx
 app({
@@ -199,7 +199,7 @@ For a practical example see the implementation of the [Router](https://github.co
 
 ### Custom Events
 
-To create custom events, use the [emit](/docs/api.md#emit) function which is passed as the last argument to actions/events.
+To create custom events, use the [<samp>emit</samp>](/docs/api.md#emit) function which is passed as the last argument to actions/events.
 
 ```jsx
 app({

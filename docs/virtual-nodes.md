@@ -26,7 +26,7 @@ The virtual DOM engine consumes this object to produce an HTML tree.
 </div>
 ```
 
-To create a virtual node use the [h](/docs/api.md#h) function:
+To create a virtual node you can use the [<samp>h</samp>](/docs/api.md#h) function.
 
 ```js
 h("div", { id: "app" }, [
@@ -34,7 +34,7 @@ h("div", { id: "app" }, [
 ])
 ```
 
-[Hyperx](/docs/hyperx.md):
+[Hyperx](/docs/hyperx.md).
 
 ```js
 const div = html`
@@ -43,7 +43,7 @@ const div = html`
   </div>`
 ```
 
-or [JSX](/docs/jsx.md):
+or [JSX](/docs/jsx.md).
 
 ```jsx
 const div =

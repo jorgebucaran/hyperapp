@@ -17,9 +17,9 @@ const main = html`
 
 ## Setup
 
-We'll use [hyperxify](https://github.com/substack/hyperxify) to transform Hyperx into native HyperApp [h](/docs/h.md#h) function calls and a bundler to create a single bundle.js file we can deliver to the browser.
+We'll use [hyperxify](https://github.com/substack/hyperxify) to transform Hyperx into [<samp>h</samp>](/docs/h.md#h) function calls and a bundler to create a single file we can deliver to the browser.
 
-There are caveats, however, the ES6 module syntax is incompatible with hyperxify, so we must use the Node.js require function.
+The ES6 module syntax is incompatible with hyperxify, so we must use the Node.js <samp>require</samp> function.
 
 In a new directory, create an <samp>index.html</samp> file:
 
@@ -52,7 +52,7 @@ Install dependencies:
 npm i -S <a href="https://www.npmjs.com/package/hyperapp">hyperapp</a>
 </pre>
 
-### [Browserify](https://gist.github.com/jbucaran/48c1edb4fb0ea1aa5415b6686cc7fb45)
+### [Browserify](https://gist.github.com/jbucaran/48c1edb4fb0ea1aa5415b6686cc7fb45 "View gist")
 
 Install development dependencies:
 <pre>
@@ -83,7 +83,7 @@ $(<a href="https://docs.npmjs.com/cli/bin">npm bin</a>)/browserify \
   -p bundle-collapser/plugin index.js | uglifyjs > bundle.js
 </pre>
 
-### [Webpack](https://gist.github.com/jbucaran/c6a6bdb5383a985cec6b0ae4ebe5a4b1)
+### [Webpack](https://gist.github.com/jbucaran/c6a6bdb5383a985cec6b0ae4ebe5a4b1 "View gist")
 
 Install development dependencies:
 
@@ -130,7 +130,7 @@ Bundle your application:
 $(<a href="https://docs.npmjs.com/cli/bin">npm bin</a>)/webpack -p
 </pre>
 
-### [Rollup](https://gist.github.com/jbucaran/fac2c3de24e5171596fb189f9c1feb8e)
+### [Rollup](https://gist.github.com/jbucaran/fac2c3de24e5171596fb189f9c1feb8e "View gist")
 
 Install development dependencies:
 

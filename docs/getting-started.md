@@ -31,7 +31,7 @@ The view describes the user interface.
 state => h("h1", null, state) // <h1>Hi.</h1>
 ```
 
-The user interface consists of a tree of [virtual nodes](/docs/virtual-nodes.md), composed using the [h](/docs/api.md#h) function. [Hyperx](/docs/hyperx.md) or [JSX](/docs/jsx.md) are available as well.
+The user interface consists of a tree of [virtual nodes](/docs/virtual-nodes.md), composed with the [<samp>h</samp>](/docs/api.md#h) function. [Hyperx](/docs/hyperx.md) or [JSX](/docs/jsx.md) may be used as well.
 
 ```js
 {
@@ -41,7 +41,7 @@ The user interface consists of a tree of [virtual nodes](/docs/virtual-nodes.md)
 }
 ```
 
-The [app](/docs/api.md#app) function puts everything together and renders the view on the DOM.
+The [<samp>app</samp>](/docs/api.md#app) function puts everything together and renders the view on the DOM.
 
 ## Installing
 
@@ -88,7 +88,7 @@ To create applications ready for production you will be using:
 * A **compiler** e.g. [Babel](http://babeljs.io) or [Bublé](https://buble.surge.sh/guide). It transforms modern JavaScript into code compatible with older browsers.
 * A **bundler**, e.g. [Browserify](http://browserify.org), [Webpack](https://webpack.js.org) or [Rollup](http://rollupjs.org). It takes modules and their dependencies and generates a single bundle that can be delivered to the browser.
 
-With a build pipeline we can also compile [Hyperx](/docs/hyperx.md) or [JSX](/docs/jsx.md) into h function calls.
+With a build pipeline we can also compile [Hyperx](/docs/hyperx.md) or [JSX](/docs/jsx.md) into <samp>h</samp> function calls.
 
 Hyperx/JSX in:
 

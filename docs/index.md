@@ -5,13 +5,13 @@ Below is an alphabetical list of several terms and concepts used across the docu
 ##### A
 [<samp>events.action</samp>](/docs/api.md#events-action)<br>
 [actions](/docs/core.md#actions)<br>
-[<samp>hyperapp.app</samp>](/docs/api.md#app)<br>
+[<samp>app</samp>](/docs/api.md#app)<br>
 [arrow functions](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Functions/Arrow_functions)<br>
 [attributes, data](/docs/virtual-nodes.md#data-attributes)<br>
 
 ##### B
-[babel](https://github.com/babel/babel)<br>
 [.babelrc](https://babeljs.io/docs/usage/babelrc/)<br>
+[babel](https://github.com/babel/babel)<br>
 [build pipeline](/docs/getting-started.md#build-pipeline)<br>
 [buble](https://gitlab.com/Rich-Harris/buble)<br>
 [browserify](https://github.com/substack/node-browserify)<br>
@@ -28,14 +28,14 @@ Below is an alphabetical list of several terms and concepts used across the docu
 [events, lifecycle](/docs/lifecycle-events.md)<br>
 
 ##### F
-[fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)<br>
+[<samp>fetch</samp>](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)<br>
 
 ##### G
 [<samp>actions.router.go</samp>](/docs/routing.md#actions-go)<br>
 
 ##### H
+[<samp>h</samp>](/docs/api.md#h)<br>
 [<samp>hyperapp</samp>](https://github.com/hyperapp/hyperapp/blob/master/src/index.js)<br>
-[<samp>hyperapp.h</samp>](/docs/api.md#h)<br>
 [hyperx](/docs/hyperx.md)<br>
 [hyperxify](https://github.com/substack/hyperxify)<br>
 
@@ -69,14 +69,15 @@ Below is an alphabetical list of several terms and concepts used across the docu
 ##### P
 [<samp>state.router.params</samp>](/docs/routing.md#state-params)<br>
 [plugins](/docs/core.md#plugins)<br>
-[popstate](https://developer.mozilla.org/en-US/docs/Web/Events/popstate)<br>
-[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)<br>
+[<samp>popstate</samp>](https://developer.mozilla.org/en-US/docs/Web/Events/popstate)<br>
+[promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)<br>
 [pragma](https://babeljs.io/docs/plugins/transform-react-jsx/#optionspragma)<br>
 
 ##### R
 [<samp>events.render</samp>](/docs/api.md#events-render)<br>
+[<samp>require</samp>](https://nodejs.org/api/modules.html#modules_module_require_id)<br>
 [root](/docs/core.md#root)<br>
-[Router](/docs/routing.md)<br>
+[routing](/docs/routing.md)<br>
 [route](/docs/routing.md#router-route)<br>
 [rollup](https://github.com/rollup/rollup)<br>
 

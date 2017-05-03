@@ -1,6 +1,6 @@
 # Custom Tags
 
-A custom tag is a function that returns a custom [virtual node](/docs/virtual-nodes.md).
+A custom tag is a function that returns a custom [virtual node](/docs/core.md#virtual-nodes). Custom tags are similar to stateless components in other frameworks.
 
 ```js
 function Link(props, children) {
@@ -30,8 +30,6 @@ Here is the generated virtual node.
 }
 ```
 
-Custom tags are similar to stateless components in other frameworks.
-
 ## JSX
 
 Custom tags and [JSX](/docs/jsx.md) integrate well together.
@@ -43,7 +41,6 @@ Custom tags and [JSX](/docs/jsx.md) integrate well together.
 ```
 
 If you don't know all the properties that you want to place on a custom element ahead of time, you can use the [spread syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_operator).
-
 
 ```jsx
 const Link = (props, children) =>

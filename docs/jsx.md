@@ -17,7 +17,7 @@ For an in-depth introduction to JSX, see the official [documentation](https://fa
 
 ## Setup
 
-We'll use a compiler to transform JSX into [h](/docs/api.md#h) function calls and a bundler to create a single file we can deliver to the browser.
+We'll use a compiler to transform JSX into [h()](/docs/api.md#h) function calls and a bundler to create a single file we can deliver to the browser.
 
 In a new directory, create an <samp>index.html</samp> file:
 
@@ -48,7 +48,7 @@ Install dependencies:
 npm i -S <a href="https://www.npmjs.com/package/hyperapp">hyperapp</a>
 </pre>
 
-### [Browserify](https://gist.github.com/jbucaran/21bbf0bbb0fe97345505664883100706 "View gist")
+### [Browserify](https://gist.github.com/jbucaran/21bbf0bbb0fe97345505664883100706 "Get this gist")
 
 Install development dependencies:
 <pre>
@@ -78,7 +78,7 @@ Create a <samp>.babelrc</samp> file:
 }
 ```
 
-Bundle your application:
+Bundle the application:
 <pre>
 $(<a href="https://docs.npmjs.com/cli/bin">npm bin</a>)/browserify \
   -t babelify \
@@ -86,7 +86,7 @@ $(<a href="https://docs.npmjs.com/cli/bin">npm bin</a>)/browserify \
   -p bundle-collapser/plugin index.js | uglifyjs > bundle.js
 </pre>
 
-### [Webpack](https://gist.github.com/jbucaran/6010a83891043a6e0c37a3cec684c08e "View gist")
+### [Webpack](https://gist.github.com/jbucaran/6010a83891043a6e0c37a3cec684c08e "Get this gist")
 
 Install development dependencies:
 <pre>
@@ -131,12 +131,12 @@ module.exports = {
 }
 ```
 
-Bundle your application:
+Bundle the application:
 <pre>
 $(<a href="https://docs.npmjs.com/cli/bin">npm bin</a>)/webpack -p
 </pre>
 
-### [Rollup](https://gist.github.com/jbucaran/0c0da8f1256a0a66090151cfda777c2c "View gist")
+### [Rollup](https://gist.github.com/jbucaran/0c0da8f1256a0a66090151cfda777c2c "Get this gist")
 
 Install development dependencies:
 <pre>
@@ -174,7 +174,7 @@ export default {
 }
 ```
 
-Bundle your application:
+Bundle the application:
 <pre>
 $(<a href="https://docs.npmjs.com/cli/bin">npm bin</a>)/rollup -cf iife -i index.js -o bundle.js
 </pre>

@@ -208,14 +208,7 @@ export default function(app) {
 
         var newKey = getKeyFrom(newChild)
 
-        var reusableChild = reusableChildren[newKey]
-        var reusableElement = 0
-        var reusableNode = 0
-
-        if (reusableChild) {
-          reusableElement = reusableChild[0]
-          reusableNode = reusableChild[1]
-        }
+        var reusableChild = reusableChildren[newKey] || []
 
         if (null == newKey) {
           if (null == oldKey) {
@@ -225,11 +218,11 @@ export default function(app) {
           i++
         } else {
           if (oldKey === newKey) {
-            patch(element, reusableElement, reusableNode, newChild)
+            patch(element, reusableChild[0], reusableChild[1], newChild)
             i++
-          } else if (reusableElement) {
-            element.insertBefore(reusableElement, oldElement)
-            patch(element, reusableElement, reusableNode, newChild)
+          } else if (reusableChild[0]) {
+            element.insertBefore(reusableChild[0], oldElement)
+            patch(element, reusableChild[0], reusableChild[1], newChild)
           } else {
             patch(element, oldElement, null, newChild)
           }

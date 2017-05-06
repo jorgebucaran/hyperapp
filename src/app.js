@@ -180,11 +180,11 @@ export default function(app) {
       var oldElements = []
       var newKeys = {}
 
-      for (var i = 0; i < oldLen; i++) {
+      for (var i = 0; i < oldLen;) {
         var oldElement = element.childNodes[i]
         oldElements[i] = oldElement
 
-        var oldChild = oldNode.children[i]
+        var oldChild = oldNode.children[i++]
         var oldKey = getKeyFrom(oldChild)
 
         if (null != oldKey) {
@@ -248,7 +248,7 @@ export default function(app) {
         i++
       }
 
-      for (var i in reusableChildren) {
+      for (i in reusableChildren) {
         var reusableChild = reusableChildren[i]
         var reusableNode = reusableChild[1]
         if (!newKeys[reusableNode.data.key]) {
@@ -256,7 +256,7 @@ export default function(app) {
         }
       }
     } else if (node !== oldNode) {
-      var i = element
+      i = element
       parent.replaceChild((element = createElementFrom(node)), i)
     }
 

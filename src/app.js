@@ -180,11 +180,11 @@ export default function(app) {
       var oldElements = []
       var newKeys = {}
 
-      for (var i = 0; i < oldLen;) {
+      for (var i = 0; i < oldLen; i++) {
         var oldElement = element.childNodes[i]
         oldElements[i] = oldElement
 
-        var oldChild = oldNode.children[i++]
+        var oldChild = oldNode.children[i]
         var oldKey = getKeyFrom(oldChild)
 
         if (null != oldKey) {

@@ -1,5 +1,12 @@
 # Getting Started
 
+- [Hello World](#hello-world)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Build Pipeline](#build-pipeline)
+
+## Hello World
+
 Let's begin with the simplest of all programs. Paste the following code in a new html file and open it in your browser. Or [try it online](https://codepen.io/hyperapp/pen/PmjRov?editors=1010).
 
 ```html
@@ -34,7 +41,7 @@ state => h("h1", null, state) // <h1>Hi.</h1>
 [Hyperx]: /docs/hyperx.md
 [JSX]: /docs/jsx.md
 
-The user interface consists of a tree of [virtual nodes](/docs/core.md#virtual-nodes), which  we create using the [h()](/docs/api.md#h) utility function.
+The user interface consists of a tree of [virtual nodes](/docs/core.md#virtual-nodes), which  we create using the [h(tag, data, children)](/docs/api.md#h) utility function.
 
 ```js
 {
@@ -44,7 +51,7 @@ The user interface consists of a tree of [virtual nodes](/docs/core.md#virtual-n
 }
 ```
 
-The [app()](/docs/api.md#app) function wraps everything together and renders the view on the DOM.
+The [app(props)](/docs/api.md#app) function wraps everything together and renders the view on the DOM.
 
 ## Installation
 
@@ -85,7 +92,15 @@ const { h, app } = require("hyperapp")
 
 ## Build Pipeline
 
-Using a build pipeline we can compile [Hyperx]/[JSX] into [h()] function calls.
+[Babel]: https://github.com/babel/babel
+[Buble]: https://gitlab.com/Rich-Harris/buble
+[Browserify]: https://github.com/substack/node-browserify
+[Webpack]: https://github.com/webpack/webpack
+[Rollup]: https://github.com/rollup/rollup
+
+A build pipeline can be as complex as you want it to be, but it typically consists of a package manager, a compiler and a bundler.
+
+Using a build pipeline we can transform [Hyperx]/[JSX] into [h()] function calls which are faster than sending a parser down the wire and compiling the view in the browser.
 
 Hyperx/JSX in:
 
@@ -98,30 +113,6 @@ Vanilla out:
 ```jsx
 h("main", { id: "app" }, "Hi.")
 ```
-
-The generated code is smaller and faster than sending the parser down the wire and compiling the view in the browser.
 
 See [Hyperx] or [JSX] for instructions on how to setup a build pipeline.
 
-
-A build pipeline consists of:
-
-* A **package manager**, e.g. [npm] or [Yarn]. It makes it easy to share and reuse third-party packages.
-* A **compiler** e.g. [Babel](http://babeljs.io) or [Bublé](https://buble.surge.sh/guide). It transforms modern JavaScript into code compatible with older browsers.
-* A **bundler**, e.g. [Browserify](http://browserify.org), [Webpack](https://webpack.js.org) or [Rollup](http://rollupjs.org). It takes modules and their dependencies and generates a single bundle that can be delivered to the browser.
-
-With a build pipeline we can compile [Hyperx](/docs/hyperx.md)/[JSX](/docs/jsx.md) into [h] function calls.
-
-Hyperx/JSX in:
-
-```jsx
-<main id="app">Hi.</main>
-```
-
-Vanilla out:
-
-```jsx
-h("main", { id: "app" }, "Hi.")
-```
-
-The generated code is smaller and faster than sending the parser down the wire and compiling the view in the browser.

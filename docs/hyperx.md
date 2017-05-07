@@ -1,5 +1,13 @@
 # Hyperx
 
+- [About Hyperx](#about-hyperx)
+- [Setup](#setup)
+  - [Browserify](#browserify)
+  - [Webpack](#webpack)
+  - [Rollup](#rollup)
+
+## About Hyperx
+
 [Hyperx](https://github.com/substack/hyperx) is a standards-compliant ES6 tagged [template string function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#Tagged_template_literals) factory. It is a pure JavaScript alternative to [JSX](/docs/jsx.md).
 
 Hyperx is used like this:
@@ -17,9 +25,9 @@ const main = html`
 
 ## Setup
 
-We'll use [hyperxify](https://github.com/substack/hyperxify) to transform Hyperx into [h](/docs/h.md#h) function calls and a bundler to create a single file we can deliver to the browser.
+We'll use [Hyperxify](https://github.com/substack/hyperxify) to transform Hyperx into [h()](/docs/h.md#h) function calls and a bundler to create a single file we can deliver to the browser.
 
-The ES6 module syntax is incompatible with hyperxify, so we must use the Node.js require function.
+The ES6 import syntax is incompatible with Hyperxify, so we'll use the Node.js require function.
 
 In a new directory, create an <samp>index.html</samp> file:
 
@@ -34,7 +42,7 @@ In a new directory, create an <samp>index.html</samp> file:
 </html>
 ```
 
-And <samp>index.js</samp> file:
+And and <samp>index.js</samp> file:
 
 ```js
 const { h, app } = require("hyperapp")

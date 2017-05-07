@@ -1,44 +1,30 @@
-# API Reference
+# API
 
-This section contains detailed descriptions for each function, property and event in HyperApp.
+* [hyperapp.h](#h)
+* [hyperapp.app](#app)
+  * [props.state](#state)
+  * [props.view](#view)
+  * [props.actions](#actions)
+  * [props.events](#events)
+    * [loaded](#loaded)
+    * [action](#action)
+    * [update](#update)
+    * [render](#render)
+  * [props.plugins](#plugins)
+  * [props.root](#root)
+* [emit](#emit)
 
-<samp>hyperapp</samp> is the entry point to the framework. If you load HyperApp from a <samp>\<script\></samp> tag, the module will be available in the global scope.
-
-<samp>
-
-```js
-import a from "ok"
-```
-
-
-</samp>
-
-
-* [hyperapp.h]()
-* [hyperapp.app]()
-  * [props.state]()
-  * [props.view]()
-  * [props.actions]()
-  * [props.events]()
-    * [events.loaded]()
-    * [events.action]()
-    * [events.update]()
-    * [events.render]()
-  * [props.plugins]()
-  * [props.root]()
-* [emit]()
-
-## <a name="h"></a> h
-
-Type: ([tag](#h-tag), [data](#h-data), [children](#h-children)): [vnode]
+## h
 
 [vnode]: /docs/core.md#virtual-nodes
+
+Type: ([tag](#h-tag), [data](#h-data), [children](#h-children)): [vnode]
 
 * <a name="h-tag"></a>tag: string | ([props](#h-data), [children](#h-children)): [vnode]
 * <a name="h-data"></a>data: {}
 * <a name="h-children"></a>children: string | [vnode]\[\]
 
-## <a name="app"></a>app
+## app
 
 Type: ([props](#app-props))
 
@@ -50,55 +36,53 @@ Type: ([props](#app-props))
   * [plugins](#plugins)
   * [root](#root)
 
-<a name="app-props"></a>
-
-### <a name="state"></a>state
+### state
 
 Type: any
 
-### <a name="view"></a>view
+### view
 
 Type: ([state](#state), [actions](#actions)): [vnode]
 
-### <a name="actions"></a>actions
+### actions
 #### <a name="actions-foo"></a>[namespace.]_foo_
 
 Type: ([state](#state), [actions](#actions), [data](#actions-data), [emit](#emit))
 
 * <a name="actions-data"></a> data: any
 
-### <a name="events"></a>events
-#### <a name="events-loaded"></a>loaded
+### events
+#### loaded
 
-Type: ([state](#state), [actions](#actions), _, [emit](#emit)) | [events](#events-loaded)\[\]
+Type: ([state](#state), [actions](#actions), _, [emit](#emit)) | [events](#loaded)\[\]
 
 Fired after the view is mounted on the DOM.
 
-#### <a name="events-action"></a>action
+#### action
 
-Type: ([state](#state), [actions](#actions), [data](#events-action-data), [emit](#emit)): [data](#events-action-data) | [action](#events-action)\[\]
+Type: ([state](#state), [actions](#actions), [data](#action-data), [emit](#emit)): [data](#action-data) | [action](#action)\[\]
 
-* <a name="events-action-data"></a>data
+* <a name="action-data"></a>data
   * name: string
   * data: any
 
 Fired before an action is triggered.
 
-#### <a name="events-update"></a>update
+#### update
 
-Type: ([state](#state), [actions](#actions), [data](#events-update-data), [emit](#emit)): [data](#events-update-data) | [update](#events-update)\[\]
+Type: ([state](#state), [actions](#actions), [data](#update-data), [emit](#emit)): [data](#update-data) | [update](#update)\[\]
 
-* <a name="events-update-data"></a>data: the updated fragment of the state.
+* <a name="update-data"></a>data: the updated fragment of the state.
 
 Fired before the state is updated.
 
-#### <a name="events-render"></a>render
+#### render
 
-Type: ([state](#state), [actions](#actions), [view](#view), [emit](#emit)): [view](#view) | [render](#events-render)\[\]
+Type: ([state](#state), [actions](#actions), [view](#view), [emit](#emit)): [view](#view) | [render](#render)\[\]
 
 Fired before the view is rendered.
 
-### <a name="plugins"></a>plugins
+### plugins
 
 Type: [Plugin](#plugins-plugin)\[\]
 
@@ -111,11 +95,11 @@ Type: ([props](#app-props)): [props](#plugin-props)
   * [actions](#actions)
   * [events](#events)
 
-### <a name="root"></a>root
+### root
 
 Type: [Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) = [document.body](https://developer.mozilla.org/en-US/docs/Web/API/Document/body)
 
-## <a name="emit"></a>emit
+## emit
 
 Type: ([event](#emit-event), [data](#emit-data)): [data](#emit-data)
 

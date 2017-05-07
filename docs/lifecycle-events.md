@@ -22,7 +22,7 @@ Type: ([element](https://developer.mozilla.org/en-US/docs/Web/API/Element))
 
 Fired before the element is removed from the DOM.
 
-## Examples
+## Example
 
 This example shows how to create a [custom tag](/docs/custom-tags.md) to wrap the [CodeMirror](https://codemirror.net/) editor.
 

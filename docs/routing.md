@@ -1,5 +1,17 @@
 # Routing
 
+- [Usage](#usage)
+- [API](#api)
+  - [state](#state)
+    - [router.params](#params)
+    - [router.match](#match)
+  - [actions](#actions)
+    - [router.go](#go)
+  - [events](#events)
+    - [route](#route)
+
+## Usage
+
 To add routing to your application, use the Router plugin.
 
 ```jsx
@@ -20,19 +32,18 @@ app({
 
 When the page loads or the browser fires a [popstate](https://developer.mozilla.org/en-US/docs/Web/Events/popstate) event, the view whose key/route matches [location.pathname](https://developer.mozilla.org/en-US/docs/Web/API/Location) will be rendered. If there is no match, <samp>*</samp> is used as a fallback.
 
-<a name="router-route"></a>
-
 |route                    | location.pathname    |
 |-------------------------|-----------------------------------|
 | <samp>*</samp>          | Match if no other route matches.
 | <samp>/</samp>          | <samp>/</samp>
-| <samp>/:foo</samp>      | Match <samp>[A-Za-z0-9]+</samp>. See [params](#router-params).
+| <samp>/:foo</samp>      | Match <samp>[A-Za-z0-9]+</samp>. See [params](#params).
 
+To navigate to a different route use [actions.router.go](#go).
 
-To navigate to a different route use [actions.router.go](#actions-go).
+## API
 
-## state
-### <a name="state-params"></a>params
+### state
+#### params
 
 Type: { <i>foo</i>: string, ... }
 
@@ -42,28 +53,28 @@ The matched route params.
 |----------------------|---------------------|---------------------|
 |<samp>/:foo</samp>    |<samp>/hyper</samp>  | { foo: "hyper" }    |
 
-### <a name="state-match"></a>match
+#### match
 
 Type: string
 
 The matched route.
 
-## actions
-### <a name="actions-go"></a>go
+### actions
+#### go
 
 Type: ([path](#router_go_path))
 * path: string
 
 Update [location.pathname](https://developer.mozilla.org/en-US/docs/Web/API/Location).
 
-## events
-### <a name="events-route"></a>route
+### events
+#### route
 
-Type: ([state](/docs/api.md#state), [actions](/docs/api.md#actions), [data](#events-route-data), [emit](/docs/api.md#emit)) | [route](#events-route)\[\]
+Type: ([state](/docs/api.md#state), [actions](/docs/api.md#actions), [data](#events-data), [emit](/docs/api.md#emit)) | [route](#route)\[\]
 
-* <a name="events-route-data"></a>data
-  * [params](#state-params)
-  * [match](#state-match)
+* <a name="events-data"></a>data
+  * [params](#params)
+  * [match](#match)
 
 Fired when a route is matched.
 

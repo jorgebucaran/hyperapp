@@ -2,7 +2,7 @@
 
 * [Virtual Nodes](#virtual-nodes)
 * [Data Attributes](#data-attributes)
-* [Apps](#applications)
+* [Applications](#applications)
   * [View and State](#view-and-state)
   * [Actions](#actions)
     * [Namespaces](#namespaces)
@@ -14,7 +14,7 @@
 
 A virtual node is an object that describes an HTML/DOM tree.
 
-It consists of a tag, e.g. <samp>div</samp>, <samp>svg</samp>, etc., data attributes and an array of children.
+It consists of a tag, e.g. <samp>div</samp>, <samp>svg</samp>, etc., data attributes and an array of child nodes.
 
 ```js
 {
@@ -66,9 +66,9 @@ data: {
 
 Attributes also include [lifecycle events](/docs/lifecycle-events.md) and meta data such as [keys](#/docs/keys.md).
 
-## Apps
+## Applications
 
-Use the [app(props)](/docs/api.md#app) function to create applications.
+Use the [app(props)](/docs/api.md#app) function to create an application.
 
 ```jsx
 app({
@@ -273,7 +273,7 @@ For a practical example see the implementation of the [Router](https://github.co
 
 #### Custom Events
 
-To create custom events, use the [emit(event, data)](/docs/api.md#emit) function which is passed as the last argument to actions/events.
+To create custom events, use the [emit(event, data)](/docs/api.md#emit) function. This function is passed as the last argument to actions/events.
 
 ```jsx
 app({

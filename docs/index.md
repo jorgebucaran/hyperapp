@@ -1,6 +1,6 @@
 # Index
 
-Below is an alphabetical list of terms and concepts used throughout the documentation. Click on a link to find out more.
+Below is an alphabetical list of some of the terms and concepts used throughout the documentation. Click on a link to find out more.
 
 ##### A
 [events.action](/docs/api.md#events-action)<br>

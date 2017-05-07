@@ -43,9 +43,9 @@ export default function(app) {
             "^" +
               route
                 .replace(/\//g, "\\/")
-                .replace(/:([A-Za-z0-9_]+)/g, function(_, key) {
+                .replace(/:([\w]+)/g, function(_, key) {
                   keys.push(key)
-                  return "([-A-Za-z0-9_]+)"
+                  return "([-\\w]+)"
                 }) +
               "/?$",
             "g"

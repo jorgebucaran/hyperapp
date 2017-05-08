@@ -1,6 +1,6 @@
 # Counter
 
-In this section we'll walk through a simple counter example.
+In this section we'll walk through a simple counter example and learn how to update the state via [actions](/docs/core.md#actions).
 
 [Try it online](https://codepen.io/hyperapp/pen/zNxZLP?editors=0010)
 

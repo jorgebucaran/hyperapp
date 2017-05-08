@@ -1,5 +1,17 @@
 # Routing
 
+- [Usage](#usage)
+- [API](#api)
+  - [state](#state)
+    - [router.params](#params)
+    - [router.match](#match)
+  - [actions](#actions)
+    - [router.go](#go)
+  - [events](#events)
+    - [route](#route)
+
+## Usage
+
 To add routing to your application, use the Router plugin.
 
 ```jsx
@@ -18,52 +30,51 @@ app({
 })
 ```
 
-When the page loads or the browser fires a <samp>[popstate](https://developer.mozilla.org/en-US/docs/Web/Events/popstate)</samp> event, the view whose key/route matches <samp>[location.pathname](https://developer.mozilla.org/en-US/docs/Web/API/Location)</samp> is rendered. If there is no match, <samp>*</samp> is used as a fallback.
-
-<a name="router-route"></a>
+When the page loads or the browser fires a [popstate](https://developer.mozilla.org/en-US/docs/Web/Events/popstate) event, the view whose key/route matches [location.pathname](https://developer.mozilla.org/en-US/docs/Web/API/Location) will be rendered. If there is no match, <samp>*</samp> is used as a fallback.
 
 |route                    | location.pathname    |
 |-------------------------|-----------------------------------|
 | <samp>*</samp>          | Match if no other route matches.
 | <samp>/</samp>          | <samp>/</samp>
-| <samp>/:foo</samp>      | Match <samp>[A-Za-z0-9]+</samp>. See <samp>[params](#router-params)</samp>.
+| <samp>/:foo</samp>      | Match <samp>[A-Za-z0-9]+</samp>. See [params](#params).
 
+To navigate to a different route use [actions.router.go](#go).
 
-To navigate to a different route use <samp>[actions.router.go](#actions-go)</samp>.
+## API
 
-## state
-### <a name="state-params"></a>params
+### state
+#### params
 
-Type: <samp>{<i>foo</i>: string, ...}</samp>
+Type: { <i>foo</i>: string, ... }
 
 The matched route params.
 
-|route                        |location.pathname              |state.router.params               |
-|-----------------------------|-------------------------------|----------------------------------|
-|<samp>/:foo</samp>           |<samp>/hyper</samp>            | <samp>{ foo: "hyper" }</samp>    |
+|route                 |location.pathname    |state.router.params  |
+|----------------------|---------------------|---------------------|
+|<samp>/:foo</samp>    |<samp>/hyper</samp>  | { foo: "hyper" }    |
 
-### <a name="state-match"></a>match
+#### match
 
-Type: <samp>string</samp>
+Type: string
 
 The matched route.
 
-## actions
-### <a name="actions-go"></a>go
+### actions
+#### go
 
-Type: <samp>([path](#router_go_path))</samp>
-* <samp>path: string</samp>
+Type: ([path](#router_go_path))
+* path: string
 
-Update <samp>[location.pathname](https://developer.mozilla.org/en-US/docs/Web/API/Location)</samp>.
+Update [location.pathname](https://developer.mozilla.org/en-US/docs/Web/API/Location).
 
-## events
-### <a name="events-route"></a>route
+### events
+#### route
 
-Type: <samp>([state](/docs/api.md#state), [actions](/docs/api.md#actions), [data](#events-route-data), [emit](/docs/api.md#emit)) | [route](#events-route)\[\]</samp>
+Type: ([state](/docs/api.md#state), [actions](/docs/api.md#actions), [data](#events-data), [emit](/docs/api.md#emit)) | [route](#route)\[\]
 
-* <a name="events-route-data"></a><samp>data</samp>
-  * <samp>[params](#state-params)</samp>
-  * <samp>[match](#state-match)</samp>
+* <a name="events-data"></a>data
+  * [params](#params)
+  * [match](#match)
 
 Fired when a route is matched.
 

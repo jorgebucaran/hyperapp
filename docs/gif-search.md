@@ -52,7 +52,7 @@ app({
 })
 ```
 
-The state has a string for the gif URL and a boolean to know when the browser is fetching a new gif.
+The state has a string for the gif URL and a boolean flag to know when the browser is fetching a new gif.
 
 ```jsx
 state: {
@@ -81,7 +81,7 @@ if (state.isFetching || text === "") {
 }
 ```
 
-Inside <samp>actions.search</samp> we use the <samp>[fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)</samp> API to request a gif URL from Giphy.
+Inside <samp>actions.search</samp> we use the [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) API to request a gif URL from Giphy.
 
 When <samp>fetch</samp> is done, we receive the payload with the gif information inside a [promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise).
 

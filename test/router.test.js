@@ -73,7 +73,7 @@ test("routes", () => {
 })
 
 test("route params", () => {
-  window.location.pathname = "/beep/bop/boop"
+  window.location.pathname = "/be_ep/bOp/b00p"
 
   app({
     view: {
@@ -91,9 +91,9 @@ test("route params", () => {
 
   expectHTMLToBe`
     <ul>
-      <li>foo:beep</li>
-      <li>bar:bop</li>
-      <li>baz:boop</li>
+      <li>foo:be_ep</li>
+      <li>bar:bOp</li>
+      <li>baz:b00p</li>
     </ul>
   `
 })

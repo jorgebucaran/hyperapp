@@ -1,7 +1,13 @@
 # Getting Started
 
-Paste the following code in a new html file and open it in your browser.
-Or [try it online](https://codepen.io/hyperapp/pen/PmjRov?editors=1010).
+- [Hello World](#hello-world)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Build Pipeline](#build-pipeline)
+
+## Hello World
+
+Let's begin with the simplest of all programs. Paste the following code in a new html file and open it in your browser. Or [try it online](https://codepen.io/hyperapp/pen/PmjRov?editors=1010).
 
 ```html
 <body>
@@ -31,7 +37,11 @@ The view describes the user interface.
 state => h("h1", null, state) // <h1>Hi.</h1>
 ```
 
-The user interface consists of a tree of [virtual nodes](/docs/virtual-nodes.md), composed with the [<samp>h</samp>](/docs/api.md#h) function. [Hyperx](/docs/hyperx.md) or [JSX](/docs/jsx.md) may be used as well.
+[h()]: /docs/api.md#h
+[Hyperx]: /docs/hyperx.md
+[JSX]: /docs/jsx.md
+
+The user interface consists of a tree of [virtual nodes](/docs/core.md#virtual-nodes), which  we create using the [h(tag, data, children)](/docs/api.md#h) utility function.
 
 ```js
 {
@@ -41,11 +51,11 @@ The user interface consists of a tree of [virtual nodes](/docs/virtual-nodes.md)
 }
 ```
 
-The [<samp>app</samp>](/docs/api.md#app) function puts everything together and renders the view on the DOM.
+The [app(props)](/docs/api.md#app) function wraps everything together and renders the view on the DOM.
 
-## Installing
+## Installation
 
-You can grab the minified library from a CDN.
+You can download the minified library from a CDN.
 
 ```html
 <script src="https://unpkg.com/hyperapp"></script>
@@ -54,41 +64,43 @@ You can grab the minified library from a CDN.
 [npm]: https://www.npmjs.com
 [Yarn]: https://yarnpkg.com
 
-Or use [npm]/[Yarn] if you are setting up a [build pipeline](#build-pipeline).
+Or use [npm]/[Yarn].
 
 <pre>
 npm i <a href="https://www.npmjs.com/package/hyperapp">hyperapp</a>
 </pre>
 
-## Importing
+## Usage
 
-Node.js <samp>require</samp>:
-
-```js
-const { h, app } = require("hyperapp")
-```
-
-ES6 <samp>[import](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import)</samp>:
-
-```jsx
-import { h, app } from "hyperapp"
-```
-
-UMD:
+When using a <samp>\<script\></samp> tag, HyperApp is available on the global scope.
 
 ```js
 const { h, app } = hyperapp
 ```
 
+If you setup a [build pipeline](#build-pipeline) with [npm]/[Yarn], you can use the ES6 [import](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) syntax.
+
+```jsx
+import { h, app } from "hyperapp"
+```
+
+Or Node.js require style.
+
+```js
+const { h, app } = require("hyperapp")
+```
+
 ## Build Pipeline
 
-To create applications ready for production you will be using:
+[Babel]: https://github.com/babel/babel
+[Buble]: https://gitlab.com/Rich-Harris/buble
+[Browserify]: https://github.com/substack/node-browserify
+[Webpack]: https://github.com/webpack/webpack
+[Rollup]: https://github.com/rollup/rollup
 
-* A **package manager**, e.g. [npm] or [Yarn]. It makes it easy to share and reuse third-party packages.
-* A **compiler** e.g. [Babel](http://babeljs.io) or [Bublé](https://buble.surge.sh/guide). It transforms modern JavaScript into code compatible with older browsers.
-* A **bundler**, e.g. [Browserify](http://browserify.org), [Webpack](https://webpack.js.org) or [Rollup](http://rollupjs.org). It takes modules and their dependencies and generates a single bundle that can be delivered to the browser.
+A build pipeline can be as complex as you want it to be, but it typically consists of a package manager, a compiler and a bundler.
 
-With a build pipeline we can also compile [Hyperx](/docs/hyperx.md) or [JSX](/docs/jsx.md) into <samp>h</samp> function calls.
+Using a build pipeline we can transform [Hyperx]/[JSX] into [h()] function calls which are faster than sending a parser down the wire and compiling the view in the browser.
 
 Hyperx/JSX in:
 
@@ -102,4 +114,5 @@ Vanilla out:
 h("main", { id: "app" }, "Hi.")
 ```
 
-The generated code is smaller and faster than sending the parser down the wire and compiling the view in the browser.
+See [Hyperx] or [JSX] for instructions on how to setup a build pipeline.
+

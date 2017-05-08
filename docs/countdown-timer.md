@@ -1,6 +1,6 @@
 # Countdown Timer
 
-In this section we'll walk through a countdown timer example and use <samp>[events.loaded](/docs/api.md#events-loaded)</samp> to register global events.
+In this section we'll walk through a countdown timer example and learn how to use [events.loaded](/docs/api.md#loaded) to register global events.
 
 [Try it online](https://codepen.io/hyperapp/pen/evOZLv?editors=0010)
 

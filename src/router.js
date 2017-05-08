@@ -1,10 +1,13 @@
 export default function(app) {
   return {
+    state: {
+      router: match(location.pathname)
+    },
     actions: {
       router: {
         match: function(state, actions, data, emit) {
           return {
-            router: match(data, emit)
+            router: emit("route", match(data))
           }
         },
         go: function(state, actions, data) {
@@ -15,20 +18,19 @@ export default function(app) {
     },
     events: {
       loaded: function(state, actions) {
-        addEventListener("popstate", function() {
+        match()
+        addEventListener("popstate", match)
+        function match() {
           actions.router.match(location.pathname)
-        })
+        }
       },
-      render: function(state, actions, view, emit) {
-        return view[
-          (state.router || (state.router = match(location.pathname, emit)))
-            .match
-        ]
+      render: function(state, actions, view) {
+        return view[state.router.match]
       }
     }
   }
 
-  function match(data, emit) {
+  function match(data) {
     var match
     var params = {}
 
@@ -41,9 +43,9 @@ export default function(app) {
             "^" +
               route
                 .replace(/\//g, "\\/")
-                .replace(/:([A-Za-z0-9_]+)/g, function(_, key) {
+                .replace(/:([\w]+)/g, function(_, key) {
                   keys.push(key)
-                  return "([-A-Za-z0-9_]+)"
+                  return "([-\\w]+)"
                 }) +
               "/?$",
             "g"
@@ -58,9 +60,9 @@ export default function(app) {
       }
     }
 
-    return emit("route", {
+    return {
       match: match || "*",
       params: params
-    })
+    }
   }
 }

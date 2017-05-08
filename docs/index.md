@@ -1,13 +1,13 @@
 # Index
 
-Below is an alphabetical list of several terms and concepts used across the documentation. Click on a link to find out more.
+Below is an alphabetical list of some of the terms and concepts used throughout the documentation. Click on a link to find out more.
 
 ##### A
-[<samp>events.action</samp>](/docs/api.md#events-action)<br>
+[events.action](/docs/api.md#events-action)<br>
 [actions](/docs/core.md#actions)<br>
-[<samp>app</samp>](/docs/api.md#app)<br>
+[app](/docs/api.md#app)<br>
 [arrow functions](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Functions/Arrow_functions)<br>
-[attributes, data](/docs/virtual-nodes.md#data-attributes)<br>
+[attributes, data](/docs/core.md#virtual-nodes#data-attributes)<br>
 
 ##### B
 [.babelrc](https://babeljs.io/docs/usage/babelrc/)<br>
@@ -22,25 +22,25 @@ Below is an alphabetical list of several terms and concepts used across the docu
 
 ##### E
 [enhanced object literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Grammar_and_Types#Enhanced_Object_literals)<br>
-[<samp>emit</samp>](/docs/api.md#emit)<br>
+[emit](/docs/api.md#emit)<br>
 [events](/docs/core.md#events)<br>
 [events, custom](/docs/core.md#custom-events)<br>
 [events, lifecycle](/docs/lifecycle-events.md)<br>
 
 ##### F
-[<samp>fetch</samp>](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)<br>
+[fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)<br>
 
 ##### G
-[<samp>actions.router.go</samp>](/docs/routing.md#actions-go)<br>
+[actions.router.go](/docs/routing.md#actions-go)<br>
 
 ##### H
-[<samp>h</samp>](/docs/api.md#h)<br>
-[<samp>hyperapp</samp>](https://github.com/hyperapp/hyperapp/blob/master/src/index.js)<br>
+[h](/docs/api.md#h)<br>
+[hyperapp](https://github.com/hyperapp/hyperapp/blob/master/src/index.js)<br>
 [hyperx](/docs/hyperx.md)<br>
 [hyperxify](https://github.com/substack/hyperxify)<br>
 
 ##### I
-[<samp>import</samp>](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import)<br>
+[import](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import)<br>
 [installing](/docs/getting-started.md#installing)<br>
 [importing](/docs/getting-started.md#importing)<br>
 
@@ -48,34 +48,34 @@ Below is an alphabetical list of several terms and concepts used across the docu
 [JSX](/docs/jsx.md)<br>
 
 ##### K
-[keys](/docs/virtual-nodes.md#keys)<br>
+[keys](/docs/core.md#virtual-nodes#keys)<br>
 
 ##### L
 [location](https://developer.mozilla.org/en-US/docs/Web/API/Location)<br>
-[<samp>events.loaded</samp>](/docs/api.md#events-loaded)<br>
+[events.loaded](/docs/api.md#events-loaded)<br>
 
 ##### M
-<samp>[state.router.match](/docs/routing.md#state-match)</samp><br>
+[state.router.match](/docs/routing.md#state-match)<br>
 
 ##### N
 [namespaces](/docs/core.md#namespaces)<br>
 [npm](https://www.npmjs.com/)<br>
 
 ##### O
-[<samp>oncreate</samp>](/docs/lifecycle-events.md#oncreate)<br>
-[<samp>onupdate</samp>](/docs/lifecycle-events.md#onupdate)<br>
-[<samp>onremove</samp>](/docs/lifecycle-events.md#onremove)<br>
+[oncreate](/docs/lifecycle-events.md#oncreate)<br>
+[onupdate](/docs/lifecycle-events.md#onupdate)<br>
+[onremove](/docs/lifecycle-events.md#onremove)<br>
 
 ##### P
-[<samp>state.router.params</samp>](/docs/routing.md#state-params)<br>
+[state.router.params](/docs/routing.md#state-params)<br>
 [plugins](/docs/core.md#plugins)<br>
-[<samp>popstate</samp>](https://developer.mozilla.org/en-US/docs/Web/Events/popstate)<br>
+[popstate](https://developer.mozilla.org/en-US/docs/Web/Events/popstate)<br>
 [promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)<br>
 [pragma](https://babeljs.io/docs/plugins/transform-react-jsx/#optionspragma)<br>
 
 ##### R
-[<samp>events.render</samp>](/docs/api.md#events-render)<br>
-[<samp>require</samp>](https://nodejs.org/api/modules.html#modules_module_require_id)<br>
+[events.render](/docs/api.md#events-render)<br>
+[require](https://nodejs.org/api/modules.html#modules_module_require_id)<br>
 [root](/docs/core.md#root)<br>
 [routing](/docs/routing.md)<br>
 [route](/docs/routing.md#router-route)<br>
@@ -90,11 +90,11 @@ Below is an alphabetical list of several terms and concepts used across the docu
 [tutorials](/docs/tutorials.md)<br>
 
 ##### U
-[<samp>events.update</samp>](/docs/api.md#events-update)<br>
+[events.update](/docs/api.md#events-update)<br>
 
 ##### V
 [view](/docs/core.md#view-and-state)<br>
-[virtual node/tree](/docs/virtual-nodes.md)<br>
+[virtual node/tree](/docs/core.md#virtual-nodes)<br>
 [webpack](https://github.com/webpack/webpack)<br>
 
 ##### Y

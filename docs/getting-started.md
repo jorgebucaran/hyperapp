@@ -55,7 +55,7 @@ The [app(props)](/docs/api.md#app) function wraps everything together and render
 
 ## Installation
 
-You can download the minified library from a CDN.
+You can download the minified library from a [CDN](https://unpkg.com/hyperapp).
 
 ```html
 <script src="https://unpkg.com/hyperapp"></script>
@@ -100,7 +100,7 @@ const { h, app } = require("hyperapp")
 
 A build pipeline can be as complex as you want it to be, but it typically consists of a package manager, a compiler and a bundler.
 
-Using a build pipeline we can transform [Hyperx]/[JSX] into [h()] function calls which are faster than sending a parser down the wire and compiling the view in the browser.
+Using a build pipeline we can transform [Hyperx]/[JSX] into [h(tag, data, children)] function calls which are faster than sending a parser down the wire and compiling the view in the browser.
 
 Hyperx/JSX in:
 

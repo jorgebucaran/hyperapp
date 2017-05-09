@@ -40,7 +40,7 @@ state => h("h1", null, state) // <h1>Hi.</h1>
 [Hyperx]: /docs/hyperx.md
 [JSX]: /docs/jsx.md
 
-The user interface consists of a tree of [virtual nodes](/docs/core.md#virtual-nodes), which  we create using the [h(tag, data, children)](/docs/api.md#h) utility function.
+To compose the user interface, the [h(tag, data, children)](/docs/api.md#h) utility function returns a tree of [virtual nodes](/docs/core.md#virtual-nodes).
 
 ```js
 {
@@ -48,6 +48,12 @@ The user interface consists of a tree of [virtual nodes](/docs/core.md#virtual-n
   data: null,
   children: ["Hi"]
 }
+```
+
+You can also describe views in [JSX] or [Hyperx] markup by setting up a [build pipeline](#build-pipeline).
+
+```jsx
+state => <h1>{state}</h1>
 ```
 
 The [app(props)](/docs/api.md#app) function wraps everything together and renders the view on the DOM.
@@ -71,35 +77,23 @@ npm i <a href="https://www.npmjs.com/package/hyperapp">hyperapp</a>
 
 ## Usage
 
-When using a <samp>\<script\></samp> tag, HyperApp is available on the global scope.
+HyperApp is available on the global scope when using a <samp>\<script\></samp> tag.
 
 ```js
 const { h, app } = hyperapp
 ```
 
-If you setup a [build pipeline](#build-pipeline) with [npm]/[Yarn], you can use the ES6 [import](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) syntax.
+Or you can use ES6/ES5 by setting up a [build pipeline](#build-pipeline).
 
 ```jsx
 import { h, app } from "hyperapp"
 ```
 
-Or Node.js require style.
-
-```js
-const { h, app } = require("hyperapp")
-```
-
 ## Build Pipeline
-
-[Babel]: https://github.com/babel/babel
-[Buble]: https://gitlab.com/Rich-Harris/buble
-[Browserify]: https://github.com/substack/node-browserify
-[Webpack]: https://github.com/webpack/webpack
-[Rollup]: https://github.com/rollup/rollup
 
 A build pipeline can be as complex as you want it to be, but it typically consists of a package manager, a compiler and a bundler.
 
-Using a build pipeline we can transform [Hyperx]/[JSX] into [h(tag, data, children)](/docs/api.md#h) function calls which are faster than sending a parser down the wire and compiling the view in the browser.
+Using a build pipeline we can transform Hyperx/JSX markup into [h(tag, data, children)](/docs/api.md#h) function calls before runtime. This is much faster than sending a parser down the wire and compiling the view in the browser.
 
 Hyperx/JSX in:
 
@@ -114,4 +108,3 @@ h("main", { id: "app" }, "Hi.")
 ```
 
 See [Hyperx] or [JSX] for instructions on how to setup a build pipeline.
-

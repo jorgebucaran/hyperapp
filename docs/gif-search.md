@@ -2,7 +2,7 @@
 
 In this section we'll implement a gif search using the [Giphy API](https://api.giphy.com/) and learn how to update the state asynchronously.
 
-[View Online](https://codepen.io/hyperapp/pen/LybmLe?editors=0010)
+[Try it online](https://codepen.io/hyperapp/pen/LybmLe?editors=0010)
 
 ```jsx
 const GIPHY_API_KEY = "dc6zaTOxFJmzC"
@@ -52,7 +52,7 @@ app({
 })
 ```
 
-The state has a string for the gif URL and a boolean to know when the browser is fetching a new gif.
+The state has a string for the gif URL and a boolean flag to know when the browser is fetching a new gif.
 
 ```jsx
 state: {
@@ -73,7 +73,7 @@ The view consists of a text input and an <samp>img</samp> element to display the
 
 To handle user input, the <samp>onkeyup</samp> event was used, but <samp>onkeydown</samp> or <samp>oninput</samp> would have worked just as well.
 
-On every key stroke <samp>actions.search</samp> is called and a new gif is requested, but only if we're not between another fetch request or the text input is empty.
+On every key stroke <samp>actions.search</samp> is called and a new gif is requested, but only if a fetch is not already pending and the text input is not empty.
 
 ```jsx
 if (state.isFetching || text === "") {
@@ -81,7 +81,7 @@ if (state.isFetching || text === "") {
 }
 ```
 
-Inside <samp>actions.search</samp> we use the <samp>[fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)</samp> API to request a gif URL from Giphy.
+Inside <samp>actions.search</samp> we use the [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) API to request a gif URL from Giphy.
 
 When <samp>fetch</samp> is done, we receive the payload with the gif information inside a [promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise).
 
@@ -96,5 +96,4 @@ fetch(
   })
 ```
 
-Finally, we toggle <samp>isFetching</samp> to indicate we're available to request a new URL and update the state using <samp>actions.setUrl</samp>.
-
+Once data has been received, <samp>actions.toggleFetching</samp> is called (which allows further fetch requests to be made) and the state is updated by passing the fetched gif URL to <samp>actions.setUrl</samp>.

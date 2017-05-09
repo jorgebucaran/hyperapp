@@ -1,8 +1,8 @@
 # Countdown Timer
 
-In this section we'll walk through a countdown timer example and use <samp>[events.loaded](/docs/api.md#events-loaded)</samp> to register global events.
+In this section we'll walk through a countdown timer example and learn how to use [events.loaded](/docs/api.md#loaded) to register global events.
 
-[View Online](https://codepen.io/hyperapp/pen/evOZLv?editors=0010)
+[Try it online](https://codepen.io/hyperapp/pen/evOZLv?editors=0010)
 
 ```jsx
 const pad = n => (n < 10 ? "0" + n : n)
@@ -60,7 +60,7 @@ state: {
 }
 ```
 
-The view displays the current count wrapped in a \<h1\> element and binds two buttons to <samp>actions.toggle</samp> and <samp>actions.reset</samp> respectively.
+The view displays the current count wrapped in a <samp>\<h1\></samp> element and binds two buttons to <samp>actions.toggle</samp> and <samp>actions.reset</samp> respectively.
 
 There's also some logic in <samp>humanizeTime</samp> to display the time in a familiar format like <samp>hh:mm:ss</samp>.
 
@@ -84,5 +84,3 @@ if (state.count === 0) {
   actions.drop()
 }
 ```
-
-

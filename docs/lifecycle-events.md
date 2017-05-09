@@ -1,28 +1,28 @@
 # Lifecycle Events
 
-Lifecycle events are custom event handlers invoked at various points in the life of a [virtual node](/docs/virtual-nodes.md).
+Lifecycle events are custom event handlers invoked at various points in the life of a [virtual node](/docs/core.md#virtual-nodes).
 
 They are useful for starting animations, wrapping third party libraries that require a reference to a DOM element, etc.
 
-## <a name="oncreate"></a> oncreate
+## oncreate
 
-Type: <samp>([element](https://developer.mozilla.org/en-US/docs/Web/API/Element))</samp>
+Type: ([element](https://developer.mozilla.org/en-US/docs/Web/API/Element))
 
 Fired after an element is created and added to the DOM.
 
-## <a name="onupdate"></a> onupdate
+## onupdate
 
-Type: <samp>([element](https://developer.mozilla.org/en-US/docs/Web/API/Element))</samp>
+Type: ([element](https://developer.mozilla.org/en-US/docs/Web/API/Element))
 
 Fired when the element's data is updated.
 
-## <a name="onremove"></a> onremove
+## onremove
 
-Type: <samp>([element](https://developer.mozilla.org/en-US/docs/Web/API/Element))</samp>
+Type: ([element](https://developer.mozilla.org/en-US/docs/Web/API/Element))
 
 Fired before the element is removed from the DOM.
 
-## Examples
+## Example
 
 This example shows how to create a [custom tag](/docs/custom-tags.md) to wrap the [CodeMirror](https://codemirror.net/) editor.
 

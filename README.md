@@ -20,7 +20,7 @@ HyperApp is a JavaScript library for building frontend applications.
 
 ## Hello World
 
-[CodePen](https://codepen.io/hyperapp/pen/Qdwpxy?editors=0010) · [Examples](https://hyperapp.glitch.me)
+[Try it online](https://codepen.io/hyperapp/pen/Qdwpxy?editors=0010)
 
 ```jsx
 app({

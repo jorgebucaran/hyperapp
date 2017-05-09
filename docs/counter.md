@@ -1,8 +1,8 @@
 # Counter
 
-In this section we'll walk through a simple counter example.
+In this section we'll walk through a simple counter example and learn how to update the state via [actions](/docs/core.md#actions).
 
-[View Online](https://codepen.io/hyperapp/pen/zNxZLP?editors=0010)
+[Try it online](https://codepen.io/hyperapp/pen/zNxZLP?editors=0010)
 
 ```jsx
 app({
@@ -33,14 +33,14 @@ When the <samp>app</samp> function runs for the first time, the state is passed 
 <h1>{state}</h1>
 ```
 
-There are also two buttons in the view that have <samp>onclick</samp> handlers attached to them. The handlers are the same actions passed to the view in the second argument.
+There are also two buttons in the view that have <samp>onclick</samp> handlers attached to them. The handlers are the actions that get passed to the view as the second argument.
 
 ```jsx
 <button onclick={actions.add}>+</button>
 <button onclick={actions.sub} disabled={state <= 0}>-</button>
 ```
 
-The <samp>disabled</samp> attribute is dynamically set depending on the value of the counter. This prevents the decrement button from being clicked after the counter reaches zero.
+The <samp>disabled</samp> attribute is dynamically toggled depending on the value of the counter. This prevents the decrement button from being clicked when the counter reaches zero.
 
 ```jsx
 disabled={state <= 0}

@@ -1,34 +1,32 @@
 # API
 
-* [h](#h)
-* [app](#app)
-  * [state](#state)
-  * [view](#view)
-  * [actions](#actions)
-    * [[_namespace._]action](#actions-action)
-  * [events](#events)
-    * [loaded](#events-loaded)
-    * [action](#events-action)
-    * [update](#events-update)
-    * [render](#events-render)
-  * [plugins](#plugins)
-    * [Plugin](#plugins-plugin)
-  * [root](#root)
+* [hyperapp.h](#h)
+* [hyperapp.app](#app)
+  * [props.state](#state)
+  * [props.view](#view)
+  * [props.actions](#actions)
+  * [props.events](#events)
+    * [loaded](#loaded)
+    * [action](#action)
+    * [update](#update)
+    * [render](#render)
+  * [props.plugins](#plugins)
+  * [props.root](#root)
 * [emit](#emit)
 
-## <a name="h"></a> h
+## h
 
-Type: <samp>([tag](#h-tag), [data](#h-data), [children](#h-children)): [vnode]</samp>
+[vnode]: /docs/core.md#virtual-nodes
 
-[vnode]: /docs/virtual-nodes.md
+Type: ([tag](#h-tag), [data](#h-data), [children](#h-children)): [vnode]
 
-* <a name="h-tag"></a>tag: <samp>string | ([props](#h-data), [children](#h-children)): [vnode]</samp>
-* <a name="h-data"></a>data: [attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes), [styles](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference), [events](https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers), [lifecycle events](/docs/lifecycle-events.md), etc.
-* <a name="h-children"></a>children: <samp>string | Array\<[vnode]\>
+* <a name="h-tag"></a>tag: string | ([props](#h-data), [children](#h-children)): [vnode]
+* <a name="h-data"></a>data: {}
+* <a name="h-children"></a>children: string | [vnode]\[\]
 
-## <a name="app"></a>app
+## app
 
-Type: <samp>([props](#app-props))</samp>
+Type: ([props](#app-props))
 
 * <a name="app-props"></a> props
   * [state](#state)
@@ -38,76 +36,72 @@ Type: <samp>([props](#app-props))</samp>
   * [plugins](#plugins)
   * [root](#root)
 
-<a name="app-props"></a>
+### state
 
-### <a name="state"></a>state
+Type: any
 
-Type: <samp>any</samp>
+### view
 
-### <a name="view"></a>view
+Type: ([state](#state), [actions](#actions)): [vnode]
 
-Type: <samp>([state](#state), [actions](#actions)): [vnode]</samp>
+### actions
+#### <a name="actions-foo"></a>[namespace.]_foo_
 
-### <a name="actions"></a>actions
-#### <a name="actions-action"></a>[_namespace._]action
+Type: ([state](#state), [actions](#actions), [data](#actions-data), [emit](#emit))
 
-Type: <samp>([state](#state), [actions](#actions), [data](#actions-data), [emit](#emit))</samp>
+* <a name="actions-data"></a> data: any
 
-* <a name="actions-data"></a> data: <samp>any</samp>
+### events
+#### loaded
 
-### <a name="events"></a>events
-#### <a name="events-loaded"></a>loaded
-
-Type: <samp>([state](#state), [actions](#actions), _, [emit](#emit)) | Array\<[Type](#events-loaded)\></samp>
+Type: ([state](#state), [actions](#actions), _, [emit](#emit)) | [events](#loaded)\[\]
 
 Fired after the view is mounted on the DOM.
 
-#### <a name="events-action"></a>action
+#### action
 
-Type: <samp>([state](#state), [actions](#actions), [data](#events-action-data), [emit](#emit)): [data](#events-action-data) | Array\<[Type](#events-action)\></samp>
+Type: ([state](#state), [actions](#actions), [data](#action-data), [emit](#emit)): [data](#action-data) | [action](#action)\[\]
 
-* <a name="events-action-data"></a>data
-  * name: <samp>string</samp>
-  * data: <samp>any</samp>
+* <a name="action-data"></a>data
+  * name: string
+  * data: any
 
 Fired before an action is triggered.
 
-#### <a name="events-update"></a>update
+#### update
 
-Type: <samp>([state](#state), [actions](#actions), [data](#events-update-data), [emit](#emit)): [data](#events-update-data) | Array\<[Type](#events-update)\></samp>
+Type: ([state](#state), [actions](#actions), [data](#update-data), [emit](#emit)): [data](#update-data) | [update](#update)\[\]
 
-* <a name="events-update-data"></a>data: the updated fragment of the state.
+* <a name="update-data"></a>data: the updated fragment of the state.
 
 Fired before the state is updated.
 
-#### <a name="events-render"></a>render
+#### render
 
-Type: <samp>([state](#state), [actions](#actions), [data](#events-render-data), [emit](#emit)): [data](#events-render-data) | Array\<[Type](#events-render)\></samp>
-
-* <a name="events-render-data"></a>data: the [view](#view).
+Type: ([state](#state), [actions](#actions), [view](#view), [emit](#emit)): [view](#view) | [render](#render)\[\]
 
 Fired before the view is rendered.
 
-### <a name="plugins"></a>plugins
+### plugins
 
-Type: <samp>Array\<[Plugin](#plugins-plugin)\></samp>
+Type: [Plugin](#plugins-plugin)\[\]
 
 #### <a name="plugins-plugin"></a>Plugin
 
-Type: <samp>([props](#app-props)): [props](#plugin-props)</samp>
+Type: ([props](#app-props)): [props](#plugin-props)
 
 * <a name="plugin-props"></a>props
   * [state](#state)
   * [actions](#actions)
   * [events](#events)
 
-### <a name="root"></a>root
+### root
 
-Type: <samp>[Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) = [document.body](https://developer.mozilla.org/en-US/docs/Web/API/Document/body)</samp>
+Type: [Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) = [document.body](https://developer.mozilla.org/en-US/docs/Web/API/Document/body)
 
-## <a name="emit"></a>emit
+## emit
 
-Type: <samp>([event](#emit-event), [data](#emit-data)): [data](#emit-data)</samp>
+Type: ([event](#emit-event), [data](#emit-data)): [data](#emit-data)
 
-* <a name="emit-event"></a>event: <samp>string</samp>
-* <a name="emit-data"></a>data: <samp>any</samp>
+* <a name="emit-event"></a>event: string
+* <a name="emit-data"></a>data: any

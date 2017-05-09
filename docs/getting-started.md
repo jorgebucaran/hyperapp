@@ -37,7 +37,6 @@ The view describes the user interface.
 state => h("h1", null, state) // <h1>Hi.</h1>
 ```
 
-[h()]: /docs/api.md#h
 [Hyperx]: /docs/hyperx.md
 [JSX]: /docs/jsx.md
 
@@ -100,7 +99,7 @@ const { h, app } = require("hyperapp")
 
 A build pipeline can be as complex as you want it to be, but it typically consists of a package manager, a compiler and a bundler.
 
-Using a build pipeline we can transform [Hyperx]/[JSX] into [h(tag, data, children)] function calls which are faster than sending a parser down the wire and compiling the view in the browser.
+Using a build pipeline we can transform [Hyperx]/[JSX] into [h(tag, data, children)](/docs/api.md#h) function calls which are faster than sending a parser down the wire and compiling the view in the browser.
 
 Hyperx/JSX in:
 

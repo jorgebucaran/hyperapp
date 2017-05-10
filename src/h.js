@@ -13,14 +13,14 @@ export default function(tag, data) {
         stack[stack.length] = node[i]
       }
     } else if (node != null && node !== true && node !== false) {
-      if (typeof node === "number") {
+      if (typeof node == "number") {
         node = node + ""
       }
       children[children.length] = node
     }
   }
 
-  return typeof tag === "string"
+  return typeof tag == "string"
     ? {
         tag: tag,
         data: data || {},

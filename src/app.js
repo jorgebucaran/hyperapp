@@ -20,7 +20,7 @@ export default function(app) {
     })
   }
 
-  if (document.readyState[0] !== "l") {
+  if (document.readyState[0] != "l") {
     load()
   } else {
     addEventListener("DOMContentLoaded", load)
@@ -31,7 +31,7 @@ export default function(app) {
       var action = children[key]
       var name = lastName ? lastName + "." + key : key
 
-      if (typeof action === "function") {
+      if (typeof action == "function") {
         namespace[key] = function(data) {
           var result = action(
             state,
@@ -43,7 +43,7 @@ export default function(app) {
             emit
           )
 
-          if (result == null || typeof result.then === "function") {
+          if (result == null || typeof result.then == "function") {
             return result
           }
 
@@ -83,7 +83,7 @@ export default function(app) {
   function merge(a, b) {
     var obj = {}
 
-    if (typeof b !== "object" || Array.isArray(b)) {
+    if (typeof b != "object" || Array.isArray(b)) {
       return b
     }
 
@@ -98,10 +98,10 @@ export default function(app) {
   }
 
   function createElementFrom(node, isSVG) {
-    if (typeof node === "string") {
+    if (typeof node == "string") {
       var element = document.createTextNode(node)
     } else {
-      var element = (isSVG = isSVG || node.tag === "svg")
+      var element = (isSVG = isSVG || node.tag == "svg")
         ? document.createElementNS("http://www.w3.org/2000/svg", node.tag)
         : document.createElement(node.tag)
 
@@ -110,7 +110,7 @@ export default function(app) {
       }
 
       for (var i in node.data) {
-        if (i === "oncreate") {
+        if (i == "oncreate") {
           node.data[i](element)
         } else {
           setElementData(element, i, node.data[i])
@@ -122,8 +122,8 @@ export default function(app) {
   }
 
   function setElementData(element, name, value, oldValue) {
-    if (name === "key") {
-    } else if (name === "style") {
+    if (name == "key") {
+    } else if (name == "style") {
       for (var i in merge(oldValue, (value = value || {}))) {
         element.style[i] = value[i] || ""
       }
@@ -132,7 +132,7 @@ export default function(app) {
         element[name] = value
       } catch (_) {}
 
-      if (typeof value !== "function") {
+      if (typeof value != "function") {
         if (value) {
           element.setAttribute(name, value)
         } else {
@@ -147,9 +147,9 @@ export default function(app) {
       var value = data[name]
       var oldValue = oldData[name]
 
-      if (name === "onupdate") {
+      if (name == "onupdate") {
         value(element)
-      } else if (value !== oldValue || value !== element[name]) {
+      } else if (value != oldValue || value != element[name]) {
         setElementData(element, name, value, oldValue)
       }
     }
@@ -171,7 +171,7 @@ export default function(app) {
   function patch(parent, element, oldNode, node) {
     if (oldNode == null) {
       element = parent.insertBefore(createElementFrom(node), element)
-    } else if (node.tag && node.tag === oldNode.tag) {
+    } else if (node.tag && node.tag == oldNode.tag) {
       updateElementData(element, oldNode.data, node.data)
 
       var len = node.children.length
@@ -224,7 +224,7 @@ export default function(app) {
           }
           i++
         } else {
-          if (oldKey === newKey) {
+          if (oldKey == newKey) {
             patch(element, reusableElement, reusableNode, newChild)
             i++
           } else if (reusableElement) {
@@ -255,7 +255,7 @@ export default function(app) {
           removeElement(element, reusableChild[0], reusableNode)
         }
       }
-    } else if (node !== oldNode) {
+    } else if (node != oldNode) {
       var i = element
       parent.replaceChild((element = createElementFrom(node)), i)
     }

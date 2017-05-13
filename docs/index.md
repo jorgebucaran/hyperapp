@@ -3,11 +3,11 @@
 Below is an alphabetical list of some of the terms and concepts used throughout the documentation. Click on a link to find out more.
 
 ##### A
-[events.action](/docs/api.md#events-action)<br>
+[events.action](/docs/api.md#action)<br>
 [actions](/docs/core.md#actions)<br>
 [app](/docs/api.md#app)<br>
 [arrow functions](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Functions/Arrow_functions)<br>
-[attributes, data](/docs/core.md#virtual-nodes#data-attributes)<br>
+[attributes, data](/docs/core.md#data-attributes)<br>
 
 ##### B
 [.babelrc](https://babeljs.io/docs/usage/babelrc/)<br>
@@ -31,7 +31,7 @@ Below is an alphabetical list of some of the terms and concepts used throughout 
 [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)<br>
 
 ##### G
-[actions.router.go](/docs/routing.md#actions-go)<br>
+[actions.router.go](/docs/routing.md#go)<br>
 
 ##### H
 [h](/docs/api.md#h)<br>
@@ -41,21 +41,20 @@ Below is an alphabetical list of some of the terms and concepts used throughout 
 
 ##### I
 [import](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import)<br>
-[installing](/docs/getting-started.md#installing)<br>
-[importing](/docs/getting-started.md#importing)<br>
+[installation](/docs/getting-started.md#installation)<br>
 
 ##### J
 [JSX](/docs/jsx.md)<br>
 
 ##### K
-[keys](/docs/core.md#virtual-nodes#keys)<br>
+[keys](/docs/keys.md)<br>
 
 ##### L
 [location](https://developer.mozilla.org/en-US/docs/Web/API/Location)<br>
-[events.loaded](/docs/api.md#events-loaded)<br>
+[events.loaded](/docs/api.md#loaded)<br>
 
 ##### M
-[state.router.match](/docs/routing.md#state-match)<br>
+[state.router.match](/docs/routing.md#match)<br>
 
 ##### N
 [namespaces](/docs/core.md#namespaces)<br>
@@ -67,18 +66,17 @@ Below is an alphabetical list of some of the terms and concepts used throughout 
 [onremove](/docs/lifecycle-events.md#onremove)<br>
 
 ##### P
-[state.router.params](/docs/routing.md#state-params)<br>
+[state.router.params](/docs/routing.md#params)<br>
 [plugins](/docs/core.md#plugins)<br>
 [popstate](https://developer.mozilla.org/en-US/docs/Web/Events/popstate)<br>
 [promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)<br>
 [pragma](https://babeljs.io/docs/plugins/transform-react-jsx/#optionspragma)<br>
 
 ##### R
-[events.render](/docs/api.md#events-render)<br>
+[events.render](/docs/api.md#render)<br>
 [require](https://nodejs.org/api/modules.html#modules_module_require_id)<br>
 [root](/docs/core.md#root)<br>
-[routing](/docs/routing.md)<br>
-[route](/docs/routing.md#router-route)<br>
+[events.route](/docs/routing.md#route)<br>
 [rollup](https://github.com/rollup/rollup)<br>
 
 ##### S
@@ -90,7 +88,8 @@ Below is an alphabetical list of some of the terms and concepts used throughout 
 [tutorials](/docs/tutorials.md)<br>
 
 ##### U
-[events.update](/docs/api.md#events-update)<br>
+[events.update](/docs/api.md#update)<br>
+[usage](/docs/getting-started.md#usage)<br>
 
 ##### V
 [view](/docs/core.md#view-and-state)<br>

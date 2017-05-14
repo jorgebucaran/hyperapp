@@ -134,7 +134,7 @@ export default function(app) {
 
       if (typeof value !== "function") {
         if (value) {
-          if (name === 'xlink:href') {
+          if (name === "xlink:href") {
             element.setAttributeNS("http://www.w3.org/1999/xlink", "href", value)
           }
           else {

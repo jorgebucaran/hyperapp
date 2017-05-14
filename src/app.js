@@ -134,7 +134,12 @@ export default function(app) {
 
       if (typeof value !== "function") {
         if (value) {
-          element.setAttribute(name, value)
+          if (name === 'xlink:href') {
+            element.setAttributeNS("http://www.w3.org/1999/xlink", "href", value)
+          }
+          else {
+            element.setAttribute(name, value)
+          }
         } else {
           element.removeAttribute(name)
         }

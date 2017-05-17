@@ -1,4 +1,4 @@
-import renderToString from "../src/render-to-string"
+import renderToString from "../src/toString"
 
 const RenderTest = trees =>
   trees.forEach(tree => expect(renderToString(tree.vnode)).toBe(tree.html))

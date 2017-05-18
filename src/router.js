@@ -25,23 +25,29 @@ export default function(app) {
         }
       },
       render: function(state, actions, view) {
-        return view[state.router.match]
+        for (var i = 0, len = view.length; i < len; i++) {
+          var route = view[i]
+          if (route.path === state.router.match) {
+            return route.view
+          }
+        }
       }
     }
   }
 
-  function match(data) {
+  function match(path) {
     var match
     var params = {}
 
-    for (var route in app.view) {
+    for (var i = 0, len = app.view.length; i < len; i++) {
+      var routePath = app.view[i].path
       var keys = []
 
-      if (!match && route !== "*") {
-        data.replace(
+      if (!match && routePath !== "*") {
+        path.replace(
           RegExp(
             "^" +
-              route
+              routePath
                 .replace(/\//g, "\\/")
                 .replace(/:([\w]+)/g, function(_, key) {
                   keys.push(key)
@@ -54,7 +60,7 @@ export default function(app) {
             for (var i = 1; i < arguments.length - 2; ) {
               params[keys.shift()] = arguments[i++]
             }
-            match = route
+            match = routePath
           }
         )
       }

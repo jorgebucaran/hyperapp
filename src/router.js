@@ -12,7 +12,7 @@ export default function(app) {
         },
         go: function(state, actions, data) {
           history.pushState({}, "", data)
-          actions.router.match(data)
+          actions.router.match(data.split('?')[0])
         }
       }
     },

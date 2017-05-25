@@ -22,6 +22,12 @@ Type: ([element](https://developer.mozilla.org/en-US/docs/Web/API/Element))
 
 Fired before the element is removed from the DOM.
 
+Note that when using this event you are responsible for removing the element yourself.
+
+```js
+element.parent.removeChild(element)
+```
+
 ## Example
 
 This example shows how to create a [custom tag](/docs/custom-tags.md) to wrap the [CodeMirror](https://codemirror.net/) editor.

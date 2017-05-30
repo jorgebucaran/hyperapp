@@ -176,8 +176,9 @@ app({
   ),
   actions: {
     addOne: state => state + 1,
-    addOneDelayed: (state, actions) =>
+    addOneDelayed: (state, actions) => {
       setTimeout(actions.addOne, 1000)
+    }
   }
 })
 ```

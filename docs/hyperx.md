@@ -70,7 +70,7 @@ npm i -D \
   <a href="https://www.npmjs.com/package/hyperxify">hyperxify</a> \
   <a href="https://www.npmjs.com/package/babelify">babelify</a> \
   <a href="https://www.npmjs.com/package/uglifyify">uglifyify</a> \
-  <a href="https://www.npmjs.com/package/bundle-collapser">bundle-collapser</a>
+  <a href="https://www.npmjs.com/package/bundle-collapser">bundle-collapser</a> \
   <a href="https://www.npmjs.com/package/uglify-js">uglify-js</a>
 </pre>
 

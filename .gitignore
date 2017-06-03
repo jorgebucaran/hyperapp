@@ -5,6 +5,7 @@
 # Logs
 *.log*
 yarn.lock
+package-lock.json
 
 # Misc
 sandbox

@@ -1,7 +1,7 @@
 # [hyperapp](https://hyperapp.glitch.me)
 [![Travis CI](https://img.shields.io/travis/hyperapp/hyperapp/master.svg)](https://travis-ci.org/hyperapp/hyperapp)
 [![Codecov](https://img.shields.io/codecov/c/github/hyperapp/hyperapp/master.svg)](https://codecov.io/gh/hyperapp/hyperapp)
-[![npm](https://img.shields.io/npm/v/hyperapp.svg?colorB=ff69b4)](https://www.npmjs.org/package/hyperapp)
+[![npm](https://img.shields.io/npm/v/hyperapp.svg?colorB=09e5f9)](https://www.npmjs.org/package/hyperapp)
 [![Slack](https://hyperappjs.herokuapp.com/badge.svg)](https://hyperappjs.herokuapp.com "Join us")
 
 HyperApp is a JavaScript library for building frontend applications.
@@ -19,12 +19,22 @@ HyperApp is a JavaScript library for building frontend applications.
 
 ## Hello World
 
-[Try it online](https://codepen.io/hyperapp/pen/Qdwpxy?editors=0010)
+[Try it online](https://codepen.io/hyperapp/pen/zNxZLP?editors=0010)
 
 ```jsx
 app({
-  state: "Hi.",
-  view: state => <h1>{state}</h1>
+  state: 0,
+  view: (state, actions) => (
+    <main>
+      <h1>{state}</h1>
+      <button onclick={actions.add}>+</button>
+      <button onclick={actions.sub}>-</button>
+    </main>
+  ),
+  actions: {
+    add: state => state + 1,
+    sub: state => state - 1
+  }
 })
 ```
 

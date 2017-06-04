@@ -1,7 +1,7 @@
 import { h, app } from "../src"
 import { expectHTMLToBe } from "./util"
 
-beforeEach(() => document.body.innerHTML = "")
+beforeEach(() => (document.body.innerHTML = ""))
 
 test("loaded", () => {
   app({

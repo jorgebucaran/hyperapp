@@ -64,7 +64,7 @@ data: {
 }
 ```
 
-Attributes also include [lifecycle events](/docs/lifecycle-events.md) and meta data such as [keys](#/docs/keys.md).
+Attributes also include [lifecycle events](/docs/lifecycle-events.md) and meta data such as [keys](/docs/keys.md).
 
 ## Applications
 

@@ -25,7 +25,9 @@ Fired before the element is removed from the DOM.
 Note that when using this event you are responsible for removing the element yourself.
 
 ```js
-element.parent.removeChild(element)
+if (element.parentNode) {
+  element.parentNode.removeChild(element);
+}
 ```
 
 ## Example

@@ -45,7 +45,7 @@ export default function(app) {
                 .replace(/\//g, "\\/")
                 .replace(/:([\w]+)/g, function(_, key) {
                   keys.push(key)
-                  return "([-\\.\\w]+)"
+                  return "([-\\w.~!$&'()*+,;=:@]+)"
                 }) +
               "/?$",
             "g"

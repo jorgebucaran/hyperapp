@@ -124,12 +124,12 @@ test("route params separated by a dash", () => {
   `
 })
 
-test("route params including a dot", () => {
-  window.location.pathname = "/beep/bop.bop/boop"
+test("route params including special characters", () => {
+  window.location.pathname = "/be.-ep~!/$&bo'/(o*+o,;=:@p)/bop"
 
   app({
     view: {
-      "/:foo/:bar/:baz": state =>
+      "/:foo/:bar/:baz/:qux": state =>
         h(
           "ul",
           {},
@@ -143,9 +143,10 @@ test("route params including a dot", () => {
 
   expectHTMLToBe`
     <ul>
-			<li>foo:beep</li>
-      <li>bar:bop.bop</li>
-      <li>baz:boop</li>
+      <li>foo:be.-ep~!</li>
+      <li>bar:$&amp;bo'</li>
+      <li>baz:(o*+o,;=:@p)</li>
+      <li>qux:bop</li>
     </ul>
   `
 })

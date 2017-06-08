@@ -243,7 +243,7 @@ export default function(app) {
         i++
       }
 
-      for (var i in reusableChildren) {
+      for (i in reusableChildren) {
         var reusableChild = reusableChildren[i]
         var reusableNode = reusableChild[1]
         if (!newKeys[reusableNode.data.key]) {
@@ -251,7 +251,7 @@ export default function(app) {
         }
       }
     } else if (node !== oldNode) {
-      var i = element
+      i = element
       parent.replaceChild((element = createElementFrom(node)), i)
     }
 

@@ -124,6 +124,32 @@ test("route params separated by a dash", () => {
   `
 })
 
+test("route params including a dot", () => {
+  window.location.pathname = "/beep/bop.bop/boop"
+
+  app({
+    view: {
+      "/:foo/:bar/:baz": state =>
+        h(
+          "ul",
+          {},
+          Object.keys(state.router.params).map(key =>
+            h("li", {}, `${key}:${state.router.params[key]}`)
+          )
+        )
+    },
+    plugins: [Router]
+  })
+
+  expectHTMLToBe`
+    <ul>
+			<li>foo:beep</li>
+      <li>bar:bop.bop</li>
+      <li>baz:boop</li>
+    </ul>
+  `
+})
+
 test("routes with dashes into a single param key", () => {
   window.location.pathname = "/beep-bop-boop"
 

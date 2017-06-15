@@ -1,4 +1,4 @@
-export default function(app) {
+export default function(app, view) {
   return {
     state: {
       router: match(location.pathname)
@@ -20,48 +20,54 @@ export default function(app) {
       loaded: function(state, actions) {
         match()
         addEventListener("popstate", match)
+
         function match() {
           actions.router.match(location.pathname)
         }
       },
-      render: function(state, actions, view) {
-        return view[state.router.match]
+      render: function() {
+        return view
       }
     }
   }
 
   function match(data) {
-    var match
-    var params = {}
-
-    for (var route in app.view) {
+    for (
+      var match, params = {}, i = 0, len = app.view.length;
+      i < len;
+      i++
+    ) {
+      var route = app.view[i][0]
       var keys = []
 
-      if (!match && route !== "*") {
+      if (!match) {
         data.replace(
           RegExp(
-            "^" +
-              route
-                .replace(/\//g, "\\/")
-                .replace(/:([\w]+)/g, function(_, key) {
-                  keys.push(key)
-                  return "([-\\.\\w]+)"
-                }) +
-              "/?$",
+            route === "*"
+              ? "." + route
+              : "^" +
+                  route
+                    .replace(/\//g, "\\/")
+                    .replace(/:([\w]+)/g, function(_, key) {
+                      keys.push(key)
+                      return "([-\\.\\w]+)"
+                    }) +
+                  "/?$",
             "g"
           ),
           function() {
-            for (var i = 1; i < arguments.length - 2; ) {
-              params[keys.shift()] = arguments[i++]
+            for (var j = 1; j < arguments.length - 2; ) {
+              params[keys.shift()] = arguments[j++]
             }
             match = route
+            view = app.view[i][1]
           }
         )
       }
     }
 
     return {
-      match: match || "*",
+      match: match,
       params: params
     }
   }

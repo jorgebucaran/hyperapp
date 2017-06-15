@@ -125,3 +125,29 @@ test("don't overwrite actions in the same namespace", () => {
     mixins: [mixin]
   })
 })
+
+test('mixin inside of a mixin', () => {
+  const A = () => ({
+    state: {
+      foo: 1
+    }
+  })
+
+  const B = () => ({
+    mixins: [A],
+    state: {
+      bar: 2
+    }
+  })
+
+  app({
+    mixins: [B],
+    view: () => "",
+    events: {
+      loaded: (state) => {
+        expect(state.bar).toBe(2)
+        expect(state.foo).toBe(1)
+      }
+    }
+  })
+})

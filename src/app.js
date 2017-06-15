@@ -9,6 +9,10 @@ export default function(app) {
   for (var i = -1, mixins = app.mixins || []; i < mixins.length; i++) {
     var mixin = mixins[i] ? mixins[i](app) : app
 
+    if (mixin.mixins != null && mixin !== app) {
+      mixins = mixins.concat(mixin.mixins)
+    }
+
     if (mixin.state != null) {
       state = merge(state, mixin.state)
     }

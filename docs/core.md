@@ -8,7 +8,7 @@
     * [Namespaces](#namespaces)
   * [Events](#events)
     * [Custom Events](#custom-events)
-  * [Plugins](#plugins)
+  * [Mixins](#mixins)
 
 ## Virtual Nodes
 
@@ -292,9 +292,9 @@ app({
 })
 ```
 
-### Plugins
+### Mixins
 
-Use [plugins](/docs/api.md#events) to extend your application state, actions and events in a modular fashion.
+Use [mixins](/docs/api.md#mixins) to extend your application state, actions and events in a modular fashion.
 
 ```jsx
 const Logger = () => ({
@@ -313,6 +313,19 @@ app({
   actions: {
     addOne: state => state + 1
   },
-  plugins: [Logger]
+  mixins: [Logger]
 })
 ```
+Mixins can also extend other mixins:
+
+```js
+const A = () => ({
+  state: { foo: 1 }
+}) 
+
+const B = () => ({
+  mixins: [B],
+  state: { bar: 2 }
+})
+```
+

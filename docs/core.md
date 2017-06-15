@@ -324,7 +324,7 @@ const A = () => ({
 }) 
 
 const B = () => ({
-  mixins: [B],
+  mixins: [A],
   state: { bar: 2 }
 })
 ```

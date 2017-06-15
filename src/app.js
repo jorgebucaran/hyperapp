@@ -22,7 +22,7 @@ export default function(app) {
     Object.keys(mixin.events || []).map(function(key) {
       events[key] = (events[key] || []).concat(mixin.events[key])
     })
-  } 
+  }
 
   if (document.readyState[0] !== "l") {
     load()

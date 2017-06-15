@@ -13,9 +13,7 @@ beforeEach(() => {
 
 test("/", () => {
   app({
-    view: [
-      { path: "/", view: state => h("div", {}, "foo")}
-    ],
+    view: [["/", state => h("div", {}, "foo")]],
     plugins: [Router]
   })
 
@@ -27,9 +25,7 @@ test("/", () => {
 
 test("*", () => {
   app({
-    view: [
-      { path: "*", view: state => h("div", {}, "foo") }
-    ],
+    view: [["*", state => h("div", {}, "foo")]],
     plugins: [Router],
     events: {
       loaded: (state, actions) => {
@@ -60,7 +56,7 @@ test("routes", () => {
 
   app({
     view: [
-      { path: "/foo/bar/baz", view: state => h("div", {}, "foo", "bar", "baz") }
+      ["/foo/bar/baz", state => h("div", {}, "foo", "bar", "baz")]
     ],
     plugins: [Router]
   })
@@ -76,17 +72,19 @@ test("route params", () => {
   window.location.pathname = "/be_ep/bOp/b00p"
 
   app({
-    view: [{
-      path: "/:foo/:bar/:baz",
-      view: state =>
-        h(
-          "ul",
-          {},
-          Object.keys(state.router.params).map(key =>
-            h("li", {}, `${key}:${state.router.params[key]}`)
+    view: [
+      [
+        "/:foo/:bar/:baz",
+        state =>
+          h(
+            "ul",
+            {},
+            Object.keys(state.router.params).map(key =>
+              h("li", {}, `${key}:${state.router.params[key]}`)
+            )
           )
-        )
-    }],
+      ]
+    ],
     plugins: [Router]
   })
 
@@ -103,17 +101,19 @@ test("route params separated by a dash", () => {
   window.location.pathname = "/beep-bop-boop"
 
   app({
-    view: [{
-      path: "/:foo-:bar-:baz",
-      view: state =>
-        h(
-          "ul",
-          {},
-          Object.keys(state.router.params).map(key =>
-            h("li", {}, `${key}:${state.router.params[key]}`)
+    view: [
+      [
+        "/:foo-:bar-:baz",
+        state =>
+          h(
+            "ul",
+            {},
+            Object.keys(state.router.params).map(key =>
+              h("li", {}, `${key}:${state.router.params[key]}`)
+            )
           )
-        )
-    }],
+      ]
+    ],
     plugins: [Router]
   })
 
@@ -130,16 +130,19 @@ test("route params including a dot", () => {
   window.location.pathname = "/beep/bop.bop/boop"
 
   app({
-    view: {
-      "/:foo/:bar/:baz": state =>
-        h(
-          "ul",
-          {},
-          Object.keys(state.router.params).map(key =>
-            h("li", {}, `${key}:${state.router.params[key]}`)
+    view: [
+      [
+        "/:foo/:bar/:baz",
+        state =>
+          h(
+            "ul",
+            {},
+            Object.keys(state.router.params).map(key =>
+              h("li", {}, `${key}:${state.router.params[key]}`)
+            )
           )
-        )
-    },
+      ]
+    ],
     plugins: [Router]
   })
 
@@ -156,10 +159,7 @@ test("routes with dashes into a single param key", () => {
   window.location.pathname = "/beep-bop-boop"
 
   app({
-    view: [{
-      path: "/:foo",
-      view: state => h("div", {}, state.router.params.foo)
-    }],
+    view: [["/:foo", state => h("div", {}, state.router.params.foo)]],
     plugins: [Router]
   })
 
@@ -172,13 +172,10 @@ test("routes with dashes into a single param key", () => {
 
 test("popstate", () => {
   app({
-    view: [{
-      path: "/",
-      view: state => "",
-    }, {
-      path: "/foo",
-      view: state => h("div", {}, "foo")
-    }],
+    view: [
+      ["/", state => ""],
+      ["/foo", state => h("div", {}, "foo")]
+    ],
     plugins: [Router]
   })
 
@@ -201,10 +198,10 @@ test("go", () => {
 
   app({
     view: [
-      { path: "/", view: state => "" },
-      { path: "/foo", view: state => h("div", {}, "foo") },
-      { path: "/bar", view: state => h("div", {}, "bar") },
-      { path: "/baz", view: state => h("div", {}, "baz") }
+      ["/", state => ""],
+      ["/foo", state => h("div", {}, "foo")],
+      ["/bar", state => h("div", {}, "bar")],
+      ["/baz", state => h("div", {}, "baz")]
     ],
     plugins: [Router],
     events: {

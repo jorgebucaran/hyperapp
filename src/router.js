@@ -1,4 +1,4 @@
-export default function(app) {
+export default function(app, view) {
   return {
     state: {
       router: match(location.pathname)
@@ -20,54 +20,54 @@ export default function(app) {
       loaded: function(state, actions) {
         match()
         addEventListener("popstate", match)
+
         function match() {
           actions.router.match(location.pathname)
         }
       },
-      render: function(state, actions, view) {
-        for (var i = 0, len = view.length; i < len; i++) {
-          var route = view[i]
-          if (route.path === state.router.match) {
-            return route.view
-          }
-        }
+      render: function() {
+        return view
       }
     }
   }
 
-  function match(path) {
-    var match
-    var params = {}
-
-    for (var i = 0, len = app.view.length; i < len; i++) {
-      var routePath = app.view[i].path
+  function match(data) {
+    for (
+      var match, params = {}, i = 0, len = app.view.length;
+      i < len;
+      i++
+    ) {
+      var route = app.view[i][0]
       var keys = []
 
-      if (!match && routePath !== "*") {
-        path.replace(
+      if (!match) {
+        data.replace(
           RegExp(
-            "^" +
-              routePath
-                .replace(/\//g, "\\/")
-                .replace(/:([\w]+)/g, function(_, key) {
-                  keys.push(key)
-                  return "([-\\.\\w]+)"
-                }) +
-              "/?$",
+            route === "*"
+              ? "." + route
+              : "^" +
+                  route
+                    .replace(/\//g, "\\/")
+                    .replace(/:([\w]+)/g, function(_, key) {
+                      keys.push(key)
+                      return "([-\\.\\w]+)"
+                    }) +
+                  "/?$",
             "g"
           ),
           function() {
-            for (var i = 1; i < arguments.length - 2; ) {
-              params[keys.shift()] = arguments[i++]
+            for (var j = 1; j < arguments.length - 2; ) {
+              params[keys.shift()] = arguments[j++]
             }
-            match = routePath
+            match = route
+            view = app.view[i][1]
           }
         )
       }
     }
 
     return {
-      match: match || "*",
+      match: match,
       params: params
     }
   }

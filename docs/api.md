@@ -76,7 +76,7 @@ Type: ([state](#state), [actions](#actions), [data](#update-data), [emit](#emit)
 
 Fired before the state is updated.
 
-#### rendero
+#### render
 
 Type: ([state](#state), [actions](#actions), [view](#view), [emit](#emit)): [view](#view) | Array\<[render](#render)\>
 

@@ -316,16 +316,29 @@ app({
   mixins: [Logger]
 })
 ```
-Mixins can also extend other mixins:
+
+Mixins can also compose with other mixins:
 
 ```js
-const A = () => ({
-  state: { foo: 1 }
-}) 
+const Counter = () => ({
+  mixins: [Logger],
+  state: {
+    count: 0
+  },
+  actions: {
+    up: state => { count: state.count + 1 },
+    down: state => { count: state.count + 1 }
+  }
+})
 
-const B = () => ({
-  mixins: [A],
-  state: { bar: 2 }
+app({
+  mixins: [Counter],
+  view: state =>
+    <div class='counter'>
+      <button onclick={actions.up}>+</button>
+      <span>{state.count}</span>
+      <button onclick={actions.down}>-</button
+    </div>
 })
 ```
 

@@ -10,7 +10,7 @@
     * [action](#action)
     * [update](#update)
     * [render](#render)
-  * [props.plugins](#plugins)
+  * [props.mixins](#mixins)
   * [props.root](#root)
 * [emit](#emit)
 
@@ -33,7 +33,7 @@ Type: ([props](#app-props))
   * [view](#view)
   * [actions](#actions)
   * [events](#events)
-  * [plugins](#plugins)
+  * [mixins](#mixins)
   * [root](#root)
 
 ### state
@@ -82,15 +82,16 @@ Type: ([state](#state), [actions](#actions), [view](#view), [emit](#emit)): [vie
 
 Fired before the view is rendered.
 
-### plugins
+### mixins
 
-Type: Array\<[Plugin](#plugins-plugin)\>
+Type: Array\<[Mixin](#mixins-mixin)\>
 
-#### <a name="plugins-plugin"></a>Plugin
+#### <a name="mixins-mixin"></a>Mixin
 
-Type: ([props](#app-props)): [props](#plugin-props)
+Type: ([props](#app-props)): [props](#mixin-props)
 
-* <a name="plugin-props"></a>props
+* <a name="mixin-props"></a>props
+  * [mixins](#mixins)
   * [state](#state)
   * [actions](#actions)
   * [events](#events)

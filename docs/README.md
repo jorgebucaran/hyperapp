@@ -15,7 +15,7 @@ We assume you have some knowledge of HTML and JavaScript. If you are completely 
     - [View and State](/docs/core.md#view-and-state)
     - [Actions](/docs/core.md#actions)
     - [Events](/docs/core.md#events)
-    - [Plugins](/docs/core.md#plugins)
+    - [Mixins](/docs/core.md#mixins)
 - [Keys](/docs/keys.md)
 - [Custom Tags](/docs/custom-tags.md)
 - [Lifecycle Events](/docs/lifecycle-events.md)

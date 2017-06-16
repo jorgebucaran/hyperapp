@@ -14,7 +14,7 @@ beforeEach(() => {
 test("/", () => {
   app({
     view: [["/", state => h("div", {}, "foo")]],
-    plugins: [Router]
+    mixins: [Router]
   })
 
   expectHTMLToBe`
@@ -26,7 +26,7 @@ test("/", () => {
 test("*", () => {
   app({
     view: [["*", state => h("div", {}, "foo")]],
-    plugins: [Router],
+    mixins: [Router],
     events: {
       loaded: (state, actions) => {
         actions.router.go("/bar")
@@ -58,7 +58,7 @@ test("routes", () => {
     view: [
       ["/foo/bar/baz", state => h("div", {}, "foo", "bar", "baz")]
     ],
-    plugins: [Router]
+    mixins: [Router]
   })
 
   expectHTMLToBe`
@@ -85,7 +85,7 @@ test("route params", () => {
           )
       ]
     ],
-    plugins: [Router]
+    mixins: [Router]
   })
 
   expectHTMLToBe`
@@ -114,7 +114,7 @@ test("route params separated by a dash", () => {
           )
       ]
     ],
-    plugins: [Router]
+    mixins: [Router]
   })
 
   expectHTMLToBe`
@@ -143,7 +143,7 @@ test("route params including a dot", () => {
           )
       ]
     ],
-    plugins: [Router]
+    mixins: [Router]
   })
 
   expectHTMLToBe`
@@ -160,7 +160,7 @@ test("routes with dashes into a single param key", () => {
 
   app({
     view: [["/:foo", state => h("div", {}, state.router.params.foo)]],
-    plugins: [Router]
+    mixins: [Router]
   })
 
   expectHTMLToBe`
@@ -176,7 +176,7 @@ test("popstate", () => {
       ["/", state => ""],
       ["/foo", state => h("div", {}, "foo")]
     ],
-    plugins: [Router]
+    mixins: [Router]
   })
 
   window.location.pathname = "/foo"
@@ -203,7 +203,7 @@ test("go", () => {
       ["/bar", state => h("div", {}, "bar")],
       ["/baz", state => h("div", {}, "baz")]
     ],
-    plugins: [Router],
+    mixins: [Router],
     events: {
       loaded: (state, actions) => {
         actions.router.go("/foo")

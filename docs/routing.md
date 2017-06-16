@@ -12,7 +12,7 @@
 
 ## Usage
 
-To add routing to your application, use the Router plugin.
+To add routing to your application, use the Router mixin.
 
 ```jsx
 import { Router } from "hyperapp"
@@ -26,7 +26,7 @@ app({
     ["/", state => <h1>Hi.</h1>]
     ["*", state => <h1>404</h1>],
   ],
-  plugins: [Router]
+  mixins: [Router]
 })
 ```
 

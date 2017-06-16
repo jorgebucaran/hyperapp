@@ -4,7 +4,7 @@ import { expectHTMLToBe } from "./util"
 beforeEach(() => (document.body.innerHTML = ""))
 
 test("extend the state", () => {
-  const plugin = app => ({
+  const mixin = app => ({
     state: {
       bar: app.state.foo
     }
@@ -23,7 +23,7 @@ test("extend the state", () => {
         })
       }
     },
-    plugins: [plugin]
+    mixins: [mixin]
   })
 })
 
@@ -47,12 +47,12 @@ test("extend events", () => {
     events: {
       loaded: _ => expect(++count).toBe(1)
     },
-    plugins: [A, B]
+    mixins: [A, B]
   })
 })
 
 test("extend actions", () => {
-  const plugin = app => ({
+  const mixin = app => ({
     actions: {
       foo: {
         bar: {
@@ -84,12 +84,12 @@ test("extend actions", () => {
         `
       }
     },
-    plugins: [plugin]
+    mixins: [mixin]
   })
 })
 
 test("don't overwrite actions in the same namespace", () => {
-  const plugin = app => ({
+  const mixin = app => ({
     actions: {
       foo: {
         bar: {
@@ -122,6 +122,32 @@ test("don't overwrite actions in the same namespace", () => {
         (state, actions) => actions.foo.bar.qux("foo.bar.qux")
       ]
     },
-    plugins: [plugin]
+    mixins: [mixin]
+  })
+})
+
+test('mixin inside of a mixin', () => {
+  const A = () => ({
+    state: {
+      foo: 1
+    }
+  })
+
+  const B = () => ({
+    mixins: [A],
+    state: {
+      bar: 2
+    }
+  })
+
+  app({
+    mixins: [B],
+    view: () => "",
+    events: {
+      loaded: (state) => {
+        expect(state.bar).toBe(2)
+        expect(state.foo).toBe(1)
+      }
+    }
   })
 })

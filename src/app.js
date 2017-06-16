@@ -6,17 +6,21 @@ export default function(app) {
   var node
   var element
 
-  for (var i = -1, plugins = app.plugins || []; i < plugins.length; i++) {
-    var plugin = plugins[i] ? plugins[i](app) : app
+  for (var i = -1, mixins = app.mixins || []; i < mixins.length; i++) {
+    var mixin = mixins[i] ? mixins[i](app) : app
 
-    if (plugin.state != null) {
-      state = merge(state, plugin.state)
+    if (mixin.mixins != null && mixin !== app) {
+      mixins = mixins.concat(mixin.mixins)
     }
 
-    init(actions, plugin.actions)
+    if (mixin.state != null) {
+      state = merge(state, mixin.state)
+    }
 
-    Object.keys(plugin.events || []).map(function(key) {
-      events[key] = (events[key] || []).concat(plugin.events[key])
+    init(actions, mixin.actions)
+
+    Object.keys(mixin.events || []).map(function(key) {
+      events[key] = (events[key] || []).concat(mixin.events[key])
     })
   }
 

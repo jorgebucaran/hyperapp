@@ -67,7 +67,7 @@ Below is an alphabetical list of some of the terms and concepts used throughout 
 
 ##### P
 [state.router.params](/docs/routing.md#params)<br>
-[plugins](/docs/core.md#plugins)<br>
+[mixins](/docs/core.md#mixins)<br>
 [popstate](https://developer.mozilla.org/en-US/docs/Web/Events/popstate)<br>
 [promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)<br>
 [pragma](https://babeljs.io/docs/plugins/transform-react-jsx/#optionspragma)<br>

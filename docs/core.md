@@ -326,18 +326,18 @@ const Counter = () => ({
     count: 0
   },
   actions: {
-    up: state => { count: state.count + 1 },
-    down: state => { count: state.count + 1 }
+    up: state => ({ count: state.count + 1 }),
+    down: state => ({ count: state.count + 1 })
   }
 })
 
 app({
   mixins: [Counter],
   view: state =>
-    <div class='counter'>
+    <div class="counter">
       <button onclick={actions.up}>+</button>
       <span>{state.count}</span>
-      <button onclick={actions.down}>-</button
+      <button onclick={actions.down}>-</button>
     </div>
 })
 ```

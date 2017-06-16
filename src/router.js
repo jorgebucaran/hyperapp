@@ -32,11 +32,7 @@ export default function(app, view) {
   }
 
   function match(data) {
-    for (
-      var match, params = {}, i = 0, len = app.view.length;
-      i < len;
-      i++
-    ) {
+    for (var match, params = {}, i = 0, len = app.view.length; i < len; i++) {
       var route = app.view[i][0]
       var keys = []
 

@@ -1,25 +1,74 @@
-export default function(app) {
+var R = require('ramda')
+
+var COMPONENTS = '_components'
+var isComponent = (mixin) => mixin && mixin().hasOwnProperty('name')
+var connectAction = (component, action) => (id) => (state, actions, data, emit) => {
+  var path = R.lensPath([COMPONENTS, component, id])
+  var partialState = R.view(path, state)
+  var partialActions = actions[component]
+  return R.set(
+    path,
+    R.merge(partialState, action(partialState, partialActions, data, emit)),
+    state
+  )
+}
+
+export default function (app) {
   var state = {}
   var view = app.view
   var actions = {}
   var events = {}
+  var templates = {}
   var node
   var element
+  var components = app.components || []
+  var mixins = app.mixins ? R.concat(app.mixins, components) : components
+  var componentName
+  var connectedAction
 
-  for (var i = -1, mixins = app.mixins || []; i < mixins.length; i++) {
+  for (var i = -1; i < mixins.length; i++) {
     var mixin = mixins[i] ? mixins[i](app) : app
+    componentName = isComponent(mixins[i]) ? mixins[i](app).name : false
 
     if (mixin.mixins != null && mixin !== app) {
       mixins = mixins.concat(mixin.mixins)
     }
 
     if (mixin.state != null) {
-      state = merge(state, mixin.state)
+      if (componentName) {
+        state = R.assocPath([COMPONENTS, componentName], {}, state)
+      } else {
+        state = merge(state, mixin.state)
+      }
     }
 
-    init(actions, mixin.actions)
+    if (componentName) {
+      init(actions, { [COMPONENTS]: { [componentName]: mixin.actions } }, false, componentName)
+    } else {
+      init(actions, mixin.actions)
+    }
 
-    Object.keys(mixin.events || []).map(function(key) {
+    var partialState
+    var partialActions
+    if (componentName) {
+      templates[componentName] = {
+        view: (id, props, children) => {
+          partialState = state[COMPONENTS][componentName][id] || (state[COMPONENTS][componentName][id] = mixin.state)
+          partialActions = Object.keys(actions[COMPONENTS][componentName])
+            .reduce((partials, key) => merge(partials, {
+              [key]: actions[COMPONENTS][componentName][key](id)
+            }), {})
+          return mixin.view(
+            partialState,
+            partialActions,
+            templates,
+            props,
+            children
+          )
+        }
+      }
+    }
+    Object.keys(mixin.events || []).map(function (key) {
       events[key] = (events[key] || []).concat(mixin.events[key])
     })
   }
@@ -30,31 +79,54 @@ export default function(app) {
     addEventListener("DOMContentLoaded", load)
   }
 
-  function init(namespace, children, lastName) {
-    Object.keys(children || []).map(function(key) {
+  function init(namespace, children, lastName, component) {
+    Object.keys(children || []).map(function (key) {
       var action = children[key]
       var name = lastName ? lastName + "." + key : key
 
       if (typeof action === "function") {
-        namespace[key] = function(data) {
-          var result = action(
-            state,
-            actions,
-            emit("action", {
-              name: name,
-              data: data
-            }).data,
-            emit
-          )
+        if (component) { // TODO: shorten
+          connectedAction = connectAction(component, action)
+          namespace[key] = function (id) {
+            return function (data) {
+              var result = connectedAction(id)(
+                state,
+                actions,
+                emit("action", {
+                  name: name,
+                  data: data
+                }).data,
+                emit
+              )
 
-          if (result == null || typeof result.then === "function") {
-            return result
+              if (result == null || typeof result.then === "function") {
+                return result
+              }
+
+              render((state = merge(state, emit("update", result))), view)
+            }
           }
+        } else {
+          namespace[key] = function (data) {
+            var result = action(
+              state,
+              actions,
+              emit("action", {
+                name: name,
+                data: data
+              }).data,
+              emit
+            )
 
-          render((state = merge(state, emit("update", result))), view)
+            if (result == null || typeof result.then === "function") {
+              return result
+            }
+
+            render((state = merge(state, emit("update", result))), view)
+          }
         }
       } else {
-        init(namespace[key] || (namespace[key] = {}), action, name)
+        init(namespace[key] || (namespace[key] = {}), action, name, component)
       }
     })
   }
@@ -65,7 +137,7 @@ export default function(app) {
   }
 
   function emit(name, data) {
-    ;(events[name] || []).map(function(cb) {
+    ; (events[name] || []).map(function (cb) {
       var result = cb(state, actions, data, emit)
       if (result != null) {
         data = result
@@ -80,7 +152,7 @@ export default function(app) {
       app.root || (app.root = document.body),
       element,
       node,
-      (node = emit("render", view)(state, actions))
+      (node = emit("render", view)(state, actions, templates)) // TODO: is it ok?
     )
   }
 
@@ -109,7 +181,7 @@ export default function(app) {
         ? document.createElementNS("http://www.w3.org/2000/svg", node.tag)
         : document.createElement(node.tag)
 
-      for (var i = 0; i < node.children.length; ) {
+      for (var i = 0; i < node.children.length;) {
         element.appendChild(createElementFrom(node.children[i++], isSVG))
       }
 
@@ -134,7 +206,7 @@ export default function(app) {
     } else {
       try {
         element[name] = value
-      } catch (_) {}
+      } catch (_) { }
 
       if (typeof value !== "function") {
         if (value) {
@@ -168,7 +240,7 @@ export default function(app) {
   }
 
   function removeElement(parent, element, node) {
-    ;((node.data && node.data.onremove) || removeChild)(element, removeChild)
+    ; ((node.data && node.data.onremove) || removeChild)(element, removeChild)
     function removeChild() {
       parent.removeChild(element)
     }

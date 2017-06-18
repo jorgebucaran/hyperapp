@@ -1,8 +1,15 @@
 var R = require('ramda')
 
-var COMPONENTS = '_components'
+var COMPONENTS = '_components' // key where are stored "local" actions and states
 var isComponent = (mixin) => mixin && mixin().hasOwnProperty('name')
-var connectAction = (component, action) => (id) => (state, actions, data, emit) => {
+
+/**
+ * Connects "local" actions to "local" states stored in app.state[COMPONENTS][component]
+ * @param {String} component name of component
+ * @param {Function} action "local" action from component
+ * @return {Function} Returns connected action stored in app.actions[COMPONENTS][component]
+ */
+var connectAction = (component, action) => (id) => (state, actions, data, emit) => { // this is the most important function for fractal app!
   var path = R.lensPath([COMPONENTS, component, id])
   var partialState = R.view(path, state)
   var partialActions = actions[component]

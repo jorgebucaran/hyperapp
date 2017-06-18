@@ -26,7 +26,7 @@ app({
     "/": state => <h1>Hi.</h1>,
     "*": state => <h1>404</h1>
   },
-  mixins: [Router]
+  plugins: [Router]
 })
 ```
 

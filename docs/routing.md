@@ -22,10 +22,10 @@ The router treats the view as an array of route/view pairs.
 
 ```jsx
 app({
-  view: [
-    ["/", state => <h1>Hi.</h1>]
-    ["*", state => <h1>404</h1>],
-  ],
+  view: {
+    "/": state => <h1>Hi.</h1>,
+    "*": state => <h1>404</h1>
+  },
   mixins: [Router]
 })
 ```

@@ -4,7 +4,7 @@ export default function(app) {
   var actions = {}
   var events = {}
   var node
-  var element
+  var element = app.element
 
   for (var i = -1, mixins = app.mixins || []; i < mixins.length; i++) {
     var mixin = mixins[i] ? mixins[i](app) : app

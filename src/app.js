@@ -63,6 +63,35 @@ export default function (outerEvents) {
       addEventListener("DOMContentLoaded", load)
     }
 
+    function setAction(action, component) {
+      function append(action) {
+        return function fn(data) {
+          var result = action(
+            state,
+            actions,
+            emit("action", {
+              name: name,
+              data: data
+            }).data,
+            emit
+          )
+
+          if (result == null || typeof result.then === "function") {
+            return result
+          }
+
+          render((state = merge(state, emit("update", result))), view)
+        }
+      }
+      if (component) {
+        return function (id) {
+          return append(action(id))
+        }
+      } else {
+        return append(action)
+      }
+    }
+
     function init(namespace, children, lastName, component) {
       Object.keys(children || []).map(function (key) {
         var action = children[key]
@@ -71,43 +100,9 @@ export default function (outerEvents) {
         if (typeof action === "function") {
           if (component) { // TODO: shorten
             const connectedAction = connectAction(component, action)
-            namespace[key] = function (id) {
-              return function (data) {
-                var result = connectedAction(id)(
-                  state,
-                  actions,
-                  emit("action", {
-                    name: name,
-                    data: data
-                  }).data,
-                  emit
-                )
-
-                if (result == null || typeof result.then === "function") {
-                  return result
-                }
-
-                render((state = merge(state, emit("update", result))), view)
-              }
-            }
+            namespace[key] = setAction(connectedAction, true)
           } else {
-            namespace[key] = function (data) {
-              var result = action(
-                state,
-                actions,
-                emit("action", {
-                  name: name,
-                  data: data
-                }).data,
-                emit
-              )
-
-              if (result == null || typeof result.then === "function") {
-                return result
-              }
-
-              render((state = merge(state, emit("update", result))), view)
-            }
+            namespace[key] = setAction(action, false)
           }
         } else {
           init(namespace[key] || (namespace[key] = {}), action, name, component)
@@ -156,6 +151,8 @@ export default function (outerEvents) {
 
       return obj
     }
+
+
 
     function createElementFrom(node, isSVG) {
       if (typeof node === "string") {

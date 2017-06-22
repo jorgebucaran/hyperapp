@@ -16,7 +16,7 @@ function merge(a, b) {
 }
 
 function mediator() {
-
+  // TODO: it's just pubsub module..
 }
 
 export {

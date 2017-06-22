@@ -28,3 +28,4 @@
 2. build events from app and mixins (app 3.)
 3. send state and events to app via mediator
 ...WIP
+... it looks like that component is practically the same as app so I need only to implement some specific parts (state as function, and connecting actions)

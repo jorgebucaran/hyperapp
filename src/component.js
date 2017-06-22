@@ -34,7 +34,7 @@ function _component(mediator) {
       })
     }
 
-    // TODO: how to properly assign state? Is it better to store component actions far every instance?
+    // TODO: how to properly assign state? Is it better to store component actions for every instance?
     function init(namespace, children, lastName) {
       Object.keys(children || []).map(function (key) {
         var action = children[key]
@@ -79,9 +79,7 @@ function _component(mediator) {
               : merge(state, partial))
         return component.view(instanceState, instanceActions, props, children)
       } else {
-        return (
-          <div>Missing id</div>
-        )
+        return
       }
     }
   }

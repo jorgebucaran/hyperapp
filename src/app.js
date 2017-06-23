@@ -44,11 +44,11 @@ export default function(app) {
             emit
           )
 
-          if (result == null || typeof result.then === "function") {
-            return result
+          if (result != null && typeof result.then !== "function") {
+            render((state = merge(state, emit("update", result))), view)
           }
 
-          render((state = merge(state, emit("update", result))), view)
+          return result
         }
       } else {
         init(namespace[key] || (namespace[key] = {}), action, name)

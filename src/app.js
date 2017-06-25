@@ -6,12 +6,9 @@ export default function(app) {
   var node
   var element
 
-  for (var i = -1, mixins = app.mixins || []; i < mixins.length; i++) {
+  for (var i = -1, mixins = []; i < mixins.length; i++) {
     var mixin = mixins[i] ? mixins[i](app) : app
-
-    if (mixin.mixins != null && mixin !== app) {
-      mixins = mixins.concat(mixin.mixins)
-    }
+    mixins = mixins.concat(mixin.mixins || [])
 
     if (mixin.state != null) {
       state = merge(state, mixin.state)
@@ -47,11 +44,11 @@ export default function(app) {
             emit
           )
 
-          if (result == null || typeof result.then === "function") {
-            return result
+          if (result != null && typeof result.then !== "function") {
+            render((state = merge(state, emit("update", result))), view)
           }
 
-          render((state = merge(state, emit("update", result))), view)
+          return result
         }
       } else {
         init(namespace[key] || (namespace[key] = {}), action, name)

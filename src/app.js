@@ -258,4 +258,10 @@ export default function(app) {
 
     return element
   }
+
+	return {
+		getState: function() {
+			return state
+		}
+	}
 }

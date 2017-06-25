@@ -259,9 +259,9 @@ export default function(app) {
     return element
   }
 
-	return {
-		getState: function() {
-			return state
-		}
-	}
+  return {
+    getState: function() {
+      return state
+    }
+  }
 }

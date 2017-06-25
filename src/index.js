@@ -1,5 +1,5 @@
-import h from "./h"
+import { h, Provider, connect } from "./connect"
 import app from "./app"
 import Router from "./router"
 
-export { h, app, Router }
+export { h, Provider, connect, app, Router }

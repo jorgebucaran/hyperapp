@@ -261,7 +261,7 @@ Events can be used to hook into the update and render pipeline.
 app({
   view: state => <h1>Hi.</h1>,
   events: {
-    render: (state, ations, data) => {
+    render: (state, actions, data) => {
       if (location.pathname === "/warp") {
         return state => <h1>Welcome to warp zone!</h1>
       }

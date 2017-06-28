@@ -73,12 +73,16 @@ export default function(app) {
   }
 
 	function hydrate(elm) {
-    var children = elm.hasChildNodes() ? Array.from(elm.children).map((child) => {
-      return hydrate(child)
-    }) : []
-
-    // I could make this a better hydration by actually populating attr/props...
-    return {tag: elm.tagName, data: {}, children: children};
+    if (elm.nodeType === 3) {
+			return elm.textContent()
+		} else {
+			var children = [];
+			var l = elm.children.length;
+			for(var i = 0; i < l; i++) {
+				children.push(hydrate(children[i]))
+			}
+    	return {tag: elm.tagName, data: {}, children: children};
+		}
 	}
 
   function render(state, view) {

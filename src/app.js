@@ -5,6 +5,7 @@ export default function(app) {
   var events = {}
   var node
   var element
+	var hydrate = app.hydrate || false;
 
   for (var i = -1, mixins = []; i < mixins.length; i++) {
     var mixin = mixins[i] ? mixins[i](app) : app

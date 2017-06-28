@@ -5,7 +5,6 @@ export default function(app) {
   var events = {}
   var node
   var element
-	var hydrate = app.hydrate || false;
 
   for (var i = -1, mixins = []; i < mixins.length; i++) {
     var mixin = mixins[i] ? mixins[i](app) : app
@@ -73,9 +72,23 @@ export default function(app) {
     return data
   }
 
+	function hydrate(elm) {
+		var children = elm.hasChildNodes() ? Array.from(elm.children).map((child) => {
+			return hydrate(child)
+		}) : []
+
+		// I could make this a better hydration by actually populating attr/props...
+		return {tag: elm.tagName, data: {}, children: children};
+	}
+
   function render(state, view) {
+		var root = app.root || (app.root = document.body)
+		if (node === undefined && element === undefined && root.hasChildNodes()){
+			node = hydrate(root.children[0])
+			element = root.children[0];
+		}
     element = patch(
-      app.root || (app.root = document.body),
+      root,
       element,
       node,
       (node = emit("render", view)(state, actions))
@@ -173,11 +186,11 @@ export default function(app) {
   }
 
   function patch(parent, element, oldNode, node) {
-    if (oldNode == null) {
+		if (oldNode == null) {
       element = parent.insertBefore(createElementFrom(node), element)
     } else if (node.tag && node.tag === oldNode.tag) {
-      updateElementData(element, oldNode.data, node.data)
-
+			updateElementData(element, oldNode.data, node.data)
+			
       var len = node.children.length
       var oldLen = oldNode.children.length
       var reusableChildren = {}

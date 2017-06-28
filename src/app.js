@@ -73,20 +73,20 @@ export default function(app) {
   }
 
 	function hydrate(elm) {
-		var children = elm.hasChildNodes() ? Array.from(elm.children).map((child) => {
-			return hydrate(child)
-		}) : []
+    var children = elm.hasChildNodes() ? Array.from(elm.children).map((child) => {
+      return hydrate(child)
+    }) : []
 
-		// I could make this a better hydration by actually populating attr/props...
-		return {tag: elm.tagName, data: {}, children: children};
+    // I could make this a better hydration by actually populating attr/props...
+    return {tag: elm.tagName, data: {}, children: children};
 	}
 
   function render(state, view) {
-		var root = app.root || (app.root = document.body)
-		if (node === undefined && element === undefined && root.hasChildNodes()){
-			node = hydrate(root.children[0])
-			element = root.children[0];
-		}
+    var root = app.root || (app.root = document.body)
+    if (node === undefined && element === undefined && root.hasChildNodes()){
+      node = hydrate(root.children[0])
+      element = root.children[0];
+    }
     element = patch(
       root,
       element,

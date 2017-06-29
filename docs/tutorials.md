@@ -7,5 +7,5 @@ Some of the examples make use of new language features in JavaScript such as: [a
 - [Counter](/docs/counter.md)
 - [Countdown Timer](/docs/countdown-timer.md)
 - [Gif Search](/docs/gif-search.md)
-- [Tweetbox](/docs/tweetbox.md)
+- [TweetBox](/docs/tweetbox.md)
 

@@ -73,15 +73,18 @@ export default function(app) {
   }
 
   function hydrate(elm) {
-    var children = Array.from(elm.children).map(function(child) {
-      hydrate(child);
-    })
-
-    return { tag: elm.tagName, data: {}, children: children }
+    var c = [];
+    if (elm !== undefined && elm.hasChildNodes()) {
+      Array.from(elm.children).forEach(function(child) {
+        c.push(hydrate(child))
+      })
+    }
+    return { tag: elm.tagName, data: {}, children: c }
   }
 
   function render(state, view) {
     var root = app.root || (app.root = document.body)
+    console.log(root);
     if (node === undefined && element === undefined && 
         root.hasChildNodes() && root.children !== undefined) {
       node = hydrate(root.children[0])

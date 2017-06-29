@@ -73,7 +73,7 @@ export default function(app) {
   }
 
   function hydrate(elm) {
-    var children = Array.from(elm.children).map((child) => {
+    var children = Array.from(elm.children).map(function(child) {
       hydrate(child);
     })
 

@@ -1,18 +1,4 @@
-// @flow
-
-type value = any
-
-type attr = {
-  [property: string]: value
-}
-
-type vnode = {
-  tag: string,
-  data: attr,
-  children: Array<mixed>
-}
-
-export default function(tag: string, data: attr): vnode {
+export default function(tag, data) {
   var node
   var stack = []
   var children = []

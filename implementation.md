@@ -15,7 +15,6 @@ HyperApp uses virtual DOM which provides a declarative way of representing the U
 
 Read more about virtual DOM [here](https://github.com/Matt-Esch/virtual-dom).
 
-
 ## Overview
 
 ### Creating a `vnode` tree (hyperscript)

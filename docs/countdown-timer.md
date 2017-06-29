@@ -84,3 +84,5 @@ if (state.count === 0) {
   actions.drop()
 }
 ```
+
+[Back to tutorials](/docs/tutorials.md)

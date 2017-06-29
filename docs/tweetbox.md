@@ -1,6 +1,6 @@
 # TweetBox
 
-In this section we'll implement a simple TweetBox clone and learn how to assemble a view using custom tags.
+In this section we'll implement a simple TweetBox clone and learn how to create custom tags.
 
 [Try it online](https://codepen.io/hyperapp/pen/bgWBdV?editors=0010)
 

@@ -73,21 +73,17 @@ export default function(app) {
   }
 
   function hydrate(elm) {
-    if (elm.nodeType === 3) {
-      return elm.textContent()
-    } else {
-      var children = []
-      var l = elm.children.length
-      for (var i = 0; i < l; i++) {
-        children.push(hydrate(children[i]))
-      }
-      return { tag: elm.tagName, data: {}, children: children }
-    }
+    var children = Array.from(elm.children).map((child) => {
+      hydrate(child);
+    })
+
+    return { tag: elm.tagName, data: {}, children: children }
   }
 
   function render(state, view) {
     var root = app.root || (app.root = document.body)
-    if (node === undefined && element === undefined && root.hasChildNodes()) {
+    if (node === undefined && element === undefined && 
+        root.hasChildNodes() && root.children !== undefined) {
       node = hydrate(root.children[0])
       element = root.children[0]
     }

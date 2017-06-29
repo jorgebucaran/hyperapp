@@ -75,7 +75,7 @@ app({
 })
 ```
 
-The state stores the text of the message and the number of remaining characters `count`, initialized to `MAX_LENGTH`.
+The state stores the text of the message and the number of remaining characters <samp>count</samp>, initialized to <samp>MAX_LENGTH</samp>.
 
 ```js
 state: {
@@ -94,7 +94,7 @@ The view consists of our custom TweetBox tag. We use the attributes, often refer
 />
 ```
 
-When the user types in the input, we call `actions.update` to update the current text and calculate the remaining characters.
+When the user types in the input, we call <samp>actions.update</samp> to update the current text and calculate the remaining characters.
 
 ```js
 update: (state, actions, text) => ({
@@ -105,9 +105,9 @@ update: (state, actions, text) => ({
 
 The subtracting the length of the current text, from the length of the previous text, tells us how the number of remaining characters has changed. Hence the new count of remaining characters is the old count plus the aforementioned difference.
 
-When the input is empty, this operation is equivalent to `(MAX_LENGTH - text.length)`.
+When the input is empty, this operation is equivalent to <samp>(MAX_LENGTH - text.length)</samp>.
 
-When `state.count` becomes less than 0, we know that `state.text` must be longer than `MAX_LENGTH`, so we can disable the tweet button and display the OverflowWidget custom tag.
+When <samp>state.count</samp> becomes less than 0, we know that <samp>state.text</samp> must be longer than <samp>MAX_LENGTH</samp>, so we can disable the tweet button and display the OverflowWidget custom tag.
 
 ```jsx
 <button
@@ -118,9 +118,9 @@ When `state.count` becomes less than 0, we know that `state.text` must be longer
 </button>
 ```
 
-The tweet button is also disabled when `state.count === MAX_LENGTH`, because that means we have not entered any characters.
+The tweet button is also disabled when <samp>state.count === MAX_LENGTH</samp>, because that means we have not entered any characters.
 
-The OverflowWidget tag displays the unallowed part of the message and a few adjacent characters for context. The constant `OFFSET` tells us how many extra characters to slice off `state.text`.
+The OverflowWidget tag displays the unallowed part of the message and a few adjacent characters for context. The constant <samp>OFFSET</samp> tells us how many extra characters to slice off <samp>state.text</samp>.
 
 ```jsx
 <OverflowWidget
@@ -130,10 +130,12 @@ The OverflowWidget tag displays the unallowed part of the message and a few adja
 />
 ```
 
-By passing`OFFSET` into OverflowWidget we are able to slice `text` further and apply an `overflow-text` class to the specific overflowed part.
+By passing <samp>OFFSE</samp> into OverflowWidget we are able to slice <samp>text</samp> further and apply our <samp>overflow-text</samp> class to the specific overflowed part.
 
 ```jsx
 <span class="overflow-text">
   {text.slice(count)}
 </span>
 ```
+
+[Back to tutorials](/tutorials.md)

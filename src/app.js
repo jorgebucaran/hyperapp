@@ -73,6 +73,10 @@ export default function(app) {
   }
 
   function hydrate(elm) {
+		// no clue why an element of children collection ends up as undefined
+		if (elm === undefined) {
+			return undefined
+		}
     var c = [];
     if (elm !== undefined && elm.hasChildNodes()) {
       Array.from(elm.children).forEach(function(child) {
@@ -84,7 +88,6 @@ export default function(app) {
 
   function render(state, view) {
     var root = app.root || (app.root = document.body)
-    console.log(root);
     if (node === undefined && element === undefined && 
         root.hasChildNodes() && root.children !== undefined) {
       node = hydrate(root.children[0])

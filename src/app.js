@@ -84,9 +84,6 @@ export default function(app) {
 
   function render(state, view) {
     var root = app.root || (app.root = document.body)
-		if (root.hasChildNodes() && root.children !== undefined && root.children[0] === undefined) {
-			console.log('this makes no sense... good job jsdom...')
-		}
 		if (node === undefined && element === undefined && 
         root.hasChildNodes() && root.children !== undefined && 
 				root.children[0] !== undefined) {	

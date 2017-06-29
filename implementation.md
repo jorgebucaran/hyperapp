@@ -4,8 +4,8 @@ HyperApp's design is based on the [Elm Architecture](https://guide.elm-lang.org/
 
 The logic of every program using this architecture will break into three parts :
 
-* **Model** - It represents the state of your application
-* **Update** - A way to update your state (actions)
+* **State** - It represents the state of your application
+* **Actions** - A way to update your state (actions)
 * **View** - View your state as HTML
 
 This pattern enforces you to write the code which is declarative and pure (immutable).
@@ -22,16 +22,6 @@ Read more about virtual DOM [here](https://github.com/Matt-Esch/virtual-dom).
 #### `h(tag, properties, children)`
 
 `h()` takes a tag, an optional properties objects and an optional array of children or a single child that is a string. If you pass it an array of children, it will have child nodes.
-
-You can pass deeply nested tags and also components like this
-
-```javascript
-const Component = (data, children) => h("div", data, children)
-
-h(Component, { id: "foo" }, [h(Component, { id: "bar" })])
-```
-
-it will then create a `vnode` which consists of a `tag`, `props` and `children`.
 
 If you pass a number as a child, `h()` will parse it to string.
 

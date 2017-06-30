@@ -24,7 +24,6 @@
     "test": "jest --coverage --no-cache",
     "build": "rollup -cm -n hyperapp -f umd -i src/index.js -o dist/hyperapp.js",
     "prepublish": "npm run build",
-    "flow": "./node_modules/.bin/flow",
     "format": "prettier --semi false --write 'src/**/*.js'",
     "release": "npm run build && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
   },
@@ -33,9 +32,6 @@
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.24.1",
-    "flow-bin": "^0.48.0",
-    "flow-remove-types": "^1.2.1",
-    "flow-typed": "^2.1.2",
     "jest": "^20.0.4",
     "prettier": "~1.4.1",
     "rollup": "^0.41.6",

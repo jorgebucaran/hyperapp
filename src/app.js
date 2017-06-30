@@ -85,8 +85,7 @@ export default function(app) {
   function render(state, view) {
     var root = app.root || (app.root = document.body)
 		if (node === undefined && element === undefined && 
-        root.hasChildNodes() && root.children !== undefined && 
-				root.children[0] !== undefined) {	
+        root.hasChildNodes !== undefined && root.hasChildNodes()) {	
       node = hydrate(root.children[0])
       element = root.children[0]
     }

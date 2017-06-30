@@ -4,8 +4,8 @@ HyperApp's design is based on the [Elm Architecture](https://guide.elm-lang.org/
 
 The logic of every program using this architecture will break into three parts :
 
-* **Model** - It represents the state of your application
-* **Update** - A way to update your state (actions)
+* **State** - It represents the state of your application
+* **Actions** - A way to update your state (actions)
 * **View** - View your state as HTML
 
 This pattern enforces you to write the code which is declarative and pure (immutable).
@@ -24,16 +24,6 @@ Read more about virtual DOM [here](https://github.com/Matt-Esch/virtual-dom).
 
 `h()` takes a tag, an optional properties objects and an optional array of children or a single child that is a string. If you pass it an array of children, it will have child nodes.
 
-You can pass deeply nested tags and also components like this
-
-```javascript
-const Component = (data, children) => h("div", data, children)
-
-h(Component, { id: "foo" }, [h(Component, { id: "bar" })])
-```
-
-it will then create a `vnode` which consists of a `tag`, `props` and `children`.
-
 If you pass a number as a child, `h()` will parse it to string.
 
 ### Creating an element
@@ -44,9 +34,9 @@ It takes a `vnode` object and an optional `isSVG` option if the node is `svg`.
 
 It the type of a node is string, it will create a text node. Example -
 ```javascript
-$ createElementFrom('Hello World!')
-'Hello World!'
+createElementFrom('Hello World!')
 ```
+returns `'Hello World!'`.
 
 If you provide a `vnode` object which includes a `tag` like this
 ```javascript
@@ -59,7 +49,10 @@ vnode = {
 
 it would then create an element with that tag. Example -
 ```javascript
-$ createElementFrom(h('div', { id: 'foo', style: { color: 'red'} }, ["bar"] ))
+createElementFrom(h('div', { id: 'foo', style: { color: 'red'} }, ["bar"] ))
+```
+returns 
+```html
 <div id="foo" style="color: red;">bar</div>
 ```
 
@@ -68,8 +61,9 @@ More Examples -
 **Creating a `svg`**
 
 ```javascript
-$ createElementFrom(h('svg', { width: "100", height: "100" }, h('circle', { cx: '50', cy: '50'})))
-
+createElementFrom(h('svg', { width: "100", height: "100" }, h('circle', { cx: '50', cy: '50'})))
+```
+```html
 <svg width="100" height="100">
  <circle cx="50 cy="50"></circle>
 </svg>
@@ -80,9 +74,10 @@ $ createElementFrom(h('svg', { width: "100", height: "100" }, h('circle', { cx: 
 In this example, style of an element is updated after it is created and added to DOM.
 
 ```javascript
-$ createElementFrom(h('div', { oncreate: (element) => element.style = 'color: blue;' }, ["foo"]))
-
-<div style="color: blue;"></div>
+createElementFrom(h('div', { oncreate: (element) => element.style = 'color: blue;' }, ["foo"]))
+```
+```html
+<div style="color: blue;">foo</div>
 ```
 
 Notice how all the data attributes on an element are appended to it after it is created and added to DOM. Let's take a look at it.

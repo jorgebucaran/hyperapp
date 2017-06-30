@@ -73,7 +73,7 @@ createElementFrom(h('svg', { width: "100", height: "100" }, h('circle', { cx: '5
 
 In this example, style of an element is updated after it is created and added to DOM.
 
-```javascript
+```jsx
 createElementFrom(h('div', { oncreate: (element) => element.style = 'color: blue;' }, ["foo"]))
 ```
 ```html
@@ -106,7 +106,7 @@ Let's say we have a DOM tree and we diff against its previous version. If the re
 
 **Inner working (part of `App.js`)**
 
-```javascript
+```jsx
 for (var name in merge(oldData, data)) {
   var value = data[name];
   var oldValue = name === "value" || name === "checked" ? element[name] : oldData[name];

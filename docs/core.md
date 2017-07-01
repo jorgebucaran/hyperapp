@@ -270,7 +270,7 @@ app({
 })
 ```
 
-For a practical example see the implementation of the [Router](https://github.com/hyperapp/hyperapp/blob/master/src/router.js).
+For a practical example see the implementation of the [Router](https://github.com/hyperapp/router/blob/master/src/router.js).
 
 #### Custom Events
 

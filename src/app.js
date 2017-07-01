@@ -73,7 +73,7 @@ export default function(app) {
   }
 
   function hydrate(elm) {
-    var c = [];
+    var c = []
     if (elm !== undefined && elm.hasChildNodes()) {
       Array.from(elm.children).forEach(function(child) {
         c.push(hydrate(child))
@@ -84,8 +84,12 @@ export default function(app) {
 
   function render(state, view) {
     var root = app.root || (app.root = document.body)
-		if (node === undefined && element === undefined && 
-        root.hasChildNodes !== undefined && root.hasChildNodes()) {	
+    if (
+      node === undefined &&
+      element === undefined &&
+      root.hasChildNodes !== undefined &&
+      root.hasChildNodes()
+    ) {
       node = hydrate(root.children[0])
       element = root.children[0]
     }

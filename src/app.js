@@ -67,7 +67,7 @@ export default function(app) {
   }
 
   function load() {
-    var root = app.root || (app.root = document.body);
+    var root = app.root || (app.root = document.body)
     if (
       node === undefined &&
       element === undefined &&

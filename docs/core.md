@@ -261,7 +261,7 @@ Events can be used to hook into the update and render pipeline.
 app({
   view: state => <h1>Hi.</h1>,
   events: {
-    render: (state, ations, data) => {
+    render: (state, actions, data) => {
       if (location.pathname === "/warp") {
         return state => <h1>Welcome to warp zone!</h1>
       }
@@ -270,7 +270,7 @@ app({
 })
 ```
 
-For a practical example see the implementation of the [Router](https://github.com/hyperapp/hyperapp/blob/master/src/router.js).
+For a practical example see the implementation of the [Router](https://github.com/hyperapp/router/blob/master/src/router.js).
 
 #### Custom Events
 
@@ -314,31 +314,6 @@ app({
     addOne: state => state + 1
   },
   mixins: [Logger]
-})
-```
-
-Mixins can also compose with other mixins:
-
-```js
-const Counter = () => ({
-  mixins: [Logger],
-  state: {
-    count: 0
-  },
-  actions: {
-    up: state => ({ count: state.count + 1 }),
-    down: state => ({ count: state.count + 1 })
-  }
-})
-
-app({
-  mixins: [Counter],
-  view: state =>
-    <div class="counter">
-      <button onclick={actions.up}>+</button>
-      <span>{state.count}</span>
-      <button onclick={actions.down}>-</button>
-    </div>
 })
 ```
 

@@ -54,3 +54,5 @@ sub: state => state - 1
 ```
 
 When the state is updated as a result of calling an action, the view function is called and the application is rendered again.
+
+[Back to tutorials](/docs/tutorials.md)

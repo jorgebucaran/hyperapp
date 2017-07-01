@@ -97,3 +97,5 @@ fetch(
 ```
 
 Once data has been received, <samp>actions.toggleFetching</samp> is called (which allows further fetch requests to be made) and the state is updated by passing the fetched gif URL to <samp>actions.setUrl</samp>.
+
+[Back to tutorials](/docs/tutorials.md)

@@ -51,7 +51,7 @@ app({
 })
 ```
 
-Tthe state consists of <samp>count</samp>, a number to track the seconds elapsed; and <samp>paused</samp>, a boolean to check if the clock is running or not.
+The state consists of <samp>count</samp>, a number to track the seconds elapsed; and <samp>paused</samp>, a boolean to check if the clock is running or not.
 
 ```jsx
 state: {
@@ -84,3 +84,5 @@ if (state.count === 0) {
   actions.drop()
 }
 ```
+
+[Back to tutorials](/docs/tutorials.md)

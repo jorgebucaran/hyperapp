@@ -57,13 +57,15 @@ export function app(app) {
   }
 
   function hydrate(elm) {
-    var c = []
-    if (elm !== undefined && elm.hasChildNodes()) {
-      Array.from(elm.children).forEach(function(child) {
-        c.push(hydrate(child))
-      })
+    return {
+      tag: elm.tagName,
+      data: {},
+      children: elm !== undefined && elm.hasChildNodes()
+        ? Array.from(elm.childNodes).map(function(child) {
+            return hydrate(child)
+          })
+        : []
     }
-    return { tag: elm.tagName, data: {}, children: c }
   }
 
   function load() {

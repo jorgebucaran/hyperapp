@@ -56,7 +56,27 @@ export default function(app) {
     })
   }
 
+  function hydrate(elm) {
+    var c = []
+    if (elm !== undefined && elm.hasChildNodes()) {
+      Array.from(elm.children).forEach(function(child) {
+        c.push(hydrate(child))
+      })
+    }
+    return { tag: elm.tagName, data: {}, children: c }
+  }
+
   function load() {
+    var root = app.root || (app.root = document.body);
+    if (
+      node === undefined &&
+      element === undefined &&
+      root.hasChildNodes !== undefined &&
+      root.hasChildNodes()
+    ) {
+      node = hydrate(root.children[0])
+      element = root.children[0]
+    }
     render(state, view)
     emit("loaded")
   }
@@ -72,29 +92,9 @@ export default function(app) {
     return data
   }
 
-  function hydrate(elm) {
-    var c = []
-    if (elm !== undefined && elm.hasChildNodes()) {
-      Array.from(elm.children).forEach(function(child) {
-        c.push(hydrate(child))
-      })
-    }
-    return { tag: elm.tagName, data: {}, children: c }
-  }
-
   function render(state, view) {
-    var root = app.root || (app.root = document.body)
-    if (
-      node === undefined &&
-      element === undefined &&
-      root.hasChildNodes !== undefined &&
-      root.hasChildNodes()
-    ) {
-      node = hydrate(root.children[0])
-      element = root.children[0]
-    }
     element = patch(
-      root,
+      app.root || (app.root = document.body),
       element,
       node,
       (node = emit("render", view)(state, actions))

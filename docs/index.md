@@ -31,7 +31,7 @@ Below is an alphabetical list of some of the terms and concepts used throughout 
 [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)<br>
 
 ##### G
-[actions.router.go](/docs/routing.md#go)<br>
+[actions.router.go](https://github.com/hyperapp/router#go)<br>
 
 ##### H
 [h](/docs/api.md#h)<br>
@@ -54,7 +54,7 @@ Below is an alphabetical list of some of the terms and concepts used throughout 
 [events.loaded](/docs/api.md#loaded)<br>
 
 ##### M
-[state.router.match](/docs/routing.md#match)<br>
+[state.router.match](https://github.com/hyperapp/router#match)<br>
 
 ##### N
 [namespaces](/docs/core.md#namespaces)<br>
@@ -66,7 +66,7 @@ Below is an alphabetical list of some of the terms and concepts used throughout 
 [onremove](/docs/lifecycle-events.md#onremove)<br>
 
 ##### P
-[state.router.params](/docs/routing.md#params)<br>
+[state.router.params](https://github.com/hyperapp/router#params)<br>
 [mixins](/docs/core.md#mixins)<br>
 [popstate](https://developer.mozilla.org/en-US/docs/Web/Events/popstate)<br>
 [promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)<br>
@@ -76,7 +76,7 @@ Below is an alphabetical list of some of the terms and concepts used throughout 
 [events.render](/docs/api.md#render)<br>
 [require](https://nodejs.org/api/modules.html#modules_module_require_id)<br>
 [root](/docs/core.md#root)<br>
-[events.route](/docs/routing.md#route)<br>
+[events.route](https://github.com/hyperapp/router#route)<br>
 [rollup](https://github.com/rollup/rollup)<br>
 
 ##### S

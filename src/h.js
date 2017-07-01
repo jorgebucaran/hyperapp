@@ -1,4 +1,4 @@
-export default function(tag, data) {
+export function h(tag, data) {
   var node
   var stack = []
   var children = []

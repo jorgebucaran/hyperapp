@@ -60,11 +60,7 @@ export function app(app) {
     return {
       tag: elm.tagName,
       data: {},
-      children: elm !== undefined && elm.hasChildNodes()
-        ? Array.from(elm.childNodes).map(function(child) {
-            return hydrate(child)
-          })
-        : []
+      children: [].map.call(elm.childNodes, function(child){hydrate(child)})
     }
   }
 

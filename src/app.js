@@ -56,7 +56,25 @@ export function app(app) {
     })
   }
 
+  function hydrate(elm) {
+    return {
+      tag: elm.tagName,
+      data: {},
+      children: [].map.call(elm.childNodes, function(child){hydrate(child)})
+    }
+  }
+
   function load() {
+    var root = app.root || (app.root = document.body)
+    if (
+      node === undefined &&
+      element === undefined &&
+      root.hasChildNodes !== undefined &&
+      root.hasChildNodes()
+    ) {
+      node = hydrate(root.children[0])
+      element = root.children[0]
+    }
     render(state, view)
     emit("loaded")
   }

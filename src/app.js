@@ -92,7 +92,7 @@ export function app(app) {
 
   function render(state, view) {
     element = patch(
-      app.root || (app.root = document.body),
+      app.root,
       element,
       node,
       (node = emit("render", view)(state, actions))

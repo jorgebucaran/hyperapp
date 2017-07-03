@@ -130,7 +130,7 @@ The OverflowWidget tag displays the unallowed part of the message and a few adja
 />
 ```
 
-By passing <samp>OFFSE</samp> into OverflowWidget we are able to slice <samp>text</samp> further and apply our <samp>overflow-text</samp> class to the specific overflowed part.
+By passing <samp>OFFSET</samp> into OverflowWidget we are able to slice <samp>text</samp> further and apply our <samp>overflow-text</samp> class to the specific overflowed part.
 
 ```jsx
 <span class="overflow-text">

@@ -26,7 +26,7 @@ Type: ([tag](#h-tag), [data](#h-data), [children](#h-children)): [vnode]
 
 ## app
 
-Type: ([props](#app-props))
+Type: ([props](#app-props)): [emit](#emit)
 
 * <a name="app-props"></a> props
   * [state](#state)

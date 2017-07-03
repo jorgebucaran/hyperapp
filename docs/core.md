@@ -9,6 +9,7 @@
   * [Events](#events)
     * [Custom Events](#custom-events)
   * [Mixins](#mixins)
+* [Integration](#integration)
 
 ## Virtual Nodes
 
@@ -315,5 +316,33 @@ app({
   },
   mixins: [Logger]
 })
+```
+
+
+## Integration
+
+The `app(...)` call returns the [emit](/docs/api.md#emit) function, making it possible to trigger [custom events](#custom-events) from outside the [application](#applications) itself. This is useful in situations where your app is a part of a larger system.
+
+```js
+
+const tellApp = app({
+  ...
+  events: {
+    ...
+    'outside:data': (state, actions, newData) => actions.setNewData(newData),
+    ...
+  },
+  actions: {
+    ...
+    setNewData: (state, actions, newData) => ...
+    ...
+  }
+  ...
+})
+
+...
+
+tellApp('outside:data', someNewData)
+
 ```
 

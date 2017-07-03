@@ -27,6 +27,8 @@ export function app(app) {
     addEventListener("DOMContentLoaded", load)
   }
 
+  return emit
+
   function init(namespace, children, lastName) {
     Object.keys(children || []).map(function(key) {
       var action = children[key]

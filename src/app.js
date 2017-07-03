@@ -57,7 +57,7 @@ export function app(app) {
   }
 
   function hydrate(elm) {
-    return {
+    return elm == null ? undefined : {
       tag: elm.tagName,
       data: {},
       children: [].map.call(elm.childNodes, function(child){hydrate(child)})
@@ -66,15 +66,8 @@ export function app(app) {
 
   function load() {
     var root = app.root || (app.root = document.body)
-    if (
-      node === undefined &&
-      element === undefined &&
-      root.hasChildNodes !== undefined &&
-      root.hasChildNodes()
-    ) {
-      node = hydrate(root.children[0])
-      element = root.children[0]
-    }
+    element = root.firstChild
+    node = hydrate(element)
     render(state, view)
     emit("loaded")
   }

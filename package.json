@@ -21,7 +21,7 @@
     "virtual-dom"
   ],
   "scripts": {
-    "test": "jest --coverage --no-cache",
+    "test": "bundlesize && jest --coverage --no-cache",
     "build": "rollup -cm -n hyperapp -f umd -i src/index.js -o dist/hyperapp.js",
     "prepublish": "npm run build",
     "format": "prettier --semi false --write 'src/**/*.js'",

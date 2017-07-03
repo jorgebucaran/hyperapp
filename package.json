@@ -36,5 +36,11 @@
     "prettier": "~1.4.1",
     "rollup": "^0.41.6",
     "rollup-plugin-uglify": "^2.0.1"
-  }
+  },
+  "bundlesize": [
+    {
+      "path": "./dist/hyperapp.js",
+      "threshold": "1.5Kb"
+    }
+  ]
 }

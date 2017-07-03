@@ -7,9 +7,19 @@
   "module": "src/index.js",
   "license": "MIT",
   "repository": "hyperapp/hyperapp",
-  "files": ["src", "dist"],
+  "files": [
+    "src",
+    "dist"
+  ],
   "author": "Jorge Bucaran",
-  "keywords": ["hyperx", "hyperscript", "jsx", "react", "elm", "virtual-dom"],
+  "keywords": [
+    "hyperx",
+    "hyperscript",
+    "jsx",
+    "react",
+    "elm",
+    "virtual-dom"
+  ],
   "scripts": {
     "test": "jest --coverage --no-cache",
     "build": "rollup -cm -n hyperapp -f umd -i src/index.js -o dist/hyperapp.js",
@@ -22,6 +32,7 @@
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.24.1",
+    "bundlesize": "^0.6.1",
     "jest": "^20.0.4",
     "prettier": "~1.5.2",
     "rollup": "^0.43.0",

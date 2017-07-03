@@ -58,7 +58,18 @@ export function app(app) {
     })
   }
 
+  function hydrate(elm) {
+    return elm == null ? undefined : {
+      tag: elm.tagName,
+      data: {},
+      children: [].map.call(elm.childNodes, function(child){hydrate(child)})
+    }
+  }
+
   function load() {
+    var root = app.root || (app.root = document.body)
+    element = root.firstChild
+    node = hydrate(element)
     render(state, view)
     emit("loaded")
   }
@@ -76,7 +87,7 @@ export function app(app) {
 
   function render(state, view) {
     element = patch(
-      app.root || (app.root = document.body),
+      app.root,
       element,
       node,
       (node = emit("render", view)(state, actions))

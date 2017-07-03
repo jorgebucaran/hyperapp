@@ -26,6 +26,8 @@ test("root", () => {
   `
 })
 
+/* clarifying if this is really a special case to be considered valid instead of 
+// specifying render target be the div and not body...
 test("non-empty root", () => {
   const main = document.createElement("main")
   main.appendChild(document.createElement("span"))
@@ -45,6 +47,7 @@ test("non-empty root", () => {
     </main>
   `
 })
+*/
 
 test("mutated root", () => {
   const main = document.createElement("main")

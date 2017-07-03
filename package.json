@@ -7,18 +7,17 @@
   "module": "src/index.js",
   "license": "MIT",
   "repository": "hyperapp/hyperapp",
-  "files": [
-    "src",
-    "dist"
-  ],
+  "files": ["src", "dist"],
   "author": "Jorge Bucaran",
   "keywords": [
-    "hyperx",
-    "hyperscript",
-    "jsx",
+    "hyperapp",
     "react",
     "elm",
-    "virtual-dom"
+    "jsx",
+    "virtual dom",
+    "vdom",
+    "hyperx",
+    "hyperscript"
   ],
   "scripts": {
     "test": "bundlesize && jest --coverage --no-cache",

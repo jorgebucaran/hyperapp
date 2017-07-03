@@ -16,7 +16,7 @@ test("extend the state", () => {
     },
     view: state => "",
     events: {
-      loaded: state => {
+      ready: state => {
         expect(state).toEqual({
           foo: true,
           bar: true
@@ -30,22 +30,22 @@ test("extend the state", () => {
 test("extend events", () => {
   let count = 0
 
-  const A = _ => ({
+  const A = () => ({
     events: {
-      loaded: _ => expect(++count).toBe(2)
+      ready: () => expect(++count).toBe(2)
     }
   })
 
-  const B = _ => ({
+  const B = () => ({
     events: {
-      loaded: _ => expect(++count).toBe(3)
+      ready: () => expect(++count).toBe(3)
     }
   })
 
   app({
     view: state => "",
     events: {
-      loaded: _ => expect(++count).toBe(1)
+      ready: () => expect(++count).toBe(1)
     },
     mixins: [A, B]
   })
@@ -68,7 +68,7 @@ test("extend actions", () => {
     state: true,
     view: state => h("div", {}, `${state}`),
     events: {
-      loaded: (_, actions) => {
+      ready: (state, actions) => {
         expectHTMLToBe`
           <div>
             true
@@ -117,7 +117,7 @@ test("don't overwrite actions in the same namespace", () => {
       }
     },
     events: {
-      loaded: [
+      ready: [
         (state, actions) => actions.foo.bar.baz("foo.bar.baz"),
         (state, actions) => actions.foo.bar.qux("foo.bar.qux")
       ]
@@ -144,7 +144,7 @@ test('mixin inside of a mixin', () => {
     mixins: [B],
     view: () => "",
     events: {
-      loaded: (state) => {
+      ready: (state) => {
         expect(state.bar).toBe(2)
         expect(state.foo).toBe(1)
       }

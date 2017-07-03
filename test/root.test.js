@@ -57,7 +57,7 @@ test("mutated root", () => {
       bar: state => "bar"
     },
     events: {
-      loaded: (state, actions) => {
+      ready: (state, actions) => {
         expectHTMLToBe`
           <main>
             <div>

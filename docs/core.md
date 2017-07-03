@@ -233,7 +233,7 @@ app({
 
 ### Events
 
-Use [events](/docs/api.md#events) to get notified when your application is completely loaded, an action is called, before a view is rendered etc.
+Use [events](/docs/api.md#events) to get notified when your app is initialized, an action is called, before a view is rendered etc.
 
 ```jsx
 app({
@@ -245,7 +245,7 @@ app({
     move: (state, { x, y }) => ({ x, y })
   },
   events: {
-    loaded: (state, actions) =>
+    ready: (state, actions) =>
       addEventListener("mousemove", e =>
         actions.move({
           x: e.clientX,

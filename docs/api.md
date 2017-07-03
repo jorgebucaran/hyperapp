@@ -6,7 +6,7 @@
   * [props.view](#view)
   * [props.actions](#actions)
   * [props.events](#events)
-    * [loaded](#loaded)
+    * [ready](#ready)
     * [action](#action)
     * [update](#update)
     * [render](#render)
@@ -52,9 +52,9 @@ Type: ([state](#state), [actions](#actions), [data](#actions-data), [emit](#emit
 * <a name="actions-data"></a> data: any
 
 ### events
-#### loaded
+#### ready
 
-Type: ([state](#state), [actions](#actions), _, [emit](#emit)) | Array\<[events](#loaded)\>
+Type: ([state](#state), [actions](#actions), _, [emit](#emit)) | Array\<[events](#ready)\>
 
 Fired after the view is mounted on the DOM.
 

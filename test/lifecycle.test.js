@@ -30,7 +30,7 @@ test("onupdate", done => {
       add: state => state + 1
     },
     events: {
-      loaded: (state, actions) => actions.add()
+      ready: (state, actions) => actions.add()
     }
   })
 })
@@ -46,7 +46,7 @@ test("onremove", done => {
       toggle: state => !state
     },
     events: {
-      loaded: (state, actions) => actions.toggle()
+      ready: (state, actions) => actions.toggle()
     }
   })
 })

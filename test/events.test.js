@@ -3,7 +3,7 @@ import { expectHTMLToBe } from "./util"
 
 beforeEach(() => (document.body.innerHTML = ""))
 
-test("loaded", () => {
+test("ready", () => {
   app({
     view: state => "",
     state: 1,
@@ -11,34 +11,13 @@ test("loaded", () => {
       step: state => state + 1
     },
     events: {
-      loaded: [
+      ready: [
         (state, actions) => actions.step(),
         (state, actions) => actions.step(),
         state => expect(state).toBe(3)
       ]
     }
   })
-})
-
-test("loaded / DOMContentLoaded", done => {
-  Object.defineProperty(document, "readyState", {
-    writable: true
-  })
-
-  document.readyState = "loading"
-
-  app({
-    view: state => "",
-    events: {
-      loaded: state => done()
-    }
-  })
-
-  document.readyState = "complete"
-
-  const event = document.createEvent("Event")
-  event.initEvent("DOMContentLoaded", true, true)
-  document.dispatchEvent(event)
 })
 
 test("action", () => {
@@ -49,7 +28,7 @@ test("action", () => {
       set: (state, actions, data) => data
     },
     events: {
-      loaded: (state, actions) => {
+      ready: (state, actions) => {
         actions.set("foo")
         expectHTMLToBe`
           <div>
@@ -74,7 +53,7 @@ test("update", () => {
       add: state => state + 1
     },
     events: {
-      loaded: (state, actions) => {
+      ready: (state, actions) => {
         actions.add()
         expectHTMLToBe`
           <div>
@@ -92,7 +71,7 @@ test("render", () => {
     state: 1,
     view: state => h("div", {}, state),
     events: {
-      loaded: (state, actions) => {
+      ready: (state, actions) => {
         expectHTMLToBe`
           <main>
             <div>
@@ -111,7 +90,7 @@ test("custom event", () => {
   app({
     view: state => "",
     events: {
-      loaded: (state, actions, _, emit) => emit("foo", "foo"),
+      ready: (state, actions, _, emit) => emit("foo", "foo"),
       foo: (state, actions, data) => expect("foo").toBe(data)
     }
   })
@@ -129,7 +108,7 @@ test("nested action name", () => {
       }
     },
     events: {
-      loaded: (_, actions) => actions.foo.bar.set("foobar"),
+      ready: (_, actions) => actions.foo.bar.set("foobar"),
       action: (state, actions, { name, data }) => {
         expect(name).toBe("foo.bar.set")
         expect(data).toBe("foobar")

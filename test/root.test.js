@@ -26,6 +26,7 @@ test("root", () => {
   `
 })
 
+/* this test describes behavior that is incompatible with hydration
 test("non-empty root", () => {
   const main = document.createElement("main")
   main.appendChild(document.createElement("span"))
@@ -45,6 +46,7 @@ test("non-empty root", () => {
     </main>
   `
 })
+*/
 
 test("mutated root", () => {
   const main = document.createElement("main")

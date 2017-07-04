@@ -11,7 +11,7 @@ const TreeTest = trees =>
       next: state => (state + 1) % trees.length
     },
     events: {
-      loaded: (state, actions) => {
+      ready: (state, actions) => {
         trees.map(tree => {
           expectHTMLToBe`${tree.html}`
           actions.next()

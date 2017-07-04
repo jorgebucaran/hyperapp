@@ -11,7 +11,7 @@ test("update the state sync", () => {
       add: state => state + 1
     },
     events: {
-      loaded: (state, actions) => {
+      ready: (state, actions) => {
         actions.add()
 
         expectHTMLToBe`
@@ -45,8 +45,7 @@ test("update the state async", done => {
       }
     },
     events: {
-      loaded: (state, actions) =>
-        actions.delayAndChange(Number.MAX_SAFE_INTEGER)
+      ready: (state, actions) => actions.delayAndChange(Number.MAX_SAFE_INTEGER)
     }
   })
 })
@@ -73,8 +72,7 @@ test("update the state async by promise", done => {
       }
     },
     events: {
-      loaded: (state, actions) =>
-        actions.delayAndChange(Number.MAX_SAFE_INTEGER)
+      ready: (state, actions) => actions.delayAndChange(Number.MAX_SAFE_INTEGER)
     }
   })
 })
@@ -94,7 +92,7 @@ test("namespaced/nested actions", () => {
       }
     },
     events: {
-      loaded: (state, actions) => actions.foo.bar.baz("foo.bar.baz")
+      ready: (state, actions) => actions.foo.bar.baz("foo.bar.baz")
     }
   })
 })

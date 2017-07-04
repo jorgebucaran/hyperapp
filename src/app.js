@@ -3,6 +3,7 @@ export function app(app) {
   var view = app.view
   var actions = {}
   var events = {}
+  var root = app.root || document.body
   var node
   var element
 
@@ -21,13 +22,17 @@ export function app(app) {
     })
   }
 
-  if (document.readyState[0] !== "l") {
-    load()
-  } else {
-    addEventListener("DOMContentLoaded", load)
-  }
-
+  emit("ready", render(state, view))
   return emit
+
+  function render(state, view) {
+    element = patch(
+      root,
+      element,
+      node,
+      (node = emit("render", view)(state, actions))
+    )
+  }
 
   function init(namespace, children, lastName) {
     Object.keys(children || []).map(function(key) {
@@ -58,11 +63,6 @@ export function app(app) {
     })
   }
 
-  function load() {
-    render(state, view)
-    emit("loaded")
-  }
-
   function emit(name, data) {
     ;(events[name] || []).map(function(cb) {
       var result = cb(state, actions, data, emit)
@@ -72,15 +72,6 @@ export function app(app) {
     })
 
     return data
-  }
-
-  function render(state, view) {
-    element = patch(
-      app.root || (app.root = document.body),
-      element,
-      node,
-      (node = emit("render", view)(state, actions))
-    )
   }
 
   function merge(a, b) {
@@ -148,9 +139,8 @@ export function app(app) {
   function updateElementData(element, oldData, data) {
     for (var name in merge(oldData, data)) {
       var value = data[name]
-      var oldValue = name === "value" || name === "checked"
-        ? element[name]
-        : oldData[name]
+      var oldValue =
+        name === "value" || name === "checked" ? element[name] : oldData[name]
 
       if (name === "onupdate" && value) {
         value(element)

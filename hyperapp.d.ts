@@ -50,4 +50,13 @@ declare module "hyperapp" {
 
   export function app<State, ActionsInterface extends Actions<State> | undefined, EventsInterface extends Partial<Events<State, ActionsInterface>> | undefined>(props: Partial<Application<State, ActionsInterface, EventsInterface>>): emitFunction<any>;
 
+  global {
+    namespace JSX {
+      interface Element extends VNode { }
+      interface IntrinsicElements {
+        [elemName: string]: VNodeData;
+      }
+    }
+  }
+
 }

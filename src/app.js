@@ -7,6 +7,17 @@ export function app(app) {
   var node
   var element
 
+  function hydrate(elm) {
+    return elm == null ? undefined : {
+      tag: elm.tagName,
+      data: {},
+      children: [].map.call(elm.childNodes, function(child){hydrate(child)})
+    }
+  }
+
+  element = root.firstChild
+  node = hydrate(element)
+
   for (var i = -1, mixins = []; i < mixins.length; i++) {
     var mixin = mixins[i] ? mixins[i](app) : app
     mixins = mixins.concat(mixin.mixins || [])

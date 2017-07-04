@@ -15,3 +15,6 @@ install:
 script:
   - npm test
   - codecov
+
+notifications:
+  email: false

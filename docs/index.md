@@ -51,7 +51,6 @@ Below is an alphabetical list of some of the terms and concepts used throughout 
 
 ##### L
 [location](https://developer.mozilla.org/en-US/docs/Web/API/Location)<br>
-[events.loaded](/docs/api.md#loaded)<br>
 
 ##### M
 [state.router.match](https://github.com/hyperapp/router#match)<br>
@@ -77,6 +76,7 @@ Below is an alphabetical list of some of the terms and concepts used throughout 
 [require](https://nodejs.org/api/modules.html#modules_module_require_id)<br>
 [root](/docs/core.md#root)<br>
 [events.route](https://github.com/hyperapp/router#route)<br>
+[events.ready](/docs/api.md#ready)<br>
 [rollup](https://github.com/rollup/rollup)<br>
 
 ##### S

@@ -8,7 +8,7 @@ export function app(app) {
   var element
 
   for (var i = -1, mixins = []; i < mixins.length; i++) {
-    var mixin = mixins[i] ? mixins[i](app) : app
+    var mixin = mixins[i] ? mixins[i](emit) : app
     mixins = mixins.concat(mixin.mixins || [])
 
     if (mixin.state != null) {
@@ -23,6 +23,7 @@ export function app(app) {
   }
 
   emit("ready", render(state, view))
+
   return emit
 
   function render(state, view) {
@@ -47,8 +48,7 @@ export function app(app) {
             emit("action", {
               name: name,
               data: data
-            }).data,
-            emit
+            }).data
           )
 
           if (result != null && typeof result.then !== "function") {
@@ -65,7 +65,7 @@ export function app(app) {
 
   function emit(name, data) {
     ;(events[name] || []).map(function(cb) {
-      var result = cb(state, actions, data, emit)
+      var result = cb(state, actions, data)
       if (result != null) {
         data = result
       }

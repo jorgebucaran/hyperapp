@@ -275,15 +275,14 @@ For a practical example see the implementation of the [Router](https://github.co
 
 #### Custom Events
 
-To create custom events, use the [emit(event, data)](/docs/api.md#emit) function. This function is passed as the last argument to actions/events.
+The [app](/docs/api.md#app) call returns the [emit](/docs/api.md#emit) function, making it possible to trigger [custom events](#custom-events).
 
 ```jsx
-app({
-  view: (state, actions) =>
-    <button onclick={actions.fail}>Fail</button>,
+const emit = app({
+  view: (state, { fail }) =>
+    <button onclick={fail}>Fail</button>,
   actions: {
-    fail: (state, actions, data, emit) =>
-      emit("error", "Fail")
+    fail: (state, actions, data) => emit("error", "Fail")
   },
   events: {
     error: (state, actions, error) => {
@@ -291,6 +290,26 @@ app({
     }
   }
 })
+```
+
+Custom events can be useful in situations where your application is a part of a larger system and you want to communicate from the outside.
+
+```js
+const emit = app({
+  state: 0,
+  actions: {
+    setData: (state, actions, data) => data
+  },
+  view: state => <h1>{state}</h1>,
+  events: {
+    "outside:data": (state, actions, data) =>
+      actions.setData(data)
+  }
+})
+
+...
+
+emit("outside:data", 1)
 ```
 
 ### Mixins
@@ -316,33 +335,5 @@ app({
   },
   mixins: [Logger]
 })
-```
-
-
-## Integration
-
-The `app(...)` call returns the [emit](/docs/api.md#emit) function, making it possible to trigger [custom events](#custom-events) from outside the [application](#applications) itself. This is useful in situations where your app is a part of a larger system.
-
-```js
-
-const tellApp = app({
-  ...
-  events: {
-    ...
-    'outside:data': (state, actions, newData) => actions.setNewData(newData),
-    ...
-  },
-  actions: {
-    ...
-    setNewData: (state, actions, newData) => ...
-    ...
-  }
-  ...
-})
-
-...
-
-tellApp('outside:data', someNewData)
-
 ```
 

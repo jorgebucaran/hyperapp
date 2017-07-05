@@ -1,5 +1,6 @@
 import { h, app } from "../src"
-import { expectHTMLToBe } from "./util"
+
+window.requestAnimationFrame = setTimeout
 
 beforeEach(() => (document.body.innerHTML = ""))
 
@@ -16,7 +17,7 @@ test("extend the state", () => {
     },
     view: state => "",
     events: {
-      ready: state => {
+      init: state => {
         expect(state).toEqual({
           foo: true,
           bar: true
@@ -32,20 +33,20 @@ test("extend events", () => {
 
   const A = () => ({
     events: {
-      ready: () => expect(++count).toBe(2)
+      init: () => expect(++count).toBe(2)
     }
   })
 
   const B = () => ({
     events: {
-      ready: () => expect(++count).toBe(3)
+      init: () => expect(++count).toBe(3)
     }
   })
 
   app({
     view: state => "",
     events: {
-      ready: () => expect(++count).toBe(1)
+      init: () => expect(++count).toBe(1)
     },
     mixins: [A, B]
   })
@@ -66,22 +67,16 @@ test("extend actions", () => {
 
   app({
     state: true,
-    view: state => h("div", {}, `${state}`),
+    view: state => h("div", null, state),
     events: {
-      ready: (state, actions) => {
-        expectHTMLToBe(`
-          <div>
-            true
-          </div>
-        `)
+      loaded: (state, actions) => {
+        expect(document.body.innerHTML).toBe(`<div>true</div>`)
 
         actions.foo.bar.baz.toggle()
 
-        expectHTMLToBe(`
-          <div>
-            false
-          </div>
-        `)
+        setTimeoout(() => {
+          expect(document.body.innerHTML).toBe(`<div>false</div>`)
+        })
       }
     },
     mixins: [mixin]
@@ -117,7 +112,7 @@ test("don't overwrite actions in the same namespace", () => {
       }
     },
     events: {
-      ready: [
+      init: [
         (state, actions) => actions.foo.bar.baz("foo.bar.baz"),
         (state, actions) => actions.foo.bar.qux("foo.bar.qux")
       ]
@@ -126,7 +121,7 @@ test("don't overwrite actions in the same namespace", () => {
   })
 })
 
-test("mixin inside of a mixin", () => {
+test("mixin composition", () => {
   const A = () => ({
     state: {
       foo: 1
@@ -144,7 +139,7 @@ test("mixin inside of a mixin", () => {
     mixins: [B],
     view: () => "",
     events: {
-      ready: state => {
+      init: state => {
         expect(state.bar).toBe(2)
         expect(state.foo).toBe(1)
       }
@@ -152,11 +147,11 @@ test("mixin inside of a mixin", () => {
   })
 })
 
-test("mixins receive emit function", done => {
+test("receive emit function", done => {
   app({
     mixins: [
       emit => ({
-        events: { ready: () => emit("foo") }
+        events: { init: () => emit("foo") }
       })
     ],
     view: () => "",

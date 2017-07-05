@@ -1,6 +1,6 @@
 # TweetBox
 
-In this section we'll implement a simple TweetBox clone and learn how to use [stateless components](/docs/stateless-components.md).
+In this section we'll create a simple TweetBox clone and learn how to compose a view using [stateless components](/docs/stateless-components.md).
 
 [Try it online](https://codepen.io/hyperapp/pen/bgWBdV?editors=0010)
 

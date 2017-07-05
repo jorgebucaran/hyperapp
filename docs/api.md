@@ -47,20 +47,20 @@ Type: ([state](#state), [actions](#actions)): [vnode]
 ### actions
 #### <a name="actions-foo"></a>[namespace.]_foo_
 
-Type: ([state](#state), [actions](#actions), [data](#actions-data), [emit](#emit))
+Type: ([state](#state), [actions](#actions), [data](#actions-data))
 
 * <a name="actions-data"></a> data: any
 
 ### events
 #### ready
 
-Type: ([state](#state), [actions](#actions), _, [emit](#emit)) | Array\<[events](#ready)\>
+Type: ([state](#state), [actions](#actions)) | Array\<[events](#ready)\>
 
 Fired after the view is mounted on the DOM.
 
 #### action
 
-Type: ([state](#state), [actions](#actions), [data](#action-data), [emit](#emit)): [data](#action-data) | Array\<[action](#action)\>
+Type: ([state](#state), [actions](#actions), [data](#action-data)): [data](#action-data) | Array\<[action](#action)\>
 
 * <a name="action-data"></a>data
   * name: string
@@ -70,7 +70,7 @@ Fired before an action is triggered.
 
 #### update
 
-Type: ([state](#state), [actions](#actions), [data](#update-data), [emit](#emit)): [data](#update-data) | Array\<[update](#update)\>
+Type: ([state](#state), [actions](#actions), [data](#update-data)): [data](#update-data) | Array\<[update](#update)\>
 
 * <a name="update-data"></a>data: the updated fragment of the state.
 
@@ -78,7 +78,7 @@ Fired before the state is updated.
 
 #### render
 
-Type: ([state](#state), [actions](#actions), [view](#view), [emit](#emit)): [view](#view) | Array\<[render](#render)\>
+Type: ([state](#state), [actions](#actions), [view](#view)): [view](#view) | Array\<[render](#render)\>
 
 Fired before the view is rendered.
 
@@ -88,13 +88,13 @@ Type: Array\<[Mixin](#mixins-mixin)\>
 
 #### <a name="mixins-mixin"></a>Mixin
 
-Type: ([props](#app-props)): [props](#mixin-props)
+Type: ([emit](#emit)): [props](#mixin-props)
 
 * <a name="mixin-props"></a>props
-  * [mixins](#mixins)
   * [state](#state)
   * [actions](#actions)
   * [events](#events)
+  * [mixins](#mixins)
 
 ### root
 

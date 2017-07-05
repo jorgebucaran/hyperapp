@@ -4,9 +4,9 @@ import { expectHTMLToBe } from "./util"
 beforeEach(() => (document.body.innerHTML = ""))
 
 test("extend the state", () => {
-  const mixin = app => ({
+  const mixin = () => ({
     state: {
-      bar: app.state.foo
+      bar: true
     }
   })
 

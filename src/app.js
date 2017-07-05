@@ -15,8 +15,10 @@ export function app(app) {
     }
   }
 
-  element = root.firstChild
-  node = hydrate(element)
+  if (root.hasChildNodes !== undefined && root.hasChildNodes()) {
+    element = root.children[0]
+    node = hydrate(element)
+  }
 
   for (var i = -1, mixins = []; i < mixins.length; i++) {
     var mixin = mixins[i] ? mixins[i](app) : app

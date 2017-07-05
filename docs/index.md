@@ -25,7 +25,6 @@ Below is an alphabetical list of some of the terms and concepts used throughout 
 [emit](/docs/api.md#emit)<br>
 [events](/docs/core.md#events)<br>
 [events, custom](/docs/core.md#custom-events)<br>
-[events, lifecycle](/docs/lifecycle-events.md)<br>
 
 ##### F
 [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)<br>
@@ -54,15 +53,16 @@ Below is an alphabetical list of some of the terms and concepts used throughout 
 
 ##### M
 [state.router.match](https://github.com/hyperapp/router#match)<br>
+[methods, lifecycle](/docs/lifecycle-methods.md)<br>
 
 ##### N
 [namespaces](/docs/core.md#namespaces)<br>
 [npm](https://www.npmjs.com/)<br>
 
 ##### O
-[oncreate](/docs/lifecycle-events.md#oncreate)<br>
-[onupdate](/docs/lifecycle-events.md#onupdate)<br>
-[onremove](/docs/lifecycle-events.md#onremove)<br>
+[oncreate](/docs/lifecycle-methods.md#oncreate)<br>
+[onupdate](/docs/lifecycle-methods.md#onupdate)<br>
+[onremove](/docs/lifecycle-methods.md#onremove)<br>
 
 ##### P
 [state.router.params](https://github.com/hyperapp/router#params)<br>

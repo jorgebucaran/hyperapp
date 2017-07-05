@@ -106,6 +106,8 @@ export function app(app) {
       for (var i in node.data) {
         if (i === "oncreate") {
           node.data[i](element)
+        } else if (i === "oninsert") {
+          setTimeout(node.data[i], 0, element)
         } else {
           setElementData(element, i, node.data[i])
         }

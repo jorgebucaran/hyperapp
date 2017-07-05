@@ -4,16 +4,19 @@ import { expectHTMLToBe } from "./util"
 beforeEach(() => (document.body.innerHTML = ""))
 
 test("send messages to app", () => {
-  const send = app({
-    view: state => h("div", {}, [state]),
+  const emit = app({
     state: "",
+    view: state => h("div", {}, [state]),
     actions: {
-      set: (state, actions, str) => str
+      set: (state, actions, data) => data
     },
     events: {
-      "info:set": (state, actions, str) => actions.set(str)
+      set: (state, actions, data) => actions.set(data)
     }
   })
-  send("info:set", "testinfo")
-  expectHTMLToBe`<div>testinfo</div>`
+  emit("set", "foo")
+
+  expectHTMLToBe`
+    <div>foo</div>
+  `
 })

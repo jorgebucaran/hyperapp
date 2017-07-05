@@ -87,13 +87,13 @@ test("render", () => {
 })
 
 test("custom event", () => {
-  app({
+  const emit = app({
     view: state => "",
     events: {
-      ready: (state, actions, _, emit) => emit("foo", "foo"),
       foo: (state, actions, data) => expect("foo").toBe(data)
     }
   })
+  emit("foo", "foo")
 })
 
 test("nested action name", () => {

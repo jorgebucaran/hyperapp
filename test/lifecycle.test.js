@@ -1,9 +1,8 @@
 import { h, app } from "../src"
-import { expectHTMLToBe } from "./util"
-
-beforeEach(() => (document.body.innerHTML = ""))
 
 const getElementByTagName = tag => document.getElementsByTagName(tag)[0]
+
+beforeEach(() => (document.body.innerHTML = ""))
 
 test("oncreate", done => {
   app({

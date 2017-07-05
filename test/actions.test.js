@@ -14,11 +14,11 @@ test("update the state sync", () => {
       ready: (state, actions) => {
         actions.add()
 
-        expectHTMLToBe`
+        expectHTMLToBe(`
           <div>
             2
           </div>
-        `
+        `)
       }
     }
   })
@@ -31,14 +31,14 @@ test("update the state async", done => {
     actions: {
       change: (state, actions, data) => state + data,
       delayAndChange: (state, actions, data) => {
-        setTimeout(_ => {
+        setTimeout(() => {
           actions.change(data)
 
-          expectHTMLToBe`
+          expectHTMLToBe(`
             <div>
               ${state + data}
             </div>
-          `
+          `)
 
           done()
         }, 5)
@@ -55,17 +55,17 @@ test("update the state async by promise", done => {
     state: 1,
     view: state => h("div", {}, state),
     actions: {
-      delay: state => new Promise(resolve => setTimeout(_ => resolve(), 20)),
+      delay: state => new Promise(resolve => setTimeout(() => resolve(), 20)),
       change: (state, actions, data) => state + data,
       delayAndChange: (state, actions, data) => {
-        actions.delay().then(_ => {
+        actions.delay().then(() => {
           actions.change(data)
 
-          expectHTMLToBe`
+          expectHTMLToBe(`
             <div>
               ${state + data}
             </div>
-          `
+          `)
 
           done()
         })

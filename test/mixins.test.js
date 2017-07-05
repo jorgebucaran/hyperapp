@@ -69,19 +69,19 @@ test("extend actions", () => {
     view: state => h("div", {}, `${state}`),
     events: {
       ready: (state, actions) => {
-        expectHTMLToBe`
+        expectHTMLToBe(`
           <div>
             true
           </div>
-        `
+        `)
 
         actions.foo.bar.baz.toggle()
 
-        expectHTMLToBe`
+        expectHTMLToBe(`
           <div>
             false
           </div>
-        `
+        `)
       }
     },
     mixins: [mixin]
@@ -126,7 +126,7 @@ test("don't overwrite actions in the same namespace", () => {
   })
 })
 
-test('mixin inside of a mixin', () => {
+test("mixin inside of a mixin", () => {
   const A = () => ({
     state: {
       foo: 1
@@ -144,10 +144,24 @@ test('mixin inside of a mixin', () => {
     mixins: [B],
     view: () => "",
     events: {
-      ready: (state) => {
+      ready: state => {
         expect(state.bar).toBe(2)
         expect(state.foo).toBe(1)
       }
+    }
+  })
+})
+
+test("mixins receive emit function", done => {
+  app({
+    mixins: [
+      emit => ({
+        events: { ready: () => emit("foo") }
+      })
+    ],
+    view: () => "",
+    events: {
+      foo: done
     }
   })
 })

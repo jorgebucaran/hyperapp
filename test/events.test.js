@@ -30,11 +30,11 @@ test("action", () => {
     events: {
       ready: (state, actions) => {
         actions.set("foo")
-        expectHTMLToBe`
+        expectHTMLToBe(`
           <div>
             bar
           </div>
-        `
+        `)
       },
       action: (state, actions, { name, data }) => {
         if (name === "set") {
@@ -55,11 +55,11 @@ test("update", () => {
     events: {
       ready: (state, actions) => {
         actions.add()
-        expectHTMLToBe`
+        expectHTMLToBe(`
           <div>
             20
           </div>
-        `
+        `)
       },
       update: (state, actions, data) => data * 10
     }
@@ -72,13 +72,13 @@ test("render", () => {
     view: state => h("div", {}, state),
     events: {
       ready: (state, actions) => {
-        expectHTMLToBe`
+        expectHTMLToBe(`
           <main>
             <div>
               1
             </div>
           </main>
-        `
+        `)
       },
       render: (state, actions, view) => state =>
         h("main", {}, view(state, actions))
@@ -93,6 +93,7 @@ test("custom event", () => {
       foo: (state, actions, data) => expect("foo").toBe(data)
     }
   })
+
   emit("foo", "foo")
 })
 

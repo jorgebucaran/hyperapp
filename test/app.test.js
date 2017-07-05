@@ -14,9 +14,10 @@ test("send messages to app", () => {
       set: (state, actions, data) => actions.set(data)
     }
   })
+
   emit("set", "foo")
 
-  expectHTMLToBe`
+  expectHTMLToBe(`
     <div>foo</div>
-  `
+  `)
 })

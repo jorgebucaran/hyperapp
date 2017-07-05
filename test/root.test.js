@@ -17,13 +17,13 @@ test("root", () => {
     root: document.body.appendChild(document.createElement("main"))
   })
 
-  expectHTMLToBe`
+  expectHTMLToBe(`
     <main>
       <div>
         foo
       </div>
     </main>
-  `
+  `)
 })
 
 test("non-empty root", () => {
@@ -35,7 +35,7 @@ test("non-empty root", () => {
     root: document.body.appendChild(main)
   })
 
-  expectHTMLToBe`
+  expectHTMLToBe(`
     <main>
       <span>
       </span>
@@ -43,7 +43,7 @@ test("non-empty root", () => {
         foo
       </div>
     </main>
-  `
+  `)
 })
 
 test("mutated root", () => {
@@ -58,20 +58,20 @@ test("mutated root", () => {
     },
     events: {
       ready: (state, actions) => {
-        expectHTMLToBe`
+        expectHTMLToBe(`
           <main>
             <div>
               foo
             </div>
           </main>
-        `
+        `)
 
         main.insertBefore(document.createElement("header"), main.firstChild)
         main.appendChild(document.createElement("footer"))
 
         actions.bar()
 
-        expectHTMLToBe`
+        expectHTMLToBe(`
           <main>
             <header>
             </header>
@@ -81,7 +81,7 @@ test("mutated root", () => {
             <footer>
             </footer>
           </main>
-        `
+        `)
       }
     }
   })

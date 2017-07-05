@@ -13,7 +13,7 @@ const TreeTest = trees =>
     events: {
       ready: (state, actions) => {
         trees.map(tree => {
-          expectHTMLToBe`${tree.html}`
+          expectHTMLToBe(`${tree.html}`)
           actions.next()
         })
       }
@@ -393,7 +393,7 @@ test("svg", () => {
   const SVG_NS = "http://www.w3.org/2000/svg"
 
   app({
-    view: _ =>
+    view: () =>
       h("div", {}, [
         h("p", { id: "foo" }, "foo"),
         h("svg", { id: "bar", viewBox: "0 0 10 10" }, [

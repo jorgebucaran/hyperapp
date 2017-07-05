@@ -1,6 +1,6 @@
 # TweetBox
 
-In this section we'll implement a simple TweetBox clone and learn how to create custom tags.
+In this section we'll implement a simple TweetBox clone and learn how to use [stateless components](/docs/stateless-components.md).
 
 [Try it online](https://codepen.io/hyperapp/pen/bgWBdV?editors=0010)
 
@@ -107,7 +107,7 @@ The subtracting the length of the current text, from the length of the previous 
 
 When the input is empty, this operation is equivalent to <samp>(MAX_LENGTH - text.length)</samp>.
 
-When <samp>state.count</samp> becomes less than 0, we know that <samp>state.text</samp> must be longer than <samp>MAX_LENGTH</samp>, so we can disable the tweet button and display the OverflowWidget custom tag.
+When <samp>state.count</samp> becomes less than 0, we know that <samp>state.text</samp> must be longer than <samp>MAX_LENGTH</samp>, so we can disable the tweet button and display the OverflowWidget component.
 
 ```jsx
 <button

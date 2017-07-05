@@ -16,15 +16,18 @@ Below is an alphabetical list of some of the terms and concepts used throughout 
 [buble](https://gitlab.com/Rich-Harris/buble)<br>
 [browserify](https://github.com/substack/node-browserify)<br>
 
+##### C
+[components, stateless](/docs/stateless-components.md)<br>
+
 ##### D
 [destructuring assignment](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment)<br>
 [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction)<br>
 
 ##### E
-[enhanced object literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Grammar_and_Types#Enhanced_Object_literals)<br>
 [emit](/docs/api.md#emit)<br>
 [events](/docs/core.md#events)<br>
 [events, custom](/docs/core.md#custom-events)<br>
+[events, lifecycle](/docs/lifecycle-events.md)<br>
 
 ##### F
 [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)<br>
@@ -53,16 +56,15 @@ Below is an alphabetical list of some of the terms and concepts used throughout 
 
 ##### M
 [state.router.match](https://github.com/hyperapp/router#match)<br>
-[methods, lifecycle](/docs/lifecycle-methods.md)<br>
 
 ##### N
 [namespaces](/docs/core.md#namespaces)<br>
 [npm](https://www.npmjs.com/)<br>
 
 ##### O
-[oncreate](/docs/lifecycle-methods.md#oncreate)<br>
-[onupdate](/docs/lifecycle-methods.md#onupdate)<br>
-[onremove](/docs/lifecycle-methods.md#onremove)<br>
+[oncreate](/docs/lifecycle-events.md#oncreate)<br>
+[onupdate](/docs/lifecycle-events.md#onupdate)<br>
+[onremove](/docs/lifecycle-events.md#onremove)<br>
 
 ##### P
 [state.router.params](https://github.com/hyperapp/router#params)<br>
@@ -84,7 +86,6 @@ Below is an alphabetical list of some of the terms and concepts used throughout 
 [spread syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_operator)<br>
 
 ##### T
-[tag, custom](/docs/custom-tags.md)<br>
 [tutorials](/docs/tutorials.md)<br>
 
 ##### U

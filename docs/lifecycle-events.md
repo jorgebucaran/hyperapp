@@ -1,6 +1,6 @@
-# Lifecycle Methods
+# Lifecycle Events
 
-Lifecycle methods are custom functions invoked at various points in the life of a [virtual node](/docs/core.md#virtual-nodes).
+Lifecycle events are custom function handlers invoked at various points in the life of a [virtual node](/docs/core.md#virtual-nodes).
 
 ## oncreate
 
@@ -36,7 +36,7 @@ if (element.parentNode) {
 
 ## Example
 
-This example shows how to create a [custom tag](/docs/custom-tags.md) to wrap the [CodeMirror](https://codemirror.net/) editor.
+This example shows how to create a [stateless component](/docs/stateless-components.md) to wrap the [CodeMirror](https://codemirror.net/) editor.
 
 [Try it online](https://hyperapp-code-mirror.glitch.me)
 

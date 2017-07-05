@@ -1,14 +1,18 @@
-# Lifecycle Events
+# Lifecycle Methods
 
-Lifecycle events are custom event handlers invoked at various points in the life of a [virtual node](/docs/core.md#virtual-nodes).
-
-They are useful for starting animations, wrapping third party libraries that require a reference to a DOM element, etc.
+Lifecycle methods are custom functions invoked at various points in the life of a [virtual node](/docs/core.md#virtual-nodes).
 
 ## oncreate
 
 Type: ([element](https://developer.mozilla.org/en-US/docs/Web/API/Element))
 
-Fired after an element is created and added to the DOM.
+Called when an element is created, but before it is inserted into the DOM. Use this method to start animations before an element is rendered.
+
+## oninsert
+
+Type: ([element](https://developer.mozilla.org/en-US/docs/Web/API/Element))
+
+Fired after an element is created and inserted into the DOM. Use this event to wrap third party libraries that require a reference to a DOM node, etc.
 
 ## onupdate
 
@@ -22,11 +26,11 @@ Type: ([element](https://developer.mozilla.org/en-US/docs/Web/API/Element))
 
 Fired before the element is removed from the DOM.
 
-Note that when using this event you are responsible for removing the element yourself.
+Note that you are responsible for removing the element when using this event.
 
 ```js
 if (element.parentNode) {
-  element.parentNode.removeChild(element);
+  element.parentNode.removeChild(element)
 }
 ```
 
@@ -47,7 +51,7 @@ const Editor = props => {
 
   return (
     <div
-      oncreate={element => {
+      oninsert={element => {
         setOptions(props)
         element.appendChild(node)
       }}

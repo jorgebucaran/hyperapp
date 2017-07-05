@@ -18,7 +18,7 @@ We assume you have some knowledge of HTML and JavaScript. If you are completely 
     - [Mixins](/docs/core.md#mixins)
 - [Keys](/docs/keys.md)
 - [Custom Tags](/docs/custom-tags.md)
-- [Lifecycle Events](/docs/lifecycle-events.md)
+- [Lifecycle Methods](/docs/lifecycle-methods.md)
 - [Routing](https://github.com/hyperapp/router)
 - [Tutorials](/docs/tutorials.md)
 - [API](/docs/api.md)

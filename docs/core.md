@@ -9,7 +9,6 @@
   * [Events](#events)
     * [Custom Events](#custom-events)
   * [Mixins](#mixins)
-* [Integration](#integration)
 
 ## Virtual Nodes
 

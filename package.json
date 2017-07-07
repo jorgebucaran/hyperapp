@@ -7,7 +7,10 @@
   "module": "src/index.js",
   "license": "MIT",
   "repository": "hyperapp/hyperapp",
-  "files": ["src", "dist"],
+  "files": [
+    "src",
+    "dist"
+  ],
   "author": "Jorge Bucaran",
   "keywords": [
     "hyperapp",
@@ -24,7 +27,9 @@
     "build": "rollup -cm -n hyperapp -f umd -i src/index.js -o dist/hyperapp.js",
     "prepublish": "npm run build",
     "format": "prettier --semi false --write 'src/**/*.js'",
-    "release": "npm run build && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
+    "release": "npm run build && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
+    "bench": "rollup perf/h.js -f cjs | node",
+    "trace": "rollup perf/h.js -f cjs | node-irhydra"
   },
   "babel": {
     "presets": "es2015"
@@ -35,7 +40,9 @@
     "jest": "^20.0.4",
     "prettier": "~1.5.2",
     "rollup": "^0.43.0",
-    "rollup-plugin-uglify": "^2.0.1"
+    "rollup-plugin-uglify": "^2.0.1",
+    "nanobench": "^2.1.0",
+    "node-irhydra": "^1.0.0"
   },
   "bundlesize": [
     {

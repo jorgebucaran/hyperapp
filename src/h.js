@@ -1,22 +1,29 @@
-export function h(tag, data) {
-  var node
-  var stack = []
+function addChild(children, val) {
+  if (val == null || typeof val === 'boolean') return
+
+  if (Array.isArray(val)) {
+    for (var j = 0; j < val.length; j++) {
+      children.push(val[j])
+    }
+  }
+  else {
+    children.push(typeof val === 'number' ? val + '' : val)
+  }
+}
+
+export function h(tag, data, values) {
   var children = []
 
-  for (var i = arguments.length; i-- > 2; ) {
-    stack[stack.length] = arguments[i]
-  }
-
-  while (stack.length) {
-    if (Array.isArray((node = stack.pop()))) {
-      for (var i = node.length; i--; ) {
-        stack[stack.length] = node[i]
+  if (arguments.length > 2) {
+    if (Array.isArray(values)) {
+      for (var i = 0; i < values.length; i++) {
+        addChild(children, values[i])
       }
-    } else if (node != null && node !== true && node !== false) {
-      if (typeof node === "number") {
-        node = node + ""
+    }
+    else {
+      for (var i = 2; i < arguments.length; i++) {
+        addChild(children, arguments[i])
       }
-      children[children.length] = node
     }
   }
 

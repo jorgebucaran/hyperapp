@@ -427,6 +427,20 @@ test("svg", () => {
   }
 })
 
+test("xlink", () => {
+  const XLINK_NS = "http://www.w3.org/1999/xlink"
+
+  app({
+    view: _ =>
+      h("svg", { id: "foo", viewBox: "0 0 10 10" }, [
+        h("use", { id: "bar", "xlink:href": "about:blank" })
+      ])
+  })
+
+  const use = document.getElementById("bar")
+  expect(use.getAttributeNS(XLINK_NS, "href")).toBe("about:blank")
+})
+
 test("style", () => {
   TreeTest([
     {

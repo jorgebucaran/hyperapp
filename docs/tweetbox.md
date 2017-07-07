@@ -138,4 +138,4 @@ By passing <samp>OFFSET</samp> into OverflowWidget we are able to slice <samp>te
 </span>
 ```
 
-[Back to tutorials](/tutorials.md)
+[Back to tutorials](/docs/tutorials.md)

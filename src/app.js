@@ -26,6 +26,8 @@ export function app(app) {
     initialize(actions, mixin.actions)
   }
 
+  node = hydrate((element = root.querySelector("[data-ssr]")), [].map)
+
   repaint(emit("init"))
 
   return emit
@@ -34,6 +36,18 @@ export function app(app) {
     if (!locked) {
       requestAnimationFrame(render, (locked = !locked))
     }
+  }
+
+  function hydrate(element, map) {
+    return element == null
+      ? element
+      : {
+          tag: element.tagName,
+          data: {},
+          children: map.call(element.childNodes, function(element) {
+            hydrate(element, map)
+          })
+        }
   }
 
   function render() {

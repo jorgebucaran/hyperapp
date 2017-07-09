@@ -469,3 +469,47 @@ test("svg", done => {
     }
   })
 })
+
+
+test("hydrate existing dom from SSR", () => {
+  document.body.innerHTML = `<div id="foo" class="bar"></div>`;
+  
+  app({
+    state: {},
+    view: (state, actions) => h("div", { id: "foo", class: "bar" }, [])
+  })
+  expect(document.body.innerHTML).toBe(`<div id="foo" class="bar"></div>`)
+})
+
+test("hydrate with out of date text node from SSR", () => {
+  document.body.innerHTML = `<div id="foo" class="bar">Test</div>`;
+
+  app({
+    state: {},
+    view: (state, actions) => h("div", { id: "foo", class: "bar" }, ["Test 123"])
+  })
+
+  expect(document.body.innerHTML).toBe(`<div id="foo" class="bar">Test 123</div>`)
+})
+
+test("hydrate existing dom from SSR with textNode", () => {
+  document.body.innerHTML = `<div id="foo" class="bar">Test</div>`;
+  
+  app({
+    state: {},
+    view: (state, actions) => h("div", { id: "foo", class: "bar" }, ["Test"])
+  })
+  
+  expect(document.body.innerHTML).toBe(`<div id="foo" class="bar">Test</div>`)
+})
+
+test("hydrate with nested dom nodes from SSR", () => {
+  document.body.innerHTML = `<div id="foo" class="bar"><div id="baz">TEST</div></div>`
+
+  app({
+    state: {},
+    view: (state, actions) => h("div", { id: "foo", class: "bar" }, [h("div", { id: "baz" }, ["TEST"])])
+  })
+
+  expect(document.body.innerHTML).toBe(`<div id="foo" class="bar"><div id="baz">TEST</div></div>`)
+})

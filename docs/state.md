@@ -1,6 +1,6 @@
 # State
 
-The state is any type that represents your application data model.
+The [state](/docs/api.md#state) is any type that represents your application data model.
 
 ```jsx
 app({

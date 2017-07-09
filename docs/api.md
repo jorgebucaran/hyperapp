@@ -2,21 +2,22 @@
 
 * [hyperapp.h](#h)
 * [hyperapp.app](#app)
-  * [props.state](#state)
-  * [props.view](#view)
-  * [props.actions](#actions)
-  * [props.events](#events)
-    * [ready](#ready)
+  * [state](#state)
+  * [view](#view)
+  * [actions](#actions)
+  * [events](#events)
+    * [init](#init)
+    * [loaded](#loaded)
     * [action](#action)
     * [update](#update)
     * [render](#render)
-  * [props.mixins](#mixins)
-  * [props.root](#root)
+  * [mixins](#mixins)
+  * [root](#root)
 * [emit](#emit)
 
 ## h
 
-[vnode]: /docs/core.md#virtual-nodes
+[vnode]: /docs/virtual-nodes.md
 
 Type: ([tag](#h-tag), [data](#h-data), [children](#h-children)): [vnode]
 
@@ -45,56 +46,62 @@ Type: any
 Type: ([state](#state), [actions](#actions)): [vnode]
 
 ### actions
-#### <a name="actions-foo"></a>[namespace.]_foo_
+#### [namespace.]_foo_
 
-Type: ([state](#state), [actions](#actions), [data](#actions-data), [emit](#emit))
+Type: ([state](#state), [actions](#actions), [data](#actions-data))
 
 * <a name="actions-data"></a> data: any
 
 ### events
-#### ready
+#### init
 
-Type: ([state](#state), [actions](#actions), _, [emit](#emit)) | Array\<[events](#ready)\>
+([state](#state), [actions](#actions))
 
-Fired after the view is mounted on the DOM.
+The init event is fired before the first render occurs. This is a good place to initialize your application, create a network request, access the local [Storage](https://developer.mozilla.org/en-US/docs/Web/API/Storage), etc.
+
+#### loaded
+
+Type: ([state](#state), [actions](#actions))
+
+The loaded event is fired immediately after the [view](#view) is rendered and attached to the DOM.
 
 #### action
 
-Type: ([state](#state), [actions](#actions), [data](#action-data), [emit](#emit)): [data](#action-data) | Array\<[action](#action)\>
+Type: ([state](#state), [actions](#actions), [data](#action-data)): [data](#action-data)
 
 * <a name="action-data"></a>data
-  * name: string
-  * data: any
+  * name: the name of the action
+  * data: the data passed to the action
 
-Fired before an action is triggered.
+The action event is fired before an action is called.
 
 #### update
 
-Type: ([state](#state), [actions](#actions), [data](#update-data), [emit](#emit)): [data](#update-data) | Array\<[update](#update)\>
+Type: ([state](#state), [actions](#actions), [data](#update-data)): [data](#update-data)
 
-* <a name="update-data"></a>data: the updated fragment of the state.
+* <a name="update-data"></a>data: the data used to update the global state.
 
-Fired before the state is updated.
+The update event is fired before the state is updated.
 
 #### render
 
-Type: ([state](#state), [actions](#actions), [view](#view), [emit](#emit)): [view](#view) | Array\<[render](#render)\>
+Type: ([state](#state), [actions](#actions), [view](#view)): [view](#view)
 
-Fired before the view is rendered.
+The render event is fired immediately before the view is rendered. This event can be used to implement a page router. Return the view you want to render.
 
 ### mixins
 
-Type: Array\<[Mixin](#mixins-mixin)\>
+Type: Array\<[Mixin](#mixin)\>
 
-#### <a name="mixins-mixin"></a>Mixin
+#### mixin
 
-Type: ([props](#app-props)): [props](#mixin-props)
+Type: ([emit](#emit)): [props](#mixin-props)
 
-* <a name="mixin-props"></a>props
-  * [mixins](#mixins)
+* <a name="mixin-props"></a>props: the object used to extend your application [props](#app-props).
   * [state](#state)
   * [actions](#actions)
   * [events](#events)
+  * [mixins](#mixins)
 
 ### root
 
@@ -106,3 +113,9 @@ Type: ([event](#emit-event), [data](#emit-data)): [data](#emit-data)
 
 * <a name="emit-event"></a>event: string
 * <a name="emit-data"></a>data: any
+
+Returns the given data reduced by successively calling each event handler of the specified event.
+
+
+
+

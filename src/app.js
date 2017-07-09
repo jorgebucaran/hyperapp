@@ -26,11 +26,8 @@ export function app(app) {
     initialize(actions, mixin.actions)
   }
 
-  if (root.hasChildNodes !== undefined && root.hasChildNodes()) {
-    element = root.children[0]
-    node = hydrate(element)
-  }
-  
+  node = hydrate((element = root.querySelector("[data-ssr]")), [].map)
+
   repaint(emit("init"))
 
   return emit
@@ -40,13 +37,17 @@ export function app(app) {
       requestAnimationFrame(render, (locked = !locked))
     }
   }
-  
-  function hydrate(elm) {
-    return elm == null ? undefined : {
-      tag: elm.tagName,
-      data: {},
-      children: [].map.call(elm.childNodes, function(child){hydrate(child)})
-    }
+
+  function hydrate(element, map) {
+    return element == null
+      ? element
+      : {
+          tag: element.tagName,
+          data: {},
+          children: map.call(element.childNodes, function(element) {
+            hydrate(element, map)
+          })
+        }
   }
 
   function render() {

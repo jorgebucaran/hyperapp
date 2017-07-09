@@ -30,6 +30,7 @@ test("root", done => {
 })
 
 test("non-empty root", done => {
+
   const main = document.createElement("main")
   main.appendChild(document.createElement("span"))
 

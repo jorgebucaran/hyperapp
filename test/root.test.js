@@ -1,89 +1,78 @@
 import { h, app } from "../src"
-import { expectHTMLToBe } from "./util"
+
+window.requestAnimationFrame = setTimeout
 
 beforeEach(() => (document.body.innerHTML = ""))
 
-test("default root is document.body", () => {
+test("document.body is the default root", done => {
   app({
-    view: state => "foo"
+    view: state => "foo",
+    events: {
+      loaded: () => {
+        expect(document.body.innerHTML).toBe("foo")
+        done()
+      }
+    }
   })
-
-  expect(document.body.innerHTML).toBe("foo")
 })
 
-test("root", () => {
+test("root", done => {
   app({
-    view: state => h("div", {}, "foo"),
+    view: state => h("div", null, "foo"),
+    events: {
+      loaded: () => {
+        expect(document.body.innerHTML).toBe(`<main><div>foo</div></main>`)
+        done()
+      }
+    },
     root: document.body.appendChild(document.createElement("main"))
   })
-
-  expectHTMLToBe`
-    <main>
-      <div>
-        foo
-      </div>
-    </main>
-  `
 })
 
-/* this test describes behavior that is incompatible with hydration
-test("non-empty root", () => {
+test("non-empty root", done => {
+
   const main = document.createElement("main")
   main.appendChild(document.createElement("span"))
 
   app({
-    view: state => h("div", {}, "foo"),
+    view: state => h("div", null, "foo"),
+    events: {
+      loaded: () => {
+        expect(document.body.innerHTML).toBe(
+          `<main><span></span><div>foo</div></main>`
+        )
+        done()
+      }
+    },
     root: document.body.appendChild(main)
   })
-
-  expectHTMLToBe`
-    <main>
-      <span>
-      </span>
-      <div>
-        foo
-      </div>
-    </main>
-  `
 })
-*/
 
-test("mutated root", () => {
+test("mutated root", done => {
   const main = document.createElement("main")
 
   app({
     state: "foo",
-    view: state => h("div", {}, state),
+    view: state => h("div", null, state),
     root: document.body.appendChild(main),
     actions: {
       bar: state => "bar"
     },
     events: {
-      ready: (state, actions) => {
-        expectHTMLToBe`
-          <main>
-            <div>
-              foo
-            </div>
-          </main>
-        `
+      loaded: (state, actions) => {
+        expect(document.body.innerHTML).toBe(`<main><div>foo</div></main>`)
 
         main.insertBefore(document.createElement("header"), main.firstChild)
         main.appendChild(document.createElement("footer"))
 
         actions.bar()
 
-        expectHTMLToBe`
-          <main>
-            <header>
-            </header>
-            <div>
-              bar
-            </div>
-            <footer>
-            </footer>
-          </main>
-        `
+        setTimeout(() => {
+          expect(document.body.innerHTML).toBe(
+            `<main><header></header><div>bar</div><footer></footer></main>`
+          )
+          done()
+        })
       }
     }
   })

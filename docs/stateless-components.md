@@ -1,6 +1,6 @@
-# Custom Tags
+# Stateless Components
 
-A custom tag is a function that returns a custom [virtual node](/docs/core.md#virtual-nodes). Custom tags are similar to stateless components in other frameworks.
+A stateless component is a function that returns a custom [virtual node](/docs/virtual-nodes.md).
 
 ```js
 function Link(props, children) {
@@ -32,7 +32,7 @@ Here is the generated virtual node.
 
 ## JSX
 
-Custom tags and [JSX](/docs/jsx.md) integrate well together.
+Components and [JSX](/docs/jsx.md) integrate well together.
 
 ```jsx
 <main id="app">
@@ -40,7 +40,7 @@ Custom tags and [JSX](/docs/jsx.md) integrate well together.
 </main>
 ```
 
-If you don't know all the properties that you want to place on a custom element ahead of time, you can use the [spread syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_operator).
+If you don't know all the properties that you want to place in a component ahead of time, you can use the [spread syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_operator).
 
 ```jsx
 const Link = (props, children) =>

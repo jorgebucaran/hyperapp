@@ -12,8 +12,8 @@ HyperApp is a JavaScript library for building frontend applications.
 [CDN]: https://unpkg.com/hyperapp
 
 * **Declarative**: HyperApp's design is based on the [Elm Architecture]. Create scalable browser-based applications using a functional paradigm. The twist is you don't have to learn a new language.
-* **Custom tags**: Build complex user interfaces from custom tags. Custom tags are stateless, framework agnostic and easy to debug.
-* **Batteries-included**: Out of the box, HyperApp has Elm-like state management and a virtual DOM engine; it still weighs `1kb` and has no dependencies.
+* **Stateless components**: Build complex user interfaces from [stateless components](/docs/stateless-components.md). Stateless components are framework agnostic and easy to debug.
+* **Batteries-included**: Out of the box, HyperApp combines state management with a Virtual DOM engine that supports keyed updates & lifecycle events — all with no dependencies.
 
 [Get started with HyperApp](/docs/getting-started.md)
 
@@ -24,13 +24,12 @@ HyperApp is a JavaScript library for building frontend applications.
 ```jsx
 app({
   state: 0,
-  view: (state, actions) => (
+  view: (state, actions) =>
     <main>
       <h1>{state}</h1>
       <button onclick={actions.add}>+</button>
       <button onclick={actions.sub}>-</button>
-    </main>
-  ),
+    </main>,
   actions: {
     add: state => state + 1,
     sub: state => state - 1

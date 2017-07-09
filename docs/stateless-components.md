@@ -1,6 +1,6 @@
 # Stateless Components
 
-A stateless component is a function that returns a custom [virtual node](/docs/core.md#virtual-nodes).
+A stateless component is a function that returns a custom [virtual node](/docs/virtual-nodes.md).
 
 ```js
 function Link(props, children) {

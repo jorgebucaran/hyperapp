@@ -1,32 +1,32 @@
 # Lifecycle Events
 
-Lifecycle events are custom function handlers invoked at various points in the life of a [virtual node](/docs/core.md#virtual-nodes).
+Lifecycle events are custom function handlers invoked at various points in the life of a [virtual node](/docs/virtual-nodes.md).
 
 ## oncreate
 
 Type: ([element](https://developer.mozilla.org/en-US/docs/Web/API/Element))
 
-Called when an element is created, but before it is inserted into the DOM. Use this method to start animations before an element is rendered.
+The oncreate event is fired when the element is created, but before it is inserted into the DOM. Use this method to start animations before an element is rendered.
 
 ## oninsert
 
 Type: ([element](https://developer.mozilla.org/en-US/docs/Web/API/Element))
 
-Fired after an element is created and inserted into the DOM. Use this event to wrap third party libraries that require a reference to a DOM node, etc.
+The oninsert event is fired after the element is created and inserted into the DOM. Use this event to wrap third party libraries that require a reference to a DOM node, etc.
 
 ## onupdate
 
 Type: ([element](https://developer.mozilla.org/en-US/docs/Web/API/Element))
 
-Fired when the element's data is updated.
+The onupdate event is fired every time the element's data is updated.
 
 ## onremove
 
 Type: ([element](https://developer.mozilla.org/en-US/docs/Web/API/Element))
 
-Fired before the element is removed from the DOM.
+The onremove event is fired when the element is going to be removed from the DOM.
 
-Note that you are responsible for removing the element when using this event.
+You are responsible for removing the element if you use this event.
 
 ```js
 if (element.parentNode) {
@@ -36,7 +36,7 @@ if (element.parentNode) {
 
 ## Example
 
-This example shows how to create a [stateless component](/docs/stateless-components.md) to wrap the [CodeMirror](https://codemirror.net/) editor.
+This example shows how to create a [stateless component](/docs/stateless-components.md) to wrap the [CodeMirror](https://codemirror.net) editor.
 
 [Try it online](https://hyperapp-code-mirror.glitch.me)
 

@@ -1,6 +1,6 @@
 # Countdown Timer
 
-In this section we'll walk through a countdown timer example and learn how to use [events.ready](/docs/api.md#ready) to register global events.
+In this section we'll walk through a countdown timer example and learn how to use [events.init](/docs/api.md#init) to register global events.
 
 [Try it online](https://codepen.io/hyperapp/pen/evOZLv?editors=0010)
 
@@ -46,7 +46,7 @@ app({
     }
   },
   events: {
-    ready: (state, actions) => setInterval(actions.tick, 1000)
+    init: (state, actions) => setInterval(actions.tick, 1000)
   }
 })
 ```
@@ -68,7 +68,7 @@ The clock is implemented using [<samp>setInterval</samp>](https://developer.mozi
 
 ```jsx
 events: {
-  ready: (state, actions) => setInterval(actions.tick, 1000)
+  init: (state, actions) => setInterval(actions.tick, 1000)
 }
 ```
 

@@ -1,5 +1,7 @@
 import { h, app } from "../src"
 
+window.requestAnimationFrame = setTimeout
+
 const getElementByTagName = tag => document.getElementsByTagName(tag)[0]
 
 beforeEach(() => (document.body.innerHTML = ""))
@@ -8,12 +10,14 @@ test("oncreate", done => {
   app({
     view: () =>
       h("div", {
-        oncreate: element => {
-          expect(element).not.toBe(undefined)
+        oncreate: elm => {
+          setTimeout(() => {})
+
+          expect(elm).not.toBe(undefined)
           expect(getElementByTagName("div")).toBe(undefined)
 
           setTimeout(() => {
-            expect(getElementByTagName("div")).toBe(element)
+            expect(getElementByTagName("div")).toBe(elm)
             done()
           })
         }
@@ -25,8 +29,8 @@ test("oninsert", done => {
   app({
     view: () =>
       h("div", {
-        oninsert: element => {
-          expect(getElementByTagName("div")).toBe(element)
+        oninsert: elm => {
+          expect(getElementByTagName("div")).toBe(elm)
           done()
         }
       })
@@ -38,7 +42,7 @@ test("onupdate", done => {
     state: 1,
     view: state =>
       h("div", {
-        onupdate: element => {
+        onupdate: e => {
           expect(state).toBe(2)
           done()
         }
@@ -47,7 +51,7 @@ test("onupdate", done => {
       add: state => state + 1
     },
     events: {
-      ready: (state, actions) => actions.add()
+      loaded: (state, actions) => actions.add()
     }
   })
 })
@@ -63,7 +67,7 @@ test("onremove", done => {
       toggle: state => !state
     },
     events: {
-      ready: (state, actions) => actions.toggle()
+      loaded: (state, actions) => actions.toggle()
     }
   })
 })

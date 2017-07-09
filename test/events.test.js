@@ -1,9 +1,10 @@
 import { h, app } from "../src"
-import { expectHTMLToBe } from "./util"
+
+window.requestAnimationFrame = setTimeout
 
 beforeEach(() => (document.body.innerHTML = ""))
 
-test("ready", () => {
+test("init", () => {
   app({
     view: state => "",
     state: 1,
@@ -11,7 +12,7 @@ test("ready", () => {
       step: state => state + 1
     },
     events: {
-      ready: [
+      init: [
         (state, actions) => actions.step(),
         (state, actions) => actions.step(),
         state => expect(state).toBe(3)
@@ -20,21 +21,36 @@ test("ready", () => {
   })
 })
 
-test("action", () => {
+test("loaded", done => {
+  app({
+    state: "foo",
+    view: state => h("div", null, state),
+    events: {
+      init: () => {
+        expect(document.body.innerHTML).toBe("")
+      },
+      loaded: () => {
+        expect(document.body.innerHTML).toBe(`<div>foo</div>`)
+        done()
+      }
+    }
+  })
+})
+
+test("action", done => {
   app({
     state: "",
-    view: state => h("div", {}, state),
+    view: state => h("div", null, state),
     actions: {
       set: (state, actions, data) => data
     },
     events: {
-      ready: (state, actions) => {
+      init: (state, actions) => {
         actions.set("foo")
-        expectHTMLToBe(`
-          <div>
-            bar
-          </div>
-        `)
+      },
+      loaded: () => {
+        expect(document.body.innerHTML).toBe(`<div>bar</div>`)
+        done()
       },
       action: (state, actions, { name, data }) => {
         if (name === "set") {
@@ -45,43 +61,35 @@ test("action", () => {
   })
 })
 
-test("update", () => {
+test("update", done => {
   app({
     state: 1,
-    view: state => h("div", {}, state),
+    view: state => h("div", null, state),
     actions: {
       add: state => state + 1
     },
     events: {
-      ready: (state, actions) => {
-        actions.add()
-        expectHTMLToBe(`
-          <div>
-            20
-          </div>
-        `)
+      init: (state, actions) => actions.add(),
+      loaded: () => {
+        expect(document.body.innerHTML).toBe(`<div>20</div>`)
+        done()
       },
       update: (state, actions, data) => data * 10
     }
   })
 })
 
-test("render", () => {
+test("render", done => {
   app({
     state: 1,
-    view: state => h("div", {}, state),
+    view: state => h("div", null, state),
     events: {
-      ready: (state, actions) => {
-        expectHTMLToBe(`
-          <main>
-            <div>
-              1
-            </div>
-          </main>
-        `)
+      loaded: () => {
+        expect(document.body.innerHTML).toBe(`<main><div>1</div></main>`)
+        done()
       },
       render: (state, actions, view) => state =>
-        h("main", {}, view(state, actions))
+        h("main", null, view(state, actions))
     }
   })
 })
@@ -109,7 +117,7 @@ test("nested action name", () => {
       }
     },
     events: {
-      ready: (_, actions) => actions.foo.bar.set("foobar"),
+      init: (state, actions) => actions.foo.bar.set("foobar"),
       action: (state, actions, { name, data }) => {
         expect(name).toBe("foo.bar.set")
         expect(data).toBe("foobar")

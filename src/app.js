@@ -1,41 +1,57 @@
 export function app(app) {
   var state = {}
-  var view = app.view
   var actions = {}
   var events = {}
+  var mixins = []
+  var view = app.view
   var root = app.root || document.body
   var node
   var element
+  var locked = false
+  var loaded = false
 
-  for (var i = -1, mixins = []; i < mixins.length; i++) {
+  for (var i = -1; i < mixins.length; i++) {
     var mixin = mixins[i] ? mixins[i](emit) : app
-    mixins = mixins.concat(mixin.mixins || [])
+
+    Object.keys(mixin.events || []).map(function(key) {
+      events[key] = (events[key] || []).concat(mixin.events[key])
+    })
 
     if (mixin.state != null) {
       state = merge(state, mixin.state)
     }
 
-    init(actions, mixin.actions)
+    mixins = mixins.concat(mixin.mixins || [])
 
-    Object.keys(mixin.events || []).map(function(key) {
-      events[key] = (events[key] || []).concat(mixin.events[key])
-    })
+    initialize(actions, mixin.actions)
   }
 
-  emit("ready", render(state, view))
+  repaint(emit("init"))
 
   return emit
 
-  function render(state, view) {
+  function repaint() {
+    if (!locked) {
+      requestAnimationFrame(render, (locked = !locked))
+    }
+  }
+
+  function render() {
     element = patch(
       root,
       element,
       node,
       (node = emit("render", view)(state, actions))
     )
+
+    locked = !locked
+
+    if (!loaded) {
+      emit("loaded", (loaded = true))
+    }
   }
 
-  function init(namespace, children, lastName) {
+  function initialize(namespace, children, lastName) {
     Object.keys(children || []).map(function(key) {
       var action = children[key]
       var name = lastName ? lastName + "." + key : key
@@ -51,14 +67,14 @@ export function app(app) {
             }).data
           )
 
-          if (result != null && typeof result.then !== "function") {
-            render((state = merge(state, emit("update", result))), view)
+          if (result != null && result.then == null) {
+            repaint((state = merge(state, emit("update", result))))
           }
 
           return result
         }
       } else {
-        init(namespace[key] || (namespace[key] = {}), action, name)
+        initialize(namespace[key] || (namespace[key] = {}), action, name)
       }
     })
   }
@@ -75,15 +91,16 @@ export function app(app) {
   }
 
   function merge(a, b) {
-    var obj = {}
-
-    if (typeof b !== "object" || Array.isArray(b)) {
+    if (typeof b !== "object") {
       return b
     }
+
+    var obj = {}
 
     for (var i in a) {
       obj[i] = a[i]
     }
+
     for (var i in b) {
       obj[i] = b[i]
     }
@@ -91,7 +108,7 @@ export function app(app) {
     return obj
   }
 
-  function createElementFrom(node, isSVG) {
+  function createElement(node, isSVG) {
     if (typeof node === "string") {
       var element = document.createTextNode(node)
     } else {
@@ -100,7 +117,7 @@ export function app(app) {
         : document.createElement(node.tag)
 
       for (var i = 0; i < node.children.length; ) {
-        element.appendChild(createElementFrom(node.children[i++], isSVG))
+        element.appendChild(createElement(node.children[i++], isSVG))
       }
 
       for (var i in node.data) {
@@ -152,7 +169,7 @@ export function app(app) {
     }
   }
 
-  function getKeyFrom(node) {
+  function getKey(node) {
     if (node && (node = node.data)) {
       return node.key
     }
@@ -167,7 +184,7 @@ export function app(app) {
 
   function patch(parent, element, oldNode, node) {
     if (oldNode == null) {
-      element = parent.insertBefore(createElementFrom(node), element)
+      element = parent.insertBefore(createElement(node), element)
     } else if (node.tag && node.tag === oldNode.tag) {
       updateElementData(element, oldNode.data, node.data)
 
@@ -182,7 +199,7 @@ export function app(app) {
         oldElements[i] = oldElement
 
         var oldChild = oldNode.children[i]
-        var oldKey = getKeyFrom(oldChild)
+        var oldKey = getKey(oldChild)
 
         if (null != oldKey) {
           reusableChildren[oldKey] = [oldElement, oldChild]
@@ -197,13 +214,13 @@ export function app(app) {
         var oldChild = oldNode.children[i]
         var newChild = node.children[j]
 
-        var oldKey = getKeyFrom(oldChild)
+        var oldKey = getKey(oldChild)
         if (newKeys[oldKey]) {
           i++
           continue
         }
 
-        var newKey = getKeyFrom(newChild)
+        var newKey = getKey(newChild)
 
         var reusableChild = reusableChildren[newKey] || []
 
@@ -231,7 +248,7 @@ export function app(app) {
 
       while (i < oldLen) {
         var oldChild = oldNode.children[i]
-        var oldKey = getKeyFrom(oldChild)
+        var oldKey = getKey(oldChild)
         if (null == oldKey) {
           removeElement(element, oldElements[i], oldChild)
         }
@@ -247,7 +264,7 @@ export function app(app) {
       }
     } else if (node !== oldNode) {
       var i = element
-      parent.replaceChild((element = createElementFrom(node)), i)
+      parent.replaceChild((element = createElement(node)), i)
     }
 
     return element

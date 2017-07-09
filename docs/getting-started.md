@@ -1,6 +1,7 @@
 # Getting Started
 
 - [Hello World](#hello-world)
+- []
 - [Installation](#installation)
 - [Usage](#usage)
 - [Build Pipeline](#build-pipeline)
@@ -40,7 +41,7 @@ state => h("h1", null, state) // <h1>Hi.</h1>
 [Hyperx]: /docs/hyperx.md
 [JSX]: /docs/jsx.md
 
-To compose the user interface, the [h(tag, data, children)](/docs/api.md#h) utility function returns a tree of [virtual nodes](/docs/core.md#virtual-nodes).
+To compose the user interface, the [h(tag, data, children)](/docs/api.md#h) utility function returns a tree of [virtual nodes](/docs/virtual-nodes.md).
 
 ```js
 {
@@ -57,6 +58,17 @@ state => <h1>{state}</h1>
 ```
 
 The [app(props)](/docs/api.md#app) function wraps everything together and renders the view on the DOM.
+
+The app function renders the view in the [document.body](https://developer.mozilla.org/en-US/docs/Web/API/Document/body) by default.
+
+To mount the application on a different element, use the [root](/docs/api.md#root) property.
+
+```jsx
+app({
+  view: () => <h1>Hi.</h1>,
+  root: document.getElementById("app")
+})
+```
 
 ## Installation
 
@@ -83,7 +95,7 @@ HyperApp is available on the global scope when using a <samp>\<script\></samp> t
 const { h, app } = hyperapp
 ```
 
-Or you can use ES6/ES5 by setting up a [build pipeline](#build-pipeline).
+Or you can use ES5/ES6 by setting up a [build pipeline](#build-pipeline).
 
 ```jsx
 import { h, app } from "hyperapp"

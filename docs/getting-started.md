@@ -17,7 +17,7 @@ const { h, app } = hyperapp
 
 app({
   state: "Hi.",
-  view: state => h("h1", null, state)
+  view: state => h("h1", {}, state)
 })
 
 </script>
@@ -33,7 +33,7 @@ state: "Hi."
 The view describes the user interface.
 
 ```js
-state => h("h1", null, state) // <h1>Hi.</h1>
+state => h("h1", {}, state) // <h1>Hi.</h1>
 ```
 
 [Hyperx]: /docs/hyperx.md
@@ -44,7 +44,7 @@ To compose the user interface, the [h(tag, data, children)](/docs/api.md#h) util
 ```js
 {
   tag: "h1",
-  data: null,
+  data: {},
   children: ["Hi"]
 }
 ```

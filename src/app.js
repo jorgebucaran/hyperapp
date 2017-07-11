@@ -169,20 +169,20 @@ export function app(app) {
     }
   }
 
-  function updateElementData(element, oldData, data) {
-    var updated = false
+  function updateElementData(element, oldData, data, cb) {
     for (var name in merge(oldData, data)) {
       var value = data[name]
       var oldValue =
         name === "value" || name === "checked" ? element[name] : oldData[name]
 
-      if (value !== oldValue) {
+      if (value !== oldValue && name !== "onupdate") {
         setElementData(element, name, value, oldValue)
-        updated = true
+        cb = data.onupdate
       }
     }
-    if (updated && data["onupdate"]) {
-      data["onupdate"](element)
+
+    if (cb != null) {
+      cb(element)
     }
   }
 

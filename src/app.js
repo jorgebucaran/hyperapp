@@ -175,7 +175,7 @@ export function app(app) {
       var oldValue =
         name === "value" || name === "checked" ? element[name] : oldData[name]
 
-      if (value !== oldValue && name !== "onupdate") {
+      if (value !== oldValue) {
         setElementData(element, name, value, oldValue)
         cb = data.onupdate
       }

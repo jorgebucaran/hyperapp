@@ -199,7 +199,7 @@ export function app(app) {
   function patch(parent, element, oldNode, node) {
     if (oldNode == null) {
       element = parent.insertBefore(createElement(node), element)
-    } else if (node.tag && node.tag === oldNode.tag) {
+    } else if (node.tag != null && node.tag === oldNode.tag) {
       updateElementData(element, oldNode.data, node.data)
 
       var len = node.children.length
@@ -276,7 +276,11 @@ export function app(app) {
           removeElement(element, reusableChild[0], reusableNode)
         }
       }
-    } else if (node !== oldNode) {
+    } else if (
+      element != null &&
+      node !== oldNode &&
+      node !== element.nodeValue
+    ) {
       var i = element
       parent.replaceChild((element = createElement(node)), i)
     }
@@ -284,3 +288,4 @@ export function app(app) {
     return element
   }
 }
+

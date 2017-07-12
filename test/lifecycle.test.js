@@ -38,15 +38,20 @@ test("oninsert", done => {
 })
 
 test("onupdate", done => {
+  const mock = jest.fn()
   app({
     state: 1,
     view: state =>
-      h("div", {
-        onupdate: e => {
-          expect(state).toBe(2)
-          done()
-        }
-      }),
+      h("div", { onupdate: mock },
+        h("div", {
+          class: state,
+          onupdate: element => {
+            expect(mock).not.toHaveBeenCalled()
+            expect(state).toBe(2)
+            done()
+          }
+        })
+      ),
     actions: {
       add: state => state + 1
     },

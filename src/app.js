@@ -1,3 +1,5 @@
+import { getNode, recoverNode } from "./h"
+
 export function app(app) {
   var state = {}
   var actions = {}
@@ -41,13 +43,13 @@ export function app(app) {
   function hydrate(element, map) {
     return element == null
       ? element
-      : {
-          tag: element.tagName,
-          data: {},
-          children: map.call(element.childNodes, function(element) {
+      : getNode(
+          element.tagName,
+          {},
+          map.call(element.childNodes, function(element) {
             hydrate(element, map)
           })
-        }
+        )
   }
 
   function render() {
@@ -265,6 +267,7 @@ export function app(app) {
         var oldKey = getKey(oldChild)
         if (null == oldKey) {
           removeElement(element, oldElements[i], oldChild)
+          recoverNode(oldChild)
         }
         i++
       }
@@ -274,11 +277,13 @@ export function app(app) {
         var reusableNode = reusableChild[1]
         if (!newKeys[reusableNode.data.key]) {
           removeElement(element, reusableChild[0], reusableNode)
+          recoverNode(reusableNode)
         }
       }
     } else if (node !== oldNode) {
       var i = element
       parent.replaceChild((element = createElement(node)), i)
+      recoverNode(oldNode)
     }
 
     return element

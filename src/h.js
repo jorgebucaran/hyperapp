@@ -1,3 +1,26 @@
+var nodePool = []
+
+function reuseNode(node, tag, data, children) {
+  node.tag = tag
+  node.data = data
+  node.children = children
+  return node
+}
+
+export function getNode(tag, data, children) {
+  if (nodePool.length > 0) {
+    return reuseNode(nodePool.pop(), tag, data, children)
+  } else {
+    return { tag: tag, data: data, children: children }
+  }
+}
+
+export function recoverNode(node) {
+  if (typeof node !== "string") {
+    nodePool.push(node)
+  }
+}
+
 export function h(tag, data) {
   var node
   var stack = []

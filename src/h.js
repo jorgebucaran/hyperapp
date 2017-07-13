@@ -44,10 +44,6 @@ export function h(tag, data) {
   }
 
   return typeof tag === "string"
-    ? {
-        tag: tag,
-        data: data || {},
-        children: children
-      }
+    ? getNode(tag, data || {}, children)
     : tag(data, children)
 }

@@ -8,11 +8,9 @@ function reuseNode(node, tag, data, children) {
 }
 
 export function getNode(tag, data, children) {
-  if (nodePool.length > 0) {
-    return reuseNode(nodePool.pop(), tag, data, children)
-  } else {
-    return { tag: tag, data: data, children: children }
-  }
+  return nodePool.length > 0 
+    ? reuseNode(nodePool.pop(), tag, data, children)
+    : { tag: tag, data: data, children: children }
 }
 
 export function recoverNode(node) {

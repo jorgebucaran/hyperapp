@@ -196,6 +196,7 @@ export function app(app) {
     function removeChild() {
       parent.removeChild(element)
     }
+    recoverNode(node)
   }
 
   function patch(parent, element, oldNode, node) {
@@ -267,7 +268,6 @@ export function app(app) {
         var oldKey = getKey(oldChild)
         if (null == oldKey) {
           removeElement(element, oldElements[i], oldChild)
-          recoverNode(oldChild)
         }
         i++
       }
@@ -277,7 +277,6 @@ export function app(app) {
         var reusableNode = reusableChild[1]
         if (!newKeys[reusableNode.data.key]) {
           removeElement(element, reusableChild[0], reusableNode)
-          recoverNode(reusableNode)
         }
       }
     } else if (node !== oldNode) {

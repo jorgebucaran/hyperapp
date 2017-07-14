@@ -171,17 +171,20 @@ export function app(app) {
     }
   }
 
-  function updateElementData(element, oldData, data) {
+  function updateElementData(element, oldData, data, cb) {
     for (var name in merge(oldData, data)) {
       var value = data[name]
       var oldValue =
         name === "value" || name === "checked" ? element[name] : oldData[name]
 
-      if (name === "onupdate" && value) {
-        value(element)
-      } else if (value !== oldValue) {
+      if (value !== oldValue) {
         setElementData(element, name, value, oldValue)
+        cb = data.onupdate
       }
+    }
+
+    if (cb != null) {
+      cb(element)
     }
   }
 
@@ -204,7 +207,7 @@ export function app(app) {
       element = parent.insertBefore(createElement(node), element)
     } else if (typeof node === "string" && typeof oldNode === "string") {
       element.nodeValue = node
-    }else if (node.tag && node.tag === oldNode.tag) {
+    } else if (node.tag != null && node.tag === oldNode.tag) {
       updateElementData(element, oldNode.data, node.data)
 
       var len = node.children.length
@@ -281,7 +284,11 @@ export function app(app) {
           removeElement(element, reusableChild[0], reusableNode)
         }
       }
-    } else if (node !== oldNode) {
+    } else if (
+      element != null &&
+      node !== oldNode &&
+      node !== element.nodeValue
+    ) {
       var i = element
       parent.replaceChild((element = createElement(node)), i)
       recoverNode(oldNode)
@@ -290,3 +297,4 @@ export function app(app) {
     return element
   }
 }
+

@@ -1,4 +1,5 @@
 var nodePool = []
+var nodePoolHead = -1
 
 function reuseNode(node, tag, data, children) {
   node.tag = tag
@@ -8,14 +9,14 @@ function reuseNode(node, tag, data, children) {
 }
 
 export function getNode(tag, data, children) {
-  return nodePool.length > 0 
-    ? reuseNode(nodePool.pop(), tag, data, children)
+  return nodePoolHead > -1
+    ? reuseNode(nodePool[nodePoolHead--], tag, data, children)
     : { tag: tag, data: data, children: children }
 }
 
 export function recoverNode(node) {
   if (typeof node !== "string") {
-    nodePool.push(node)
+    nodePool[++nodePoolHead] = node
   }
 }
 

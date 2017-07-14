@@ -1,3 +1,5 @@
+import { getNode, recoverNode } from "./h"
+
 export function app(app) {
   var state = {}
   var actions = {}
@@ -41,13 +43,13 @@ export function app(app) {
   function hydrate(element, map) {
     return element == null
       ? element
-      : {
-          tag: element.tagName,
-          data: {},
-          children: map.call(element.childNodes, function(element) {
+      : getNode(
+          element.tagName,
+          {},
+          map.call(element.childNodes, function(element) {
             hydrate(element, map)
           })
-        }
+        )
   }
 
   function render() {
@@ -197,11 +199,14 @@ export function app(app) {
     function removeChild() {
       parent.removeChild(element)
     }
+    recoverNode(node)
   }
 
   function patch(parent, element, oldNode, node) {
     if (oldNode == null) {
       element = parent.insertBefore(createElement(node), element)
+    } else if (typeof node === "string" && typeof oldNode === "string") {
+      element.nodeValue = node
     } else if (node.tag != null && node.tag === oldNode.tag) {
       updateElementData(element, oldNode.data, node.data)
 
@@ -245,6 +250,9 @@ export function app(app) {
           if (null == oldKey) {
             patch(element, oldElement, oldChild, newChild)
             j++
+
+            // causes issues with test: insert children on top
+            //recoverNode(oldChild)
           }
           i++
         } else {
@@ -257,6 +265,15 @@ export function app(app) {
           } else {
             patch(element, oldElement, null, newChild)
           }
+
+          /* causes problems with the following tests:
+            reorder keyed
+            mixed keyed/non-keyed
+            style
+            update element data
+            svg
+          */
+          //recoverNode(reusableChild[1])
 
           j++
           newKeys[newKey] = newChild
@@ -279,6 +296,7 @@ export function app(app) {
           removeElement(element, reusableChild[0], reusableNode)
         }
       }
+      recoverNode(oldNode)
     } else if (
       element != null &&
       node !== oldNode &&
@@ -286,6 +304,7 @@ export function app(app) {
     ) {
       var i = element
       parent.replaceChild((element = createElement(node)), i)
+      recoverNode(oldNode)
     }
 
     return element

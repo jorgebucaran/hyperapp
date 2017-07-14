@@ -1,3 +1,25 @@
+var nodePool = []
+var nodePoolHead = -1
+
+function reuseNode(node, tag, data, children) {
+  node.tag = tag
+  node.data = data
+  node.children = children
+  return node
+}
+
+export function getNode(tag, data, children) {
+  return nodePoolHead > -1
+    ? reuseNode(nodePool[nodePoolHead--], tag, data, children)
+    : { tag: tag, data: data, children: children }
+}
+
+export function recoverNode(node) {
+  if (typeof node !== "string") {
+    nodePool[++nodePoolHead] = node
+  }
+}
+
 export function h(tag, data) {
   var node
   var stack = []
@@ -21,10 +43,6 @@ export function h(tag, data) {
   }
 
   return typeof tag === "string"
-    ? {
-        tag: tag,
-        data: data || {},
-        children: children
-      }
+    ? getNode(tag, data || {}, children)
     : tag(data, children)
 }

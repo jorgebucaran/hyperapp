@@ -202,7 +202,9 @@ export function app(app) {
   function patch(parent, element, oldNode, node) {
     if (oldNode == null) {
       element = parent.insertBefore(createElement(node), element)
-    } else if (node.tag && node.tag === oldNode.tag) {
+    } else if (typeof node === "string" && typeof oldNode === "string") {
+      element.nodeValue = node
+    }else if (node.tag && node.tag === oldNode.tag) {
       updateElementData(element, oldNode.data, node.data)
 
       var len = node.children.length

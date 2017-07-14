@@ -247,6 +247,9 @@ export function app(app) {
           if (null == oldKey) {
             patch(element, oldElement, oldChild, newChild)
             j++
+
+            // causes issues with test: insert children on top
+            //recoverNode(oldChild)
           }
           i++
         } else {
@@ -259,6 +262,15 @@ export function app(app) {
           } else {
             patch(element, oldElement, null, newChild)
           }
+
+          /* causes problems with the following tests:
+            reorder keyed
+            mixed keyed/non-keyed
+            style
+            update element data
+            svg
+          */
+          //recoverNode(reusableChild[1])
 
           j++
           newKeys[newKey] = newChild
@@ -281,6 +293,7 @@ export function app(app) {
           removeElement(element, reusableChild[0], reusableNode)
         }
       }
+      recoverNode(oldNode)
     } else if (node !== oldNode) {
       var i = element
       parent.replaceChild((element = createElement(node)), i)

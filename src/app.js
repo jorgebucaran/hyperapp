@@ -94,14 +94,12 @@ export function app(app) {
   }
 
   function emit(name, data) {
-    ;(events[name] || []).map(function(cb) {
+    return (events[name] || []).map(function(cb) {
       var result = cb(state, actions, data)
       if (result != null) {
         data = result
       }
-    })
-
-    return data
+    }), data
   }
 
   function merge(a, b) {
@@ -120,6 +118,12 @@ export function app(app) {
     }
 
     return obj
+  }
+
+  function getKey(node) {
+    if (node && (node = node.data)) {
+      return node.key
+    }
   }
 
   function createElement(node, isSVG) {
@@ -169,32 +173,29 @@ export function app(app) {
     }
   }
 
-  function updateElementData(element, oldData, data, cb) {
+  function updateElementData(element, oldData, data) {
     for (var name in merge(oldData, data)) {
       var value = data[name]
       var oldValue =
         name === "value" || name === "checked" ? element[name] : oldData[name]
+      var onupdate
 
-      if (value !== oldValue) {
+      if (name === "onupdate") {
+      } else if (value !== oldValue) {
         setElementData(element, name, value, oldValue)
-        cb = data.onupdate
+        onupdate = data.onupdate
       }
     }
 
-    if (cb != null) {
-      cb(element)
+    if (onupdate != null) {
+      onupdate(element)
     }
   }
 
-  function getKey(node) {
-    if (node && (node = node.data)) {
-      return node.key
-    }
-  }
-
-  function removeElement(parent, element, node) {
-    ;((node.data && node.data.onremove) || removeChild)(element, removeChild)
-    function removeChild() {
+  function removeElement(parent, element, data) {
+    if (data && data.onremove) {
+      data.onremove(element)
+    } else {
       parent.removeChild(element)
     }
   }
@@ -267,7 +268,7 @@ export function app(app) {
         var oldChild = oldNode.children[i]
         var oldKey = getKey(oldChild)
         if (null == oldKey) {
-          removeElement(element, oldElements[i], oldChild)
+          removeElement(element, oldElements[i], oldChild.data)
         }
         i++
       }
@@ -276,7 +277,7 @@ export function app(app) {
         var reusableChild = reusableChildren[i]
         var reusableNode = reusableChild[1]
         if (!newKeys[reusableNode.data.key]) {
-          removeElement(element, reusableChild[0], reusableNode)
+          removeElement(element, reusableChild[0], reusableNode.data)
         }
       }
     } else if (
@@ -291,4 +292,3 @@ export function app(app) {
     return element
   }
 }
-

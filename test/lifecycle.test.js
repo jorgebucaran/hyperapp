@@ -10,14 +10,14 @@ test("oncreate", done => {
   app({
     view: () =>
       h("div", {
-        oncreate: elm => {
+        oncreate: element => {
           setTimeout(() => {})
 
-          expect(elm).not.toBe(undefined)
+          expect(element).not.toBe(undefined)
           expect(getElementByTagName("div")).toBe(undefined)
 
           setTimeout(() => {
-            expect(getElementByTagName("div")).toBe(elm)
+            expect(getElementByTagName("div")).toBe(element)
             done()
           })
         }
@@ -29,35 +29,52 @@ test("oninsert", done => {
   app({
     view: () =>
       h("div", {
-        oninsert: elm => {
-          expect(getElementByTagName("div")).toBe(elm)
+        oninsert: element => {
+          expect(getElementByTagName("div")).toBe(element)
           done()
         }
       })
   })
 })
 
-test("onupdate", done => {
-  const mock = jest.fn()
+test("fire onupdate if node data changes", done => {
   app({
-    state: 1,
+    state: "foo",
     view: state =>
-      h("div", { onupdate: mock },
-        h("div", {
-          class: state,
-          onupdate: element => {
-            expect(mock).not.toHaveBeenCalled()
-            expect(state).toBe(2)
-            done()
-          }
-        })
-      ),
+      h("div", {
+        class: state,
+        onupdate: done
+      }),
     actions: {
-      add: state => state + 1
+      change: state => "bar"
     },
     events: {
-      loaded: (state, actions) => actions.add()
+      loaded: (state, actions) => {
+        actions.change()
+      }
     }
+  })
+})
+
+test("do not fire onupdate if data does not change", () => {
+  return new Promise((resolve, reject) => {
+    app({
+      state: "foo",
+      view: state =>
+        h("div", {
+          class: state,
+          onupdate: reject
+        }),
+      actions: {
+        change: state => "foo"
+      },
+      events: {
+        loaded: (state, actions) => {
+          actions.change()
+          setTimeout(resolve, 100)
+        }
+      }
+    })
   })
 })
 

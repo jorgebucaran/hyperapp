@@ -1,22 +1,19 @@
-export function h(tag, data) {
-  var node
-  var stack = []
+var isArray = Array.isArray
+
+export function createNode(tag, data, values) {
   var children = []
 
-  for (var i = arguments.length; i-- > 2; ) {
-    stack[stack.length] = arguments[i]
-  }
-
-  while (stack.length) {
-    if (Array.isArray((node = stack.pop()))) {
-      for (var i = node.length; i--; ) {
-        stack[stack.length] = node[i]
+  for (var i = 0; i < values.length; i++) {
+    var val = values[i]
+    if (val && val !== true && val !== false) {
+      if (isArray(val)) {
+        for (var j = 0; j < val.length; j++) {
+          children.push(val[j])
+        }
       }
-    } else if (node != null && node !== true && node !== false) {
-      if (typeof node === "number") {
-        node = node + ""
+      else {
+        children.push(typeof val === 'number' ? val + '' : val)
       }
-      children[children.length] = node
     }
   }
 
@@ -27,4 +24,15 @@ export function h(tag, data) {
         children: children
       }
     : tag(data, children)
+}
+
+export function h(tag, data, values) {
+  if (!isArray(values)) {
+    values = []
+    for (var i = 2; i < arguments.length; i++) {
+      values.push(arguments[i])
+    }
+  }
+
+  return createNode(tag, data, values || [])
 }

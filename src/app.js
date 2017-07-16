@@ -153,7 +153,14 @@ export function app(app) {
   }
 
   function setElementData(element, name, value, oldValue) {
-    if (name === "key") {
+    if (
+      name === "key" ||
+      name === "oncreate" ||
+      name === "oninsert" ||
+      name === "onupdate" ||
+      name === "onremove"
+    ) {
+      return name
     } else if (name === "style") {
       for (var i in merge(oldValue, (value = value || {}))) {
         element.style[i] = value[i] || ""
@@ -173,22 +180,22 @@ export function app(app) {
     }
   }
 
-  function updateElementData(element, oldData, data) {
+  function updateElementData(element, oldData, data, cb) {
     for (var name in merge(oldData, data)) {
       var value = data[name]
-      var oldValue =
-        name === "value" || name === "checked" ? element[name] : oldData[name]
-      var onupdate
+      var oldValue = oldData[name]
 
-      if (name === "onupdate") {
-      } else if (value !== oldValue) {
-        setElementData(element, name, value, oldValue)
-        onupdate = data.onupdate
+      if (
+        value !== oldValue &&
+        value !== element[name] &&
+        setElementData(element, name, value, oldValue) == null
+      ) {
+        cb = data.onupdate
       }
     }
 
-    if (onupdate != null) {
-      onupdate(element)
+    if (cb != null) {
+      cb(element)
     }
   }
 
@@ -200,11 +207,13 @@ export function app(app) {
     }
   }
 
-  function patch(parent, element, oldNode, node) {
+  function patch(parent, element, oldNode, node, isSVG, lastElement) {
     if (oldNode == null) {
-      element = parent.insertBefore(createElement(node), element)
+      element = parent.insertBefore(createElement(node, isSVG), element)
     } else if (node.tag != null && node.tag === oldNode.tag) {
       updateElementData(element, oldNode.data, node.data)
+
+      isSVG = isSVG || node.tag === "svg"
 
       var len = node.children.length
       var oldLen = oldNode.children.length
@@ -244,19 +253,19 @@ export function app(app) {
 
         if (null == newKey) {
           if (null == oldKey) {
-            patch(element, oldElement, oldChild, newChild)
+            patch(element, oldElement, oldChild, newChild, isSVG)
             j++
           }
           i++
         } else {
           if (oldKey === newKey) {
-            patch(element, reusableChild[0], reusableChild[1], newChild)
+            patch(element, reusableChild[0], reusableChild[1], newChild, isSVG)
             i++
           } else if (reusableChild[0]) {
             element.insertBefore(reusableChild[0], oldElement)
-            patch(element, reusableChild[0], reusableChild[1], newChild)
+            patch(element, reusableChild[0], reusableChild[1], newChild, isSVG)
           } else {
-            patch(element, oldElement, null, newChild)
+            patch(element, oldElement, null, newChild, isSVG)
           }
 
           j++
@@ -281,12 +290,11 @@ export function app(app) {
         }
       }
     } else if (
-      element != null &&
+      (lastElement = element) != null &&
       node !== oldNode &&
       node !== element.nodeValue
     ) {
-      var i = element
-      parent.replaceChild((element = createElement(node)), i)
+      parent.replaceChild((element = createElement(node, isSVG)), lastElement)
     }
 
     return element

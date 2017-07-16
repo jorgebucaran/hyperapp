@@ -57,13 +57,18 @@ test("fire onupdate if node data changes", done => {
 })
 
 test("do not fire onupdate if data does not change", () => {
+  const noop = () => {}
+
   return new Promise((resolve, reject) => {
     app({
       state: "foo",
       view: state =>
         h("div", {
           class: state,
-          onupdate: reject
+          oncreate: noop,
+          onupdate: reject,
+          oninsert: noop,
+          onremove: noop
         }),
       actions: {
         change: state => "foo"

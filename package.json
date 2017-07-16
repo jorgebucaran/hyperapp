@@ -33,8 +33,8 @@
     "babel-preset-es2015": "^6.24.1",
     "bundlesize": "^0.6.1",
     "jest": "^20.0.4",
-    "prettier": "~1.5.2",
-    "rollup": "^0.43.0",
+    "prettier": "~1.5.3",
+    "rollup": "^0.45.2",
     "rollup-plugin-uglify": "^2.0.1"
   },
   "bundlesize": [

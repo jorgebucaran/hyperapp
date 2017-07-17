@@ -1,4 +1,4 @@
-export function h(tag, data) {
+export function h(tag, attributes) {
   var node
   var stack = []
   var children = []
@@ -23,8 +23,8 @@ export function h(tag, data) {
   return typeof tag === "string"
     ? {
         tag: tag,
-        data: data || {},
+        data: attributes || {},
         children: children
       }
-    : tag(data, children)
+    : tag(attributes, children)
 }

@@ -39,7 +39,7 @@ state => h("h1", {}, state) // <h1>Hi.</h1>
 [Hyperx]: /docs/hyperx.md
 [JSX]: /docs/jsx.md
 
-To compose the user interface, the [h(tag, data, children)](/docs/api.md#h) utility function returns a tree of [virtual nodes](/docs/virtual-nodes.md).
+To compose the user interface, the [h(tag, attributes, children)](/docs/api.md#h) utility function returns a tree of [virtual nodes](/docs/virtual-nodes.md).
 
 ```js
 {

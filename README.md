@@ -37,10 +37,6 @@ app({
 })
 ```
 
-## Contributing
-
-No software is free of bugs. If you're not sure if something is a bug or not, [file an issue](https://github.com/hyperapp/hyperapp/issues) anyway. See [CONTRIBUTING](CONTRIBUTING.md) for more information about how to contribute to this project.
-
 ## Documentation
 
 The documentation is located in the [/docs](/docs) directory.

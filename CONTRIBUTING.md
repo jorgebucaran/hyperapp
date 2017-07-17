@@ -22,7 +22,9 @@ npm run test
 
 - Before submitting a bug report, search the issues for similar tickets. Your issue may have already been discussed or resolved. Feel free to add a comment to an existing ticket, even if it's closed.
 
-- Determine which repository the problem should be reported in. If you have an issue with the website, you'll be better served in [hyperapp/website](https://github.com/hyperapp/website), etc. If you would like to share something cool you've made with HyperApp, check out [hyperapp/awesome](https://github.com/hyperapp/awesome-hyperapp).
+- Determine which repository the problem should be reported in. If you have an issue with the website, you'll be better served in [hyperapp/website](https://github.com/hyperapp/website), etc. 
+
+- If you would like to share something cool you've made with HyperApp, check out [hyperapp/awesome](https://github.com/hyperapp/awesome-hyperapp).
 
 - If you have a question or need help with something you are building, we recommend joining the [HyperApp Slack Team](https://hyperappjs.herokuapp.com).
 
@@ -87,5 +89,3 @@ Examples of unacceptable behavior by participants include:
 Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project team at <hyperappjs@gmail.com>. The project team will review and investigate all complaints, and will respond in a way that it deems appropriate to the circumstances. The project team is obligated to maintain confidentiality with regard to the reporter of an incident. Further details of specific enforcement policies may be posted separately.
 
 This Code of Conduct is adapted from the [Contributor Covenant](http://contributor-covenant.org).
-
-

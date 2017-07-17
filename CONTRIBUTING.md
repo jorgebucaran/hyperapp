@@ -6,7 +6,7 @@ HyperApp is an open source project and we love to receive contributions from our
 
 Clone the project and install the dependencies.
 
-```
+```sh
 git clone https://github.com/hyperapp/hyperapp
 cd hyperapp
 npm i
@@ -14,14 +14,8 @@ npm i
 
 Run the tests.
 
-```
+```sh
 npm run test
-```
-
-Build the minified bundle.
-
-```
-npm run build
 ```
 
 ## Filing Bugs
@@ -89,7 +83,7 @@ Examples of unacceptable behavior by participants include:
 * The use of sexualized language or imagery and unwelcome sexual attention or advances
 * Trolling, insulting/derogatory comments, and personal or political attacks
 * Public or private harassment
-  
+
 Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project team at <hyperappjs@gmail.com>. The project team will review and investigate all complaints, and will respond in a way that it deems appropriate to the circumstances. The project team is obligated to maintain confidentiality with regard to the reporter of an incident. Further details of specific enforcement policies may be posted separately.
 
 This Code of Conduct is adapted from the [Contributor Covenant](http://contributor-covenant.org).

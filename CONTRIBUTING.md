@@ -2,8 +2,6 @@
 
 HyperApp is an open source project and we love to receive contributions from our community. You can start to contribute in many ways, from writing tutorials or blog posts, improving the documentation, filing bug reports and requesting new features.
 
-All members of our community are expected to follow our [Code of Conduct](#code-of-conduct), please be welcoming and friendly in all your interactions with the project.
-
 ## Quick Start
 
 Clone the project and install the dependencies.

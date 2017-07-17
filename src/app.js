@@ -81,8 +81,16 @@ export function app(app) {
             }).data
           )
 
-          if (result != null && result.then == null) {
-            repaint((state = merge(state, emit("update", result))))
+          function update(data) {
+            if (data != null) {
+              repaint((state = merge(state, emit("update", data))))
+            }
+          }
+
+          if (result != null && typeof result.then == "function") {
+            result.then(update)
+          } else {
+            update(result)
           }
 
           return result

@@ -14,7 +14,7 @@ npm i
 
 Run the tests.
 
-```sh
+```
 npm run test
 ```
 

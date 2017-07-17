@@ -23,7 +23,7 @@ export function h(tag, attributes) {
   return typeof tag === "string"
     ? {
         tag: tag,
-        attributes: attributes || {},
+        data: attributes || {},
         children: children
       }
     : tag(attributes, children)

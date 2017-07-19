@@ -26,6 +26,8 @@ Type: ([element](https://developer.mozilla.org/en-US/docs/Web/API/Element))
 
 The onremove event is fired when the element is going to be removed from the DOM.
 
+When using `onremove`, you will most likely need the [node](/docs/virtual-nodes.md) to also be [keyed](/docs/keys.md). If not, the elements removed are not guaranteed to correspond to any particular node. As a consequence, `onremove` may not work for the topmost element of your [view](/docs/view.md).
+
 You are responsible for removing the element if you use this event.
 
 ```js

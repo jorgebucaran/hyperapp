@@ -29,3 +29,5 @@ Use keys also to force an element to be created only once.
 If new elements are added to the list, the position of the keyed element will change.
 
 Using a key in this way, we make sure <samp>hyper</samp> is always inserted at the right position instead of mutating its siblings for the same result.
+
+Keys are not registered on the top-level node of your [view](/docs/view.md). If you are switching the top level view, and you need to use keys, wrap them in an unchanging node.

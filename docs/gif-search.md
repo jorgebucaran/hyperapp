@@ -2,7 +2,7 @@
 
 In this section we'll implement a gif search using the [Giphy API](https://api.giphy.com/) and learn how to update the state asynchronously.
 
-[Try it online](https://codepen.io/hyperapp/pen/LybmLe?editors=0010)
+[Try it online](https://codepen.io/hyperapp/pen/ZeByKv?editors=0010)
 
 ```jsx
 const GIPHY_API_KEY = "dc6zaTOxFJmzC"

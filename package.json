@@ -5,6 +5,7 @@
   "main": "dist/hyperapp.js",
   "jsnext:main": "src/index.js",
   "module": "src/index.js",
+  "types": "hyperapp.d.ts",
   "license": "MIT",
   "repository": "hyperapp/hyperapp",
   "files": ["src", "dist"],
@@ -23,7 +24,7 @@
     "test": "bundlesize && jest --coverage --no-cache",
     "build": "rollup -cm -n hyperapp -f umd -i src/index.js -o dist/hyperapp.js",
     "prepublish": "npm run build",
-    "format": "prettier --semi false --write 'src/**/*.js'",
+    "format": "prettier --semi false --write 'src/**/*.js' hyperapp.d.ts",
     "release": "npm run build && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
   },
   "babel": {

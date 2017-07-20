@@ -40,7 +40,7 @@ app({
     <main>
       <h1>{state}</h1>
       <button
-        onclick={() => actions.addSome(1))}>More
+        onclick={() => actions.addSome(1)}>More
       </button>
     </main>
   ),

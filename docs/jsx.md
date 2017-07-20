@@ -15,9 +15,9 @@ For an in-depth introduction to JSX, see the official [documentation](https://fa
 
 ## Setup
 
-We'll use a compiler to transform JSX into [h](/docs/api.md#h) function calls and a bundler to create a single file we can deliver to the browser.
+We can use [Babel](https://github.com/babel/babel) to transform JSX into [`h`](/docs/api.md#h) function calls and a bundler to create a single file we can deliver to the browser.
 
-In a new directory, create an <samp>index.html</samp> file:
+In a new directory, create an `index.html` file:
 
 ```html
 <!doctype html>
@@ -30,7 +30,7 @@ In a new directory, create an <samp>index.html</samp> file:
 </html>
 ```
 
-And an <samp>index.js</samp> file:
+And an `index.js` file:
 
 ```jsx
 import { h, app } from "hyperapp"
@@ -43,7 +43,7 @@ app({
 
 Install dependencies:
 <pre>
-npm i -S <a href="https://www.npmjs.com/package/hyperapp">hyperapp</a>
+npm i <a href="https://www.npmjs.com/package/hyperapp">hyperapp</a>
 </pre>
 
 ## [Browserify](https://gist.github.com/jbucaran/21bbf0bbb0fe97345505664883100706 "Get this gist")
@@ -60,7 +60,7 @@ npm i -D \
   <a href="https://www.npmjs.com/package/uglifyjs">uglifyjs</a>
 </pre>
 
-Create a <samp>.babelrc</samp> file:
+Create a `.babelrc` file:
 
 ```js
 {
@@ -96,7 +96,7 @@ npm i -D \
   <a href="https://www.npmjs.com/package/babel-plugin-transform-react-jsx">babel-plugin-transform-react-jsx</a>
 </pre>
 
-Create a <samp>.babelrc</samp> file:
+Create a `.babelrc` file:
 ```js
 {
   "presets": ["es2015"],
@@ -111,7 +111,7 @@ Create a <samp>.babelrc</samp> file:
 }
 ```
 
-Create a <samp>webpack.config.js</samp> file:
+Create a `webpack.config.js` file:
 
 ```js
 module.exports = {
@@ -148,7 +148,7 @@ npm i -D \
 </pre>
 
 
-Create a <samp>rollup.config.js</samp> file:
+Create a `rollup.config.js` file:
 
 ```jsx
 import babel from "rollup-plugin-babel"

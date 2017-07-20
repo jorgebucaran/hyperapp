@@ -1,6 +1,6 @@
 # Countdown Timer
 
-In this section we'll walk through a countdown timer example and learn how to use [events.init](/docs/api.md#init) to register global events.
+In this example and learn how to use the [events](/docs/events.md) property to register global events.
 
 [Try it online](https://codepen.io/hyperapp/pen/evOZLv?editors=0010)
 
@@ -11,7 +11,7 @@ const humanizeTime = t => {
   const hours = (t / 3600) >> 0
   const minutes = ((t - hours * 3600) / 60) >> 0
   const seconds = (t - hours * 3600 - minutes * 60) >> 0
-  return `${hours} : ${pad(minutes)} : ${pad(seconds)}`
+  return `${pad(minutes)}:${pad(seconds)}`
 }
 
 const SECONDS = 5
@@ -21,17 +21,18 @@ app({
     count: SECONDS,
     paused: true
   },
-  view: (state, actions) => (
+  view: (state, actions) =>
     <main>
-      <h1>{humanizeTime(state.count)}</h1>
+      <h1>
+        {humanizeTime(state.count)}
+      </h1>
 
       <button onclick={actions.toggle}>
-        {state.paused ? "Start" : "paused"}
+        {state.paused ? "START" : "PAUSED"}
       </button>
 
-      <button onclick={actions.reset}>Reset</button>
-    </main>
-  ),
+      <button onclick={actions.reset}>RESET</button>
+    </main>,
   actions: {
     toggle: state => ({ paused: !state.paused }),
     reset: state => ({ count: SECONDS }),
@@ -51,7 +52,7 @@ app({
 })
 ```
 
-The state consists of <samp>count</samp>, a number to track the seconds elapsed; and <samp>paused</samp>, a boolean to check if the clock is running or not.
+The state consists of two properties: `count`, to track the seconds elapsed; and `paused`, to check if the clock is currently running.
 
 ```jsx
 state: {
@@ -60,11 +61,17 @@ state: {
 }
 ```
 
-The view displays the current count wrapped in a <samp>\<h1\></samp> element and binds two buttons to <samp>actions.toggle</samp> and <samp>actions.reset</samp> respectively.
+The view displays the seconds inside a `<h1>` element and binds two buttons to `actions.toggle` and `actions.reset` respectively.
 
-There's also some logic in <samp>humanizeTime</samp> to display the time in a familiar format like <samp>hh:mm:ss</samp>.
+```jsx
+<button onclick={actions.toggle}>
+  {state.paused ? "START" : "PAUSED"}
+</button>
 
-The clock is implemented using [<samp>setInterval</samp>](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setInterval) that calls <samp>actions.tick</samp> on every second.
+<button onclick={actions.reset}>RESET</button>
+```
+
+To simulate the clock we use [`setInterval`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setInterval) and call `actions.tick` every second.
 
 ```jsx
 events: {
@@ -72,9 +79,9 @@ events: {
 }
 ```
 
-Inside <samp>tick</samp>, we check the current count to see if it has reached zero, and when it does, reset the counter back to <samp>SECONDS</samp> and toggle the running clock.
+Inside `tick`, we check the current second count and if it's zero, reset the counter back to `SECONDS` and toggle the running clock.
 
-If <samp>state.count</samp> is greater than zero and the clock is not paused, we decrement the count by one.
+If `state.count` is greater than zero and the clock is not paused, we decrement the count by one.
 
 ```jsx
 if (state.count === 0) {
@@ -85,4 +92,6 @@ if (state.count === 0) {
 }
 ```
 
-[Back to tutorials](/docs/tutorials.md)
+<br />
+
+[Back to Tutorials](/docs/tutorials.md)

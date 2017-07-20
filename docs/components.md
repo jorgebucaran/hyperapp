@@ -1,22 +1,24 @@
 # Components
 
-A component is a function that returns a custom [virtual node](/docs/virtual-nodes.md). Components are reusable blocks of code that encapsulate markup, styles and behaviours that belong together.
+A [component](/docs/api.md#component) is a function that returns a custom [virtual node](/docs/virtual-nodes.md). Components are reusable blocks of code that encapsulate markup, styles and behaviours that belong together.
+
+[Try it online](https://codepen.io/hyperapp/pen/WRWbKw?editors=0010)
 
 ```js
-const Link = (props, children) =>
-  <a href={props.href}>
-    {children}
-  </a>
+const Title = ({ url, value }/*, children*/) =>
+  <h1>
+    <a href={url}>{value}</a>
+  </h1>
 
 app({
   view: () =>
     <main id="app">
-      <Link href="#">Hi!</Link>
+      <Title url="#" value="Link" />
     </main>
 })
 ```
 
-Here is the corresponding virtual node tree.
+Here is the corresponding virtual node.
 
 ```js
 {
@@ -29,7 +31,11 @@ Here is the corresponding virtual node tree.
     data: {
       href: "#"
     },
-    children: ["Hi!"]
+    children: [{
+      tag: "h1",
+      data: undefined,
+      children: ["Hello."]
+    }]
   }]
 }
 ```
@@ -39,6 +45,8 @@ If you don't know all the properties that you want to place in a component ahead
 ```jsx
 const Link = (props, children) =>
   <a {...props}>{children}</a>
+
+<Link href="#">"Hello."</Link>
 ```
 
 ## Component Lifecycle Events

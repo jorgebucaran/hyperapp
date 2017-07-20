@@ -15,20 +15,25 @@ app({
 })
 ```
 
-An action must return a new state or a part of it in order to update the state.
+An action must return a partial state or a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) that resolves to a partial state. See [Side Effects](#side-effects).
 
 ```jsx
 app({
-  state: 0,
+  state: {
+    count: 0,
+    maxCount: 10
+  },
   view: (state, actions) =>
     <main>
       <h1>
-        {state}
+        {state.count}
       </h1>
       <button onclick={actions.up}>+</button>
     </main>,
   actions: {
-    up: state => state + 1
+    up: ({ count, maxCount }) => ({
+      count: count + (maxCount > count ? 1 : -maxCount)
+    })
   }
 })
 ```
@@ -37,34 +42,44 @@ You can pass data to actions as well.
 
 ```jsx
 app({
-  state: 0,
+  state: {
+    count: 0
+  },
   view: (state, actions) =>
     <main>
       <h1>
-        {state}
+        {state.count}
       </h1>
       <button onclick={() => actions.up(1)}>+</button>
     </main>,
   actions: {
-    up: (state, actions, data = 0) => state + data
+    up: ({ count }, actions, data = 0) => ({
+      count: count + data
+    })
   }
 })
-
 ```
+
+## Side Effects
 
 Actions are not required to have a return value. You can use them to call other actions, for example after an async operation has completed.
 
 ```jsx
 app({
-  state: 0,
-  view: (state, actions) => (
+  state: {
+    count: 0
+  },
+  view: (state, actions) =>
     <main>
-      <h1>{state}</h1>
+      <h1>
+        {state.count}
+      </h1>
       <button onclick={actions.upLater}>+</button>
-    </main>
-  ),
+    </main>,
   actions: {
-    up: state => state + 1,
+    up: ({ count }) => ({
+      count: count + 1
+    }),
     upLater: (state, actions) => {
       setTimeout(actions.up, 1000)
     }
@@ -72,25 +87,42 @@ app({
 })
 ```
 
-Actions can return a [promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise). This enables you to use [async functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function).
+Actions can return a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise).
 
 ```jsx
-const delay = seconds =>
-  new Promise(done => setTimeout(done, seconds * 1000))
+app({
+  state: 0,
+  view: (state, actions) =>
+    <main>
+      <h1>
+        {state}
+      </h1>
+      <button onclick={actions.upLater}>+1</button>
+    </main>,
+  actions: {
+    upLater: (state, actions) =>
+      new Promise(resolve => setTimeout(resolve, 1000, state + 1))
+  }
+})
+```
+
+Actions can be written as [async functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function) too.
+
+```jsx
+const delay = result =>
+  new Promise(resolve => setTimeout(resolve, 1000, result))
 
 app({
   state: 0,
-  view: (state, actions) => (
+  view: (state, actions) =>
     <main>
-      <h1>{state}</h1>
+      <h1>
+        {state}
+      </h1>
       <button onclick={actions.upLater}>+1</button>
-    </main>
-  ),
+    </main>,
   actions: {
-    upLater: async (state, actions) => {
-      await delay(1)
-      return state + 1
-    }
+    upLater: async state => await delay(state + 1)
   }
 })
 ```
@@ -102,37 +134,26 @@ Namespaces let you organize actions into categories or domains.
 ```jsx
 app({
   state: 0,
-  view: (state, actions) => (
+  view: (state, actions) =>
     <main>
-      <button onclick={actions.counter.add}>+</button>
-      <h1>{state}</h1>
-      <button onclick={actions.counter.sub}>-</button>
-    </main>
-  ),
+      <button onclick={actions.counter.up}>+</button>
+      <h1>
+        {state}
+      </h1>
+      <button onclick={actions.counter.down}>-</button>
+    </main>,
   actions: {
     counter: {
-      add: state => state + 1,
-      sub: state => state - 1
+      up: state => state + 1,
+      down: state => state - 1
     }
   }
 })
 ```
 
-## Updating a Complex State
+## Complex State
 
 Suppose we have a complex state object and wish to update a given property avoiding mutation.
-
-```jsx
-const state = {
-  players: [
-    {
-      name: "Mario",
-      lives: 1
-    },
-    ...
-  ]
-}
-```
 
 Here is one way we could achieve this using [Ramda](https://github.com/ramda/ramda).
 
@@ -140,12 +161,14 @@ Here is one way we could achieve this using [Ramda](https://github.com/ramda/ram
 
 ```jsx
 app({
-  ...,
+  state: {
+    counters: [{ value: 1 }, { value: 2 }, { value: 4 }]
+  },
   actions: {
-    oneUp(state, actions, index) {
+    oneUp: (state, actions, index) => {
       return R.over(
-        R.lensPath(["players", index, "lives"]),
-        lives => lives + 1,
+        R.lensPath(["counters", index, "value"]),
+        value => value + 1,
         state
       )
     }
@@ -153,7 +176,7 @@ app({
 })
 ```
 
-See also also [lodash/fp](https://github.com/lodash/lodash/wiki/FP-Guide) and [Immutable.js](https://github.com/facebook/immutable-js/) for other popular alternatives.
+See also [lodash/fp](https://github.com/lodash/lodash/wiki/FP-Guide) and [Immutable.js](https://github.com/facebook/immutable-js/) for alternatives.
 
 
 

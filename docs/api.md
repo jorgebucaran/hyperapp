@@ -10,12 +10,9 @@
   - [Actions](#actions)
     - [ActionResult](#actionresult)
   - [Events](#events)
-    - [Event](#event)
-    - [init](#init)
-    - [loaded](#loaded)
-    - [action](#action)
-    - [update](#update)
-    - [render](#render)
+    - [Default Events](#default-events)
+      - [ActionData](#actiondata)
+    - [CustomEvent](#customevent)
   - [Mixins](#mixins)
     - [Mixin](#mixin)
 - [emit](#emit)
@@ -23,8 +20,6 @@
 <!-- /TOC -->
 
 ## h
-
-Returns a new virtual node.
 
 <pre>
 h(
@@ -59,8 +54,6 @@ See also [Components](/docs/components.md).
 
 ## app
 
-Renders an application.
-
 <pre>
 app({
   state: <a href="#state">State</a>,
@@ -85,7 +78,7 @@ string | number | boolean | object
 See also [View](/docs/view.md).
 
 <pre>
-(<a href="#state">State</a>, <a href="#actions">Actions</a>) => <a href="#virtualnode">VirtualNode</a>
+(<a href="#state">State</a>, <a href="#actions">Actions</a>): <a href="#virtualnode">VirtualNode</a>
 </pre>
 
 ### Actions
@@ -96,13 +89,13 @@ See also [Actions](/docs/actions.md).
 {
   [action: string]:
     | <a href="#actions">Actions</a>
-    | (<a href="#state">State</a>, <a href="#actions">Actions</a>, any) => <a href="#actionresult">ActionResult</a>
+    | (<a href="#state">State</a>, <a href="#actions">Actions</a>, any): <a href="#actionresult">ActionResult</a>
 }
 </pre>
 
 #### ActionResult
 
-A partial state or [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) that resolves to a partial state. This result is used to update the current state using a shallow merge.
+A partial state or [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) that resolves to a partial state.
 
 ### Events
 
@@ -110,58 +103,33 @@ See also [Events](/docs/events.md).
 
 <pre>
 {
-  [<i>event</i>: string]: Array&lt<a href="#event">Event</a>&gt | <a href="#event">Event</a>
+  [<i>event</i>: string]: Array&lt<a href="#customevent">CustomEvent</a>&gt | <a href="#event">CustomEvent</a>
 }
 </pre>
 
-#### Event
+#### Default Events
+
+<pre>
+<a id="init"></a>init(<a href="#state">State</a>, <a href="#actions">Actions</a>): void
+<a id="loaded"></a>loaded(<a href="#state">State</a>, <a href="#actions">Actions</a>): void
+<a id="action"></a>action(<a href="#state">State</a>, <a href="#actions">Actions</a>, <a href="#actiondata">ActionData</a>): <a href="#actiondata">ActionData</a>
+<a id="update"></a>update(<a href="#state">State</a>, <a href="#actions">Actions</a>, <a href="#actionresult">ActionResult</a>): <a href="#actionresult">ActionResult</a>
+<a id="render"></a>render(<a href="#state">State</a>, <a href="#actions">Actions</a>, <a href="#view">View</a>): <a href="#view">View</a>
+</pre>
+
+##### ActionData
+
+<pre>
+{
+  action: string,
+  data: any
+}
+</pre>
+
+#### CustomEvent
 
 <pre>
 <i>event</i>(<a href="#state">State</a>, <a href="#actions">Actions</a>, any): any
-</pre>
-
-
-#### init
-
-The init events fires before the first render. This is a good place to initialize your application.
-
-<pre>
-init(<a href="#state">State</a>, <a href="#actions">Actions</a>): void
-</pre>
-
-#### loaded
-
-The loaded event fires after the first render. This event is useful if you need to access real DOM nodes during initialization.
-
-<pre>
-loaded(<a href="#state">State</a>, <a href="#actions">Actions</a>): void
-</pre>
-
-#### action
-
-The action event fires every time before an action is called.
-
-<pre>
-action(<a href="#state">State</a>, <a href="#actions">Actions</a>, {
-  action: string,
-  data: any
-}): any
-</pre>
-
-#### update
-
-The update event fires every time before the state is updated.
-
-<pre>
-update(<a href="#state">State</a>, <a href="#actions">Actions</a>, <a href="#actionresult">ActionResult</a>): <a href="#actionresult">ActionResult</a>
-</pre>
-
-#### render
-
-The render event fires every time before the view is rendered. You can use this event to overwrite the current view by returning a new one.
-
-<pre>
-render(<a href="#state">State</a>, <a href="#actions">Actions</a>, <a href="#view">View</a>): <a href="#view">View</a>
 </pre>
 
 ### Mixins
@@ -187,7 +155,7 @@ Returns an object that will be merged with the application state, actions, event
 
 ## emit
 
-Returns the given data reduced by successively calling each event handler of the specified event. See also [Custom Events](/docs/events.md#custom-events)
+See also [Custom Events](/docs/events.md#custom-events).
 
 <pre>
 emit(string, any): any

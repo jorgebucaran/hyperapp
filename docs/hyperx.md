@@ -15,11 +15,11 @@ const main = html`
 
 ## Setup
 
-We'll use [Hyperxify](https://github.com/substack/hyperxify) to transform Hyperx into [h](/docs/h.md#h) function calls and a bundler to create a single file we can deliver to the browser.
+We can use [Hyperxify](https://github.com/substack/hyperxify) to transform Hyperx into [`h`](/docs/h.md#h) function calls and a bundler to create a single file we can deliver to the browser.
 
 The ES6 import syntax is incompatible with Hyperxify, so we'll use the Node.js require function.
 
-In a new directory, create an <samp>index.html</samp> file:
+In a new directory, create an `index.html` file:
 
 ```html
 <!doctype html>
@@ -32,7 +32,7 @@ In a new directory, create an <samp>index.html</samp> file:
 </html>
 ```
 
-And and <samp>index.js</samp> file:
+And and `index.js` file:
 
 ```js
 const { h, app } = require("hyperapp")
@@ -47,7 +47,7 @@ app({
 
 Install dependencies:
 <pre>
-npm i -S <a href="https://www.npmjs.com/package/hyperapp">hyperapp</a>
+npm i <a href="https://www.npmjs.com/package/hyperapp">hyperapp</a>
 </pre>
 
 ## [Browserify](https://gist.github.com/jbucaran/48c1edb4fb0ea1aa5415b6686cc7fb45 "Get this gist")
@@ -64,7 +64,7 @@ npm i -D \
   <a href="https://www.npmjs.com/package/uglify-js">uglify-js</a>
 </pre>
 
-Create a <samp>.babelrc</samp> file:
+Create a `.babelrc` file:
 
 ```
 {
@@ -95,14 +95,14 @@ npm i -D \
   <a href="https://www.npmjs.com/package/babel-preset-es2015">babel-preset-es2015</a>
 </pre>
 
-Create a <samp>.babelrc</samp> file:
+Create a `.babelrc` file:
 ```js
 {
   "presets": ["es2015"]
 }
 ```
 
-Create a <samp>webpack.config.js</samp> file:
+Create a `webpack.config.js` file:
 
 ```jsx
 module.exports = {

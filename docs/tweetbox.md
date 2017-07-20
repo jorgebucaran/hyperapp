@@ -1,6 +1,6 @@
 # TweetBox
 
-In this section we'll create a TweetBox clone and learn how to create and use [components](/docs/components.md).
+In this example we'll create a TweetBox clone and learn how to organize our UI code using [Components](/docs/components.md).
 
 [Try it online](https://codepen.io/hyperapp/pen/bgWBdV?editors=0010)
 
@@ -13,9 +13,7 @@ const OverflowWidget = ({ text, offset, count }) =>
     <h1>Whoops! Too long.</h1>
     <p>
       ...{text.slice(0, offset)}
-      <span class="overflow-text">
-        {text.slice(count)}
-      </span>
+      <span class="overflow-text">{text.slice(count)}</span>
     </p>
   </div>
 
@@ -24,11 +22,7 @@ const Tweetbox = ({ count, text, update }) =>
     <div class="container">
       <ul class="flex-outer">
         <li>
-          <textarea
-            placeholder="What's up?"
-            value={text}
-            oninput={update}
-          />
+          <textarea placeholder="What's up?" value={text} oninput={update} />
         </li>
 
         <li class="flex-inner">
@@ -51,7 +45,6 @@ const Tweetbox = ({ count, text, update }) =>
           offset={OFFSET}
           count={count}
         />}
-
     </div>
   </main>
 
@@ -75,7 +68,7 @@ app({
 })
 ```
 
-The state stores the text of the message and the number of remaining characters <samp>count</samp>, initialized to <samp>MAX_LENGTH</samp>.
+The state consists of two properties: `text`, the tweet; and `count`, the number of remaining characters, initialized to `MAX_LENGTH`.
 
 ```js
 state: {
@@ -84,7 +77,7 @@ state: {
 }
 ```
 
-The view consists of our custom TweetBox tag. We use the attributes, often referred to as _props_, to pass down data into the widget.
+The view consists of a single TweetBox component.
 
 ```jsx
 <TweetBox
@@ -94,7 +87,7 @@ The view consists of our custom TweetBox tag. We use the attributes, often refer
 />
 ```
 
-When the user types in the input, we call <samp>actions.update</samp> to update the current text and calculate the remaining characters.
+To update the text and calculate the remaining characters, call `actions.update`.
 
 ```js
 update: (state, actions, text) => ({
@@ -105,9 +98,9 @@ update: (state, actions, text) => ({
 
 The subtracting the length of the current text, from the length of the previous text, tells us how the number of remaining characters has changed. Hence the new count of remaining characters is the old count plus the aforementioned difference.
 
-When the input is empty, this operation is equivalent to <samp>(MAX_LENGTH - text.length)</samp>.
+When the input is empty, this operation is equivalent to `(MAX_LENGTH - text.length)`.
 
-When <samp>state.count</samp> becomes less than 0, we know that <samp>state.text</samp> must be longer than <samp>MAX_LENGTH</samp>, so we can disable the tweet button and display the OverflowWidget component.
+And if `state.count` is less than 0, we know that `state.text` must be longer than `MAX_LENGTH`, so we can disable the tweet button and render the OverflowWidget.
 
 ```jsx
 <button
@@ -116,21 +109,22 @@ When <samp>state.count</samp> becomes less than 0, we know that <samp>state.text
 >
   Tweet
 </button>
+
+...
+
+{count < 0 &&
+  <OverflowWidget
+    text={text.slice(count - OFFSET)}
+    offset={OFFSET}
+    count={count}
+  />}
 ```
 
-The tweet button is also disabled when <samp>state.count === MAX_LENGTH</samp>, because that means we have not entered any characters.
+The tweet button is also disabled when `state.count === MAX_LENGTH`, because that means we haven't entered any characters.
 
-The OverflowWidget tag displays the unallowed part of the message and a few adjacent characters for context. The constant <samp>OFFSET</samp> tells us how many extra characters to slice off <samp>state.text</samp>.
+The OverflowWidget tag displays the oveflowed part of the message and a few adjacent characters for context. The constant `OFFSET` tells us how many extra characters to slice off `state.text`.
 
-```jsx
-<OverflowWidget
-  text={text.slice(count - OFFSET)}
-  offset={OFFSET}
-  count={count}
-/>
-```
-
-By passing <samp>OFFSET</samp> into OverflowWidget we are able to slice <samp>text</samp> further and apply our <samp>overflow-text</samp> class to the specific overflowed part.
+By passing `OFFSET` into OverflowWidget we are able to slice `text` further and apply our `overflow-text` class to the sliced result.
 
 ```jsx
 <span class="overflow-text">
@@ -138,4 +132,6 @@ By passing <samp>OFFSET</samp> into OverflowWidget we are able to slice <samp>te
 </span>
 ```
 
-[Back to tutorials](/docs/tutorials.md)
+<br />
+
+[Back to Tutorials](/docs/tutorials.md)

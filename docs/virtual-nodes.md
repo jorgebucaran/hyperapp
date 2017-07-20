@@ -1,6 +1,6 @@
 # Virtual Nodes
 
-A virtual node is an object that describes an HTML/DOM tree.
+A virtual node describes a DOM tree.
 
 It consists of a tag, e.g. <samp>div</samp>, <samp>svg</samp>, etc., [attributes](#attributes) and an array of child nodes.
 
@@ -18,7 +18,7 @@ It consists of a tag, e.g. <samp>div</samp>, <samp>svg</samp>, etc., [attributes
 }
 ```
 
-The virtual DOM engine consumes a virtual node and produces an HTML tree.
+The virtual DOM engine consumes a virtual node and produces a DOM tree.
 
 ```html
 <div id="app">
@@ -26,7 +26,7 @@ The virtual DOM engine consumes a virtual node and produces an HTML tree.
 </div>
 ```
 
-Use the [h()](/docs/api.md#h) utility function to create virtual nodes.
+Use the [`h`](/docs/api.md#h) function to create virtual nodes.
 
 ```js
 h("div", { id: "app" }, [
@@ -34,7 +34,7 @@ h("div", { id: "app" }, [
 ])
 ```
 
-Alternatively, use [JSX](https://facebook.github.io/react/docs/jsx-in-depth.html) or [Hyperx](https://github.com/substack/hyperx) to create virtual nodes declaratively and compile it to h() calls in a [build pipeline](/docs/getting-started.md#build-pipeline).
+Or use [JSX](https://facebook.github.io/react/docs/jsx-in-depth.html) / [Hyperx](https://github.com/substack/hyperx) to create virtual nodes declaratively and compile them to `h` calls in a [build pipeline](/docs/getting-started.md#build-pipeline).
 
 ## Attributes
 

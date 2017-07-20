@@ -67,4 +67,4 @@ Below is an alphabetical list of some of the terms and concepts used throughout 
 
 ##### V
 [view](/docs/view.md)<br>
-[virtual node/tree](/docs/virtual-nodes.md)<br>
+[virtual node](/docs/virtual-nodes.md)<br>

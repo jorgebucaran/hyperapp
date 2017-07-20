@@ -102,7 +102,7 @@ See also [Actions](/docs/actions.md).
 
 #### ActionResult
 
-A partial state or [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) that resolves to a partial state. This result is used to update the current state using a shallow merge.
+A partial state or [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) that resolves to a partial state.
 
 ### Events
 

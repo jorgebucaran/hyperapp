@@ -98,3 +98,87 @@ test("onremove", done => {
     }
   })
 })
+
+test("onmove called when siblings moved", done => {
+  const called = {}
+  const handler = key => { called[key] = true }
+  app({
+    state: {
+      nodes: ["a", "b", "c", "d", "e", "f"]
+    },
+    actions: {
+      shuffle: state => {
+        state.nodes = ["a", "b", "e", "d", "c", "f"]
+        return state
+      }
+    },
+    events: {
+      loaded: (state, actions) => actions.shuffle(),
+      render: (state, actions) => {
+        setTimeout(_ => {
+          if (called.c && called.d && called.e && called.f) done()
+        }, 0)
+      }
+    },
+    view: state =>
+      h('div', {}, state.nodes.map(key =>
+        h('div', { key, onmove: el => handler(key) })
+      ))
+  })
+})
+
+test("onmove called when siblings removed", done => {
+  const called = {}
+  const handler = key => { called[key] = true }
+  app({
+    state: {
+      nodes: ["a", "b", "c", "d"]
+    },
+    actions: {
+      shuffle: state => {
+        state.nodes = ["a", "c", "d"]
+        return state
+      }
+    },
+    events: {
+      loaded: (state, actions) => actions.shuffle(),
+      render: (state, actions) => {
+        setTimeout(_ => {
+          if (called.c && called.d) done()
+        }, 0)
+      }
+    },
+    view: state =>
+      h('div', {}, state.nodes.map(key =>
+        h('div', { key, onmove: el => handler(key) })
+      ))
+  })
+})
+
+test("onmove called when siblings inserted", done => {
+  const called = {}
+  const handler = key => { called[key] = true }
+  app({
+    state: {
+      nodes: ["a", "c", "d"]
+    },
+    actions: {
+      shuffle: state => {
+        state.nodes = ["a", "b", "c", "d"]
+        return state
+      }
+    },
+    events: {
+      loaded: (state, actions) => actions.shuffle(),
+      render: (state, actions) => {
+        setTimeout(_ => {
+          if (called.c && called.d) done()
+        }, 0)
+      }
+    },
+    view: state =>
+      h('div', {}, state.nodes.map(key =>
+        h('div', { key, onmove: el => handler(key) })
+      ))
+  })
+})

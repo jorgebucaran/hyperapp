@@ -87,7 +87,10 @@ export function app(app) {
             }).data
           )
 
-          if (result != null && typeof result.then == "function") {
+          if (result == null) {
+          } else if (typeof result == "function") {
+            result = result(update)
+          } else if (typeof result.then == "function") {
             result.then(update)
           } else {
             update(result)

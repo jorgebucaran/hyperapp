@@ -236,6 +236,8 @@ export function app(app) {
       var i = 0
       var j = 0
 
+      var moved = false
+
       while (j < len) {
         var oldElement = oldElements[i]
         var oldChild = oldNode.children[i]
@@ -259,12 +261,16 @@ export function app(app) {
           i++
         } else {
           if (oldKey === newKey) {
+            if (moved && newChild.data.onmove) newChild.data.onmove(reusableChild[0])
             patch(element, reusableChild[0], reusableChild[1], newChild, isSVG)
             i++
           } else if (reusableChild[0]) {
+            moved = true
+            if (newChild.data.onmove) newChild.data.onmove(reusableChild[0])
             element.insertBefore(reusableChild[0], oldElement)
             patch(element, reusableChild[0], reusableChild[1], newChild, isSVG)
           } else {
+            moved = true
             patch(element, oldElement, null, newChild, isSVG)
           }
 

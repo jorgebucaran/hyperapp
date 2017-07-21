@@ -20,6 +20,12 @@ Type: ([element](https://developer.mozilla.org/en-US/docs/Web/API/Element))
 
 The onupdate event is fired every time the element's data is updated.
 
+## onmove
+
+Type: ([element](https://developer.mozilla.org/en-US/docs/Web/API/Element))
+
+The onmove event is fired (at least) every time the element's position among siblings is changed. Note that [virtual nodes](/docs/virtual-nodes.md) do not correspond to specific elements unless using [keys](/docs/keys.md). Hence the onmove event will only work for keyed nodes.
+
 ## onremove
 
 Type: ([element](https://developer.mozilla.org/en-US/docs/Web/API/Element))

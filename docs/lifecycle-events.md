@@ -14,11 +14,13 @@ Type: ([element](https://developer.mozilla.org/en-US/docs/Web/API/Element))
 
 The oninsert event is fired after the element is created and inserted into the DOM. Use this event to wrap third party libraries that require a reference to a DOM node, etc.
 
-## onupdate
+## onrender
 
-Type: ([element](https://developer.mozilla.org/en-US/docs/Web/API/Element))
+Type: ([element](https://developer.mozilla.org/en-US/docs/Web/API/Element), [attributes](/docs/virtual-nodes.md#attributes))
 
-The onupdate event is fired every time the element's data is updated.
+The onrender event is fired every time the virtual dom updates the element (excluding the first time, when it's created).
+
+Besides the element, the handler recieves as the second argument, the node's properties from the previous render. This allows you to execute logic conditionally based on what, if anything, has changed.
 
 ## onremove
 

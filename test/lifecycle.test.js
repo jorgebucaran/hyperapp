@@ -37,48 +37,32 @@ test("oninsert", done => {
   })
 })
 
-test("fire onupdate if node data changes", done => {
-  app({
-    state: "foo",
-    view: state =>
-      h("div", {
-        class: state,
-        onupdate: done
-      }),
-    actions: {
-      change: state => "bar"
-    },
-    events: {
-      loaded: (state, actions) => {
-        actions.change()
+test("fire onrender each render with oldData", () => {
+  return new Promise((resolve, reject) => {
+
+    const dataA = {foo: "bar"}
+
+    const dataB = {
+      onrender: (el, oldData) => {
+        if (oldData && oldData.foo && oldData.foo === dataA.foo) {
+          resolve()
+        } else {
+          reject()
+        }
       }
     }
-  })
-})
 
-test("do not fire onupdate if data does not change", () => {
-  const noop = () => {}
-
-  return new Promise((resolve, reject) => {
     app({
-      state: "foo",
-      view: state =>
-        h("div", {
-          class: state,
-          oncreate: noop,
-          onupdate: reject,
-          oninsert: noop,
-          onremove: noop
-        }),
+      state: true,
       actions: {
-        change: state => "foo"
+        change: () => false
       },
       events: {
         loaded: (state, actions) => {
           actions.change()
-          setTimeout(resolve, 100)
         }
-      }
+      },
+      view: state => h("div", (state ? dataA : dataB))
     })
   })
 })

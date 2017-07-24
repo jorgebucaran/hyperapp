@@ -26,7 +26,7 @@ The virtual DOM engine consumes a virtual node and produces an HTML tree.
 </div>
 ```
 
-You can use the [h(tag, data, children)](/docs/api.md#h) utility function to create virtual nodes.
+Use the [h()](/docs/api.md#h) utility function to create virtual nodes.
 
 ```js
 h("div", { id: "app" }, [
@@ -34,7 +34,7 @@ h("div", { id: "app" }, [
 ])
 ```
 
-Or setup a build pipeline and use [Hyperx](/docs/hyperx.md) or [JSX](/docs/jsx.md) instead.
+Alternatively, use [JSX](https://facebook.github.io/react/docs/jsx-in-depth.html) or [Hyperx](https://github.com/substack/hyperx) to create virtual nodes declaratively and compile it to h() calls in a [build pipeline](/docs/getting-started.md#build-pipeline).
 
 ## Attributes
 

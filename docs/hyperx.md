@@ -1,16 +1,6 @@
 # Hyperx
 
-- [About Hyperx](#about-hyperx)
-- [Setup](#setup)
-  - [Browserify](#browserify)
-  - [Webpack](#webpack)
-  - [Rollup](#rollup)
-
-## About Hyperx
-
-[Hyperx](https://github.com/substack/hyperx) is a standards-compliant ES6 tagged [template string function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#Tagged_template_literals) factory. It is a pure JavaScript alternative to [JSX](/docs/jsx.md).
-
-Hyperx is used like this:
+[Hyperx](https://github.com/substack/hyperx) is a standards-compliant ES6 tagged [template string function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#Tagged_template_literals) factory. It is an alternative to [JSX](/docs/jsx.md).
 
 ```js
 const hyperx = require("hyperx")
@@ -25,7 +15,7 @@ const main = html`
 
 ## Setup
 
-We'll use [Hyperxify](https://github.com/substack/hyperxify) to transform Hyperx into [h()](/docs/h.md#h) function calls and a bundler to create a single file we can deliver to the browser.
+We'll use [Hyperxify](https://github.com/substack/hyperxify) to transform Hyperx into [h](/docs/h.md#h) function calls and a bundler to create a single file we can deliver to the browser.
 
 The ES6 import syntax is incompatible with Hyperxify, so we'll use the Node.js require function.
 
@@ -60,7 +50,7 @@ Install dependencies:
 npm i -S <a href="https://www.npmjs.com/package/hyperapp">hyperapp</a>
 </pre>
 
-### [Browserify](https://gist.github.com/jbucaran/48c1edb4fb0ea1aa5415b6686cc7fb45 "Get this gist")
+## [Browserify](https://gist.github.com/jbucaran/48c1edb4fb0ea1aa5415b6686cc7fb45 "Get this gist")
 
 Install development dependencies:
 <pre>
@@ -91,7 +81,7 @@ $(<a href="https://docs.npmjs.com/cli/bin">npm bin</a>)/browserify \
   -p bundle-collapser/plugin index.js | uglifyjs > bundle.js
 </pre>
 
-### [Webpack](https://gist.github.com/jbucaran/c6a6bdb5383a985cec6b0ae4ebe5a4b1 "Get this gist")
+## [Webpack](https://gist.github.com/jbucaran/c6a6bdb5383a985cec6b0ae4ebe5a4b1 "Get this gist")
 
 Install development dependencies:
 <pre>
@@ -137,49 +127,3 @@ Bundle the application:
 $(<a href="https://docs.npmjs.com/cli/bin">npm bin</a>)/webpack -p
 </pre>
 
-### [Rollup](https://gist.github.com/jbucaran/fac2c3de24e5171596fb189f9c1feb8e "Get this gist")
-
-Install development dependencies:
-
-<pre>
-npm i -D \
-  <a href="https://www.npmjs.com/package/babel-preset-es2015-rollup">babel-preset-es2015-rollup</a> \
-  <a href="https://www.npmjs.com/package/hyperx">hyperx</a> \
-  <a href="https://www.npmjs.com/package/hyperxify">hyperxify</a> \
-  <a href="https://www.npmjs.com/package/rollup">rollup</a> \
-  <a href="https://www.npmjs.com/package/rollup-plugin-browserify-transform">rollup-plugin-browserify-transform</a> \
-  <a href="https://www.npmjs.com/package/rollup-plugin-buble">rollup-plugin-buble</a> \
-  <a href="https://www.npmjs.com/package/rollup-plugin-commonjs">rollup-plugin-commonjs</a> \
-  <a href="https://www.npmjs.com/package/rollup-plugin-node-resolve">rollup-plugin-node-resolve</a> \
-  <a href="https://www.npmjs.com/package/rollup-plugin-uglify">rollup-plugin-uglify</a>
-</pre>
-
-
-Create a <samp>rollup.config.js</samp> file:
-
-```jsx
-import buble from "rollup-plugin-buble"
-import resolve from "rollup-plugin-node-resolve"
-import uglify from "rollup-plugin-uglify"
-import browserify from "rollup-plugin-browserify-transform"
-import hyperxify from "hyperxify"
-import cjs from "rollup-plugin-commonjs"
-
-export default {
-  moduleName: "window",
-  plugins: [
-    browserify(hyperxify),
-    buble(),
-    cjs(),
-    resolve({
-      module: false
-    }),
-    uglify()
-  ]
-}
-```
-
-Bundle the application:
-<pre>
-$(<a href="https://docs.npmjs.com/cli/bin">npm bin</a>)/rollup -cf iife -i index.js -o bundle.js
-</pre>

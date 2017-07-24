@@ -15,10 +15,11 @@ We assume you have some knowledge of HTML and JavaScript. If you are completely 
   - [Actions](/docs/actions.md)
   - [Events](/docs/events.md)
   - [Mixins](/docs/mixins.md)
+  - [Root](/docs/root.md)
 - Core Concepts
   - [Virtual Nodes](/docs/virtual-nodes.md)
   - [Keys](/docs/keys.md)
-  - [Stateless Components](/docs/stateless-components.md)
+  - [Components](/docs/components.md)
   - [Lifecycle Events](/docs/lifecycle-events.md)
 - Learning
   - [Implementation Notes](/docs/implementation-notes.md)

@@ -6,7 +6,7 @@ Lifecycle events are custom function handlers invoked at various points in the l
 
 Type: ([element](https://developer.mozilla.org/en-US/docs/Web/API/Element))
 
-The oncreate event is fired when the element is created, but before it is inserted into the DOM. Use this method to start animations before an element is rendered.
+The oncreate event is fired when the element is created, but before it is inserted into the DOM. Use this event to start animations before an element is rendered.
 
 ## oninsert
 
@@ -24,7 +24,7 @@ The onupdate event is fired every time the element's data is updated.
 
 Type: ([element](https://developer.mozilla.org/en-US/docs/Web/API/Element))
 
-The onremove event is fired when the element is going to be removed from the DOM.
+The onremove event is fired before the element is removed from the DOM.
 
 You are responsible for removing the element if you use this event.
 
@@ -34,9 +34,9 @@ if (element.parentNode) {
 }
 ```
 
-## Example
+## CodeMirror Example
 
-This example shows how to create a [stateless component](/docs/stateless-components.md) to wrap the [CodeMirror](https://codemirror.net) editor.
+This example shows how to create a [component](/docs/components.md) and wrap a subset of the [CodeMirror](https://codemirror.net) editor.
 
 [Try it online](https://hyperapp-code-mirror.glitch.me)
 

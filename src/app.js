@@ -32,6 +32,12 @@ export function app(app) {
 
   return emit
 
+  function update(withState) {
+    if (withState != null) {
+      repaint((state = merge(state, emit("update", withState))))
+    }
+  }
+
   function repaint() {
     if (!locked) {
       requestAnimationFrame(render, (locked = !locked))
@@ -81,8 +87,13 @@ export function app(app) {
             }).data
           )
 
-          if (result != null && result.then == null) {
-            repaint((state = merge(state, emit("update", result))))
+          if (result == null) {
+          } else if (typeof result == "function") {
+            result = result(update)
+          } else if (typeof result.then == "function") {
+            result.then(update)
+          } else {
+            update(result)
           }
 
           return result

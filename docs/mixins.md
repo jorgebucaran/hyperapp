@@ -3,16 +3,6 @@
 Use [mixins](/docs/api.md#mixins) to encapsulate your application behavior into reusable modules, to share or just to organize your code.
 
 ```jsx
-app({
-  // Your app!
-  ...,
-  mixins: [MyMixin]
-})
-```
-
-This mixin listens to [beforeAction](/docs/events.md#beforeAction) events to log action information to the console.
-
-```jsx
 const ActionsLogger = () => ({
   events: {
     beforeAction: (state, actions, { name, data }) => {
@@ -22,6 +12,16 @@ const ActionsLogger = () => ({
       console.groupEnd()
     }
   }
+})
+```
+
+This mixin listens to [beforeAction](/docs/events.md#beforeAction) events to log action information to the console.
+
+```jsx
+app({
+  // Your app!
+  ...,
+  mixins: [ActionsLogger]
 })
 ```
 

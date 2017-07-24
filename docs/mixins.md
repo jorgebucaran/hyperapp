@@ -1,11 +1,21 @@
 # Mixins
 
-Use [mixins](/docs/api.md#mixins) to extend the state, actions and events of your application. You can use this mechanism to inject new functionality
+Use [mixins](/docs/api.md#mixins) to encapsulate your application behavior into reusable modules, to share or just to organize your code.
 
 ```jsx
-const ActionLogger = () => ({
+app({
+  // Your app!
+  ...,
+  mixins: [MyMixin]
+})
+```
+
+This mixin listens to [beforeAction](/docs/events.md#beforeAction) events to log action information to the console.
+
+```jsx
+const ActionsLogger = () => ({
   events: {
-    action: (state, actions, { name, data }) => {
+    beforeAction: (state, actions, { name, data }) => {
       console.group("Action Info")
       console.log("Name:", name)
       console.log("Data:", data)
@@ -13,34 +23,54 @@ const ActionLogger = () => ({
     }
   }
 })
+```
 
+## Emitting Events
 
+### Example #1
+
+Mixins receive the [`emit`](/docs/api.md#emit) function as the first argument. Use it to create new events, etc.
+
+```jsx
+const ActionPerformance = (ignore = [], cache = []) => emit => ({
+  events: {
+    beforeAction(state, actions, { name }) {
+      cache.push({
+        name,
+        time: performance.now()
+      })
+    },
+    afterAction() {
+      const { name, time } = cache.pop()
+
+      if (ignore.length === 0 || !ignore.includes(name)) {
+        emit("time", {
+          name,
+          time: performance.now() - time
+        })
+      }
+    }
+  }
+})
+```
+
+```jsx
 app({
   // Your app!
   ...,
-  mixins: [ActionLogger]
-})
-```
-
-
-
-Mixins can compose other mixins as well.
-
-```jsx
-const Remix = () => ({
   events: {
-    update: (state, actions)
+    time: (state, actions, { name, time }) => {
+      console.group("Action Time Info")
+      console.log("Name:", name)
+      console.log("Time:", time)
+      console.groupEnd()
+    }
   },
-  mixins: [ActionLogger]
-})
-
-app({
-  ...,
-  mixins: [Remix]
+  mixins: [ActionPerformance()]
 })
 ```
 
-Mixins receive the [`emit`](/docs/api.md#emit) function as the first argument. Use it to encapsulate custom event logic inside your mixin.
+### Example #2
 
 This mixin emits a `hash` event every time a fragment identifier of the URL changes allowing the user to validate the `location.hash`.
 
@@ -58,7 +88,9 @@ const HashGuard = emit => ({
     }
   }
 })
+```
 
+```jsx
 app({
   events: {
     hash: (state, actions, hash) => validateHash(hash)
@@ -67,5 +99,12 @@ app({
 })
 ```
 
+## Presets
 
+Mixins can be used to create presets of other mixins. Then use it like any
 
+```jsx
+const MyPreset = () => ({
+  mixins: [MyMixin1, MyMixin2]
+})
+```

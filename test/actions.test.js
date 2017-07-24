@@ -4,6 +4,26 @@ window.requestAnimationFrame = setTimeout
 
 beforeEach(() => (document.body.innerHTML = ""))
 
+test("namespaced/nested actions", () => {
+  app({
+    state: true,
+    view: state => "",
+    actions: {
+      foo: {
+        bar: {
+          baz: (state, actions, data) => {
+            expect(state).toBe(true)
+            expect(data).toBe("foo.bar.baz")
+          }
+        }
+      }
+    },
+    events: {
+      init: (state, actions) => actions.foo.bar.baz("foo.bar.baz")
+    }
+  })
+})
+
 test("update the state sync", done => {
   app({
     state: 1,
@@ -136,22 +156,3 @@ test("update a state using then sync", done => {
   })
 })
 
-test("namespaced/nested actions", () => {
-  app({
-    state: true,
-    view: state => "",
-    actions: {
-      foo: {
-        bar: {
-          baz: (state, actions, data) => {
-            expect(state).toBe(true)
-            expect(data).toBe("foo.bar.baz")
-          }
-        }
-      }
-    },
-    events: {
-      init: (state, actions) => actions.foo.bar.baz("foo.bar.baz")
-    }
-  })
-})

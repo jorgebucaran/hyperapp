@@ -78,19 +78,22 @@ export function app(app) {
 
       if (typeof action === "function") {
         namespace[key] = function(data) {
-          var result = action(
-            state,
-            actions,
-            emit("action", {
-              name: name,
-              data: data
-            }).data
+          var result = emit(
+            "afterAction",
+            action(
+              state,
+              actions,
+              emit("beforeAction", {
+                name: name,
+                data: data
+              }).data
+            )
           )
 
           if (result == null) {
-          } else if (typeof result == "function") {
+          } else if (typeof result === "function") {
             result = result(update)
-          } else if (typeof result.then == "function") {
+          } else if (typeof result.then === "function") {
             result.then(update)
           } else {
             update(result)

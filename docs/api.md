@@ -142,8 +142,6 @@ Array&lt<a href="#mixin">Mixin</a>&gt
 
 #### Mixin
 
-Returns an object that will be merged with the application state, actions, events and mixins.
-
 <pre>
 (<a href="#emit">emit</a>): {
   state: <a href="#state">State</a>,

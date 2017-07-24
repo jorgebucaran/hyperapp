@@ -24,6 +24,7 @@ app({
 ```
 
 ## Default Events
+
 ### init
 
 The init event fires before the first render. This is a good place to initialize your application, create a network request, access the local [Storage](https://developer.mozilla.org/en-US/docs/Web/API/Storage), etc.
@@ -32,13 +33,17 @@ The init event fires before the first render. This is a good place to initialize
 
 The loaded event fires after the first render. This event is useful if you need to access actual DOM nodes after initialization.
 
-### action
+### beforeAction
 
-The action event fires every time before an action is called. This event can be useful to implement middleware, developer tools, etc.
+The beforeAction event fires before an action is called. This event can be useful to implement middleware, developer tools, etc.
+
+### afterAction
+
+The afterAction event fires after an action is called. This event can be useful to implement middleware, developer tools, etc.
 
 ### update
 
-The update event fires every time before the state is updated. This event can be useful to validate the state before an update takes place.
+The update event fires before the state is updated. This event can be useful to validate the state before an update takes place.
 
 ### render
 
@@ -59,7 +64,7 @@ app({
 
 ## Custom Events
 
-You can create custom events using the [`emit`](/docs/api.md#emit) function.
+Create custom events using the [`emit`](/docs/api.md#emit) function.
 
 ```jsx
 emit("myEvent", data)

@@ -168,10 +168,10 @@ export function app(app) {
       name === "key" ||
       name === "oncreate" ||
       name === "oninsert" ||
-      name === "onupdate" ||
+      name === "onrender" ||
       name === "onremove"
     ) {
-      return name
+      /* noop */
     } else if (name === "style") {
       for (var i in merge(oldValue, (value = value || {}))) {
         element.style[i] = value[i] || ""
@@ -191,22 +191,17 @@ export function app(app) {
     }
   }
 
-  function updateElementData(element, oldData, data, cb) {
+  function updateElementData(element, oldData, data) {
     for (var name in merge(oldData, data)) {
       var value = data[name]
       var oldValue = oldData[name]
 
-      if (
-        value !== oldValue &&
-        value !== element[name] &&
-        setElementData(element, name, value, oldValue) == null
-      ) {
-        cb = data.onupdate
+      if (value !== oldValue && value !== element[name]) {
+        setElementData(element, name, value, oldValue)
       }
     }
-
-    if (cb != null) {
-      cb(element)
+    if (data.onrender) {
+      data.onrender(element, oldData)
     }
   }
 

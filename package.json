@@ -7,7 +7,10 @@
   "module": "src/index.js",
   "license": "MIT",
   "repository": "hyperapp/hyperapp",
-  "files": ["src", "dist"],
+  "files": [
+    "src",
+    "dist"
+  ],
   "author": "Jorge Bucaran",
   "keywords": [
     "hyperapp",

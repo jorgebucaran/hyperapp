@@ -2,7 +2,7 @@ export function app(app) {
   var state = {}
   var actions = {}
   var events = {}
-  var mixins = []
+  var mixins = app.mixins || []
   var view = app.view
   var root = app.root || document.body
   var node
@@ -20,8 +20,6 @@ export function app(app) {
     if (mixin.state != null) {
       state = merge(state, mixin.state)
     }
-
-    mixins = mixins.concat(mixin.mixins || [])
 
     initialize(actions, mixin.actions)
   }

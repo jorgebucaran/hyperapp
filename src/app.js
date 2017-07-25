@@ -1,29 +1,29 @@
-export function app(app) {
+export function app(props) {
   var state = {}
   var actions = {}
   var events = {}
   var mixins = []
-  var view = app.view
-  var root = app.root || document.body
+  var view = props.view
+  var root = props.root || document.body
   var node
   var element
   var locked = false
   var loaded = false
 
   for (var i = -1; i < mixins.length; i++) {
-    var mixin = mixins[i] ? mixins[i](emit) : app
+    props = mixins[i] ? mixins[i](emit) : props
 
-    Object.keys(mixin.events || []).map(function(key) {
-      events[key] = (events[key] || []).concat(mixin.events[key])
+    Object.keys(props.events || []).map(function(key) {
+      events[key] = (events[key] || []).concat(props.events[key])
     })
 
-    if (mixin.state != null) {
-      state = merge(state, mixin.state)
+    if (props.state != null) {
+      state = merge(state, props.state)
     }
 
-    mixins = mixins.concat(mixin.mixins || [])
+    mixins = mixins.concat(props.mixins || [])
 
-    initialize(actions, mixin.actions)
+    initialize(actions, props.actions)
   }
 
   node = hydrate((element = root.querySelector("[data-ssr]")), [].map)

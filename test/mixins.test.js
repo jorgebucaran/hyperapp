@@ -121,7 +121,7 @@ test("don't overwrite actions in the same namespace", () => {
   })
 })
 
-test("mixin composition", () => {
+test("presets", () => {
   const A = () => ({
     state: {
       foo: 1
@@ -129,21 +129,24 @@ test("mixin composition", () => {
   })
 
   const B = () => ({
-    mixins: [A],
     state: {
       bar: 2
     }
   })
 
+  const AB = () => ({
+    mixins: [A, B]
+  })
+
   app({
-    mixins: [B],
     view: () => "",
     events: {
-      init: state => {
+      init(state) {
         expect(state.bar).toBe(2)
         expect(state.foo).toBe(1)
       }
-    }
+    },
+    mixins: [AB]
   })
 })
 

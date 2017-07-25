@@ -1,6 +1,6 @@
 import { h, app } from "../src"
 
-window.requestAnimationFrame = setTimeout
+window.requestAnimationFrame = f => f()
 
 beforeEach(() => (document.body.innerHTML = ""))
 
@@ -31,13 +31,13 @@ test("extend the state", () => {
 test("extend events", () => {
   let count = 0
 
-  const A = () => ({
+  const mixinFoo = () => ({
     events: {
       init: () => expect(++count).toBe(2)
     }
   })
 
-  const B = () => ({
+  const mixinBar = () => ({
     events: {
       init: () => expect(++count).toBe(3)
     }
@@ -48,17 +48,17 @@ test("extend events", () => {
     events: {
       init: () => expect(++count).toBe(1)
     },
-    mixins: [A, B]
+    mixins: [mixinFoo, mixinBar]
   })
 })
 
 test("extend actions", () => {
-  const mixin = app => ({
+  const mixin = () => ({
     actions: {
       foo: {
         bar: {
           baz: {
-            toggle: state => !state
+            toggle: state => state.toUpperCase()
           }
         }
       }
@@ -66,17 +66,15 @@ test("extend actions", () => {
   })
 
   app({
-    state: true,
+    state: "foo",
     view: state => h("div", null, state),
     events: {
       loaded: (state, actions) => {
-        expect(document.body.innerHTML).toBe(`<div>true</div>`)
+        expect(document.body.innerHTML).toBe(`<div>foo</div>`)
 
         actions.foo.bar.baz.toggle()
 
-        setTimeoout(() => {
-          expect(document.body.innerHTML).toBe(`<div>false</div>`)
-        })
+        expect(document.body.innerHTML).toBe(`<div>FOO</div>`)
       }
     },
     mixins: [mixin]
@@ -84,7 +82,7 @@ test("extend actions", () => {
 })
 
 test("don't overwrite actions in the same namespace", () => {
-  const mixin = app => ({
+  const mixin = () => ({
     actions: {
       foo: {
         bar: {
@@ -122,20 +120,20 @@ test("don't overwrite actions in the same namespace", () => {
 })
 
 test("presets", () => {
-  const A = () => ({
+  const mixinFoo = () => ({
     state: {
       foo: 1
     }
   })
 
-  const B = () => ({
+  const mixinBar = () => ({
     state: {
       bar: 2
     }
   })
 
-  const AB = () => ({
-    mixins: [A, B]
+  const mixinFoobar = () => ({
+    mixins: [mixinFoo, mixinBar]
   })
 
   app({
@@ -146,7 +144,7 @@ test("presets", () => {
         expect(state.foo).toBe(1)
       }
     },
-    mixins: [AB]
+    mixins: [mixinFoobar]
   })
 })
 
@@ -154,7 +152,9 @@ test("receive emit function", done => {
   app({
     mixins: [
       emit => ({
-        events: { init: () => emit("foo") }
+        events: {
+          init: () => emit("foo")
+        }
       })
     ],
     view: () => "",

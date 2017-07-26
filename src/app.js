@@ -8,7 +8,6 @@ export function app(props) {
   var node
   var element
   var locked = false
-  var loaded = false
 
   for (var i = -1; i < mixins.length; i++) {
     props = mixins[i] ? mixins[i](emit) : props
@@ -17,43 +16,39 @@ export function app(props) {
       events[key] = (events[key] || []).concat(props.events[key])
     })
 
-    if (props.state != null) {
-      state = merge(state, props.state)
-    }
-
+    iterate(actions, props.actions)
     mixins = mixins.concat(props.mixins || [])
-
-    initialize(actions, props.actions)
+    state = merge(state, props.state || state)
   }
 
-  node = hydrate((element = root.querySelector("[data-ssr]")), [].map)
+  schedule(
+    (node = hydrate((element = root.querySelector("[data-ssr]")), [].map))
+  )
 
-  repaint(emit("init"))
-
-  return emit
+  return emit("load")
 
   function update(withState) {
-    if (withState != null) {
-      repaint((state = merge(state, emit("update", withState))))
+    if (withState) {
+      schedule((state = emit("update", merge(state, withState))))
     }
   }
 
-  function repaint() {
+  function schedule() {
     if (!locked) {
       requestAnimationFrame(render, (locked = !locked))
     }
   }
 
   function hydrate(element, map) {
-    return element == null
-      ? element
-      : {
+    return element
+      ? {
           tag: element.tagName,
           data: {},
           children: map.call(element.childNodes, function(element) {
             hydrate(element, map)
           })
         }
+      : element
   }
 
   function render() {
@@ -63,72 +58,43 @@ export function app(props) {
       node,
       (node = emit("render", view)(state, actions))
     )
-
     locked = !locked
-
-    if (!loaded) {
-      emit("loaded", (loaded = true))
-    }
   }
 
-  function initialize(namespace, children, lastName) {
+  function iterate(namespace, children, lastName) {
     Object.keys(children || []).map(function(key) {
       var action = children[key]
       var name = lastName ? lastName + "." + key : key
 
       if (typeof action === "function") {
         namespace[key] = function(data) {
-          var result = action(
-            state,
-            actions,
-            emit("beforeAction", {
-              name: name,
-              data: data
-            }).data
-          )
+          emit("action", { name: name, data: data })
+          var result = emit("resolve", action(state, actions, data))
+          return typeof result === "function" ? result(update) : update(result)
 
-          if (result == null) {
-          } else if (typeof result === "function") {
-            result = result(update)
-          } else if (typeof result.then === "function") {
-            result.then(update)
-          } else {
-            update(result)
-          }
-
-          return result
+          // return result && result.then && result.then(update)
+          //   ? result
+          //   : typeof result === "function" ? result(update) : update(result)
         }
       } else {
-        initialize(namespace[key] || (namespace[key] = {}), action, name)
+        iterate(namespace[key] || (namespace[key] = {}), action, name)
       }
     })
   }
 
-  function emit(name, data) {
-    return (events[name] || []).map(function(cb) {
-      var result = cb(state, actions, data)
-      if (result != null) {
-        data = result
-      }
-    }), data
+  function emit(event, withData) {
+    return (events[event] || []).map(function(cb) {
+      withData = cb(state, actions, withData)
+    }), withData
   }
 
-  function merge(a, b) {
-    if (typeof b !== "object") {
-      return b
+  function merge(from, to) {
+    for (var i in from) {
+      if (!(i in to)) {
+        to[i] = from[i]
+      }
     }
-
-    var obj = {}
-
-    for (var i in a) {
-      obj[i] = a[i]
-    }
-
-    for (var i in b) {
-      obj[i] = b[i]
-    }
-
-    return obj
+    return to
   }
 
   function getKey(node) {
@@ -152,8 +118,6 @@ export function app(props) {
       for (var i in node.data) {
         if (i === "oncreate") {
           node.data[i](element)
-        } else if (i === "oninsert") {
-          setTimeout(node.data[i], 0, element)
         } else {
           setElementData(element, i, node.data[i])
         }
@@ -167,11 +131,9 @@ export function app(props) {
     if (
       name === "key" ||
       name === "oncreate" ||
-      name === "oninsert" ||
       name === "onupdate" ||
       name === "onremove"
     ) {
-      return name
     } else if (name === "style") {
       for (var i in merge(oldValue, (value = value || {}))) {
         element.style[i] = value[i] || ""
@@ -191,22 +153,18 @@ export function app(props) {
     }
   }
 
-  function updateElementData(element, oldData, data, cb) {
+  function updateElementData(element, oldData, data) {
     for (var name in merge(oldData, data)) {
       var value = data[name]
       var oldValue = oldData[name]
 
-      if (
-        value !== oldValue &&
-        value !== element[name] &&
-        setElementData(element, name, value, oldValue) == null
-      ) {
-        cb = data.onupdate
+      if (value !== oldValue && value !== element[name]) {
+        setElementData(element, name, value, oldValue)
       }
     }
 
-    if (cb != null) {
-      cb(element)
+    if (data && data.onupdate) {
+      data.onupdate(element, oldData)
     }
   }
 

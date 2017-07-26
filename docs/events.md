@@ -12,48 +12,31 @@ app({
     move: (state, actions, { x, y }) => ({ x, y })
   },
   events: {
-    init: (state, actions) =>
+    load(state, actions) {
       addEventListener("mousemove", e =>
         actions.move({
           x: e.clientX,
           y: e.clientY
         })
       )
+    }
   }
 })
 ```
 
-init                    willInit            beforeLoad
-
-loaded                  didInit
-
-beforeAction            beforeAction
-afterAction             afterAction
-
-update                  willUpdate
-                        didUpdate
-render                  willRender
-
-
-
-
 ## Default Events
 
-### beforeLoad
+### load
 
-The init event fires before the first render. This is a good place to initialize your application, create a network request, access the local [Storage](https://developer.mozilla.org/en-US/docs/Web/API/Storage), etc.
+The load event fires before the first render. This is a good place to initialize your application, create network requests, access the local [Storage](https://developer.mozilla.org/en-US/docs/Web/API/Storage), etc.
 
-### loaded
-
-The loaded event fires after the first render. This event is useful if you need to access actual DOM nodes after initialization.
-
-### beforeAction
+### action
 
 The beforeAction event fires before an action is called. This event can be useful to log action activity, extract action information, etc.
 
-### afterAction
+### resolve
 
-The afterAction event fires after an action returns, allowing you to intercept its return value. Use this event to change the action state update mechanism, customize what types an action is allowed to return, etc.
+The resolve event fires after an action returns, allowing you to intercept its return value. Use this event to customize what types an action is allowed to return or modify the default state update mechanism.
 
 For example to allow actions to return an [Observable](https://github.com/tc39/proposal-observable).
 
@@ -61,11 +44,9 @@ For example to allow actions to return an [Observable](https://github.com/tc39/p
 app({
   //...
   events: {
-    afterAction(state, actions, { result }) {
+    resolve(state, actions, { result }) {
       if (data != null && typeof data.subscribe == "function") {
-        return {
-          result: update => result.subscribe({ next: update })
-        }
+        return update => result.subscribe({ next: update })
       }
     }
   }
@@ -74,21 +55,18 @@ app({
 
 ### update
 
-The update event fires before the state is updated. This event can be useful to validate the state before an update takes place.
+The update event fires before the state is updated. This event can be useful to validate the new state before an update takes place.
 
 ### render
 
-The render event fires every time before the view is rendered. You can return a new view to overwrite the default view.
+The render event fires every time the view is rendered, allowing you to overwrite the default view. For a practical example see the [Router](https://github.com/hyperapp/router).
 
 ```jsx
 app({
-  view: state => <h1>Default view.</h1>,
+  // ...
   events: {
-    render(state, actions) {
-      if (location.pathname === "/warp") {
-        return state => <h1>Welcome to warp zone!</h1>
-      }
-    }
+    render: (state, actions, view) =>
+      location.pathanem === "/" ? view : notFoundView
   }
 })
 ```

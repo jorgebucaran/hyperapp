@@ -2,12 +2,12 @@
 
 Use [mixins](/docs/api.md#mixins) to encapsulate your application behavior into reusable modules, to share or just to organize your code.
 
-This mixin listens to [beforeAction](/docs/events.md#beforeAction) events to log action information to the console.
+This mixin listens to [action](/docs/events.md#action) events to log action information to the console.
 
 ```jsx
 const ActionLogger = () => ({
   events: {
-    beforeAction(state, actions, { name, data }) {
+    action(state, actions, { name, data }) {
       console.group("Action Info")
       console.log("Name:", name)
       console.log("Data:", data)
@@ -30,12 +30,12 @@ app({
 
 Mixins receive the [`emit`](/docs/api.md#emit) function as the first argument allowing you to create [custom events](/docs/events.md#custom-events).
 
-This mixin listens to [beforeAction](/docs/events.md#beforeAction) and [afterAction](/docs/events.md#afterAction) events to time and log action performance to the console.
+This mixin listens to [action](/docs/events.md#action) and [afterAction](/docs/events.md#afterAction) events to time and log action performance to the console.
 
 ```jsx
 const ActionPerformance = (ignored = [], cache = []) => emit => ({
   events: {
-    beforeAction(state, actions, { name }) {
+    action(state, actions, { name }) {
       cache.push({
         name,
         time: performance.now()

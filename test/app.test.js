@@ -1,20 +1,29 @@
 import { h, app } from "../src"
 
-window.requestAnimationFrame = setTimeout
+window.requestAnimationFrame = cb => cb()
 
 test("send messages to app", done => {
   const tellApp = app({
     state: 0,
-    view: state => h("div", null, state),
+    view: state =>
+      h(
+        "div",
+        {
+          oncreate() {
+            setTimeout(() => {
+              expect(document.body.innerHTML).toBe(`<div>foo</div>`)
+
+              done()
+            })
+          }
+        },
+        state
+      ),
     actions: {
       set: (state, actions, data) => data
     },
     events: {
-      set: (state, actions, data) => actions.set(data),
-      loaded: () => {
-        expect(document.body.innerHTML).toBe(`<div>foo</div>`)
-        done()
-      }
+      set: (state, actions, data) => actions.set(data)
     }
   })
 

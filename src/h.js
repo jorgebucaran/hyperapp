@@ -5,7 +5,7 @@ export function createNode(tag, data, values) {
 
   for (var i = 0; i < values.length; i++) {
     var val = values[i]
-    if (val && val !== true && val !== false) {
+    if (val && val !== true) {
       if (isArray(val)) {
         for (var j = 0; j < val.length; j++) {
           children.push(val[j])

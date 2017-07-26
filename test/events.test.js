@@ -1,6 +1,6 @@
 import { h, app } from "../src"
 
-window.requestAnimationFrame = setTimeout
+window.requestAnimationFrame = cb => cb()
 
 beforeEach(() => (document.body.innerHTML = ""))
 
@@ -26,10 +26,10 @@ test("loaded", done => {
     state: "foo",
     view: state => h("div", null, state),
     events: {
-      init: () => {
+      init() {
         expect(document.body.innerHTML).toBe("")
       },
-      loaded: () => {
+      loaded() {
         expect(document.body.innerHTML).toBe(`<div>foo</div>`)
         done()
       }
@@ -45,14 +45,14 @@ test("beforeAction", done => {
       set: (state, actions, data) => data
     },
     events: {
-      init: (state, actions) => {
+      init(state, actions) {
         actions.set("foo")
       },
-      loaded: () => {
+      loaded() {
         expect(document.body.innerHTML).toBe(`<div>bar</div>`)
         done()
       },
-      beforeAction: (state, actions, { name, data }) => {
+      beforeAction(state, actions, { name, data }) {
         if (name === "set") {
           return { data: "bar" }
         }
@@ -69,12 +69,16 @@ test("update", done => {
       add: state => state + 1
     },
     events: {
-      init: (state, actions) => actions.add(),
-      loaded: () => {
+      init(state, actions) {
+        actions.add()
+      },
+      loaded() {
         expect(document.body.innerHTML).toBe(`<div>20</div>`)
         done()
       },
-      update: (state, actions, data) => data * 10
+      update(state, actions, data) {
+        return data * 10
+      }
     }
   })
 })
@@ -84,12 +88,13 @@ test("render", done => {
     state: 1,
     view: state => h("div", null, state),
     events: {
-      loaded: () => {
+      loaded() {
         expect(document.body.innerHTML).toBe(`<main><div>1</div></main>`)
         done()
       },
-      render: (state, actions, view) => state =>
-        h("main", null, view(state, actions))
+      render(state, actions, view) {
+        return state => h("main", null, view(state, actions))
+      }
     }
   })
 })
@@ -98,7 +103,9 @@ test("custom event", () => {
   const emit = app({
     view: state => "",
     events: {
-      foo: (state, actions, data) => expect("foo").toBe(data)
+      foo(state, actions, data) {
+        expect("foo").toBe(data)
+      }
     }
   })
 
@@ -117,8 +124,10 @@ test("nested action name", () => {
       }
     },
     events: {
-      init: (state, actions) => actions.foo.bar.set("foobar"),
-      action: (state, actions, { name, data }) => {
+      init(state, actions) {
+        actions.foo.bar.set("foobar")
+      },
+      beforeAction(state, actions, { name, data }) {
         expect(name).toBe("foo.bar.set")
         expect(data).toBe("foobar")
       }

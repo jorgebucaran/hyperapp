@@ -1,6 +1,6 @@
 import { h, app } from "../src"
 
-window.requestAnimationFrame = setTimeout
+window.requestAnimationFrame = cb => cb()
 
 beforeEach(() => (document.body.innerHTML = ""))
 
@@ -11,7 +11,7 @@ test("namespaced/nested actions", () => {
     actions: {
       foo: {
         bar: {
-          baz: (state, actions, data) => {
+          baz(state, actions, data) {
             expect(state).toBe(true)
             expect(data).toBe("foo.bar.baz")
           }
@@ -19,12 +19,14 @@ test("namespaced/nested actions", () => {
       }
     },
     events: {
-      init: (state, actions) => actions.foo.bar.baz("foo.bar.baz")
+      init(state, actions) {
+        actions.foo.bar.baz("foo.bar.baz")
+      }
     }
   })
 })
 
-test("update the state sync", done => {
+test("update the state sync", () => {
   app({
     state: 1,
     view: state => h("div", null, state),
@@ -32,12 +34,10 @@ test("update the state sync", done => {
       add: state => state + 1
     },
     events: {
-      init: (state, actions) => {
+      init(state, actions) {
         actions.add()
-      },
-      loaded: () => {
+
         expect(document.body.innerHTML).toBe(`<div>2</div>`)
-        done()
       }
     }
   })
@@ -60,7 +60,9 @@ test("update the state async", done => {
       }
     },
     events: {
-      init: (state, actions) => actions.delayAndChange(100)
+      init(state, actions) {
+        actions.delayAndChange(100)
+      }
     }
   })
 })
@@ -83,7 +85,9 @@ test("update the state async using a promise with handler", done => {
       }
     },
     events: {
-      init: (state, actions) => actions.delayAndChange(100)
+      init(state, actions) {
+        actions.delayAndChange(100)
+      }
     }
   })
 })
@@ -93,20 +97,26 @@ test("update the state async using a thunk", done => {
     state: 1,
     view: state => h("div", {}, state),
     actions: {
-      delay: state => new Promise(resolve => setTimeout(() => resolve(), 20)),
-      delayAndChange: (state, actions, data) => (update) => {
-        actions.delay().then(() => {
-          update(state + data)
+      delay(state) {
+        return new Promise(resolve => setTimeout(() => resolve(), 20))
+      },
+      delayAndChange(state, actions, data) {
+        return update => {
+          actions.delay().then(() => {
+            update(state + data)
 
-          setTimeout(() => {
-            expect(document.body.innerHTML).toBe(`<div>${state + data}</div>`)
-            done()
+            setTimeout(() => {
+              expect(document.body.innerHTML).toBe(`<div>${state + data}</div>`)
+              done()
+            })
           })
-        })
+        }
       }
     },
     events: {
-      init: (state, actions) => actions.delayAndChange(100)
+      init(state, actions) {
+        actions.delayAndChange(100)
+      }
     }
   })
 })
@@ -116,16 +126,20 @@ test("update the state async using a promise", done => {
     state: 1,
     view: state => h("div", {}, state),
     actions: {
-      delay: state => new Promise(resolve => setTimeout(() => resolve(), 20)),
-      delayAndChange: (state, actions, data) => {
+      delay(state) {
+        return new Promise(resolve => setTimeout(() => resolve(), 20))
+      },
+      delayAndChange(state, actions, data) {
         return actions.delay().then(() => {
           return state + data
         })
       }
     },
     events: {
-      init: (state, actions) => actions.delayAndChange(100),
-      render: () => {
+      init(state, actions) {
+        actions.delayAndChange(100)
+      },
+      render() {
         setTimeout(() => {
           expect(document.body.innerHTML).toBe(`<div>101</div>`)
           done()
@@ -134,25 +148,3 @@ test("update the state async using a promise", done => {
     }
   })
 })
-
-test("update a state using then sync", done => {
-  app({
-    state: {
-      then: 1
-    },
-    view: state => h("div", null, state.then),
-    actions: {
-      add: state => ({ then: state.then + 1 })
-    },
-    events: {
-      init: (state, actions) => {
-        actions.add()
-      },
-      loaded: () => {
-        expect(document.body.innerHTML).toBe(`<div>2</div>`)
-        done()
-      }
-    }
-  })
-})
-

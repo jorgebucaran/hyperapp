@@ -1,56 +1,44 @@
 import { h, app } from "../src"
 
-window.requestAnimationFrame = setTimeout
+window.requestAnimationFrame = cb => cb()
 
 beforeEach(() => (document.body.innerHTML = ""))
 
 const TreeTest = trees => {
-  return new Promise((resolve, reject) => {
-    const NextTree = (index, up) => {
-      if (trees.length === index) {
-        resolve()
+  app({
+    state: 0,
+    view: state => trees[state].tree,
+    actions: {
+      next: state => (state + 1) % trees.length
+    },
+    events: {
+      loaded: (state, actions) => {
+        trees.map(tree => {
+          expect(document.body.innerHTML).toBe(tree.html.replace(/\s{2,}/g, ""))
+          actions.next()
+        })
       }
-
-      try {
-        expect(document.body.innerHTML).toBe(
-          trees[index].html.replace(/\s{2,}/g, "")
-        )
-      } catch (error) {
-        reject(error)
-      }
-
-      setTimeout(NextTree, 0, up(), up)
     }
-
-    app({
-      state: 0,
-      view: index => trees[index].tree,
-      actions: {
-        up: index => index + 1
-      },
-      events: {
-        loaded: (index, { up }) => NextTree(index, up)
-      }
-    })
   })
 }
 
-test("replace element", () =>
+test("replace element", () => {
   TreeTest([
     {
-      tree: h("main"),
+      tree: h("main", {}),
       html: `<main></main>`
     },
     {
-      tree: h("div"),
+      tree: h("div", {}),
       html: `<div></div>`
     }
-  ]))
+  ])
+})
 
-test("replace child", () =>
+test("replace child", () => {
   TreeTest([
     {
-      tree: h("main", null, [h("div", null, ["foo"])]),
+      tree: h("main", {}, [h("div", {}, "foo")]),
       html: `
         <main>
           <div>foo</div>
@@ -58,16 +46,17 @@ test("replace child", () =>
       `
     },
     {
-      tree: h("main", null, [h("main", null, ["bar"])]),
+      tree: h("main", {}, [h("main", {}, "bar")]),
       html: `
         <main>
           <main>bar</main>
         </main>
       `
     }
-  ]))
+  ])
+})
 
-test("insert children on top", () =>
+test("insert children on top", () => {
   TreeTest([
     {
       tree: h("main", {}, [
@@ -121,9 +110,10 @@ test("insert children on top", () =>
         </main>
       `
     }
-  ]))
+  ])
+})
 
-test("remove text node", () =>
+test("remove text node", () => {
   TreeTest([
     {
       tree: h("main", {}, [h("div", {}, ["foo"]), "bar"]),
@@ -142,9 +132,10 @@ test("remove text node", () =>
         </main>
       `
     }
-  ]))
+  ])
+})
 
-test("replace keyed", () =>
+test("replace keyed", () => {
   TreeTest([
     {
       tree: h("main", {}, [
@@ -166,9 +157,10 @@ test("replace keyed", () =>
         </main>
       `
     }
-  ]))
+  ])
+})
 
-test("reorder keyed", () =>
+test("reorder keyed", () => {
   TreeTest([
     {
       tree: h("main", {}, [
@@ -242,9 +234,10 @@ test("reorder keyed", () =>
         </main>
       `
     }
-  ]))
+  ])
+})
 
-test("grow/shrink keyed", () =>
+test("grow/shrink keyed", () => {
   TreeTest([
     {
       tree: h("main", {}, [
@@ -320,9 +313,10 @@ test("grow/shrink keyed", () =>
         </main>
       `
     }
-  ]))
+  ])
+})
 
-test("mixed keyed/non-keyed", () =>
+test("mixed keyed/non-keyed", () => {
   TreeTest([
     {
       tree: h("main", {}, [
@@ -394,9 +388,10 @@ test("mixed keyed/non-keyed", () =>
         </main>
       `
     }
-  ]))
+  ])
+})
 
-test("style", () =>
+test("style", () => {
   TreeTest([
     {
       tree: h("div"),
@@ -414,9 +409,10 @@ test("style", () =>
       tree: h("div"),
       html: `<div style=""></div>`
     }
-  ]))
+  ])
+})
 
-test("update element data", () =>
+test("update element data", () => {
   TreeTest([
     {
       tree: h("div", { id: "foo", class: "bar" }),
@@ -426,4 +422,5 @@ test("update element data", () =>
       tree: h("div", { id: "foo", class: "baz" }),
       html: `<div id="foo" class="baz"></div>`
     }
-  ]))
+  ])
+})

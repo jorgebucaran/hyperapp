@@ -10,7 +10,7 @@ test("oncreate", done => {
   app({
     view: () =>
       h("div", {
-        oncreate: element => {
+        oncreate(element) {
           setTimeout(() => {})
 
           expect(element).not.toBe(undefined)
@@ -29,7 +29,7 @@ test("oninsert", done => {
   app({
     view: () =>
       h("div", {
-        oninsert: element => {
+        oninsert(element) {
           expect(getElementByTagName("div")).toBe(element)
           done()
         }
@@ -49,7 +49,7 @@ test("fire onupdate if node data changes", done => {
       change: state => "bar"
     },
     events: {
-      loaded: (state, actions) => {
+      loaded(state, actions) {
         actions.change()
       }
     }
@@ -74,7 +74,7 @@ test("do not fire onupdate if data does not change", () => {
         change: state => "foo"
       },
       events: {
-        loaded: (state, actions) => {
+        loaded(state, actions) {
           actions.change()
           setTimeout(resolve, 100)
         }
@@ -94,7 +94,9 @@ test("onremove", done => {
       toggle: state => !state
     },
     events: {
-      loaded: (state, actions) => actions.toggle()
+      loaded(state, actions) {
+        actions.toggle()
+      }
     }
   })
 })

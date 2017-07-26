@@ -1,54 +1,41 @@
 import { h, app } from "../src"
 
-window.requestAnimationFrame = setTimeout
+window.requestAnimationFrame = cb => cb()
 
 beforeEach(() => (document.body.innerHTML = ""))
 
-test("document.body is the default root", done => {
+test("document.body is the default root", () => {
   app({
-    view: state => "foo",
-    events: {
-      loaded: () => {
-        expect(document.body.innerHTML).toBe("foo")
-        done()
-      }
-    }
+    view: state => h("div", null, "foo")
   })
+
+  expect(document.body.innerHTML).toBe("<div>foo</div>")
 })
 
-test("root", done => {
+test("root", () => {
   app({
     view: state => h("div", null, "foo"),
-    events: {
-      loaded: () => {
-        expect(document.body.innerHTML).toBe(`<main><div>foo</div></main>`)
-        done()
-      }
-    },
     root: document.body.appendChild(document.createElement("main"))
   })
+
+  expect(document.body.innerHTML).toBe(`<main><div>foo</div></main>`)
 })
 
-test("non-empty root", done => {
-
+test("non-empty root", () => {
   const main = document.createElement("main")
   main.appendChild(document.createElement("span"))
 
   app({
     view: state => h("div", null, "foo"),
-    events: {
-      loaded: () => {
-        expect(document.body.innerHTML).toBe(
-          `<main><span></span><div>foo</div></main>`
-        )
-        done()
-      }
-    },
     root: document.body.appendChild(main)
   })
+
+  expect(document.body.innerHTML).toBe(
+    `<main><span></span><div>foo</div></main>`
+  )
 })
 
-test("mutated root", done => {
+test("mutated root", () => {
   const main = document.createElement("main")
 
   app({
@@ -59,7 +46,7 @@ test("mutated root", done => {
       bar: state => "bar"
     },
     events: {
-      loaded: (state, actions) => {
+      loaded(state, actions) {
         expect(document.body.innerHTML).toBe(`<main><div>foo</div></main>`)
 
         main.insertBefore(document.createElement("header"), main.firstChild)
@@ -67,12 +54,9 @@ test("mutated root", done => {
 
         actions.bar()
 
-        setTimeout(() => {
-          expect(document.body.innerHTML).toBe(
-            `<main><header></header><div>bar</div><footer></footer></main>`
-          )
-          done()
-        })
+        expect(document.body.innerHTML).toBe(
+          `<main><header></header><div>bar</div><footer></footer></main>`
+        )
       }
     }
   })

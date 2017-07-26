@@ -54,7 +54,7 @@ test("beforeAction", done => {
       },
       beforeAction(state, actions, { name, data }) {
         if (name === "set") {
-          return { data: "bar" }
+          return  "bar"
         }
       }
     }

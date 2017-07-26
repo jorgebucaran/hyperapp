@@ -78,16 +78,13 @@ export function app(props) {
 
       if (typeof action === "function") {
         namespace[key] = function(data) {
-          var result = emit(
-            "afterAction",
-            action(
-              state,
-              actions,
-              emit("beforeAction", {
-                name: name,
-                data: data
-              }).data
-            )
+          var result = action(
+            state,
+            actions,
+            emit("beforeAction", {
+              name: name,
+              data: data
+            }).data
           )
 
           if (result == null) {

@@ -1,26 +1,37 @@
 # State
 
-Use the [state](/docs/api.md#state) to model your application's data.
+The [state](/docs/api.md#state) represents the entire data model in your application.
+
+[Try it online](https://codepen.io/hyperapp/pen/zNxRLy?editors=0110)
 
 ```jsx
 app({
   state: {
-    name: "Optimus",
-    age: 5000000
+    todos: [
+      {
+        id: 1337,
+        done: false,
+        text: "Empty trash."
+      }
+    ],
+    todoText: ""
   },
   view: state =>
     <main>
-      <div>Name: {state.name}</div>
-      <div>Age: {state.age}</div>
+      {state.todos.map(todo => <TodoItem {...todo} />)}
+
+      // The rest of the view!
     </main>
 })
 ```
 
-The state property is usually an object, but it can also be a string, number or a boolean.
+The notion of representing the application state as an atomic single source of truth is known as single state tree. The tree is populated using a concept called [actions](/docs/actions.md).
+
+The state is usually an object, but it can also be a string, a number or a boolean.
 
 ```jsx
 app({
-  state: "Bang!",
+  state: "Hello.",
   view: state => <h1>{state}</h1>
 })
 ```

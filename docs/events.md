@@ -23,9 +23,23 @@ app({
 })
 ```
 
+init                    willInit            beforeLoad
+
+loaded                  didInit
+
+beforeAction            beforeAction
+afterAction             afterAction
+
+update                  willUpdate
+                        didUpdate
+render                  willRender
+
+
+
+
 ## Default Events
 
-### init
+### beforeLoad
 
 The init event fires before the first render. This is a good place to initialize your application, create a network request, access the local [Storage](https://developer.mozilla.org/en-US/docs/Web/API/Storage), etc.
 
@@ -35,11 +49,28 @@ The loaded event fires after the first render. This event is useful if you need 
 
 ### beforeAction
 
-The beforeAction event fires before an action is called. This event can be useful to implement middleware, developer tools, etc.
+The beforeAction event fires before an action is called. This event can be useful to log action activity, extract action information, etc.
 
 ### afterAction
 
-The afterAction event fires after an action is called. This event can be useful to implement middleware, developer tools, etc.
+The afterAction event fires after an action returns, allowing you to intercept its return value. Use this event to change the action state update mechanism, customize what types an action is allowed to return, etc.
+
+For example to allow actions to return an [Observable](https://github.com/tc39/proposal-observable).
+
+```jsx
+app({
+  //...
+  events: {
+    afterAction(state, actions, { result }) {
+      if (data != null && typeof data.subscribe == "function") {
+        return {
+          result: update => result.subscribe({ next: update })
+        }
+      }
+    }
+  }
+})
+```
 
 ### update
 
@@ -47,11 +78,11 @@ The update event fires before the state is updated. This event can be useful to 
 
 ### render
 
-The render event fires every time before the view is rendered. You can use this event to overwrite the current view by returning a new one.
+The render event fires every time before the view is rendered. You can return a new view to overwrite the default view.
 
 ```jsx
 app({
-  view: state => <h1>Hi.</h1>,
+  view: state => <h1>Default view.</h1>,
   events: {
     render(state, actions) {
       if (location.pathname === "/warp") {
@@ -76,7 +107,8 @@ Then subscribe to them in your application or [mixin](/docs/mixins.md).
 app({
   events: {
     myEvent(state, actions, data) {
-      // return new data
+      // ...
+      return newData
     }
   }
 })
@@ -85,13 +117,17 @@ app({
 The `emit` function is available as the return value of the [`app`](/docs/api.md#app) function call itself.
 
 ```js
-const emit = app({ ... })
+const emit = app({
+  // ...
+})
 ```
 
 Or in mixins, as the first argument to the function.
 
 ```js
-const MyMixin = emit => ({ ... })
+const mixin = emit => ({
+  // ...
+})
 ```
 
 The `emit` function returns the supplied data reduced by successively calling each event handler of the specified event.
@@ -102,17 +138,17 @@ Custom events can be useful in situations where your application is a part of a 
 
 ```js
 const emit = app({
-  ...
+  // ...
   events: {
-    externalEvent: (state, actions, data) => actions.setData(data)
+    externalEvent(state, actions, data) {
+      actions.populate(data)
+    }
   }
 })
 
-...
+// ...
 
-emit("externalEvent", {
-  data: 42
-})
+emit("externalEvent", yourData)
 ```
 
 

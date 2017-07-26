@@ -139,11 +139,13 @@ test("update the state async using a promise", done => {
       init(state, actions) {
         actions.delayAndChange(100)
       },
-      render() {
+      render(state, actions, view) {
         setTimeout(() => {
           expect(document.body.innerHTML).toBe(`<div>101</div>`)
           done()
         })
+
+        return view
       }
     }
   })

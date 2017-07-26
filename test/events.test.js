@@ -37,7 +37,7 @@ test("loaded", done => {
   })
 })
 
-test("action", done => {
+test("beforeAction", done => {
   app({
     state: "",
     view: state => h("div", null, state),
@@ -52,9 +52,33 @@ test("action", done => {
         expect(document.body.innerHTML).toBe(`<div>bar</div>`)
         done()
       },
-      action: (state, actions, { name, data }) => {
+      beforeAction: (state, actions, { name, data }) => {
         if (name === "set") {
           return { data: "bar" }
+        }
+      }
+    }
+  })
+})
+
+test("afterAction", done => {
+  app({
+    state: "",
+    view: state => h("div", null, state),
+    actions: {
+      set: (state, actions, data) => "bar"
+    },
+    events: {
+      init: (state, actions) => {
+        actions.set("foo")
+      },
+      loaded: () => {
+        expect(document.body.innerHTML).toBe(`<div>baz</div>`)
+        done()
+      },
+      afterAction: (state, actions, { name, data }) => {
+        if (name === "set") {
+          return { data: "baz" }
         }
       }
     }

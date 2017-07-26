@@ -1,9 +1,5 @@
 # Getting Started
 
-- [Hello World](#hello-world)
-- [Installation](#installation)
-- [Build Pipeline](#build-pipeline)
-
 ## Hello World
 
 Let's begin with the simplest of all programs. Paste the following code in a new HTML file and open it in your browser. Or [try it online](https://codepen.io/hyperapp/pen/PmjRov?editors=1010).
@@ -16,7 +12,7 @@ Let's begin with the simplest of all programs. Paste the following code in a new
 const { h, app } = hyperapp
 
 app({
-  state: "Hi.",
+  state: "Hello.",
   view: state => h("h1", {}, state)
 })
 
@@ -24,49 +20,33 @@ app({
 </body>
 ```
 
-The state represents the application's data.
+You should see that "Hello." is displayed on the page.
+
+The state describes the application's data.
 
 ```js
-state: "Hi."
+state: "Hello."
 ```
 
-The view describes the user interface.
+The view describes the application's user interface.
 
 ```js
-state => h("h1", {}, state) // <h1>Hi.</h1>
+state => h("h1", {}, state)
 ```
 
-[Hyperx]: /docs/hyperx.md
-[JSX]: /docs/jsx.md
-
-To compose the user interface, the [h(tag, data, children)](/docs/api.md#h) utility function returns a tree of [virtual nodes](/docs/virtual-nodes.md).
-
-```js
-{
-  tag: "h1",
-  data: {},
-  children: ["Hi"]
-}
-```
-
-You can also describe views in [JSX] or [Hyperx] markup by setting up a [build pipeline](#build-pipeline).
+You can write a view using [JSX] or [Hyperx] and compile it in a [build pipeline](#build-pipeline).
 
 ```jsx
 state => <h1>{state}</h1>
 ```
 
-The [app()](/docs/api.md#app) function wraps everything together and renders the view on the DOM.
+The [app](/docs/api.md#app) function wraps up everything and renders the view on the DOM.
 
-The view is attached to the [document.body](https://developer.mozilla.org/en-US/docs/Web/API/Document/body) by default.
+And... we're done.
 
-To mount the application on a different element, use the [root](/docs/api.md#root) property.
+---
 
-```jsx
-app({
-  view: () => <h1>Hi.</h1>,
-  root: document.getElementById("app")
-})
-```
+We've only scratched the surface of what you can do and what's available in HyperApp. To learn more, check out the [Tutorials](/docs/tutorials.md) or read the [Implementation Notes](/docs/implementation-nodes.md) to peek under the hood.
 
 ## Installation
 
@@ -82,7 +62,7 @@ Then access the exported global.
 const { h, app } = hyperapp
 ```
 
-Or with [npm](https://www.npmjs.com)/[Yarn](https://yarnpkg.com).
+Or with npm / Yarn.
 
 <pre>
 npm i <a href="https://www.npmjs.com/package/hyperapp">hyperapp</a>
@@ -98,18 +78,24 @@ import { h, app } from "hyperapp"
 
 A build pipeline typically consists of a package manager, a compiler and a bundler.
 
-Using a build pipeline we can transform Hyperx/JSX markup into [h()](/docs/api.md#h) calls before runtime. This is much faster than sending a parser down the wire and compiling the view in the browser.
+Using a build pipeline we can transform JSX / Hyperx markup into [h](/docs/api.md#h) calls before runtime. This is much faster than sending a parser down the wire and compiling the view in the browser.
 
-Hyperx/JSX in:
+JSX / Hyperx in:
 
 ```jsx
-<main id="app">Hi.</main>
+<main id="app">Hello.</main>
 ```
 
 Vanilla out:
 
 ```jsx
-h("main", { id: "app" }, "Hi.")
+h("main", { id: "app" }, "Hello.")
 ```
 
-See [Hyperx] or [JSX] for instructions on how to setup a build pipeline.
+A build pipeline lets you easily install and update third-party libraries, compile modern JavaScript for older browser and bundle your application into small modules to optimize load time.
+
+See [JSX] or [Hyperx] for setup instructions.
+
+[Hyperx]: /docs/hyperx.md
+[JSX]: /docs/jsx.md
+

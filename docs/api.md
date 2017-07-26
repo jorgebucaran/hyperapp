@@ -1,121 +1,162 @@
 # API
+<!-- TOC -->
 
-* [hyperapp.h](#h)
-* [hyperapp.app](#app)
-  * [state](#state)
-  * [view](#view)
-  * [actions](#actions)
-  * [events](#events)
-    * [init](#init)
-    * [loaded](#loaded)
-    * [action](#action)
-    * [update](#update)
-    * [render](#render)
-  * [mixins](#mixins)
-  * [root](#root)
-* [emit](#emit)
+- [h](#h)
+  - [VirtualNode](#virtualnode)
+  - [Component](#component)
+- [app](#app)
+  - [State](#state)
+  - [View](#view)
+  - [Actions](#actions)
+    - [ActionResult](#actionresult)
+  - [Events](#events)
+    - [Default Events](#default-events)
+      - [ActionData](#actiondata)
+    - [CustomEvent](#customevent)
+  - [Mixins](#mixins)
+    - [Mixin](#mixin)
+- [emit](#emit)
+
+<!-- /TOC -->
 
 ## h
 
-[vnode]: /docs/virtual-nodes.md
+<pre>
+h(
+  string | <a href="#component">Component</a>,
+  object,
+  Array&lt<a href="#virtualnode">VirtualNode</a>&gt | string
+): <a href="#virtualnode">VirtualNode</a>
+</pre>
 
-Type: ([tag](#h-tag), [data](#h-data), [children](#h-children)): [vnode]
+### VirtualNode
 
-* <a name="h-tag"></a>tag: string | ([props](#h-data), [children](#h-children)): [vnode]
-* <a name="h-data"></a>data: {}
-* <a name="h-children"></a>children: string | Array\<[vnode]\>
+See also [Virtual Nodes](/docs/virtual-nodes.md).
+
+<pre>
+{
+  tag: string,
+  data: object,
+  children: Array&lt<a href="#VirtualNode">VirtualNode</a>&gt
+}
+</pre>
+
+### Component
+
+See also [Components](/docs/components.md).
+
+<pre>
+<i>Component</i>(
+  any,
+  Array&lt<a href="#virtualnode">VirtualNode</a>&gt | string
+): <a href="#virtualnode">VirtualNode</a>
+</pre>
 
 ## app
 
-Type: ([props](#app-props)): [emit](#emit)
+<pre>
+app({
+  state: <a href="#state">State</a>,
+  view: <a href="#view">View</a>,
+  actions: <a href="#actions">Actions</a>,
+  events: <a href="#events">Events</a>,
+  mixins: <a href="#mixins">Mixins</a>,
+  root: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element">Element</a> = <a href="https://developer.mozilla.org/en-US/docs/Web/API/Document/body">document.body</a>
+}): <a href="#emit">emit</a>
+</pre>
 
-* <a name="app-props"></a> props
-  * [state](#state)
-  * [view](#view)
-  * [actions](#actions)
-  * [events](#events)
-  * [mixins](#mixins)
-  * [root](#root)
+### State
 
-### state
+See also [State](/docs/state.md).
 
-Type: any
+<pre>
+string | number | boolean | object
+</pre>
 
-### view
+### View
 
-Type: ([state](#state), [actions](#actions)): [vnode]
+See also [View](/docs/view.md).
 
-### actions
-#### [namespace.]_foo_
+<pre>
+(<a href="#state">State</a>, <a href="#actions">Actions</a>): <a href="#virtualnode">VirtualNode</a>
+</pre>
 
-Type: ([state](#state), [actions](#actions), [data](#actions-data))
+### Actions
 
-* <a name="actions-data"></a> data: any
+See also [Actions](/docs/actions.md).
 
-### events
-#### init
+<pre>
+{
+  [action: string]:
+    | <a href="#actions">Actions</a>
+    | (<a href="#state">State</a>, <a href="#actions">Actions</a>, any): <a href="#actionresult">ActionResult</a>
+}
+</pre>
 
-([state](#state), [actions](#actions))
+#### ActionResult
 
-The init event is fired before the first render occurs. This is a good place to initialize your application, create a network request, access the local [Storage](https://developer.mozilla.org/en-US/docs/Web/API/Storage), etc.
+A partial state or [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) that resolves to a partial state.
 
-#### loaded
+### Events
 
-Type: ([state](#state), [actions](#actions))
+See also [Events](/docs/events.md).
 
-The loaded event is fired immediately after the [view](#view) is rendered and attached to the DOM.
+<pre>
+{
+  [<i>event</i>: string]: Array&lt<a href="#customevent">CustomEvent</a>&gt | <a href="#event">CustomEvent</a>
+}
+</pre>
 
-#### action
+#### Default Events
 
-Type: ([state](#state), [actions](#actions), [data](#action-data)): [data](#action-data)
+<pre>
+<a id="init"></a>init(<a href="#state">State</a>, <a href="#actions">Actions</a>): void
+<a id="loaded"></a>loaded(<a href="#state">State</a>, <a href="#actions">Actions</a>): void
+<a id="action"></a>action(<a href="#state">State</a>, <a href="#actions">Actions</a>, <a href="#actiondata">ActionData</a>): <a href="#actiondata">ActionData</a>
+<a id="update"></a>update(<a href="#state">State</a>, <a href="#actions">Actions</a>, <a href="#actionresult">ActionResult</a>): <a href="#actionresult">ActionResult</a>
+<a id="render"></a>render(<a href="#state">State</a>, <a href="#actions">Actions</a>, <a href="#view">View</a>): <a href="#view">View</a>
+</pre>
 
-* <a name="action-data"></a>data
-  * name: the name of the action
-  * data: the data passed to the action
+##### ActionData
 
-The action event is fired before an action is called.
+<pre>
+{
+  action: string,
+  data: any
+}
+</pre>
 
-#### update
+#### CustomEvent
 
-Type: ([state](#state), [actions](#actions), [data](#update-data)): [data](#update-data)
+<pre>
+<i>event</i>(<a href="#state">State</a>, <a href="#actions">Actions</a>, any): any
+</pre>
 
-* <a name="update-data"></a>data: the data used to update the global state.
+### Mixins
 
-The update event is fired before the state is updated.
+See also [Mixins](/docs/mixins.md).
 
-#### render
+<pre>
+Array&lt<a href="#mixin">Mixin</a>&gt
+</pre>
 
-Type: ([state](#state), [actions](#actions), [view](#view)): [view](#view)
+#### Mixin
 
-The render event is fired immediately before the view is rendered. This event can be used to implement a page router. Return the view you want to render.
-
-### mixins
-
-Type: Array\<[Mixin](#mixin)\>
-
-#### mixin
-
-Type: ([emit](#emit)): [props](#mixin-props)
-
-* <a name="mixin-props"></a>props: the object used to extend your application [props](#app-props).
-  * [state](#state)
-  * [actions](#actions)
-  * [events](#events)
-  * [mixins](#mixins)
-
-### root
-
-Type: [Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) = [document.body](https://developer.mozilla.org/en-US/docs/Web/API/Document/body)
+<pre>
+(<a href="#emit">emit</a>): {
+  state: <a href="#state">State</a>,
+  actions: <a href="#actions">Actions</a>,
+  events: <a href="#events">Events</a>,
+  mixins: <a href="#mixins">Mixins</a>,
+}
+</pre>
 
 ## emit
 
-Type: ([event](#emit-event), [data](#emit-data)): [data](#emit-data)
+See also [Custom Events](/docs/events.md#custom-events).
 
-* <a name="emit-event"></a>event: string
-* <a name="emit-data"></a>data: any
-
-Returns the given data reduced by successively calling each event handler of the specified event.
-
-
+<pre>
+emit(string, any): any
+</pre>
 
 

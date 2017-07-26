@@ -2,29 +2,25 @@
 
 Lifecycle events are custom function handlers invoked at various points in the life of a [virtual node](/docs/virtual-nodes.md).
 
+<pre>
+<i>event</i>(<a href="https://developer.mozilla.org/en-US/docs/Web/API/Element">Element</a>)
+</pre>
+
 ## oncreate
 
-Type: ([element](https://developer.mozilla.org/en-US/docs/Web/API/Element))
-
-The oncreate event is fired when the element is created, but before it is inserted into the DOM. Use this method to start animations before an element is rendered.
+The oncreate event is fired when the element is created, but before it is inserted into the DOM. Use this event to start animations before an element is rendered.
 
 ## oninsert
-
-Type: ([element](https://developer.mozilla.org/en-US/docs/Web/API/Element))
 
 The oninsert event is fired after the element is created and inserted into the DOM. Use this event to wrap third party libraries that require a reference to a DOM node, etc.
 
 ## onupdate
 
-Type: ([element](https://developer.mozilla.org/en-US/docs/Web/API/Element))
-
 The onupdate event is fired every time the element's data is updated.
 
 ## onremove
 
-Type: ([element](https://developer.mozilla.org/en-US/docs/Web/API/Element))
-
-The onremove event is fired when the element is going to be removed from the DOM.
+The onremove event is fired before the element is removed from the DOM.
 
 When using `onremove`, you will most likely need the [node](/docs/virtual-nodes.md) to also be [keyed](/docs/keys.md). If not, the elements removed are not guaranteed to correspond to any particular node. As a consequence, `onremove` may not work for the topmost element of your [view](/docs/view.md).
 
@@ -36,9 +32,9 @@ if (element.parentNode) {
 }
 ```
 
-## Example
+## CodeMirror Example
 
-This example shows how to create a [stateless component](/docs/stateless-components.md) to wrap the [CodeMirror](https://codemirror.net) editor.
+This example shows how to create a [component](/docs/components.md) and wrap a subset of the [CodeMirror](https://codemirror.net) editor.
 
 [Try it online](https://hyperapp-code-mirror.glitch.me)
 

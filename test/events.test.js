@@ -61,6 +61,30 @@ test("beforeAction", done => {
   })
 })
 
+test("afterAction", done => {
+  app({
+    state: "",
+    view: state => h("div", null, state),
+    actions: {
+      set: (state, actions, data) => "bar"
+    },
+    events: {
+      init: (state, actions) => {
+        actions.set("foo")
+      },
+      loaded: () => {
+        expect(document.body.innerHTML).toBe(`<div>baz</div>`)
+        done()
+      },
+      afterAction: (state, actions, { name, data }) => {
+        if (name === "set") {
+          return { data: "baz" }
+        }
+      }
+    }
+  })
+})
+
 test("update", done => {
   app({
     state: 1,

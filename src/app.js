@@ -78,9 +78,9 @@ export function app(app) {
 
       if (typeof action === "function") {
         namespace[key] = function(data) {
-          var result = emit(
-            "afterAction",
-            action(
+          var result = emit("afterAction", {
+            name: name,
+            data: action(
               state,
               actions,
               emit("beforeAction", {
@@ -88,7 +88,7 @@ export function app(app) {
                 data: data
               }).data
             )
-          )
+          }).data
 
           if (result == null) {
           } else if (typeof result === "function") {

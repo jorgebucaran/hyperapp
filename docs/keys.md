@@ -28,4 +28,8 @@ Use keys also to force an element to be created only once.
 
 If new elements are added to the list, the position of the keyed element will change.
 
-Using a key in this way, we make sure the keyed element is always inserted at the right position instead of mutating its siblings to obtain the same result.
+Using a key in this way, we make sure the keyed element is always inserted in the right position instead of mutating its siblings to obtain the same result.
+
+## Caution
+
+Keys are not registered on the top-level node of your [view](/docs/view.md). If you are switching the top level view, and you need to use keys, wrap them in an unchanging node.

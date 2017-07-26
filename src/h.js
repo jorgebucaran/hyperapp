@@ -12,7 +12,7 @@ export function h(tag, data) {
       for (var i = node.length; i--; ) {
         stack[stack.length] = node[i]
       }
-    } else if (node !== null && typeof node !== "boolean") {
+    } else if (node != null && typeof node !== "boolean") {
       if (typeof node === "number") {
         node = node + ""
       }

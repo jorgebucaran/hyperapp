@@ -2,27 +2,10 @@
 
 Use [mixins](/docs/api.md#mixins) to encapsulate your application behavior into reusable modules, to share or just to organize your code.
 
-This mixin listens to [action](/docs/events.md#action) events to log action information to the console.
-
-```jsx
-const ActionLogger = () => ({
-  events: {
-    action(state, actions, { name, data }) {
-      console.group("Action Info")
-      console.log("Name:", name)
-      console.log("Data:", data)
-      console.groupEnd()
-    }
-  }
-})
-```
-
-Use it like this.
-
 ```jsx
 app({
-  // ...
-  mixins: [ActionLogger]
+  //...,
+  mixins: [MyMixin]
 })
 ```
 
@@ -30,10 +13,10 @@ app({
 
 Mixins receive the [`emit`](/docs/api.md#emit) function as the first argument allowing you to create [custom events](/docs/events.md#custom-events).
 
-This mixin listens to [action](/docs/events.md#action) and [afterAction](/docs/events.md#afterAction) events to time and log action performance to the console.
+This mixin listens to [action](/docs/events.md#action) and [resolve](/docs/events.md#resolve) events to time the duration between each action.
 
 ```jsx
-const ActionPerformance = (ignored = [], cache = []) => emit => ({
+const ActionPerformanceTimer = (ignored = [], cache = []) => emit => ({
   events: {
     action(state, actions, { name }) {
       cache.push({
@@ -41,10 +24,10 @@ const ActionPerformance = (ignored = [], cache = []) => emit => ({
         time: performance.now()
       })
     },
-    afterAction() {
+    resolve() {
       const { name, time } = cache.pop()
 
-      if (ignored.length === 0 || !ignored.includes(name)) {
+      if (!ignored.includes(name)) {
         emit("time", {
           name,
           time: performance.now() - time
@@ -57,7 +40,6 @@ const ActionPerformance = (ignored = [], cache = []) => emit => ({
 
 ```jsx
 app({
-  // ...
   events: {
     time(state, actions, { name, time }) {
       console.group("Action Time Info")
@@ -66,7 +48,7 @@ app({
       console.groupEnd()
     }
   },
-  mixins: [ActionPerformance()]
+  mixins: [ActionPerformanceTimer()]
 })
 ```
 
@@ -76,6 +58,6 @@ Group mixins under the same category to create a preset. Then use it like any ot
 
 ```jsx
 const DevTools = () => ({
-  mixins: [Logger, Debugger, Replay]
+  mixins: [Logger, Debugger, Replayer]
 })
 ```

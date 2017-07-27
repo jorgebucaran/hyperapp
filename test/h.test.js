@@ -75,9 +75,7 @@ test("skip null and Boolean children", () => {
   }
 
   expect(h("div", {}, true)).toEqual(expected)
-
   expect(h("div", {}, false)).toEqual(expected)
-
   expect(h("div", {}, null)).toEqual(expected)
 })
 

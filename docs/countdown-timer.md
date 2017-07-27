@@ -2,7 +2,7 @@
 
 In this example and learn how to use the [events](/docs/events.md) property to register global events.
 
-[Try it online](https://codepen.io/hyperapp/pen/evOZLv?editors=0010)
+[Try it Online](https://codepen.io/hyperapp/pen/evOZLv?editors=0010)
 
 ```jsx
 const pad = n => (n < 10 ? "0" + n : n)
@@ -47,7 +47,9 @@ app({
     }
   },
   events: {
-    init: (state, actions) => setInterval(actions.tick, 1000)
+    load(state, actions) {
+      setInterval(actions.tick, 1000)
+    }
   }
 })
 ```
@@ -75,7 +77,9 @@ To simulate the clock we use [`setInterval`](https://developer.mozilla.org/en-US
 
 ```jsx
 events: {
-  init: (state, actions) => setInterval(actions.tick, 1000)
+  load(state, actions){
+    setInterval(actions.tick, 1000)
+  }
 }
 ```
 
@@ -91,7 +95,3 @@ if (state.count === 0) {
   actions.drop()
 }
 ```
-
-<br />
-
-[Back to Tutorials](/docs/tutorials.md)

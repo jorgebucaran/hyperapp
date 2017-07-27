@@ -1,67 +1,57 @@
-export function app(props) {
-  var state = {}
-  var actions = {}
-  var events = {}
-  var mixins = []
-  var view = props.view
-  var root = props.root || document.body
-  var node
-  var element
-  var locked = false
+var globalInvokeLaterStack = []
 
-  for (var i = -1; i < mixins.length; i++) {
-    props = mixins[i] ? mixins[i](emit) : props
+export function app(props) {
+  var appState
+  var appActions = {}
+  var appEvents = {}
+  var appMixins = []
+  var appView = props.view
+  var prevNode
+  var appRoot = props.root
+  var willRender = false
+
+  for (var i = -1; i < appMixins.length; i++) {
+    props = appMixins[i] ? appMixins[i](emit) : props
 
     Object.keys(props.events || []).map(function(key) {
-      events[key] = (events[key] || []).concat(props.events[key])
+      appEvents[key] = (appEvents[key] || []).concat(props.events[key])
     })
 
-    iterate(actions, props.actions)
-    mixins = mixins.concat(props.mixins || [])
-    state = merge(state, props.state || state)
+    adaptActions(appActions, props.actions)
+
+    appMixins = appMixins.concat(props.mixins || [])
+    appState = merge(appState, props.state)
   }
 
-  schedule(
-    (node = hydrate((element = root.querySelector("[data-ssr]")), [].map))
-  )
+  requestRender((prevNode = emit("load", appRoot)))
 
-  return emit("load")
+  return emit
+
+  function render(cb) {
+    appRoot = patch(
+      (appRoot && appRoot.parentNode) || document.body,
+      appRoot,
+      prevNode,
+      (prevNode = emit("render", appView)(appState, appActions)),
+      (willRender = !willRender)
+    )
+    while ((cb = globalInvokeLaterStack.pop())) cb()
+  }
 
   function update(withState) {
     if (withState) {
-      schedule((state = emit("update", merge(state, withState))))
+      requestRender((appState = emit("update", merge(appState, withState))))
+    }
+    return appState
+  }
+
+  function requestRender() {
+    if (appView && !willRender) {
+      requestAnimationFrame(render, (willRender = !willRender))
     }
   }
 
-  function schedule() {
-    if (!locked) {
-      requestAnimationFrame(render, (locked = !locked))
-    }
-  }
-
-  function hydrate(element, map) {
-    return element
-      ? {
-          tag: element.tagName,
-          data: {},
-          children: map.call(element.childNodes, function(element) {
-            hydrate(element, map)
-          })
-        }
-      : element
-  }
-
-  function render() {
-    element = patch(
-      root,
-      element,
-      node,
-      (node = emit("render", view)(state, actions))
-    )
-    locked = !locked
-  }
-
-  function iterate(namespace, children, lastName) {
+  function adaptActions(namespace, children, lastName) {
     Object.keys(children || []).map(function(key) {
       var action = children[key]
       var name = lastName ? lastName + "." + key : key
@@ -69,32 +59,38 @@ export function app(props) {
       if (typeof action === "function") {
         namespace[key] = function(data) {
           emit("action", { name: name, data: data })
-          var result = emit("resolve", action(state, actions, data))
-          return typeof result === "function" ? result(update) : update(result)
 
-          // return result && result.then && result.then(update)
-          //   ? result
-          //   : typeof result === "function" ? result(update) : update(result)
+          var result = emit("resolve", action(appState, appActions, data))
+
+          return typeof result === "function" ? result(update) : update(result)
         }
       } else {
-        iterate(namespace[key] || (namespace[key] = {}), action, name)
+        adaptActions(namespace[key] || (namespace[key] = {}), action, name)
       }
     })
   }
 
-  function emit(event, withData) {
-    return (events[event] || []).map(function(cb) {
-      withData = cb(state, actions, withData)
-    }), withData
+  function emit(name, data) {
+    return (appEvents[name] || []).map(function(cb) {
+      var result = cb(appState, appActions, data)
+      if (result != null) {
+        data = result
+      }
+    }), data
   }
 
-  function merge(from, to) {
-    for (var i in from) {
-      if (!(i in to)) {
-        to[i] = from[i]
-      }
+  function merge(a, b) {
+    var obj = {}
+
+    for (var i in a) {
+      obj[i] = a[i]
     }
-    return to
+
+    for (var i in b) {
+      obj[i] = b[i]
+    }
+
+    return obj
   }
 
   function getKey(node) {
@@ -111,29 +107,26 @@ export function app(props) {
         ? document.createElementNS("http://www.w3.org/2000/svg", node.tag)
         : document.createElement(node.tag)
 
-      for (var i = 0; i < node.children.length; ) {
-        element.appendChild(createElement(node.children[i++], isSVG))
+      if (node.data && node.data.oncreate) {
+        globalInvokeLaterStack.push(function() {
+          node.data.oncreate(element)
+        })
       }
 
       for (var i in node.data) {
-        if (i === "oncreate") {
-          node.data[i](element)
-        } else {
-          setElementData(element, i, node.data[i])
-        }
+        setData(element, i, node.data[i])
+      }
+
+      for (var i = 0; i < node.children.length; ) {
+        element.appendChild(createElement(node.children[i++], isSVG))
       }
     }
 
     return element
   }
 
-  function setElementData(element, name, value, oldValue) {
-    if (
-      name === "key" ||
-      name === "oncreate" ||
-      name === "onupdate" ||
-      name === "onremove"
-    ) {
+  function setData(element, name, value, oldValue) {
+    if (name === "key") {
     } else if (name === "style") {
       for (var i in merge(oldValue, (value = value || {}))) {
         element.style[i] = value[i] || ""
@@ -153,18 +146,20 @@ export function app(props) {
     }
   }
 
-  function updateElementData(element, oldData, data) {
-    for (var name in merge(oldData, data)) {
-      var value = data[name]
-      var oldValue = oldData[name]
+  function updateElement(element, oldData, data) {
+    for (var i in merge(oldData, data)) {
+      var value = data[i]
+      var oldValue = i === "value" || i === "checked" ? element[i] : oldData[i]
 
-      if (value !== oldValue && value !== element[name]) {
-        setElementData(element, name, value, oldValue)
+      if (value !== oldValue) {
+        setData(element, i, value, oldValue)
       }
     }
 
     if (data && data.onupdate) {
-      data.onupdate(element, oldData)
+      globalInvokeLaterStack.push(function() {
+        data.onupdate(element, oldData)
+      })
     }
   }
 
@@ -176,29 +171,27 @@ export function app(props) {
     }
   }
 
-  function patch(parent, element, oldNode, node, isSVG, lastElement) {
+  function patch(parent, element, oldNode, node, isSVG, nextSibling) {
     if (oldNode == null) {
       element = parent.insertBefore(createElement(node, isSVG), element)
     } else if (node.tag != null && node.tag === oldNode.tag) {
-      updateElementData(element, oldNode.data, node.data)
+      updateElement(element, oldNode.data, node.data)
 
       isSVG = isSVG || node.tag === "svg"
 
       var len = node.children.length
       var oldLen = oldNode.children.length
-      var reusableChildren = {}
+      var oldKeyed = {}
       var oldElements = []
-      var newKeys = {}
+      var keyed = {}
 
       for (var i = 0; i < oldLen; i++) {
-        var oldElement = element.childNodes[i]
-        oldElements[i] = oldElement
-
+        var oldElement = (oldElements[i] = element.childNodes[i])
         var oldChild = oldNode.children[i]
         var oldKey = getKey(oldChild)
 
         if (null != oldKey) {
-          reusableChildren[oldKey] = [oldElement, oldChild]
+          oldKeyed[oldKey] = [oldElement, oldChild]
         }
       }
 
@@ -211,14 +204,14 @@ export function app(props) {
         var newChild = node.children[j]
 
         var oldKey = getKey(oldChild)
-        if (newKeys[oldKey]) {
+        if (keyed[oldKey]) {
           i++
           continue
         }
 
         var newKey = getKey(newChild)
 
-        var reusableChild = reusableChildren[newKey] || []
+        var keyedNode = oldKeyed[newKey] || []
 
         if (null == newKey) {
           if (null == oldKey) {
@@ -228,17 +221,17 @@ export function app(props) {
           i++
         } else {
           if (oldKey === newKey) {
-            patch(element, reusableChild[0], reusableChild[1], newChild, isSVG)
+            patch(element, keyedNode[0], keyedNode[1], newChild, isSVG)
             i++
-          } else if (reusableChild[0]) {
-            element.insertBefore(reusableChild[0], oldElement)
-            patch(element, reusableChild[0], reusableChild[1], newChild, isSVG)
+          } else if (keyedNode[0]) {
+            element.insertBefore(keyedNode[0], oldElement)
+            patch(element, keyedNode[0], keyedNode[1], newChild, isSVG)
           } else {
             patch(element, oldElement, null, newChild, isSVG)
           }
 
           j++
-          newKeys[newKey] = newChild
+          keyed[newKey] = newChild
         }
       }
 
@@ -251,19 +244,19 @@ export function app(props) {
         i++
       }
 
-      for (var i in reusableChildren) {
-        var reusableChild = reusableChildren[i]
-        var reusableNode = reusableChild[1]
-        if (!newKeys[reusableNode.data.key]) {
-          removeElement(element, reusableChild[0], reusableNode.data)
+      for (var i in oldKeyed) {
+        var keyedNode = oldKeyed[i]
+        var reusableNode = keyedNode[1]
+        if (!keyed[reusableNode.data.key]) {
+          removeElement(element, keyedNode[0], reusableNode.data)
         }
       }
-    } else if (
-      (lastElement = element) != null &&
-      node !== oldNode &&
-      node !== element.nodeValue
-    ) {
-      parent.replaceChild((element = createElement(node, isSVG)), lastElement)
+    } else if (element && node !== element.nodeValue) {
+      element = parent.insertBefore(
+        createElement(node, isSVG),
+        (nextSibling = element)
+      )
+      removeElement(parent, nextSibling, oldNode.data)
     }
 
     return element

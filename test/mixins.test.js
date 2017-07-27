@@ -1,165 +1,187 @@
 import { h, app } from "../src"
 
-window.requestAnimationFrame = f => f()
+window.requestAnimationFrame = setTimeout
 
-beforeEach(() => (document.body.innerHTML = ""))
+beforeEach(() => {
+  document.body.innerHTML = ""
+})
 
-test("extend the state", () => {
-  const mixin = () => ({
-    state: {
-      bar: true
-    }
-  })
-
+test("extend the state", done => {
   app({
     state: {
       foo: true
     },
-    view: state => "",
     events: {
-      init: state => {
+      load: state => {
         expect(state).toEqual({
           foo: true,
           bar: true
         })
+        done()
       }
     },
-    mixins: [mixin]
-  })
-})
-
-test("extend events", () => {
-  let count = 0
-
-  const mixinFoo = () => ({
-    events: {
-      init: () => expect(++count).toBe(2)
-    }
-  })
-
-  const mixinBar = () => ({
-    events: {
-      init: () => expect(++count).toBe(3)
-    }
-  })
-
-  app({
-    view: state => "",
-    events: {
-      init: () => expect(++count).toBe(1)
-    },
-    mixins: [mixinFoo, mixinBar]
-  })
-})
-
-test("extend actions", () => {
-  const mixin = () => ({
-    actions: {
-      foo: {
-        bar: {
-          baz: {
-            toggle: state => state.toUpperCase()
-          }
+    mixins: [
+      () => ({
+        state: {
+          bar: true
         }
-      }
-    }
-  })
-
-  app({
-    state: "foo",
-    view: state => h("div", null, state),
-    events: {
-      loaded: (state, actions) => {
-        expect(document.body.innerHTML).toBe(`<div>foo</div>`)
-
-        actions.foo.bar.baz.toggle()
-
-        expect(document.body.innerHTML).toBe(`<div>FOO</div>`)
-      }
-    },
-    mixins: [mixin]
+      })
+    ]
   })
 })
 
-test("don't overwrite actions in the same namespace", () => {
-  const mixin = () => ({
-    actions: {
-      foo: {
-        bar: {
-          baz: (state, actions, data) => {
-            expect(state).toBe(true)
-            expect(data).toBe("foo.bar.baz")
-            return state
-          }
-        }
-      }
-    }
-  })
-
+test("extend events", done => {
   app({
-    state: true,
-    view: state => "",
+    state: {
+      value: 0
+    },
     actions: {
-      foo: {
-        bar: {
-          qux: (state, actions, data) => {
-            expect(state).toBe(true)
-            expect(data).toBe("foo.bar.qux")
-          }
+      up(state) {
+        return {
+          value: state.value + 1
         }
       }
     },
     events: {
-      init: [
-        (state, actions) => actions.foo.bar.baz("foo.bar.baz"),
-        (state, actions) => actions.foo.bar.qux("foo.bar.qux")
-      ]
+      load(state, actions) {
+        expect(state.value).toBe(0)
+        actions.up()
+      }
     },
-    mixins: [mixin]
+    mixins: [
+      () => ({
+        events: {
+          load(state, actions) {
+            expect(state.value).toBe(1)
+            actions.up()
+          }
+        }
+      }),
+      () => ({
+        events: {
+          load(state) {
+            expect(state.value).toBe(2)
+            done()
+          }
+        }
+      })
+    ]
+  })
+})
+
+test("extend actions", done => {
+  app({
+    view: state =>
+      h(
+        "div",
+        {
+          oncreate() {
+            expect(document.body.innerHTML).toBe(`<div>foo</div>`)
+            done()
+          }
+        },
+        state.value
+      ),
+    state: {
+      value: ""
+    },
+    events: {
+      load(state, actions) {
+        actions.foo()
+      }
+    },
+    mixins: [
+      () => ({
+        actions: {
+          foo() {
+            return {
+              value: "foo"
+            }
+          }
+        }
+      })
+    ]
+  })
+})
+
+test("extend namespace", done => {
+  app({
+    actions: {
+      foo: {
+        bar(state, actions, data) {
+          expect(data).toBe(true)
+        }
+      }
+    },
+    events: {
+      load(state, actions) {
+        actions.foo.bar(true)
+        actions.foo.baz(true)
+        actions.foo.quux.ping(true)
+        done()
+      }
+    },
+    mixins: [
+      () => ({
+        actions: {
+          foo: {
+            baz(state, actions, data) {
+              expect(data).toBe(true)
+            },
+            quux: {
+              ping(state, actions, data) {
+                expect(data).toBe(true)
+              }
+            }
+          }
+        }
+      })
+    ]
   })
 })
 
 test("presets", () => {
-  const mixinFoo = () => ({
-    state: {
-      foo: 1
-    }
-  })
-
-  const mixinBar = () => ({
-    state: {
-      bar: 2
-    }
-  })
-
-  const mixinFoobar = () => ({
-    mixins: [mixinFoo, mixinBar]
+  const foobar = () => ({
+    mixins: [
+      () => ({
+        state: {
+          foo: 1
+        }
+      }),
+      () => ({
+        state: {
+          bar: 2
+        }
+      })
+    ]
   })
 
   app({
-    view: () => "",
     events: {
-      init(state) {
-        expect(state.bar).toBe(2)
+      load(state) {
         expect(state.foo).toBe(1)
+        expect(state.bar).toBe(2)
       }
     },
-    mixins: [mixinFoobar]
+    mixins: [foobar]
   })
 })
 
 test("receive emit function", done => {
   app({
+    events: {
+      foo() {
+        done()
+      }
+    },
     mixins: [
       emit => ({
         events: {
-          init: () => emit("foo")
+          load() {
+            emit("foo")
+          }
         }
       })
-    ],
-    view: () => "",
-    events: {
-      foo: done
-    }
+    ]
   })
 })

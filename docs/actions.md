@@ -1,182 +1,132 @@
 # Actions
 
-Use [actions](/docs/api.md#actions) to update the state.
 
-```jsx
-app({
-  state: "Hi.",
-  view: (state, actions) =>
-    <h1 onclick={actions.ucase}>
-      {state}
-    </h1>,
-  actions: {
-    ucase: state => state.toUpperCase()
-  }
-})
-```
+Actions are functions which take the current [state](/docs/state.md) and return a partial state or a [thunk](#thunks). Actioons are the only way to update the state tree.
 
-An action must return a partial state or a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) that resolves to a partial state. See [Side Effects](#side-effects).
+[Try it Online](https://codepen.io/hyperapp/pen/qRMEGX?editors=0010)
 
 ```jsx
 app({
   state: {
-    count: 0,
-    maxCount: 10
+    text: "Hello!",
+    defaultText: "Nice weather today."
   },
-  view: (state, actions) =>
-    <main>
+  view: (state, { setText }) =>
+    <div>
       <h1>
-        {state.count}
+        {state.text.trim() === ""
+          ? state.defaultText
+          : state.text}
       </h1>
-      <button onclick={actions.up}>+</button>
-    </main>,
+      <input
+        autofocus
+        value={state.text}
+        oninput={e => setText(e.target.value)}
+      />
+    </div>,
   actions: {
-    up: ({ count, maxCount }) => ({
-      count: count + (maxCount > count ? 1 : -maxCount)
-    })
-  }
-})
-```
-
-You can pass data to actions as well.
-
-```jsx
-app({
-  state: {
-    count: 0
-  },
-  view: (state, actions) =>
-    <main>
-      <h1>
-        {state.count}
-      </h1>
-      <button onclick={() => actions.up(1)}>+</button>
-    </main>,
-  actions: {
-    up: ({ count }, actions, data = 0) => ({
-      count: count + data
-    })
-  }
-})
-```
-
-## Side Effects
-
-Actions are not required to have a return value. You can use them to call other actions, for example after an async operation has completed.
-
-```jsx
-app({
-  state: {
-    count: 0
-  },
-  view: (state, actions) =>
-    <main>
-      <h1>
-        {state.count}
-      </h1>
-      <button onclick={actions.upLater}>+</button>
-    </main>,
-  actions: {
-    up: ({ count }) => ({
-      count: count + 1
-    }),
-    upLater: (state, actions) => {
-      setTimeout(actions.up, 1000)
+    setText(state, actions, text) {
+      return { text }
     }
   }
 })
 ```
 
-Actions can return a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise).
+Actions are often called as a result of user events triggered from the [view](/docs/view.md) or from inside application [events](/docs/events.md).
+
+## Thunks
+
+Actions can return a function instead of a partial state. This function is called a _thunk_. They operate like regular actions but will not trigger a state update unless [`update`](/docs/api.md#update) is called from within the thunk function.
 
 ```jsx
 app({
-  state: 0,
-  view: (state, actions) =>
-    <main>
-      <h1>
-        {state}
-      </h1>
-      <button onclick={actions.upLater}>+1</button>
-    </main>,
   actions: {
-    upLater: (state, actions) =>
-      new Promise(resolve => setTimeout(resolve, 1000, state + 1))
-  }
-})
-```
-
-Actions can be written as [async functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function) too.
-
-```jsx
-const delay = result =>
-  new Promise(resolve => setTimeout(resolve, 1000, result))
-
-app({
-  state: 0,
-  view: (state, actions) =>
-    <main>
-      <h1>
-        {state}
-      </h1>
-      <button onclick={actions.upLater}>+1</button>
-    </main>,
-  actions: {
-    upLater: async state => await delay(state + 1)
-  }
-})
-```
-
-## Namespaces
-
-Namespaces let you organize actions into categories or domains.
-
-```jsx
-app({
-  state: 0,
-  view: (state, actions) =>
-    <main>
-      <button onclick={actions.counter.up}>+</button>
-      <h1>
-        {state}
-      </h1>
-      <button onclick={actions.counter.down}>-</button>
-    </main>,
-  actions: {
-    counter: {
-      up: state => state + 1,
-      down: state => state - 1
+    defer(state, actions, data) {
+      return update => {
+        // ...
+        update(newData)
+      }
     }
   }
 })
 ```
 
-## Complex State
+The action returns the result of the thunk, allowing you to modify how actions operate and what types they can return.
 
-Suppose we have a complex state object and wish to update a given property avoiding mutation.
+Use thunks to defer state updates, create [getters](#getters), scoped mixins, etc.
 
-Here is one way we could achieve this using [Ramda](https://github.com/ramda/ramda).
+## Async Updates
 
-[Try it online](https://codepen.io/hyperapp/pen/Zygvbg?editors=0010)
+Use [thunks](#thunks) to update the state asynchronously, e.g., after a [promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) resolves.
+
+[Try it Online](https://codepen.io/hyperapp/pen/ZeByKv?editors=0010)
 
 ```jsx
 app({
-  state: {
-    counters: [{ value: 1 }, { value: 2 }, { value: 4 }]
-  },
   actions: {
-    oneUp: (state, actions, index) => {
-      return R.over(
-        R.lensPath(["counters", index, "value"]),
-        value => value + 1,
-        state
+    getURL(state) {
+      return update => fetch(`/search?q=${state.query}`)
+        .then(data => data.json())
+        .then(json => update({
+          url: json[0].url
+        })
       )
     }
   }
 })
 ```
 
-See also [lodash/fp](https://github.com/lodash/lodash/wiki/FP-Guide) and [Immutable.js](https://github.com/facebook/immutable-js/) for alternatives.
+Actions need not have a return value at all. This way they will not trigger a state update. You can use them to create side effects, call other actions, etc.
 
+```jsx
+app({
+  actions: {
+    setURL(state, actions, data) {
+      return { url: data[0].url }
+    },
+    getURL(state, actions) {
+      const req = new XMLHttpRequest()
 
+      req.open("GET", `/search?q=${state.query}`)
+      req.onreadystatechange = () => {
+        if (
+          req.readyState === XMLHttpRequest.DONE &&
+          req.status === 200
+        ) {
+          actions.setURL(JSON.parse(req.responseText))
+        }
+      }
+      req.send()
+    }
+  }
+})
+```
+
+## Getters
+
+A getter is an action that retrieves a property from the state tree or the result of a computation.
+
+```jsx
+app({
+  actions: {
+    isAdult({ userId }) {
+      return () => state.users[userId].age >= state.adultAge
+    }
+  }
+})
+```
+
+## Namespaces
+
+We iterate over action keys recursively during setup, allowing for nested actions.
+
+```jsx
+app({
+  actions: {
+    game: gameActions,
+    score: scoreActions,
+    ...userActions
+  }
+})
+```
 

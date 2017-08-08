@@ -1,8 +1,16 @@
 # Events
 
-Use events to get notified when your app is initialized, an action is called, before a [view](/docs/view.md) is rendered, etc.
+Events are function called at various points in the life of your application.
 
-[Try it online](https://codepen.io/hyperapp/pen/Bpyraw?editors=0010)
+Use events to get notified before the [state](/docs/state.md) is updated, your [view](/docs/view.md) is rendered, an [action](/docs/actions.md) is called, etc.
+
+## Default Events
+
+### load
+
+The [`load`](/docs/api.md#load) event is fired before the first render. Use it to initialize your application, listen to global events, create a network request, etc.
+
+[Try it Online](https://codepen.io/hyperapp/pen/Bpyraw?editors=0010)
 
 ```jsx
 app({
@@ -12,51 +20,91 @@ app({
     move: (state, actions, { x, y }) => ({ x, y })
   },
   events: {
-    init: (state, actions) =>
+    load(state, actions) {
       addEventListener("mousemove", e =>
         actions.move({
           x: e.clientX,
           y: e.clientY
         })
       )
+    }
   }
 })
 ```
 
-## Default Events
+### action
 
-### init
-
-The init event fires before the first render. This is a good place to initialize your application, create a network request, access the local [Storage](https://developer.mozilla.org/en-US/docs/Web/API/Storage), etc.
-
-### loaded
-
-The loaded event fires after the first render. This event is useful if you need to access actual DOM nodes after initialization.
-
-### beforeAction
-
-The beforeAction event fires before an action is called. This event can be useful to implement middleware, developer tools, etc.
-
-### afterAction
-
-The afterAction event fires after an action is called. This event can be useful to implement middleware, developer tools, etc.
-
-### update
-
-The update event fires before the state is updated. This event can be useful to validate the state before an update takes place.
-
-### render
-
-The render event fires every time before the view is rendered. You can use this event to overwrite the current view by returning a new one.
+The [`action`](/docs/api.md#action) event is fired before an action is called. Use it to log action activity, extract information about actions, etc.
 
 ```jsx
 app({
-  view: state => <h1>Hi.</h1>,
   events: {
-    render(state, actions) {
-      if (location.pathname === "/warp") {
-        return state => <h1>Welcome to warp zone!</h1>
+    action(state, actions, { name, data }) {
+      console.group("Action Info")
+      console.log("Name:", name)
+      console.log("Data:", data)
+      console.groupEnd()
+    }
+  }
+})
+```
+
+### resolve
+
+The [`resolve`](/docs/api.md#resolve) event is fired after an action is called, allowing you to intercept its return value. Use it to customize the types actions can return.
+
+Allow actions to return a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise).
+
+```jsx
+app({
+  events: {
+    resolve(state, actions, result) {
+      if (result && typeof result.then === "function") {
+        return result.then(update) && result
       }
+    }
+  }
+})
+  ```
+Allow actions to return an [Observable](https://github.com/tc39/proposal-observable).
+
+```jsx
+app({
+  events: {
+    resolve(state, actions, result) {
+      if (result && typeof result.subscribe == "function") {
+        return update => result.subscribe({ next: update })
+      }
+    }
+  }
+})
+```
+
+### update
+
+The [`update`](/docs/api.md#eventsupdate) event is fired before the state is updated. Use this event to log state changes, validate the new state before an update takes place, etc.
+
+```jsx
+app({
+  events: {
+    update(state, actions, nextState) {
+      if (validate(nextState)) {
+        return nextState
+      }
+    }
+  }
+})
+```
+
+### render
+
+The [`render`](/docs/api.md#render) event is fired before the [view](/docs/view.md) function is called, allowing you to overwrite it or decorate it. If your application does not use a view, this event is never fired.
+
+```jsx
+app({
+  events: {
+    render(state, actions, view) {
+      return location.pathname === "/" ? defaultView : notFoundView
     }
   }
 })
@@ -64,19 +112,20 @@ app({
 
 ## Custom Events
 
-Create custom events using the [`emit`](/docs/api.md#emit) function.
+Create custom events with the [`emit`](/docs/api.md#emit) function.
 
 ```jsx
 emit("myEvent", data)
 ```
 
-Then subscribe to them in your application or [mixin](/docs/mixins.md).
+Then subscribe to them like any other event.
 
 ```jsx
 app({
   events: {
     myEvent(state, actions, data) {
-      // return new data
+      // ...
+      return newData
     }
   }
 })
@@ -85,34 +134,37 @@ app({
 The `emit` function is available as the return value of the [`app`](/docs/api.md#app) function call itself.
 
 ```js
-const emit = app({ ... })
+const emit = app({
+  // ...
+})
 ```
 
 Or in mixins, as the first argument to the function.
 
 ```js
-const MyMixin = emit => ({ ... })
+function MyMixin(emit) {
+  // ...
+}
 ```
 
-The `emit` function returns the supplied data reduced by successively calling each event handler of the specified event.
+The `emit` function returns the supplied data, reduced by successively calling each event handler of the specified event.
 
-### Interoperatiblity
+### Interoperability
 
 Custom events can be useful in situations where your application is a part of a larger system and you want to communicate with it from the outside.
 
 ```js
 const emit = app({
-  ...
   events: {
-    externalEvent: (state, actions, data) => actions.setData(data)
+    externalEvent(state, actions, data) {
+      actions.populate(data)
+    }
   }
 })
 
-...
+// ...
 
-emit("externalEvent", {
-  data: 42
-})
+emit("externalEvent", yourData)
 ```
 
 

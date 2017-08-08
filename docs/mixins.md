@@ -3,47 +3,31 @@
 Use [mixins](/docs/api.md#mixins) to encapsulate your application behavior into reusable modules, to share or just to organize your code.
 
 ```jsx
-const ActionsLogger = () => ({
-  events: {
-    beforeAction: (state, actions, { name, data }) => {
-      console.group("Action Info")
-      console.log("Name:", name)
-      console.log("Data:", data)
-      console.groupEnd()
-    }
-  }
-})
-```
-
-This mixin listens to [beforeAction](/docs/events.md#beforeAction) events to log action information to the console.
-
-```jsx
 app({
-  // Your app!
-  ...,
-  mixins: [ActionsLogger]
+  //...,
+  mixins: [MyMixin]
 })
 ```
 
 ## Emitting Events
 
-### Example #1
+Mixins receive the [`emit`](/docs/api.md#emit) function as the first argument allowing you to create [custom events](/docs/events.md#custom-events).
 
-Mixins receive the [`emit`](/docs/api.md#emit) function as the first argument. Use it to create new events, etc.
+This mixin listens to [action](/docs/events.md#action) and [resolve](/docs/events.md#resolve) events to time the duration between each action.
 
 ```jsx
-const ActionPerformance = (ignore = [], cache = []) => emit => ({
+const ActionPerformanceTimer = (ignored = [], cache = []) => emit => ({
   events: {
-    beforeAction(state, actions, { name }) {
+    action(state, actions, { name }) {
       cache.push({
         name,
         time: performance.now()
       })
     },
-    afterAction() {
+    resolve() {
       const { name, time } = cache.pop()
 
-      if (ignore.length === 0 || !ignore.includes(name)) {
+      if (!ignored.includes(name)) {
         emit("time", {
           name,
           time: performance.now() - time
@@ -56,55 +40,24 @@ const ActionPerformance = (ignore = [], cache = []) => emit => ({
 
 ```jsx
 app({
-  // Your app!
-  ...,
   events: {
-    time: (state, actions, { name, time }) => {
+    time(state, actions, { name, time }) {
       console.group("Action Time Info")
       console.log("Name:", name)
       console.log("Time:", time)
       console.groupEnd()
     }
   },
-  mixins: [ActionPerformance()]
-})
-```
-
-### Example #2
-
-This mixin emits a `hash` event every time a fragment identifier of the URL changes allowing the user to validate the `location.hash`.
-
-```jsx
-const HashGuard = emit => ({
-  events: {
-    loaded() {
-      addEventListener("hashchange", () => {
-        const validHash = emit("hash", location.hash)
-
-        if (location.hash !== validHash) {
-          location.hash = validHash
-        }
-      })
-    }
-  }
-})
-```
-
-```jsx
-app({
-  events: {
-    hash: (state, actions, hash) => validateHash(hash)
-  },
-  mixins: [HashGuard]
+  mixins: [ActionPerformanceTimer()]
 })
 ```
 
 ## Presets
 
-Mixins can be used to create presets of other mixins. Then use it like any
+Group mixins under the same category to create a preset. Then use it like any other mixin.
 
 ```jsx
-const MyPreset = () => ({
-  mixins: [MyMixin1, MyMixin2]
+const DevTools = () => ({
+  mixins: [Logger, Debugger, Replayer]
 })
 ```

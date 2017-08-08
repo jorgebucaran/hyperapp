@@ -26,30 +26,40 @@ The virtual DOM engine consumes a virtual node and produces a DOM tree.
 </div>
 ```
 
-Use the [`h`](/docs/api.md#h) function to create virtual nodes.
+Create virtual nodes with the [`h`](/docs/api.md#h) function.
 
 ```js
-h("div", { id: "app" }, [
+const vnode = h("div", { id: "app" }, [
   h("h1", null, "Hi.")
 ])
 ```
 
-Or use [JSX](https://facebook.github.io/react/docs/jsx-in-depth.html) / [Hyperx](https://github.com/substack/hyperx) to create virtual nodes declaratively and compile them to `h` calls in a [build pipeline](/docs/getting-started.md#build-pipeline).
+Or use [JSX](https://facebook.github.io/react/docs/jsx-in-depth.html) / [Hyperx](https://github.com/substack/hyperx).
+
+```jsx
+const vnode = (
+  <div id="app">
+    <h1>Hi.</h1>
+  </div>
+)
+```
 
 ## Attributes
 
-Any valid HTML [attributes/properties](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes), [events](https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers), [styles](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference), etc.
+Any valid [HTMLAttributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes), [SVGAttributes](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute), [DOMEvents](https://developer.mozilla.org/en-US/docs/Web/Events), [Lifecycle Events](/docs/lifecycle-events.md) or [keys](/docs/keys.md).
 
-```js
-data: {
-  id: "myButton",
-  class: "PrimaryButton",
-  onclick: () => alert("Hi."),
-  disabled: false,
-  style: {
-    fontSize: "3em"
-  }
-}
+```jsx
+const MyButton = props =>
+  <button
+    class="btn-large"
+    style={{
+      fontSize: "5em",
+      color: "Tomato"
+    }}
+    onclick={props.doSomething}
+  >
+    {props.title}
+  </button>
+)
 ```
 
-Attributes also include [lifecycle events](/docs/lifecycle-events.md) and meta data such as [keys](/docs/keys.md).

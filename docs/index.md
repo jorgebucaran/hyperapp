@@ -5,8 +5,8 @@ Below is an alphabetical list of some of the terms and concepts used throughout 
 ##### A
 [app](/docs/api.md#app)<br>
 [actions](/docs/actions.md)<br>
-[events.action](/docs/api.md#action)<br>
-[attributes](/docs/virtual-nodes.md#data-attributes)<br>
+[events.action](/docs/events.md#action)<br>
+[attributes](/docs/virtual-nodes.md#attributes)<br>
 
 ##### B
 [build pipeline](/docs/getting-started.md#build-pipeline)<br>
@@ -20,16 +20,10 @@ Below is an alphabetical list of some of the terms and concepts used throughout 
 [events, custom](/docs/events.md#custom-events)<br>
 [events, lifecycle](/docs/lifecycle-events.md)<br>
 
-##### F
-[fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)<br>
-
 ##### H
 [h](/docs/api.md#h)<br>
 [hyperx](/docs/hyperx.md)<br>
 [hyperxify](https://github.com/substack/hyperxify)<br>
-
-##### I
-[events.init](/docs/api.md#init)<br>
 
 ##### J
 [JSX](/docs/jsx.md)<br>
@@ -38,7 +32,7 @@ Below is an alphabetical list of some of the terms and concepts used throughout 
 [keys](/docs/keys.md)<br>
 
 ##### L
-[events.loaded](/docs/api.md#loaded)<br>
+[events.load](/docs/api.md#load)<br>
 
 ##### M
 [mixins](/docs/mixins.md)<br>
@@ -48,22 +42,22 @@ Below is an alphabetical list of some of the terms and concepts used throughout 
 
 ##### O
 [oncreate](/docs/lifecycle-events.md#oncreate)<br>
-[oninsert](/docs/lifecycle-events.md#onisert)<br>
 [onupdate](/docs/lifecycle-events.md#onupdate)<br>
 [onremove](/docs/lifecycle-events.md#onremove)<br>
 
 ##### R
-[root](/docs/api.md#root)<br>
-[events.render](/docs/api.md#render)<br>
+[root](/docs/root.md)<br>
+[events.resolve](/docs/events.md#resolve)<br>
+[events.render](/docs/events.md#render)<br>
 
 ##### S
 [state](/docs/state.md)<br>
 
 ##### T
-[tutorials](/docs/tutorials.md)<br>
+[thunks](/docs/actions.md#thunks)
 
 ##### U
-[events.update](/docs/api.md#update)<br>
+[events.update](/docs/events.md#eventsupdate)<br>
 
 ##### V
 [view](/docs/view.md)<br>

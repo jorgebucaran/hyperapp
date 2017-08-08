@@ -15,3 +15,8 @@ Use keys to tell the patch algorithm to re-order children instead of mutate them
   )}
 </ul>
 ```
+
+## Caution
+
+Keys are not registered on the top-level node of your [view](/docs/view.md). If you are switching the top level view, and you need to use keys, wrap them in an unchanging node.
+

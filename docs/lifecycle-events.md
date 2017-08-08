@@ -1,61 +1,95 @@
 # Lifecycle Events
 
-Lifecycle events are custom function handlers invoked at various points in the life of a [virtual node](/docs/virtual-nodes.md).
-
-<pre>
-<i>event</i>(<a href="https://developer.mozilla.org/en-US/docs/Web/API/Element">Element</a>)
-</pre>
+Lifecycle events are functions called at various points in the life of a [virtual node](/docs/virtual-nodes.md). They are used like any other [attribute](/docs/virtual-nodes.md#attributes).
 
 ## oncreate
 
-The oncreate event is fired when the element is created, but before it is inserted into the DOM. Use this event to start animations before an element is rendered.
+The [`oncreate`](/docs/api.md#oncreate) event is fired after the element is created and attached to the DOM. Use it to manipulate the DOM node directly, create animations etc.
 
-## oninsert
-
-The oninsert event is fired after the element is created and inserted into the DOM. Use this event to wrap third party libraries that require a reference to a DOM node, etc.
+```jsx
+app({
+  view: () =>
+    <input
+      type="text"
+      oncreate={element => {
+        element.focus()
+      }}
+    />
+})
+```
 
 ## onupdate
 
-The onupdate event is fired every time the element's data is updated.
+The [`onupdate`](/docs/api.md#onupdate) event is fired after the element attributes are updated. This event will fire even if the attributes have not changed. You can use `oldProps` inside the function to check if they changed or not.
+
+```jsx
+app({
+  view: state =>
+    <main>
+      <MyComponent
+        value={state.value}
+        onupdate={(element, oldProps) => {
+          if (state.value !== oldProps.value) {
+            // ...
+          }
+        }}
+      />
+    </main>
+})
+```
 
 ## onremove
 
-The onremove event is fired before the element is removed from the DOM.
-
-When using `onremove`, you will most likely need the [node](/docs/virtual-nodes.md) to also be [keyed](/docs/keys.md). If not, the elements removed are not guaranteed to correspond to any particular node. As a consequence, `onremove` may not work for the topmost element of your [view](/docs/view.md).
-
-You are responsible for removing the element if you use this event.
-
-```js
-if (element.parentNode) {
-  element.parentNode.removeChild(element)
-}
-```
-
-## CodeMirror Example
-
-This example shows how to create a [component](/docs/components.md) and wrap a subset of the [CodeMirror](https://codemirror.net) editor.
-
-[Try it online](https://hyperapp-code-mirror.glitch.me)
+The [`onremove`](/docs/api.md#onremove) event is fired before the element is removed from the DOM. Use it for cleaning up resources like timers, creating slide/fade out animations, etc.
 
 ```jsx
-const node = document.createElement("div")
-const editor = CodeMirror(node)
-
-const Editor = props => {
-  const setOptions = props =>
-    Object.keys(props).forEach(key =>
-      editor.setOption(key, props[key]))
-
-  return (
+app({
+  view: () =>
     <div
-      oninsert={element => {
-        setOptions(props)
-        element.appendChild(node)
+      onremove={element => {
+        element.classList.add("slide-out")
+        setTimeout(() => {
+          if (element.parentNode) {
+            element.parentNode.removeChild(element)
+          }
+        }, 1000)
       }}
-      onupdate={() => setOptions(props)}
     />
-  )
-}
+})
 ```
 
+Notice that when using this event you must also remove the element.
+
+## Adapting an External Library
+
+This example shows how to integrate the [CodeMirror](https://codemirror.net/) editor in an application.
+
+[Try it Online](https://hyperapp-code-mirror.glitch.me)
+
+```jsx
+const Editor = props =>
+  <div
+    oncreate={element => {
+      const cm = CodeMirror(node => element.appendChild(node))
+
+      // Share it.
+      element.CodeMirror = {
+        set: props =>
+          Object.keys(props).forEach(key => cm.setOption(key, props[key]))
+      }
+
+      element.CodeMirror.set(props)
+    }}
+    onupdate={element => element.CodeMirror.set(props)}
+  />
+
+app({
+  //...
+  view: state =>
+    <Editor
+      mode={state.mode}
+      theme={state.theme}
+      lineNumbers={state.lineNumbers}
+    />
+})
+```

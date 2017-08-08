@@ -2,7 +2,7 @@
 
 A [component](/docs/api.md#component) is a function that returns a custom [virtual node](/docs/virtual-nodes.md). Components are reusable blocks of code that encapsulate markup, styles and behaviours that belong together.
 
-[Try it online](https://codepen.io/hyperapp/pen/WRWbKw?editors=0010)
+[Try it Online](https://codepen.io/hyperapp/pen/WRWbKw?editors=0010)
 
 ```js
 const Title = ({ url, value }/*, children*/) =>
@@ -13,7 +13,7 @@ const Title = ({ url, value }/*, children*/) =>
 app({
   view: () =>
     <main id="app">
-      <Title url="#" value="Link" />
+      <Title url="#" value="Jump" />
     </main>
 })
 ```
@@ -27,14 +27,14 @@ Here is the corresponding virtual node.
     id: "app"
   },
   children: [{
-    tag: "a",
-    data: {
-      href: "#"
-    },
+    tag: "h1",
+    data: {},
     children: [{
-      tag: "h1",
-      data: undefined,
-      children: ["Hello."]
+      tag: "a",
+      data: {
+        href: "#"
+      },
+      children: ["Jump"]
     }]
   }]
 }
@@ -51,5 +51,5 @@ const Link = (props, children) =>
 
 ## Component Lifecycle Events
 
-Components share the same lifecycle events available to virtual nodes. See [Lifecyle Events](/docs/lifecycle-events.md) for details.
+Components share the same lifecycle events as virtual nodes. See [Lifecyle Events](/docs/lifecycle-events.md) for more information.
 

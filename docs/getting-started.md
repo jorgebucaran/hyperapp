@@ -12,8 +12,10 @@ Let's begin with the simplest of all programs. Paste the following code in a new
 const { h, app } = hyperapp
 
 app({
-  state: "Hello.",
-  view: state => h("h1", {}, state)
+  state: {
+    message: "Hello."
+  },
+  view: state => h("h1", {}, state.message)
 })
 
 </script>
@@ -22,31 +24,31 @@ app({
 
 You should see that "Hello." is displayed on the page.
 
+### Dissecting the Code
+
 The state describes the application's data.
 
 ```js
-state: "Hello."
+state: {
+  message: "Hello."
+}
 ```
 
 The view describes the application's user interface.
 
 ```js
-state => h("h1", {}, state)
+state => h("h1", {}, state.message)
 ```
 
-You can write a view using [JSX] or [Hyperx] and compile it in a [build pipeline](#build-pipeline).
+You can write a view using [JSX], [hyperx], etc., and compile it in a [build pipeline](#build-pipeline).
 
 ```jsx
-state => <h1>{state}</h1>
+state => <h1>{state.message}</h1>
 ```
 
-The [app](/docs/api.md#app) function wraps up everything and renders the view on the DOM.
+The [app](/docs/api.md#app) function wraps it all together and renders the view on the DOM.
 
-And... we're done.
-
----
-
-We've only scratched the surface of what you can do and what's available in HyperApp. To learn more, check out the [Tutorials](/docs/tutorials.md) or read the [Implementation Notes](/docs/implementation-nodes.md) to peek under the hood.
+To learn more, check out the [Tutorials](/docs/tutorials.md) or read the [Implementation Notes](/docs/implementation-nodes.md) to peek under the hood.
 
 ## Installation
 
@@ -78,24 +80,24 @@ import { h, app } from "hyperapp"
 
 A build pipeline typically consists of a package manager, a compiler and a bundler.
 
-Using a build pipeline we can transform JSX / Hyperx markup into [h](/docs/api.md#h) calls before runtime. This is much faster than sending a parser down the wire and compiling the view in the browser.
+Using a build pipeline we can transform JSX or hyperx markup into [`h`](/docs/api.md#h) calls before runtime. This is much faster than sending a parser down the wire and compiling the view in the browser.
 
-JSX / Hyperx in:
+JSX or hyperx
 
 ```jsx
 <main id="app">Hello.</main>
 ```
 
-Vanilla out:
+Vanilla out
 
 ```jsx
 h("main", { id: "app" }, "Hello.")
 ```
 
-A build pipeline lets you easily install and update third-party libraries, compile modern JavaScript for older browser and bundle your application into small modules to optimize load time.
+A build pipeline lets you install and update third-party libraries easily, compile modern JavaScript for older browser and bundle your application into small modules to optimize load time.
 
-See [JSX] or [Hyperx] for setup instructions.
+See [JSX] or [hyperx] for setup instructions.
 
-[Hyperx]: /docs/hyperx.md
+[hyperx]: /docs/hyperx.md
 [JSX]: /docs/jsx.md
-
+[t7]: https://github.com/trueadm/t7

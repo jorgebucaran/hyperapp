@@ -2,7 +2,7 @@
 
 [JSX](https://facebook.github.io/jsx/) is an XML-like syntax extension to ECMAScript. It allows you to mix HTML and JavaScript.
 
-JSX is not part of the ECMAScript standard, but using the appropriate tooling we can compile our JavaScript/JSX code into JavaScript browsers understand.
+JSX is not part of the ECMAScript standard, but using the appropriate tooling we can compile JSX code into JavaScript browsers understand.
 
 ```jsx
 <div>
@@ -17,7 +17,7 @@ For an in-depth introduction to JSX, see the official [documentation](https://fa
 
 We can use [Babel](https://github.com/babel/babel) to transform JSX into [`h`](/docs/api.md#h) function calls and a bundler to create a single file we can deliver to the browser.
 
-In a new directory, create an `index.html` file:
+In a new directory, create an `index.html` file.
 
 ```html
 <!doctype html>
@@ -36,19 +36,21 @@ And an `index.js` file:
 import { h, app } from "hyperapp"
 
 app({
-  state: "Hi.",
-  view: state => <h1>{state}</h1>
+  state: {
+    message: "Hi."
+  },
+  view: state => <h1>{state.message}</h1>
 })
 ```
 
-Install dependencies:
+Install dependencies.
 <pre>
 npm i <a href="https://www.npmjs.com/package/hyperapp">hyperapp</a>
 </pre>
 
 ## [Browserify](https://gist.github.com/jbucaran/21bbf0bbb0fe97345505664883100706 "Get this gist")
 
-Install development dependencies:
+Install development dependencies.
 <pre>
 npm i -D \
   <a href="https://www.npmjs.com/package/babel-plugin-transform-react-jsx">babel-plugin-transform-react-jsx</a> \
@@ -76,7 +78,7 @@ Create a `.babelrc` file:
 }
 ```
 
-Bundle the application:
+Bundle the application.
 <pre>
 $(<a href="https://docs.npmjs.com/cli/bin">npm bin</a>)/browserify \
   -t babelify \
@@ -86,7 +88,7 @@ $(<a href="https://docs.npmjs.com/cli/bin">npm bin</a>)/browserify \
 
 ## [Webpack](https://gist.github.com/jbucaran/6010a83891043a6e0c37a3cec684c08e "Get this gist")
 
-Install development dependencies:
+Install development dependencies.
 <pre>
 npm i -D \
   <a href="https://www.npmjs.com/package/webpack">webpack</a> \
@@ -96,7 +98,7 @@ npm i -D \
   <a href="https://www.npmjs.com/package/babel-plugin-transform-react-jsx">babel-plugin-transform-react-jsx</a>
 </pre>
 
-Create a `.babelrc` file:
+Create a `.babelrc` file.
 ```js
 {
   "presets": ["es2015"],
@@ -129,14 +131,14 @@ module.exports = {
 }
 ```
 
-Bundle the application:
+Bundle the application.
 <pre>
 $(<a href="https://docs.npmjs.com/cli/bin">npm bin</a>)/webpack -p
 </pre>
 
 ## [Rollup](https://gist.github.com/jbucaran/0c0da8f1256a0a66090151cfda777c2c "Get this gist")
 
-Install development dependencies:
+Install development dependencies.
 <pre>
 npm i -D \
   <a href="https://www.npmjs.com/package/rollup">rollup</a> \
@@ -148,7 +150,7 @@ npm i -D \
 </pre>
 
 
-Create a `rollup.config.js` file:
+Create a `rollup.config.js` file.
 
 ```jsx
 import babel from "rollup-plugin-babel"
@@ -172,7 +174,7 @@ export default {
 }
 ```
 
-Bundle the application:
+Bundle the application.
 <pre>
 $(<a href="https://docs.npmjs.com/cli/bin">npm bin</a>)/rollup -cf iife -i index.js -o bundle.js
 </pre>

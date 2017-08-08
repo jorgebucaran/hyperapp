@@ -15,11 +15,11 @@ const main = html`
 
 ## Setup
 
-We can use [Hyperxify](https://github.com/substack/hyperxify) to transform Hyperx into [`h`](/docs/h.md#h) function calls and a bundler to create a single file we can deliver to the browser.
+We can use [hyperxify](https://github.com/substack/hyperxify) to transform hyperx into [`h`](/docs/h.md#h) function calls and a bundler to create a single file we can deliver to the browser.
 
-The ES6 import syntax is incompatible with Hyperxify, so we'll use the Node.js require function.
+The ES6 import syntax is incompatible with hyperxify, so we'll use the Node.js require function.
 
-In a new directory, create an `index.html` file:
+In a new directory, create an `index.html` file.
 
 ```html
 <!doctype html>
@@ -32,7 +32,7 @@ In a new directory, create an `index.html` file:
 </html>
 ```
 
-And and `index.js` file:
+And an `index.js` file.
 
 ```js
 const { h, app } = require("hyperapp")
@@ -40,19 +40,21 @@ const hyperx = require("hyperx")
 const html = hyperx(h)
 
 app({
-  state: "Hi.",
-  view: state => html`<h1>${state}</h1>`
+  state: {
+    message: "Hi."
+  },
+  view: state => html`<h1>${state.message}</h1>`
 })
 ```
 
-Install dependencies:
+Install dependencies.
 <pre>
 npm i <a href="https://www.npmjs.com/package/hyperapp">hyperapp</a>
 </pre>
 
 ## [Browserify](https://gist.github.com/jbucaran/48c1edb4fb0ea1aa5415b6686cc7fb45 "Get this gist")
 
-Install development dependencies:
+Install development dependencies.
 <pre>
 npm i -D \
   <a href="https://www.npmjs.com/package/browserify">browserify</a> \
@@ -64,7 +66,7 @@ npm i -D \
   <a href="https://www.npmjs.com/package/uglify-js">uglify-js</a>
 </pre>
 
-Create a `.babelrc` file:
+Create a `.babelrc` file.
 
 ```
 {
@@ -72,7 +74,7 @@ Create a `.babelrc` file:
 }
 ```
 
-Bundle the application:
+Bundle the application.
 <pre>
 $(<a href="https://docs.npmjs.com/cli/bin">npm bin</a>)/browserify \
   -t hyperxify \
@@ -83,7 +85,7 @@ $(<a href="https://docs.npmjs.com/cli/bin">npm bin</a>)/browserify \
 
 ## [Webpack](https://gist.github.com/jbucaran/c6a6bdb5383a985cec6b0ae4ebe5a4b1 "Get this gist")
 
-Install development dependencies:
+Install development dependencies.
 <pre>
 npm i -D \
   <a href="https://www.npmjs.com/package/hyperx">hyperx</a> \
@@ -95,7 +97,7 @@ npm i -D \
   <a href="https://www.npmjs.com/package/babel-preset-es2015">babel-preset-es2015</a>
 </pre>
 
-Create a `.babelrc` file:
+Create a `.babelrc` file.
 ```js
 {
   "presets": ["es2015"]
@@ -122,7 +124,7 @@ module.exports = {
 }
 ```
 
-Bundle the application:
+Bundle the application.
 <pre>
 $(<a href="https://docs.npmjs.com/cli/bin">npm bin</a>)/webpack -p
 </pre>

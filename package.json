@@ -7,7 +7,10 @@
   "module": "src/index.js",
   "license": "MIT",
   "repository": "hyperapp/hyperapp",
-  "files": ["src", "dist"],
+  "files": [
+    "src",
+    "dist"
+  ],
   "author": "Jorge Bucaran",
   "keywords": [
     "hyperapp",
@@ -21,7 +24,9 @@
   ],
   "scripts": {
     "test": "bundlesize && jest --coverage --no-cache",
-    "build": "rollup -cm -n hyperapp -f umd -i src/index.js -o dist/hyperapp.js",
+    "build": "npm run bundle && npm run minify",
+    "bundle": "rollup -i src/index.js -o dist/hyperapp.js -m -f umd -n hyperapp",
+    "minify": "uglifyjs dist/hyperapp.js -o dist/hyperapp.js --mangle --compress warnings=false --pure-funcs=Object.defineProperty -p relative --source-map dist/hyperapp.js.map",
     "prepublish": "npm run build",
     "format": "prettier --semi false --write 'src/**/*.js'",
     "release": "npm run build && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
@@ -35,7 +40,7 @@
     "jest": "^20.0.4",
     "prettier": "~1.5.3",
     "rollup": "^0.45.2",
-    "rollup-plugin-uglify": "^2.0.1"
+    "uglify-js": "^2.7.5"
   },
   "bundlesize": [
     {

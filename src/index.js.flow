@@ -1,0 +1,50 @@
+declare module "hyperapp" {
+  declare type VirtualNode = {
+    tag: string,
+    data: { [string]: any },
+    children: Array<VirtualNode | string>
+  };
+
+  declare type Emit = (event: string, data: any) => { [string]: any };
+
+  declare type Thunk = () => { [string]: any };
+  declare type ActionResult = { [string]: any } | Thunk;
+  declare type Action = (
+    state: { [string]: any },
+    actions: { [string]: Action },
+    data?: any
+  ) => ActionResult;
+  declare type Actions = { [string]: Action };
+
+  declare type Event = (
+    state: { [string]: any },
+    actions: Actions,
+    data?: any
+  ) => { [string]: any };
+  declare type Events = { [string]: Event };
+
+  declare type View = (
+    state: { [string]: any },
+    actions: Actions
+  ) => VirtualNode;
+
+  declare type Mixin = (
+    emit: Emit
+  ) => {
+    state?: { [string]: any },
+    actions?: Actions,
+    events?: Events,
+    mixins?: Array<Mixin>
+  };
+
+  declare module.exports: {
+    h(tag: string, data: any): VirtualNode,
+    app(props: {
+      state: { [string]: any },
+      view?: View,
+      actions?: Actions,
+      events?: Events,
+      mixins?: Array<Mixin>
+    }): Emit
+  };
+}

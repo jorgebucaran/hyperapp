@@ -5,7 +5,7 @@ declare module "hyperapp" {
     children: Array<VirtualNode | string>
   };
 
-  declare type Emit = (event: string, data: any) => { [string]: any };
+  declare type Emit = (event: string, data: any) => any;
 
   declare type Thunk = () => { [string]: any };
   declare type ActionResult = { [string]: any } | Thunk;

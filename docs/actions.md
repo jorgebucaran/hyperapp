@@ -1,7 +1,7 @@
 # Actions
 
 
-Actions are functions which take the current [state](/docs/state.md) and return a partial state or a [thunk](#thunks). Actioons are the only way to update the state tree.
+Actions are functions which take the current [state](/docs/state.md) and return a partial state or a [thunk](#thunks). Actions are the only way to update the state tree.
 
 [Try it Online](https://codepen.io/hyperapp/pen/qRMEGX?editors=0010)
 

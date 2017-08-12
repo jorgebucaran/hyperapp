@@ -22,7 +22,7 @@ test("no root", done => {
   })
 })
 
-test("given root", done => {
+test("root", done => {
   document.body.innerHTML = "<main></main>"
 
   app({
@@ -32,7 +32,7 @@ test("given root", done => {
         "div",
         {
           oncreate() {
-            expect(document.body.innerHTML).toBe("<div>foo</div>")
+            expect(document.body.innerHTML).toBe("<main><div>foo</div></main>")
             done()
           }
         },
@@ -42,27 +42,27 @@ test("given root", done => {
 })
 
 test("root as document.body", done => {
-  document.body.innerHTML = "<div></div>"
+  document.body.innerHTML = "<div>fizz</div>"
 
   app({
     root: document.body,
     view: state =>
       h(
-        "body",
+        "main",
         {
-          id: "foo",
           oncreate() {
-            expect(document.body.id).toBe("foo")
-            expect(document.body.innerHTML).toBe("<main>foo</main>")
+            expect(document.body.innerHTML).toBe(
+              `<div>fizz</div><main><p>foo</p></main>`
+            )
             done()
           }
         },
-        [h("main", {}, "foo")]
+        [h("p", {}, "foo")]
       )
   })
 })
 
-test("root nested inside another element", done => {
+test("nested root", done => {
   document.body.innerHTML = "<main><section></section><div></div></main>"
 
   app({
@@ -73,7 +73,7 @@ test("root nested inside another element", done => {
         {
           oncreate() {
             expect(document.body.innerHTML).toBe(
-              `<main><section></section><p>foo</p></main>`
+              `<main><section></section><div><p>foo</p></div></main>`
             )
             done()
           }
@@ -93,10 +93,12 @@ test("root with mutated host", done => {
     root,
     view: (state, actions) =>
       h(
-        "div",
+        "p",
         {
           oncreate() {
-            expect(document.body.innerHTML).toBe(`<main><div>foo</div></main>`)
+            expect(document.body.innerHTML).toBe(
+              `<main><div><p>foo</p></div></main>`
+            )
             //
             // We should be able to patch the root even if the host is mutated.
             //
@@ -107,7 +109,7 @@ test("root with mutated host", done => {
           },
           onupdate() {
             expect(document.body.innerHTML).toBe(
-              `<main><header></header><div>bar</div><footer></footer></main>`
+              `<main><header></header><div><p>bar</p></div><footer></footer></main>`
             )
             done()
           }

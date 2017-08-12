@@ -2,76 +2,106 @@ import { h, app } from "../src"
 
 window.requestAnimationFrame = setTimeout
 
-//
-// Naive hydration. Doesn't handle contiguous empty text nodes.
-//
-const hydrate = node =>
-  node
-    ? {
+const walk = (node, map) => {
+  return map(
+    node,
+    node
+      ? Array.prototype.map
+          .call(
+            node.childNodes,
+            node =>
+              node.nodeType === Node.TEXT_NODE
+                ? node.nodeValue.trim() && node.nodeValue
+                : walk(node, map)
+          )
+          .filter(node => node)
+      : node
+  )
+}
+
+const Hydrator = () => ({
+  events: {
+    load(state, actions, root) {
+      return walk(root, (node, children) => ({
         tag: node.tagName.toLowerCase(),
         data: {},
-        children: Array.prototype.map.call(
-          node.childNodes,
-          node => (node.nodeType === 3 ? node.nodeValue : hydrate(node))
-        )
-      }
-    : node
+        children
+      }))
+    }
+  }
+})
 
 beforeEach(() => {
   document.body.innerHTML = ""
 })
 
 test("hydrate from SSR", done => {
-  document.body.innerHTML = `<div id="foo" data-ssr>foo</div>`
+  document.body.innerHTML = `<div id="ssr"><main><p>foo</p></main></div>`
 
   app({
-    root: document.querySelector("[data-ssr]"),
+    root: document.getElementById("ssr"),
     view: state =>
       h(
-        "div",
+        "main",
         {
           onupdate() {
             //
-            // Careful: oncreate doesn't fire in hydrated nodes!
+            // Careful: oncreate doesn't fire for rehydrated nodes!
             //
             expect(document.body.innerHTML).toBe(
-              `<div id="foo" data-ssr="">foo</div>`
+              `<div id="ssr"><main><p>foo</p></main></div>`
             )
             done()
           }
         },
-        "foo"
+        [h("p", {}, "foo")]
       ),
-    events: {
-      load(state, actions, root) {
-        return hydrate(root)
-      }
-    }
+    mixins: [Hydrator]
   })
 })
 
-test("hydrate from SSR with out-of-date text node", done => {
-  document.body.innerHTML = `<div id="foo" data-ssr>foo</div>`
+test("hydrate from SSR with out-of-date node", done => {
+  document.body.innerHTML = `<div id="ssr"><main><h1>foo</h1></main></div>`
 
   app({
     view: state =>
       h(
-        "div",
+        "main",
         {
           onupdate() {
             expect(document.body.innerHTML).toBe(
-              `<div id="foo" data-ssr="">bar</div>`
+              `<div id="ssr"><main><h1>bar</h1></main></div>`
             )
             done()
           }
         },
-        "bar"
+        [h("h1", {}, "bar")]
       ),
-    root: document.querySelector("[data-ssr]"),
-    events: {
-      load(state, actions, root) {
-        return hydrate(root)
-      }
-    }
+    root: document.getElementById("ssr"),
+    mixins: [Hydrator]
+  })
+})
+
+test("hydrate from SSR ", done => {
+  document.body.innerHTML = `<div id="ssr"><main></main></div>`
+
+  app({
+    view: state =>
+      h("main", {}, [
+        h(
+          "div",
+          {
+            oncreate() {
+              expect(document.body.innerHTML).toBe(
+                `<div id="ssr"><main><div>foo</div></main></div>`
+              )
+              done()
+            }
+          },
+          "foo"
+        )
+      ]),
+    root: document.getElementById("ssr"),
+    mixins: [Hydrator]
   })
 })

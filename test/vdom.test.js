@@ -6,7 +6,7 @@ function testTrees(name, trees) {
       root: document.body,
       view: (state, actions) =>
         h(
-          "body",
+          "main",
           {
             oncreate: actions.next,
             onupdate: actions.next
@@ -22,7 +22,7 @@ function testTrees(name, trees) {
         },
         next(state, actions) {
           expect(document.body.innerHTML).toBe(
-            trees[state.index].html.replace(/\s{2,}/g, "")
+            `<main>${trees[state.index].html.replace(/\s{2,}/g, "")}</main>`
           )
 
           if (state.index === trees.length - 1) {

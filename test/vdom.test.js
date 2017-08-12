@@ -653,3 +653,26 @@ testTrees("skip setAttribute for functions", [
     html: `<div></div>`
   }
 ])
+
+testTrees("update element with dynamic props", [
+  {
+    tree: h("input", {
+      type: "text",
+      oncreate(element) {
+        element.value = "bar"
+      },
+      value: "foo"
+    }),
+    html: `<input type="text" value="foo">`
+  },
+  {
+    tree: h("input", {
+      type: "text",
+      onupdate(element) {
+        expect(element.value).toBe("foo")
+      },
+      value: "foo"
+    }),
+    html: `<input type="text" value="foo">`
+  }
+])

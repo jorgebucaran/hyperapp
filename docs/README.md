@@ -20,7 +20,10 @@
   - [Keys](/docs/keys.md)
   - [Components](/docs/components.md)
   - [Lifecycle Events](/docs/lifecycle-events.md)
-  - [SSR & Hydration](/docs/hydration.md)
+- Advanced Topics
+  - [Event Bubbling](/docs/bubling.md)
+  - [Routing](/docs/routing.md)
+  - [Hydration](/docs/hydration.md)
 - Learning
   - [Implementation Notes](/docs/implementation-notes.md)
   - [Tutorials](/docs/tutorials.md)

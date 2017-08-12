@@ -1,4 +1,4 @@
-# [hyperapp](https://hyperapp.glitch.me)
+# [hyperapp](https://codepen.io/hyperapp)
 [![Travis CI](https://img.shields.io/travis/hyperapp/hyperapp/master.svg)](https://travis-ci.org/hyperapp/hyperapp)
 [![Codecov](https://img.shields.io/codecov/c/github/hyperapp/hyperapp/master.svg)](https://codecov.io/gh/hyperapp/hyperapp)
 [![npm](https://img.shields.io/npm/v/hyperapp.svg)](https://www.npmjs.org/package/hyperapp)
@@ -24,12 +24,12 @@ app({
   view: (state, actions) =>
     <main>
       <h1>{state.count}</h1>
-      <button onclick={actions.sub}>ー</button>
-      <button onclick={actions.add}>＋</button>
+      <button onclick={actions.down}>ー</button>
+      <button onclick={actions.up}>＋</button>
     </main>,
   actions: {
-    sub: state => ({ count: state.count - 1 }),
-    add: state => ({ count: state.count + 1 })
+    down: state => ({ count: state.count - 1 }),
+    up: state => ({ count: state.count + 1 })
   }
 })
 ```

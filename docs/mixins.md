@@ -4,16 +4,30 @@ Use [mixins](/docs/api.md#mixins) to encapsulate your application behavior into 
 
 ```jsx
 app({
-  //...,
   mixins: [MyMixin]
 })
 ```
 
-## Emitting Events
+This mixin logs action information to the console.
+
+```jsx
+const SimpleLogger = () => ({
+  events: {
+    action(state, actions, { name, data }) {
+      console.group("Action Info")
+      console.log("Name:", name)
+      console.log("Data:", data)
+      console.groupEnd()
+    }
+  }
+})
+```
+
+## Using `emit`
 
 Mixins receive the [`emit`](/docs/api.md#emit) function as the first argument allowing you to create [custom events](/docs/events.md#custom-events).
 
-This mixin listens to [action](/docs/events.md#action) and [resolve](/docs/events.md#resolve) events to time the duration between each action.
+This mixin listens to [`action`](/docs/events.md#action) and [`resolve`](/docs/events.md#resolve) events to time the duration between each action.
 
 ```jsx
 const ActionPerformanceTimer = (ignored = [], cache = []) => emit => ({
@@ -36,19 +50,67 @@ const ActionPerformanceTimer = (ignored = [], cache = []) => emit => ({
     }
   }
 })
-```
 
-```jsx
 app({
+  // ...
   events: {
     time(state, actions, { name, time }) {
-      console.group("Action Time Info")
+      console.group("Action Performance")
       console.log("Name:", name)
       console.log("Time:", time)
       console.groupEnd()
     }
   },
   mixins: [ActionPerformanceTimer()]
+})
+```
+
+This mixin adds a new application-level event that fires before the state is updated.
+
+```jsx
+const BeforeUpdate = emit => ({
+  events: {
+    resolve(state, actions, result) {
+      typeof action === "function"
+        ? update => result(withState => update(emit("beforeUpdate", withState)))
+        : emit("beforeUpdate", result)
+    }
+  }
+})
+```
+
+This mixin adds a new wildcard event that can intercept any other event.
+
+```jsx
+const CatchThemAll = events => emit => ({
+  events: {
+    ...events.reduce((result, event) => {
+      return {
+        ...result,
+        ...{
+          [event]: (state, actions, data) => {
+            emit("all", { event, data })
+          }
+        }
+      }
+    }, {})
+  }
+})
+
+app({
+  events: {
+    all(state, actions, { event, data }) {
+      console.group("Event")
+      console.log("Name:", event)
+      console.log("Data:", data)
+      console.groupEnd()
+    }
+  },
+  mixins: [CatchThemAll([
+    "action",
+    "resolve",
+    "update"
+  ])]
 })
 ```
 
@@ -61,3 +123,4 @@ const DevTools = () => ({
   mixins: [Logger, Debugger, Replayer]
 })
 ```
+

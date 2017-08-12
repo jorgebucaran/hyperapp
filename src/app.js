@@ -6,9 +6,10 @@ export function app(props) {
   var appEvents = {}
   var appMixins = []
   var appView = props.view
-  var prevNode
-  var appRoot = props.root
-  var willRender = false
+  var appRoot = props.root || document.body
+  var element = appRoot.children[0]
+  var oldNode
+  var willRender
 
   for (var i = -1; i < appMixins.length; i++) {
     props = appMixins[i] ? appMixins[i](emit) : props
@@ -23,32 +24,34 @@ export function app(props) {
     appState = merge(appState, props.state)
   }
 
-  requestRender((prevNode = emit("load", appRoot)))
+  requestRender(
+    (oldNode = emit("load", element)) === element && (oldNode = element = null)
+  )
 
   return emit
 
   function render(cb) {
-    appRoot = patch(
-      (appRoot && appRoot.parentNode) || document.body,
+    element = patch(
       appRoot,
-      prevNode,
-      (prevNode = emit("render", appView)(appState, appActions)),
+      element,
+      oldNode,
+      (oldNode = emit("render", appView)(appState, appActions)),
       (willRender = !willRender)
     )
     while ((cb = globalInvokeLaterStack.pop())) cb()
-  }
-
-  function update(withState) {
-    if (withState) {
-      requestRender((appState = emit("update", merge(appState, withState))))
-    }
-    return appState
   }
 
   function requestRender() {
     if (appView && !willRender) {
       requestAnimationFrame(render, (willRender = !willRender))
     }
+  }
+
+  function update(withState) {
+    if (withState && (withState = emit("update", merge(appState, withState)))) {
+      requestRender((appState = withState))
+    }
+    return appState
   }
 
   function adaptActions(namespace, children, lastName) {

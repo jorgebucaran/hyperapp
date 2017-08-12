@@ -1,8 +1,8 @@
 # Virtual Nodes
 
-A virtual node describes a DOM tree.
+A virtual node is a JavaScript object that represents a DOM tree.
 
-It consists of a tag, e.g. <samp>div</samp>, <samp>svg</samp>, etc., [attributes](#attributes) and an array of child nodes.
+It consists of a `tag` name, `data` [attributes](#attributes) and `children` array.
 
 ```js
 {
@@ -26,7 +26,7 @@ The virtual DOM engine consumes a virtual node and produces a DOM tree.
 </div>
 ```
 
-Create virtual nodes with the [`h`](/docs/api.md#h) function.
+To create virtual nodes use the [`h`](/docs/api.md#h) function.
 
 ```js
 const vnode = h("div", { id: "app" }, [
@@ -34,7 +34,7 @@ const vnode = h("div", { id: "app" }, [
 ])
 ```
 
-Or use [JSX](https://facebook.github.io/react/docs/jsx-in-depth.html) / [Hyperx](https://github.com/substack/hyperx).
+Or [JSX](https://facebook.github.io/react/docs/jsx-in-depth.html) / [Hyperx](https://github.com/substack/hyperx) inside a [build pipeline](/docs/getting-started.md#build-pipeline).
 
 ```jsx
 const vnode = (

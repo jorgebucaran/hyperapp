@@ -1,20 +1,25 @@
 # View
 
-The [view](/docs/api.md#view) represents the user interface in your application. The view function is called every time the state receives an update and returns a [virtual node](/docs/virtual-nodes.md).
+Use the [view](/docs/api.md#view) to describe your application user interface as a function of the [state](/docs/state.md).
 
 ```jsx
 app({
   state: {
-    breads: ["Pita", "Naan", "Pumpernickel"]
+    herbs: ["Basil", "Parsley", "Coriander"]
   },
   view: state =>
-    <ul>
-      {state.breads.map(bread => <li>{bread}</li>)}
-    </ul>
+    <main>
+      <h1>Herbs</h1>
+      {state.herbs.map(herb =>
+        <p>
+          {herb}
+        </p>
+      )}
+    </main>
 })
 ```
 
-The view receives the [actions](/docs/actions.md) object as the second argument. Use it to bind actions to UI events.
+Bind user events and [actions](/docs/actions.md) together to create interactive applications.
 
 [Try it Online](https://codepen.io/hyperapp/pen/zNxZLP?editors=0010)
 
@@ -26,14 +31,16 @@ app({
   view: (state, actions) =>
     <main>
       <h1>{state.count}</h1>
-      <button onclick={actions.sub}>ー</button>
-      <button onclick={actions.add}>＋</button>
+      <button onclick={actions.down}>ー</button>
+      <button onclick={actions.up}>＋</button>
     </main>,
   actions: {
-    sub: state => ({ count: state.count - 1 }),
-    add: state => ({ count: state.count + 1 })
+    down: state => ({ count: state.count - 1 }),
+    up: state => ({ count: state.count + 1 })
   }
 })
 ```
+
+The view function is called to generate a new [virtual node](/docs/virtual-node.md) as a result of state changes caused by actions.
 
 

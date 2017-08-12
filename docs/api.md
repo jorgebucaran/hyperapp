@@ -93,7 +93,7 @@ See [State](/docs/state.md).
 <pre>
 {
   [key: string]:
-    | <a href="#state">PartialState</a>
+    | <a href="#state">State</a>
     | any
 }
 </pre>
@@ -158,7 +158,7 @@ See [Events](/docs/events.md).
 <a id="render"></a>render(<a href="#state">State</a>, <a href="#actions">Actions</a>, <a href="#view">View</a>): <a href="#view">View</a>
 <a id="action"></a>action(<a href="#state">State</a>, <a href="#actions">Actions</a>, <a href="#actioninfo">ActionInfo</a>): <a href="#actioninfo">ActionInfo</a>
 <a id="resolve"></a>resolve(<a href="#state">State</a>, <a href="#actions">Actions</a>, <a href="#actionresult">ActionResult</a>): <a href="#actionresult">ActionResult</a>
-<a id="eventsupdate"></a>update(<a href="#state">State</a>, <a href="#actions">Actions</a>, <a href="#state">nextState</a>): <a href="#state">State</a>
+<a id="update_event"></a>update(<a href="#state">State</a>, <a href="#actions">Actions</a>, <a href="#state">State</a>): <a href="#state">State</a>
 </pre>
 
 #### CustomEvent
@@ -207,7 +207,7 @@ See [Custom Events](/docs/events.md#custom-events).
 See [Thunks](/docs/actions.md#thunks).
 
 <pre>
-(<a href="#state">PartialState</a>): void
+(<a href="#state">State</a>): any
 </pre>
 
 

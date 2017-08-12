@@ -67,3 +67,47 @@ test("optional view", done => {
     }
   })
 })
+
+test("view values update upon state change", done => {
+  document.body.innerHTML = `<div id="app"></div>`
+  const emit = app({
+    root: document.getElementById("app"),
+    state: { changeInput: false },
+    view: state => h("input", { id: state.changeInput ? "foo" : "bar", "value" : state.changeInput ? "fizz" : "buzz" }),
+    actions: {
+      updateInput (app, state, actions) {
+        state.changeInput = true
+        return state
+      }
+    },
+    events: {
+      updateView (state, actions) {
+        actions.updateInput()
+      },
+      load () {
+        expect(document.body.innerHTML).toBe(
+          `<div id="app"></div>`
+        )
+      }
+    }
+  })
+
+  const firstRenderId = requestAnimationFrame(() => {
+    expect(document.body.innerHTML).toBe(
+      `<input id="bar" value="buzz">`
+    )
+
+    emit("updateView")
+
+    const secondRenderId = requestAnimationFrame(() => {
+      console.log(document.body.innerHTML)
+      expect(document.body.innerHTML).toBe(
+        `<input id="foo" value="fizz">`
+      )
+      done()
+      cancelAnimationFrame(secondRenderId)
+    })
+
+    cancelAnimationFrame(firstRenderId)
+  })
+})

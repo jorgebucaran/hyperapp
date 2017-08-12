@@ -42,7 +42,6 @@ The documentation is in the [docs](/docs) directory.
 
 - [Slack](https://hyperappjs.herokuapp.com)
 - [/r/hyperapp](https://www.reddit.com/r/hyperapp)
-- [CodePen](https://codepen.io/hyperapp)
 - [Twitter](https://twitter.com/hyperappjs)
 
 ## License

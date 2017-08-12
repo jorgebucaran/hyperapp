@@ -129,7 +129,9 @@ See [Actions](/docs/actions.md).
 
 #### ActionResult
 
-A partial [State](#state) or [Thunk](#thunk).
+<pre>
+<a href="#state">State</a> | <a href="#thunk">Thunk</a> | void
+</pre>
 
 #### Thunk
 
@@ -188,11 +190,11 @@ Array&lt<a href="#mixin">Mixin</a>&gt
 
 ### Root
 
+See [Root](/docs/root.md).
+
 <pre>
 <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element">Element</a>
 </pre>
-
-See [Root](/docs/root.md).
 
 ## Emit
 

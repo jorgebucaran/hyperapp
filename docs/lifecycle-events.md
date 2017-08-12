@@ -40,7 +40,7 @@ app({
 
 ## onremove
 
-The [`onremove`](/docs/api.md#onremove) event is fired before the element is removed from the DOM. Use it for cleaning up resources like timers, creating slide/fade out animations, etc.
+The [`onremove`](/docs/api.md#onremove) event is fired before the element is removed from the DOM. Use it for cleaning up resources like timers, creating slide out animations, etc.
 
 ```jsx
 app({

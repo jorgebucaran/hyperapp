@@ -1,20 +1,15 @@
 # Hydration
 
-Hydration is a time-to-content and search engine optimization technique where you can turn statically rendered DOM nodes into an interactive application.
+Hydration is a perceived performance and search engine optimization technique where you can turn statically rendered DOM nodes into an interactive application.
 
 ```jsx
 app({
-  state: {
-    count: 0
-  },
+  // ...
   view: (state, actions) =>
     <main>
       <h1>{state.count}</h1>
       <button onclick={actions.up}>＋</button>
     </main>,
-  actions: {
-    up: state => ({ count: state.count - 1 })
-  },
   mixins: [Hydrator]
 })
 ```
@@ -40,12 +35,14 @@ Then interating over the [root](/docs/root.md) child nodes to create a [virtual 
 
 ```jsx
 const Hydrator = () => ({
-  load(state, actions, root) {
-    return walk(root, (node, children) => ({
-      tag: node.tagName.toLowerCase(),
-      data: {},
-      children
-    }))
+  events: {
+    load(state, actions, root) {
+      return walk(root, (node, children) => ({
+        tag: node.tagName.toLowerCase(),
+        data: {},
+        children
+      }))
+    }
   }
 })
 

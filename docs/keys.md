@@ -19,7 +19,7 @@ const ImageGallery = images =>
 
 Don't use an array index as key. If the position and number of items in a list is fixed, it will make no difference, but if the list is dynamic, the key will change every time the tree is rebuilt.
 
-To select a valid key, find a unique property for each item among its sublings.
+To select a valid key, find a unique property for each item among its siblings.
 
 ```jsx
 const PlayerList = players =>

@@ -15,14 +15,11 @@
   - [Events](/docs/events.md)
   - [Mixins](/docs/mixins.md)
   - [Root](/docs/root.md)
-- Core Concepts
+- Concepts
   - [Virtual Nodes](/docs/virtual-nodes.md)
   - [Keys](/docs/keys.md)
   - [Components](/docs/components.md)
   - [Lifecycle Events](/docs/lifecycle-events.md)
-- Advanced Topics
-  - [Event Bubbling](/docs/bubling.md)
-  - [Routing](/docs/routing.md)
   - [Hydration](/docs/hydration.md)
 - Learning
   - [Implementation Notes](/docs/implementation-notes.md)

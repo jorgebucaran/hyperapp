@@ -4,7 +4,7 @@ Lifecycle events are functions called at various points in the life of a [virtua
 
 ## oncreate
 
-The [`oncreate`](/docs/api.md#oncreate) event is fired after the element is created and attached to the DOM. Use it to manipulate the DOM node directly, create animations etc.
+The [oncreate](/docs/api.md#oncreate) event is fired after the element is created and attached to the DOM. Use it to manipulate the DOM node directly, make a network request, create animations etc.
 
 ```jsx
 app({
@@ -20,7 +20,7 @@ app({
 
 ## onupdate
 
-The [`onupdate`](/docs/api.md#onupdate) event is fired after the element attributes are updated. This event will fire even if the attributes have not changed. You can use `oldProps` inside the function to check if they changed or not.
+The [onupdate](/docs/api.md#onupdate) event is fired after the element attributes are updated. This event will fire even if the attributes have not changed. You can use `oldProps` inside the function to check if they changed or not.
 
 ```jsx
 app({
@@ -40,7 +40,7 @@ app({
 
 ## onremove
 
-The [`onremove`](/docs/api.md#onremove) event is fired before the element is removed from the DOM. Use it for cleaning up resources like timers, creating slide out animations, etc.
+The [onremove](/docs/api.md#onremove) event is fired before the element is removed from the DOM. Use it for cleaning up resources like timers, creating slide out animations, etc.
 
 ```jsx
 app({
@@ -58,7 +58,7 @@ app({
 })
 ```
 
-Notice that when using this event you must also remove the element.
+Note that when using this event you must also remove the element.
 
 ## Adapting an External Library
 

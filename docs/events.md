@@ -1,6 +1,6 @@
 # Events
 
-Events are functions called at various points in the life of your application. Use them to intercept [actions](/docs/actions.md), cancel [state](/docs/state.md) updates, etc.
+Events are functions called at various points in the life of your application. Use them to inspect and intercept [actions](/docs/actions.md), cancel [state](/docs/state.md) updates, overwrite the [view](/docs/view.md) function, etc.
 
 ## Default Events
 
@@ -99,7 +99,7 @@ app({
 
 ### update
 
-Use [update](/docs/api.md#update_event) to record state changes, validate or prevent state updates.
+Use [update](/docs/api.md#update_event) to record, validate or prevent state updates.
 
 Return `false` to cancel the update and prevent the view from re-rendering.
 
@@ -118,7 +118,7 @@ app({
 
 ### render
 
-Use [render](/docs/api.md#render) to overwrite the [view](/docs/view.md) function before it is run.
+Use [render](/docs/api.md#render) to overwrite the [view](/docs/view.md) function before it is called.
 
 ```jsx
 app({

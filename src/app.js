@@ -18,7 +18,7 @@ export function app(props) {
       appEvents[key] = (appEvents[key] || []).concat(props.events[key])
     })
 
-    adaptActions(appActions, props.actions)
+    initialize(appActions, props.actions)
 
     appMixins = appMixins.concat(props.mixins || [])
     appState = merge(appState, props.state)
@@ -29,6 +29,25 @@ export function app(props) {
   )
 
   return emit
+
+  function initialize(actions, withActions, lastName) {
+    Object.keys(withActions || []).map(function(key) {
+      var action = withActions[key]
+      var name = lastName ? lastName + "." + key : key
+
+      if (typeof action === "function") {
+        actions[key] = function(data) {
+          emit("action", { name: name, data: data })
+
+          var result = emit("resolve", action(appState, appActions, data))
+
+          return typeof result === "function" ? result(update) : update(result)
+        }
+      } else {
+        initialize(actions[key] || (actions[key] = {}), action, name)
+      }
+    })
+  }
 
   function render(cb) {
     element = patch(
@@ -52,25 +71,6 @@ export function app(props) {
       requestRender((appState = withState))
     }
     return appState
-  }
-
-  function adaptActions(namespace, children, lastName) {
-    Object.keys(children || []).map(function(key) {
-      var action = children[key]
-      var name = lastName ? lastName + "." + key : key
-
-      if (typeof action === "function") {
-        namespace[key] = function(data) {
-          emit("action", { name: name, data: data })
-
-          var result = emit("resolve", action(appState, appActions, data))
-
-          return typeof result === "function" ? result(update) : update(result)
-        }
-      } else {
-        adaptActions(namespace[key] || (namespace[key] = {}), action, name)
-      }
-    })
   }
 
   function emit(name, data) {

@@ -14,31 +14,31 @@ Inside the loop we also build the array of event handlers and initialize the sta
 
 ### The Initial Render
 
-Before the initial render, fire the [load](/docs/events.md#load) event, pass it the `element` and save the result in `oldNode`.
+Before the initial render, fire [load](/docs/events.md#load), pass it the element and save the result in `oldNode`.
 
-This allows you to iterate the root child nodes inside `load` to return a virtual node we can use to [rehydrate](/docs/hydration.md) statically rendered DOM nodes.
+This allows you to iterate the root child nodes inside load and return a [virtual node](/docs/virtual-node.md) we can use for [hydration](/docs/hydration.md).
 
-If you don't return anything from load, [`emit`](#emit) will return the same data we pass it so we can invalidate both `oldNode` and `element`. Otherwise, [`patch`](#patch) will overwrite the first child node inside `appRoot`.
+If you don't return anything from an event, [`emit`](#emit) returns the same data we pass it. This way we can invalidate `oldNode` and `element`. Otherwise, [`patch`](#patch) will overwrite the first child node inside the root.
 
 Note that calling actions inside load will trigger a state update, but it will not cause the view to be rendered since we still haven't called `requestRender` at this point.
 
-We now call [`requestRender`](#requestRender) and this will cause the view to render on the next repaint.
+Call [`requestRender`](#requestRender) so the view is rendered on the next repaint.
 
-Finally, return `emit` to the caller, allowing you to communicate with your application from the outside via [events](/docs/events.md#interoperability).
+Finally, return `emit` to the caller. This allows you to communicate with the application from the outside via [custom events](/docs/events.md#custom-events).
 
 ### `initialize`
 
-Iterate `withActions` and save each wrapped action in `actions`. If the current action is not a function, recurse into the object.
+Iterate the supplied actions injecting our state update logic. If the current action is not a function, recurse into the namespace.
 
-Before calling an action, emit an [action](/docs/events.md#action) event with the action information and ignore its return value.
+Before calling an action, fire [action](/docs/events.md#action) with the action information and ignore the result.
 
-Call the action with the global `appState`, `appActions` and data payload you passed into the unwrapped function. Then fire a [resolve](/docs/events.md#resolve) event with the  result allowing you to manipulate it before triggering a state update.
+Inside the wrapped action, call the unwrapped action function with the global state, actions and data payload. Then fire [resolve](/docs/events.md#resolve) with the result allowing you to manipulate it before triggering a state update.
 
-If the result of an action is a function, we call it immediately with [`update`](#update), otherwise call `update` ourselves with the result.
+If the result of an action is a function, call it immediately with [`update`](#update), otherwise call `update` with the result.
 
 ### `render`
 
-Call the [view](/docs/view.md) function to produce a new [virtual node](/docs/virtual-node.md) and run [`patch`](#patch) with it and the `oldNode`. Save the new node in `oldNode` and the updated element for the next patch.
+Call the view to produce a new virtual node and run [`patch`](#patch) with it and the old node. Save the new node in `oldNode` for the next patch.
 
 Flush `globalInvokeLaterStack` and call each oncreate and onupdate event handler added during patching.
 
@@ -48,11 +48,11 @@ Request [`render`](#render) to be called on the next repaint using [requestAnima
 
 An application may receive a request to render while another render is running or may not even have a view. Skip over those cases.
 
-If `render` is correctly scheduled, toggle `willRender` so that future requests are disregarded until we're done with the current one.
+If a render is correctly scheduled, toggle `willRender` so that future requests are disregarded until we're done with the current one.
 
 ### `update`
 
-Skip over null and undefined states, e.g., when an action returns null or undefined. Then, use our shallow [`merge`](#merge) on the global state and new state or partial state and use the result to fire an [update](/docs/events.md#update) event.
+Skip over null and undefined states, e.g., when an action returns null or undefined. Then, use our shallow [`merge`](#merge) on the global state and new state or partial state and use the result to fire [update](/docs/events.md#update).
 
 You can validate or modify the state inside this event to overwrite the global state. If you return `false`, we won't update the state or request a new render.
 
@@ -98,20 +98,20 @@ If the element doesn't have an onremove handler, remove the element with [remove
 
 ### `patch`
 
-Patch `element` and its children recursively using the `oldNode` and new `node`.
+Patch the supplied element and its children recursively using the old and new virtual nodes.
 
-If `oldNode` is undefined, create a new element using [`createElement`](#createelement) and update the `element`.
+If the old node is undefined, create a new element using [createElement](#createelement) and update the element.
 
-If `oldNode` exists and has the same tag name as `node`, update the element data and patch its children. This process consists of 4 steps:
+If the old node exists and has the same tag name as the new node, update the element data and patch its children. This process consists of 4 steps:
 
 - Create a map with the old keyed nodes.
 - Update the element's children.
 - Remove any remaining unkeyed old nodes.
 - Remove any unused keyed old nodes.
 
-If all the above are false, we know that `oldNode` and `node` are either text nodes or their element types don't match.
+If all the above are false, we know that both nodes are either text nodes or their tag names don't match.
 
-Make sure the element is not undefined and replace it with a new element we obtain using [createElement](#createelement).
+Make sure the element is not undefined and replace it with a new element.
 
 If the new node matches the element's value, that means we are comparing two text nodes that have the same value, so we can skip over.
 

@@ -37,14 +37,19 @@ declare module "hyperapp" {
     mixins?: Array<Mixin>
   };
 
-  declare module.exports: {
-    h(tag: string, data: any): VirtualNode,
-    app(props: {
+  declare type VirtualComponent = (
+    data: { [string]: any } | null,
+    children: Array<VirtualNode | string> | VirtualNode | string
+  ) => VirtualNode;
+
+  declare exports function h(tag: VirtualComponent | string, data: any): VirtualNode;
+  declare exports function app(
+    props: {
+      root?: HTMLElement, 
       state: { [string]: any },
       view?: View,
       actions?: Actions,
       events?: Events,
       mixins?: Array<Mixin>
-    }): Emit
-  };
+    }): Emit;
 }

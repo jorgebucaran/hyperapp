@@ -2,7 +2,7 @@
 
 ## Hello World
 
-Let's begin with the simplest of all programs. Paste the following code in a new HTML file and open it in your browser. Or [try it online](https://codepen.io/hyperapp/pen/PmjRov?editors=1010).
+Let's begin with the simplest of all programs. Paste this code in a new HTML file and open it in your browser or [try it online](https://codepen.io/hyperapp/pen/PmjRov?editors=1010).
 
 ```html
 <body>
@@ -13,42 +13,38 @@ const { h, app } = hyperapp
 
 app({
   state: {
-    message: "Hello."
+    title: "Hello!"
   },
-  view: state => h("h1", {}, state.message)
+  view: state => h("h1", {}, state.title)
 })
 
 </script>
 </body>
 ```
 
-You should see that "Hello." is displayed on the page.
-
-### Dissecting the Code
+You should see "Hello!" is displayed on the page.
 
 The state describes the application's data.
 
 ```js
 state: {
-  message: "Hello."
+  title: "Hello."
 }
 ```
 
 The view describes the application's user interface.
 
 ```js
-state => h("h1", {}, state.message)
+state => h("h1", {}, state.title)
 ```
 
 You can write a view using [JSX], [hyperx], etc., and compile it in a [build pipeline](#build-pipeline).
 
 ```jsx
-state => <h1>{state.message}</h1>
+state => <h1>{state.title}</h1>
 ```
 
 The [app](/docs/api.md#app) function wraps it all together and renders the view on the DOM.
-
-To learn more, check out the [Tutorials](/docs/tutorials.md) or read the [Implementation Notes](/docs/implementation-nodes.md) to peek under the hood.
 
 ## Installation
 

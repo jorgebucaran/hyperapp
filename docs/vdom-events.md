@@ -1,10 +1,10 @@
-# Lifecycle Events
+# VirtualDOM Events
 
-Lifecycle events are functions called at various points in the life of a [virtual node](/docs/virtual-nodes.md). They are used like any other [attribute](/docs/virtual-nodes.md#attributes).
+VirtualDOM or lifecycle events are functions called at various points in the life of a [virtual node](/docs/virtual-nodes.md). They are used like any other [attribute](/docs/virtual-nodes.md#attributes).
 
 ## oncreate
 
-The [oncreate](/docs/api.md#oncreate) event is fired after the element is created and attached to the DOM. Use it to manipulate the DOM node directly, make a network request, create animations etc.
+The [oncreate](/docs/api.md#oncreate) event is fired after the element is created and attached to the DOM. Use it to manipulate the DOM node directly, make a network request, start an animation, etc.
 
 ```jsx
 app({

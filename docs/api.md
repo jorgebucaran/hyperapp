@@ -5,7 +5,7 @@
   - [Component](#component)
   - [VirtualNode](#virtualnode)
   - [Attributes](#attributes)
-    - [LifecyleEvents](#lifecyleevents)
+    - [VirtualDOMEvents](#virtualdomevents)
 - [app](#app)
   - [State](#state)
   - [View](#view)
@@ -60,12 +60,12 @@ See [Virtual Nodes](/docs/virtual-nodes.md).
 ### Attributes
 
 <pre>
-<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes">HTMLAttributes</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute">SVGAttributes</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/Events">DOMEvents</a> | <a href="#lifecyleevents">LifecyleEvents</a>
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes">HTMLAttributes</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute">SVGAttributes</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/Events">DOMEvents</a> | <a href="#virtualdom-events">VirtualDOMEvents</a>
 </pre>
 
-#### LifecyleEvents
+#### VirtualDOMEvents
 
-See [Lifecyle Events](/docs/lifecyle-events.md).
+See [VirtualDOM Events](/docs/vdom-events.md).
 
 <pre>
 <a id="oncreate"></a>oncreate(<a href="https://developer.mozilla.org/en-US/docs/Web/API/Element">Element</a>): void
@@ -166,7 +166,7 @@ See [Events](/docs/events.md).
 #### CustomEvent
 
 <pre>
-<i>event</i>(<a href="#state">State</a>, <a href="#actions">Actions</a>, any): any
+(<a href="#state">State</a>, <a href="#actions">Actions</a>, any): any
 </pre>
 
 ### Mixins

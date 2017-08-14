@@ -1,13 +1,12 @@
 # Documentation
 
+- [API](/docs/api.md)
 - [Index](/docs/index.md)
-- [Contribution Guidelines](/docs/CONTRIBUTING.md)
-- [Getting Started](/docs/getting-started.md)
+- [Tutorials](/docs/tutorials.md)
+- Getting Started
+  - [Hello World](/docs/getting-started.md#hello-world)
   - [Installation](/docs/getting-started.md#installation)
-  - [Usage](/docs/getting-started.md#usage)
   - [Build Pipeline](/docs/getting-started.md#build-pipeline)
-    - [Hyperx](/docs/hyperx.md)
-    - [JSX](/docs/jsx.md)
 - Architecture
   - [State](/docs/state.md)
   - [View](/docs/view.md)
@@ -17,13 +16,11 @@
   - [Root](/docs/root.md)
 - Concepts
   - [Virtual Nodes](/docs/virtual-nodes.md)
-  - [Keys](/docs/keys.md)
+  - [VirtualDOM Events](/docs/vdom-events.md)
   - [Components](/docs/components.md)
-  - [Lifecycle Events](/docs/lifecycle-events.md)
   - [Hydration](/docs/hydration.md)
-- Learning
-  - [Implementation Notes](/docs/implementation-notes.md)
-  - [Tutorials](/docs/tutorials.md)
-  - [Reference](/docs/api.md)
+  - [Keys](/docs/keys.md)
+
+
 
 

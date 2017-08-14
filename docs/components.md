@@ -5,7 +5,7 @@ A [component](/docs/api.md#component) is a function that returns a custom [virtu
 [Try it Online](https://codepen.io/hyperapp/pen/WRWbKw?editors=0010)
 
 ```js
-const Title = ({ url, value }/*, children*/) =>
+const Title = ({ url, value }) =>
   <h1>
     <a href={url}>{value}</a>
   </h1>
@@ -51,5 +51,5 @@ const Link = (props, children) =>
 
 ## Component Lifecycle Events
 
-Components share the same lifecycle events as virtual nodes. See [Lifecyle Events](/docs/lifecycle-events.md) for more information.
+Components share the same lifecycle events as virtual nodes. See [VirtualDOM Events](/docs/vdom-events.md) for more information.
 

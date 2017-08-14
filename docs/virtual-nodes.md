@@ -46,7 +46,7 @@ const vnode = (
 
 ## Attributes
 
-Any valid [HTMLAttributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes), [SVGAttributes](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute), [DOMEvents](https://developer.mozilla.org/en-US/docs/Web/Events), [Lifecycle Events](/docs/lifecycle-events.md) or [keys](/docs/keys.md).
+Any valid [HTMLAttributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes), [SVGAttributes](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute), [DOMEvents](https://developer.mozilla.org/en-US/docs/Web/Events), [VirtualDOM Events](/docs/vdom-events.md) or [keys](/docs/keys.md).
 
 ```jsx
 const MyButton = props =>

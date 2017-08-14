@@ -18,7 +18,7 @@ Below is an alphabetical list of some of the terms and concepts used throughout 
 [emit](/docs/api.md#emit)<br>
 [events](/docs/events.md)<br>
 [events, custom](/docs/events.md#custom-events)<br>
-[events, lifecycle](/docs/lifecycle-events.md)<br>
+[events, VirtualDOM](/docs/vdom-events.md)<br>
 
 ##### H
 [h](/docs/api.md#h)<br>
@@ -41,9 +41,9 @@ Below is an alphabetical list of some of the terms and concepts used throughout 
 [namespaces](/docs/actions.md#namespaces)<br>
 
 ##### O
-[oncreate](/docs/lifecycle-events.md#oncreate)<br>
-[onupdate](/docs/lifecycle-events.md#onupdate)<br>
-[onremove](/docs/lifecycle-events.md#onremove)<br>
+[oncreate](/docs/vdom-events.md#oncreate)<br>
+[onupdate](/docs/vdom-events.md#onupdate)<br>
+[onremove](/docs/vdom-events.md#onremove)<br>
 
 ##### R
 [root](/docs/root.md)<br>

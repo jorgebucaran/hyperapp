@@ -8,7 +8,7 @@ export function app(props) {
   var appView = props.view
   var prevNode
   var appRoot = props.root
-  var willRender = false
+  var willRender
 
   for (var i = -1; i < appMixins.length; i++) {
     props = appMixins[i] ? appMixins[i](emit) : props

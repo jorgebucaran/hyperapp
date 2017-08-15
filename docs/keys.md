@@ -1,6 +1,6 @@
 # Keys
 
-Every time your application is rendered, a [virtual node](/docs/virtual-node.md) tree is created from scratch.
+Every time your application is rendered, a [virtual node](/docs/virtual-nodes.md) tree is created from scratch.
 
 Keys help identify which nodes were added, changed or removed in a list when comparing the old and new tree.
 
@@ -37,4 +37,3 @@ const PlayerList = players =>
 ## Top-Level Nodes
 
 Keys are not registered on the top-level node of your [view](/docs/view.md). If you are toggling the top-level view, and you must use keys, wrap them in an unchanging node.
-

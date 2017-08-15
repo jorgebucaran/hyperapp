@@ -1,6 +1,6 @@
 # State
 
-The [state](/docs/api.md#state) represents the entire data model in your application.
+Use the [state](/docs/api.md#state) to describe the entire data model in your application.
 
 [Try it Online](https://codepen.io/hyperapp/pen/zNxRLy?editors=0110)
 
@@ -24,4 +24,4 @@ app({
 })
 ```
 
-The notion of representing the application state as a single source of truth is known as single state tree. The tree is populated using a concept called [actions](/docs/actions.md).
+The notion of representing the application state as a single source of truth is known as single state tree. The tree is manipulated using [actions](/docs/actions.md).

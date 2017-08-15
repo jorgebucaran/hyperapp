@@ -1,14 +1,12 @@
 # Events
 
-Events are function called at various points in the life of your application.
-
-Use events to get notified before the [state](/docs/state.md) is updated, your [view](/docs/view.md) is rendered, an [action](/docs/actions.md) is called, etc.
+Events are functions called at various points in the life of your application. Use them to inspect and intercept [actions](/docs/actions.md), cancel [state](/docs/state.md) updates, overwrite the [view](/docs/view.md) function, etc.
 
 ## Default Events
 
 ### load
 
-The [`load`](/docs/api.md#load) event is fired before the first render. Use it to initialize your application, listen to global events, create a network request, etc.
+Use [load](/docs/api.md#load) to initialize your application before the initial [view](/docs/view.md) render, listen to global events, etc.
 
 [Try it Online](https://codepen.io/hyperapp/pen/Bpyraw?editors=0010)
 
@@ -32,9 +30,27 @@ app({
 })
 ```
 
+#### Hydration
+
+Return a valid [virtual node](/docs/virtual-nodes.md) tree to enable re-[hydration](/docs/hydration.md).
+
+```jsx
+app({
+  events: {
+    load(state, actions, root) {
+      return walk(root, (node, children) => ({
+        tag: node.tagName.toLowerCase(),
+        data: {},
+        children
+      }))
+    }
+  }
+})
+```
+
 ### action
 
-The [`action`](/docs/api.md#action) event is fired before an action is called. Use it to log action activity, extract information about actions, etc.
+Use [action](/docs/api.md#action) to log, inspect or extract information about actions before they are called.
 
 ```jsx
 app({
@@ -51,7 +67,7 @@ app({
 
 ### resolve
 
-The [`resolve`](/docs/api.md#resolve) event is fired after an action is called, allowing you to intercept its return value. Use it to customize the types actions can return.
+Use [resolve](/docs/api.md#resolve) to validate the result of an action or modify its return type. This event is fired immediately after an action is called.
 
 Allow actions to return a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise).
 
@@ -65,7 +81,8 @@ app({
     }
   }
 })
-  ```
+```
+
 Allow actions to return an [Observable](https://github.com/tc39/proposal-observable).
 
 ```jsx
@@ -82,14 +99,17 @@ app({
 
 ### update
 
-The [`update`](/docs/api.md#eventsupdate) event is fired before the state is updated. Use this event to log state changes, validate the new state before an update takes place, etc.
+Use [update](/docs/api.md#update_event) to record, validate or prevent state updates.
+
+Return `false` to cancel the update and prevent the view from re-rendering.
 
 ```jsx
 app({
   events: {
     update(state, actions, nextState) {
-      if (validate(nextState)) {
-        return nextState
+      if (Object.keys(nextState).some(prop => !(prop in schema))) {
+        console.warn("Invalid state schema: %o.", nextState)
+        return false
       }
     }
   }
@@ -98,7 +118,7 @@ app({
 
 ### render
 
-The [`render`](/docs/api.md#render) event is fired before the [view](/docs/view.md) function is called, allowing you to overwrite it or decorate it. If your application does not use a view, this event is never fired.
+Use [render](/docs/api.md#render) to overwrite the [view](/docs/view.md) function before it is called.
 
 ```jsx
 app({
@@ -139,7 +159,7 @@ const emit = app({
 })
 ```
 
-Or in mixins, as the first argument to the function.
+Or in [mixins](/docs/mixins.md), as the first argument to the function.
 
 ```js
 function MyMixin(emit) {
@@ -156,15 +176,44 @@ Custom events can be useful in situations where your application is a part of a 
 ```js
 const emit = app({
   events: {
-    externalEvent(state, actions, data) {
-      actions.populate(data)
+    populate(state, actions, data) {
+      if (actions.populate(data)) {
+        actions.toggle(data.index)
+      }
     }
   }
 })
 
 // ...
 
-emit("externalEvent", yourData)
+emit("populate", yourData)
+```
+
+If you find yourself mapping events to actions one-to-one, use a mixin to encapsulate this process.
+
+```jsx
+const Dispatcher = () => ({
+  events: {
+    dispatch(state, actions, { action, data }) {
+      return actions[action](data)
+    }
+  }
+})
+
+const emit = app({
+  mixins: [Dispatcher]
+})
+```
+
+You can now use emit to call any action.
+
+```jsx
+emit("dispatch", {
+  action: "toggle",
+  data: {
+    index: 0
+  }
+})
 ```
 
 

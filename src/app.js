@@ -6,8 +6,9 @@ export function app(props) {
   var appEvents = {}
   var appMixins = []
   var appView = props.view
-  var prevNode
-  var appRoot = props.root
+  var appRoot = props.root || document.body
+  var element = appRoot.children[0]
+  var oldNode
   var willRender
 
   for (var i = -1; i < appMixins.length; i++) {
@@ -17,32 +18,46 @@ export function app(props) {
       appEvents[key] = (appEvents[key] || []).concat(props.events[key])
     })
 
-    adaptActions(appActions, props.actions)
+    initialize(appActions, props.actions)
 
     appMixins = appMixins.concat(props.mixins || [])
     appState = merge(appState, props.state)
   }
 
-  requestRender((prevNode = emit("load", appRoot)))
+  requestRender(
+    (oldNode = emit("load", element)) === element && (oldNode = element = null)
+  )
 
   return emit
 
+  function initialize(actions, withActions, lastName) {
+    Object.keys(withActions || []).map(function(key) {
+      var action = withActions[key]
+      var name = lastName ? lastName + "." + key : key
+
+      if (typeof action === "function") {
+        actions[key] = function(data) {
+          emit("action", { name: name, data: data })
+
+          var result = emit("resolve", action(appState, appActions, data))
+
+          return typeof result === "function" ? result(update) : update(result)
+        }
+      } else {
+        initialize(actions[key] || (actions[key] = {}), action, name)
+      }
+    })
+  }
+
   function render(cb) {
-    appRoot = patch(
-      (appRoot && appRoot.parentNode) || document.body,
+    element = patch(
       appRoot,
-      prevNode,
-      (prevNode = emit("render", appView)(appState, appActions)),
+      element,
+      oldNode,
+      (oldNode = emit("render", appView)(appState, appActions)),
       (willRender = !willRender)
     )
     while ((cb = globalInvokeLaterStack.pop())) cb()
-  }
-
-  function update(withState) {
-    if (withState) {
-      requestRender((appState = emit("update", merge(appState, withState))))
-    }
-    return appState
   }
 
   function requestRender() {
@@ -51,23 +66,11 @@ export function app(props) {
     }
   }
 
-  function adaptActions(namespace, children, lastName) {
-    Object.keys(children || []).map(function(key) {
-      var action = children[key]
-      var name = lastName ? lastName + "." + key : key
-
-      if (typeof action === "function") {
-        namespace[key] = function(data) {
-          emit("action", { name: name, data: data })
-
-          var result = emit("resolve", action(appState, appActions, data))
-
-          return typeof result === "function" ? result(update) : update(result)
-        }
-      } else {
-        adaptActions(namespace[key] || (namespace[key] = {}), action, name)
-      }
-    })
+  function update(withState) {
+    if (withState && (withState = emit("update", merge(appState, withState)))) {
+      requestRender((appState = withState))
+    }
+    return appState
   }
 
   function emit(name, data) {

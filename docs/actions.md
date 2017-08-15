@@ -1,7 +1,28 @@
 # Actions
 
+Use actions to manipulate the [state](/docs/state.md) tree. If your application consumes a [view](/docs/view.md), changes in the state will trigger a re-render.
 
-Actions are functions which take the current [state](/docs/state.md) and return a partial state or a [thunk](#thunks). Actioons are the only way to update the state tree.
+```jsx
+app({
+  state: {
+    text: ""
+  },
+  actions: {
+    initialize() {
+      return { text: "Hello!" }
+    }
+  },
+  events: {
+    load(state, actions) {
+      actions.initialize()
+    }
+  }
+})
+```
+
+Actions are often called as a result of user events triggered from the view or from inside application [events](/docs/events.md).
+
+Returning a partial state will update the state immediately and schedule a view re-render on the next [repaint](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame).
 
 [Try it Online](https://codepen.io/hyperapp/pen/qRMEGX?editors=0010)
 
@@ -32,8 +53,6 @@ app({
 })
 ```
 
-Actions are often called as a result of user events triggered from the [view](/docs/view.md) or from inside application [events](/docs/events.md).
-
 ## Thunks
 
 Actions can return a function instead of a partial state. This function is called a _thunk_. They operate like regular actions but will not trigger a state update unless [`update`](/docs/api.md#update) is called from within the thunk function.
@@ -53,7 +72,7 @@ app({
 
 The action returns the result of the thunk, allowing you to modify how actions operate and what types they can return.
 
-Use thunks to defer state updates, create [getters](#getters), scoped mixins, etc.
+Use thunks to defer state updates, [wrap actions](/docs/events.md#resolve) to create scoped mixins, [getters](#getters), etc.
 
 ## Async Updates
 
@@ -76,7 +95,7 @@ app({
 })
 ```
 
-Actions need not have a return value at all. This way they will not trigger a state update. You can use them to create side effects, call other actions, etc.
+Actions need not have a return value, in which case they will not trigger a state update. You can use actions this way to create side effects, call other actions, etc.
 
 ```jsx
 app({
@@ -88,6 +107,7 @@ app({
       const req = new XMLHttpRequest()
 
       req.open("GET", `/search?q=${state.query}`)
+
       req.onreadystatechange = () => {
         if (
           req.readyState === XMLHttpRequest.DONE &&
@@ -104,13 +124,13 @@ app({
 
 ## Getters
 
-A getter is an action that retrieves a property from the state tree or the result of a computation.
+A getter is a [thunk](#thunks) that retrieves a property from the state tree or the result of a computation.
 
 ```jsx
 app({
   actions: {
     isAdult({ userId }) {
-      return () => state.users[userId].age >= state.adultAge
+      return () => state.users[userId].age >= state.currentAdultAge
     }
   }
 })
@@ -130,3 +150,8 @@ app({
 })
 ```
 
+Use namespaces to organize your actions by different categories or domains.
+
+```jsx
+actions.game.start()
+```

@@ -5,7 +5,7 @@
   - [Component](#component)
   - [VirtualNode](#virtualnode)
   - [Attributes](#attributes)
-    - [LifecyleEvents](#lifecyleevents)
+    - [VirtualDOMEvents](#virtualdomevents)
 - [app](#app)
   - [State](#state)
   - [View](#view)
@@ -60,12 +60,12 @@ See [Virtual Nodes](/docs/virtual-nodes.md).
 ### Attributes
 
 <pre>
-<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes">HTMLAttributes</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute">SVGAttributes</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/Events">DOMEvents</a> | <a href="#lifecyleevents">LifecyleEvents</a>
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes">HTMLAttributes</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute">SVGAttributes</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/Events">DOMEvents</a> | <a href="#virtualdom-events">VirtualDOMEvents</a>
 </pre>
 
-#### LifecyleEvents
+#### VirtualDOMEvents
 
-See [Lifecyle Events](/docs/lifecyle-events.md).
+See [VirtualDOM Events](/docs/vdom-events.md).
 
 <pre>
 <a id="oncreate"></a>oncreate(<a href="https://developer.mozilla.org/en-US/docs/Web/API/Element">Element</a>): void
@@ -93,7 +93,7 @@ See [State](/docs/state.md).
 <pre>
 {
   [key: string]:
-    | <a href="#state">PartialState</a>
+    | <a href="#state">State</a>
     | any
 }
 </pre>
@@ -129,7 +129,9 @@ See [Actions](/docs/actions.md).
 
 #### ActionResult
 
-A partial [State](#state) or [Thunk](#thunk).
+<pre>
+<a href="#state">State</a> | <a href="#thunk">Thunk</a> | void
+</pre>
 
 #### Thunk
 
@@ -158,13 +160,13 @@ See [Events](/docs/events.md).
 <a id="render"></a>render(<a href="#state">State</a>, <a href="#actions">Actions</a>, <a href="#view">View</a>): <a href="#view">View</a>
 <a id="action"></a>action(<a href="#state">State</a>, <a href="#actions">Actions</a>, <a href="#actioninfo">ActionInfo</a>): <a href="#actioninfo">ActionInfo</a>
 <a id="resolve"></a>resolve(<a href="#state">State</a>, <a href="#actions">Actions</a>, <a href="#actionresult">ActionResult</a>): <a href="#actionresult">ActionResult</a>
-<a id="eventsupdate"></a>update(<a href="#state">State</a>, <a href="#actions">Actions</a>, <a href="#state">nextState</a>): <a href="#state">State</a>
+<a id="update_event"></a>update(<a href="#state">State</a>, <a href="#actions">Actions</a>, <a href="#state">State</a>): <a href="#state">State</a>
 </pre>
 
 #### CustomEvent
 
 <pre>
-<i>event</i>(<a href="#state">State</a>, <a href="#actions">Actions</a>, any): any
+(<a href="#state">State</a>, <a href="#actions">Actions</a>, any): any
 </pre>
 
 ### Mixins
@@ -188,11 +190,11 @@ Array&lt<a href="#mixin">Mixin</a>&gt
 
 ### Root
 
+See [Root](/docs/root.md).
+
 <pre>
 <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element">Element</a>
 </pre>
-
-See [Root](/docs/root.md).
 
 ## Emit
 
@@ -207,7 +209,7 @@ See [Custom Events](/docs/events.md#custom-events).
 See [Thunks](/docs/actions.md#thunks).
 
 <pre>
-(<a href="#state">PartialState</a>): void
+(<a href="#state">State</a>): any
 </pre>
 
 

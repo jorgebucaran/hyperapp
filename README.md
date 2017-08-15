@@ -17,6 +17,9 @@ HyperApp is a JavaScript library for building frontend applications.
 [Try it Online](https://codepen.io/hyperapp/pen/zNxZLP?editors=0010)
 
 ```jsx
+import { h, app } from 'hyperapp'
+/** @jsx h */
+
 app({
   state: {
     count: 0

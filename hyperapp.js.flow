@@ -42,7 +42,7 @@ declare module "hyperapp" {
     children: Array<VirtualNode | string> | VirtualNode | string
   ) => VirtualNode;
 
-  declare exports function h(tag: VirtualComponent | string, data: any): VirtualNode;
+  declare exports function h(tag: VirtualComponent, data?: any): VirtualNode;
   declare exports function app(
     props: {
       root?: HTMLElement, 

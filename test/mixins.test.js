@@ -43,25 +43,25 @@ test("extend events", done => {
       }
     },
     events: {
-      load(state, actions) {
-        expect(state.value).toBe(0)
-        actions.up()
+      load(state) {
+        expect(state.value).toBe(2)
+        done()
       }
     },
     mixins: [
       () => ({
         events: {
           load(state, actions) {
-            expect(state.value).toBe(1)
+            expect(state.value).toBe(0)
             actions.up()
           }
         }
       }),
       () => ({
         events: {
-          load(state) {
-            expect(state.value).toBe(2)
-            done()
+          load(state, actions) {
+            expect(state.value).toBe(1)
+            actions.up()
           }
         }
       })
@@ -137,33 +137,6 @@ test("extend namespace", done => {
         }
       })
     ]
-  })
-})
-
-test("presets", () => {
-  const foobar = () => ({
-    mixins: [
-      () => ({
-        state: {
-          foo: 1
-        }
-      }),
-      () => ({
-        state: {
-          bar: 2
-        }
-      })
-    ]
-  })
-
-  app({
-    events: {
-      load(state) {
-        expect(state.foo).toBe(1)
-        expect(state.bar).toBe(2)
-      }
-    },
-    mixins: [foobar]
   })
 })
 

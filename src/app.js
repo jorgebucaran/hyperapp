@@ -2,26 +2,24 @@ var globalInvokeLaterStack = []
 
 export function app(props) {
   var appState
+  var appView = props.view
   var appActions = {}
   var appEvents = {}
-  var appMixins = []
-  var appView = props.view
+  var appMixins = props.mixins || []
   var appRoot = props.root || document.body
   var element = appRoot.children[0]
   var oldNode
   var willRender
 
-  for (var i = -1; i < appMixins.length; i++) {
-    props = appMixins[i] ? appMixins[i](emit) : props
+  for (var i = 0; i <= appMixins.length; i++) {
+    var mixin = appMixins[i] ? appMixins[i](emit) : props
 
-    Object.keys(props.events || []).map(function(key) {
-      appEvents[key] = (appEvents[key] || []).concat(props.events[key])
+    Object.keys(mixin.events || []).map(function(key) {
+      appEvents[key] = (appEvents[key] || []).concat(mixin.events[key])
     })
 
-    initialize(appActions, props.actions)
-
-    appMixins = appMixins.concat(props.mixins || [])
-    appState = merge(appState, props.state)
+    initialize(appActions, mixin.actions)
+    appState = merge(appState, mixin.state)
   }
 
   requestRender(

@@ -1,10 +1,10 @@
 # Keys
 
-Every time your application is rendered, a [virtual node](/docs/virtual-nodes.md) tree is created from scratch.
+Every time your application is rendered, the actual DOM is made to match the [virtual node](/docs/virtual-node.md) tree, as efficiently as possible. In the process, Elements may be replaced or removed. In those instances, any modifications made to Elements directly (by you, through [VirtualDOM events](/docs/vdom-events.md), or by the browser), will be lost.
 
-Keys help identify which nodes were added, changed or removed in a list when comparing the old and new tree.
+However, setting the `key` property on a node, you declare that the node should correspond to a particular Element. This allows the rendering process to *move* an Element into it's new position, rather than risk destroying it.
 
-Use keys to identify items in a list that can be re-ordered or where items can be added to / removed from.
+A key must be unique among sibling-nodes, and must be used in every render for as long as you need it to correspond to an Element.
 
 ```jsx
 const ImageGallery = images =>
@@ -17,7 +17,7 @@ const ImageGallery = images =>
   </ul>
 ```
 
-Don't use an array index as key. If the position and number of items in a list is fixed, it will make no difference, but if the list is dynamic, the key will change every time the tree is rebuilt.
+Don't use an array index as key, if the index also specifies the order of siblings. If the position and number of items in a list is fixed, it will make no difference, but if the list is dynamic, the key will change every time the tree is rebuilt.
 
 To select a valid key, find a unique property for each item among its siblings.
 

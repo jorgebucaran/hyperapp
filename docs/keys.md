@@ -1,10 +1,6 @@
 # Keys
 
-Every time your application is rendered, the actual DOM is made to match the [virtual node](/docs/virtual-node.md) tree, as efficiently as possible. In the process, Elements may be replaced or removed. In those instances, any modifications made to Elements directly (by you, through [VirtualDOM events](/docs/vdom-events.md), or by the browser), will be lost.
-
-However, setting the `key` property on a node, you declare that the node should correspond to a particular Element. This allows the rendering process to *move* an Element into it's new position, rather than risk destroying it.
-
-A key must be unique among sibling-nodes, and must be used in every render for as long as you need it to correspond to an Element.
+Keys help identify which nodes were added, changed or removed from a list when a view is rendered.
 
 ```jsx
 const ImageGallery = images =>
@@ -17,9 +13,13 @@ const ImageGallery = images =>
   </ul>
 ```
 
-Don't use an array index as key, if the index also specifies the order of siblings. If the position and number of items in a list is fixed, it will make no difference, but if the list is dynamic, the key will change every time the tree is rebuilt.
+By setting the `key` property on a [virtual node](/docs/virtual-node.md), you declare that the node should correspond to a particular DOM element. This allow us to re-order the element into its new position, if the position changed, rather than risk destroying it.
 
-To select a valid key, find a unique property for each item among its siblings.
+## Gotchas
+
+A key must be unique among sibling-nodes.
+
+Don't use an array index as key, if the index also specifies the order of siblings. If the position and number of items in a list is fixed, it will make no difference, but if the list is dynamic, the key will change every time the tree is rebuilt.
 
 ```jsx
 const PlayerList = players =>

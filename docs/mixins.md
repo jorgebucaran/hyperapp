@@ -113,14 +113,3 @@ app({
   ])]
 })
 ```
-
-## Presets
-
-Group mixins under the same category to create a preset. Then use it like any other mixin.
-
-```jsx
-const DevTools = () => ({
-  mixins: [Logger, Debugger, Replayer]
-})
-```
-

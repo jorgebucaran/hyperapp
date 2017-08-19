@@ -52,5 +52,5 @@ declare module "hyperapp" {
     mixins?: Array<Mixin>
   };
 
-  declare export function app(props:Props): Emit;
+  declare export function app(props: Props): Emit;
 };

@@ -8,9 +8,6 @@ Below is an alphabetical list of some of the terms and concepts used throughout 
 [events.action](/docs/events.md#action)<br>
 [attributes](/docs/vnodes.md#attributes)<br>
 
-##### B
-[build pipeline](/docs/getting-started.md#build-pipeline)<br>
-
 ##### C
 [components](/docs/components.md)<br>
 

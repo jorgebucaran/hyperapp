@@ -2,14 +2,33 @@
 
 [JSX](https://facebook.github.io/jsx/) is an XML-like syntax extension to ECMAScript. It allows you to mix HTML and JavaScript.
 
-JSX is not part of the ECMAScript standard, but using the appropriate tooling we can compile JSX code into JavaScript browsers understand.
+```jsx
+import { h } from "hyperapp"
+
+const main = (
+  <div>
+    <h1>Hello.</h1>
+    <button onclick={() => alert("What's up?")}>Click Me</button>
+  </div>
+)
+```
+
+JSX is not part of the ECMAScript standard, but using the appropriate tooling we can compile JSX into JavaScript browsers understand.
 
 ```jsx
-<div>
-  <h1>Hello.</h1>
-  <button onclick={() => alert("Hi")}>Click</button>
-</div>
+var h = hyperapp.h
+
+h("div", {}, [
+  h("h1", {}, "Hello."),
+  h("button", {
+    onclick() {
+      alert("What's up?")
+    }
+  }, "Click Me")
+])
 ```
+
+This is much faster than sending a parser down the wire and compiling the view in the browser.
 
 For an in-depth introduction to JSX, see the official [documentation](https://facebook.github.io/react/docs/introducing-jsx.html).
 

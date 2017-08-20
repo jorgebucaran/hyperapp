@@ -1,6 +1,6 @@
-# VirtualDOM Events
+# VDOM Events
 
-VirtualDOM or lifecycle events are functions called at various points in the life of a [virtual node](/docs/virtual-nodes.md). They are used like any other [attribute](/docs/virtual-nodes.md#attributes).
+VDOM or lifecycle events are functions called at various points in the life of a [virtual node](/docs/vnodes.md). They are used like any other [attribute](/docs/vnodes.md#attributes).
 
 ## oncreate
 

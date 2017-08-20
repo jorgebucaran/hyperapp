@@ -41,4 +41,4 @@ app({
 })
 ```
 
-The view function is called to generate a new [virtual node](/docs/virtual-nodes.md) as a result of state changes caused by actions.
+The view function is called to generate a new [virtual node](/docs/vnodes.md) as a result of state changes caused by actions.

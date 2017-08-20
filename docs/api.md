@@ -3,9 +3,9 @@
 
 - [h](#h)
   - [Component](#component)
-  - [VirtualNode](#virtualnode)
+  - [VNode](#vnode)
   - [Attributes](#attributes)
-    - [VirtualDOMEvents](#virtualdomevents)
+    - [VDOMEvents](#vdomevents)
 - [app](#app)
   - [State](#state)
   - [View](#view)
@@ -30,8 +30,8 @@
 h(
   string | <a href="#component">Component</a>,
   <a href="#attributes">Attributes</a>,
-  Array&lt<a href="#virtualnode">VirtualNode</a>&gt | string
-): <a href="#virtualnode">VirtualNode</a>
+  Array&lt<a href="#vnode">VNode</a>&gt | string
+): <a href="#vnode">VNode</a>
 </pre>
 
 ### Component
@@ -41,31 +41,31 @@ See [Components](/docs/components.md).
 <pre>
 <i>Component</i>(
   any,
-  Array&lt<a href="#virtualnode">VirtualNode</a>&gt | string
-): <a href="#virtualnode">VirtualNode</a>
+  Array&lt<a href="#vnode">VNode</a>&gt | string
+): <a href="#vnode">VNode</a>
 </pre>
 
-### VirtualNode
+### VNode
 
-See [Virtual Nodes](/docs/virtual-nodes.md).
+See [Virtual Nodes](/docs/vnodes.md).
 
 <pre>
 {
   tag: string,
   data: <a href="#attributes">Attributes</a>,
-  children: Array&lt<a href="#virtualnode">VirtualNode</a>&gt
+  children: Array&lt<a href="#vnode">VNode</a>&gt
 }
 </pre>
 
 ### Attributes
 
 <pre>
-<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes">HTMLAttributes</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute">SVGAttributes</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/Events">DOMEvents</a> | <a href="#virtualdom-events">VirtualDOMEvents</a>
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes">HTMLAttributes</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute">SVGAttributes</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/Events">DOMEvents</a> | <a href="#vdomevents">VDOMEvents</a>
 </pre>
 
-#### VirtualDOMEvents
+#### VDOMEvents
 
-See [VirtualDOM Events](/docs/vdom-events.md).
+See [VDOM Events](/docs/vdom-events.md).
 
 <pre>
 <a id="oncreate"></a>oncreate(<a href="https://developer.mozilla.org/en-US/docs/Web/API/Element">Element</a>): void
@@ -103,7 +103,7 @@ See [State](/docs/state.md).
 See [View](/docs/view.md).
 
 <pre>
-(<a href="#state">State</a>, <a href="#actions">Actions</a>): <a href="#virtualnode">VirtualNode</a>
+(<a href="#state">State</a>, <a href="#actions">Actions</a>): <a href="#vnode">VNode</a>
 </pre>
 
 ### Actions
@@ -156,7 +156,7 @@ See [Events](/docs/events.md).
 #### Default Events
 
 <pre>
-<a id="load"></a>load(<a href="#state">State</a>, <a href="#actions">Actions</a>, <a href="#root">Root</a>): <a href="#virtualnode">VirtualNode</a>
+<a id="load"></a>load(<a href="#state">State</a>, <a href="#actions">Actions</a>, <a href="#root">Root</a>): <a href="#vnode">VNode</a>
 <a id="render"></a>render(<a href="#state">State</a>, <a href="#actions">Actions</a>, <a href="#view">View</a>): <a href="#view">View</a>
 <a id="action"></a>action(<a href="#state">State</a>, <a href="#actions">Actions</a>, <a href="#actioninfo">ActionInfo</a>): <a href="#actioninfo">ActionInfo</a>
 <a id="resolve"></a>resolve(<a href="#state">State</a>, <a href="#actions">Actions</a>, <a href="#actionresult">ActionResult</a>): <a href="#actionresult">ActionResult</a>

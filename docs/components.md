@@ -1,6 +1,6 @@
 # Components
 
-A [component](/docs/api.md#component) is a function that returns a custom [virtual node](/docs/virtual-nodes.md). Components are reusable blocks of code that encapsulate markup, styles and behaviours that belong together.
+A [component](/docs/api.md#component) is a function that returns a custom [virtual node](/docs/vnodes.md). Components are reusable blocks of code that encapsulate markup, styles and behaviours that belong together.
 
 [Try it Online](https://codepen.io/hyperapp/pen/WRWbKw?editors=0010)
 
@@ -51,5 +51,5 @@ const Link = (props, children) =>
 
 ## Component Lifecycle Events
 
-Components share the same lifecycle events as virtual nodes. See [VirtualDOM Events](/docs/vdom-events.md) for more information.
+Components share the same lifecycle events as virtual nodes. See [VDOM Events](/docs/vdom-events.md) for more information.
 

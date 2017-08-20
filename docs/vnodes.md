@@ -18,7 +18,7 @@ It consists of a `tag` name, `data` [attributes](#attributes) and `children` arr
 }
 ```
 
-The virtual DOM engine consumes a virtual node and produces a DOM tree.
+The VDOM engine consumes a virtual node to produce a DOM tree.
 
 ```html
 <div id="app">
@@ -26,15 +26,15 @@ The virtual DOM engine consumes a virtual node and produces a DOM tree.
 </div>
 ```
 
-To create virtual nodes use the [`h`](/docs/api.md#h) function.
+Create a virtual node using [`h`](/docs/api.md#h).
 
 ```js
-const vnode = h("div", { id: "app" }, [
+const tree = h("div", { id: "app" }, [
   h("h1", null, "Hi.")
 ])
 ```
 
-Or [JSX](https://facebook.github.io/react/docs/jsx-in-depth.html) / [Hyperx](https://github.com/substack/hyperx) inside a [build pipeline](/docs/getting-started.md#build-pipeline).
+Or with [JSX](/docs/jsx.md), [hyperx](/docs/hyperx.md), etc.
 
 ```jsx
 const vnode = (
@@ -46,7 +46,7 @@ const vnode = (
 
 ## Attributes
 
-Any valid [HTMLAttributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes), [SVGAttributes](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute), [DOMEvents](https://developer.mozilla.org/en-US/docs/Web/Events), [VirtualDOM Events](/docs/vdom-events.md) or [keys](/docs/keys.md).
+Any valid [HTMLAttributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes), [SVGAttributes](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute), [DOMEvents](https://developer.mozilla.org/en-US/docs/Web/Events), [VDOMEvents](/docs/vdom-events.md) or [keys](/docs/keys.md).
 
 ```jsx
 const MyButton = props =>

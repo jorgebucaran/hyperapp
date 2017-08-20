@@ -32,7 +32,7 @@ app({
 
 #### Hydration
 
-Return a valid [virtual node](/docs/virtual-nodes.md) tree to enable re-[hydration](/docs/hydration.md).
+Return a valid [virtual node](/docs/vnodes.md) tree to enable re-[hydration](/docs/hydration.md).
 
 ```jsx
 app({

@@ -1,8 +1,40 @@
 # Getting Started
 
+## Installation
+
+Download the minified library from a [CDN](https://unpkg.com/hyperapp).
+
+```html
+<script src="https://unpkg.com/hyperapp"></script>
+```
+
+And import it.
+
+```js
+const { h, app } = hyperapp
+```
+
+Or install with npm / Yarn.
+
+<pre>
+npm i <a href="https://www.npmjs.com/package/hyperapp">hyperapp</a>
+</pre>
+
+Then with a module bundler like [rollup](https://github.com/rollup/rollup) or [webpack](https://github.com/webpack/webpack), use as you would anything else.
+
+```jsx
+import { h, app } from "hyperapp"
+```
+
+See [JSX] or [hyperx] for setup instructions.
+
+[hyperx]: /docs/hyperx.md
+[JSX]: /docs/jsx.md
+
+
 ## Hello World
 
-Let's begin with the simplest of all programs. Paste this code in a new HTML file and open it in your browser or [try it online](https://codepen.io/hyperapp/pen/PmjRov?editors=1010).
+Let's begin with a simple program. Paste this code in a new HTML file and open it in your browser or [try it here](https://codepen.io/hyperapp/pen/PmjRov?editors=1010).
 
 ```html
 <body>
@@ -13,7 +45,7 @@ const { h, app } = hyperapp
 
 app({
   state: {
-    title: "Hello!"
+    title: "hello!"
   },
   view: state => h("h1", {}, state.title)
 })
@@ -22,13 +54,13 @@ app({
 </body>
 ```
 
-You should see "Hello!" is displayed on the page.
+You should see "hello!" is displayed on the page.
 
 The state describes the application's data.
 
 ```js
 state: {
-  title: "Hello."
+  title: "hello!"
 }
 ```
 
@@ -38,7 +70,7 @@ The view describes the application's user interface.
 state => h("h1", {}, state.title)
 ```
 
-You can write a view using [JSX], [hyperx], etc., and compile it in a [build pipeline](#build-pipeline).
+You can create a view using [JSX] or [hyperx] too.
 
 ```jsx
 state => <h1>{state.title}</h1>
@@ -46,54 +78,33 @@ state => <h1>{state.title}</h1>
 
 The [app](/docs/api.md#app) function wraps it all together and renders the view on the DOM.
 
-## Installation
-
-You can download the minified library from a [CDN](https://unpkg.com/hyperapp).
-
-```html
-<script src="https://unpkg.com/hyperapp"></script>
+```jsx
+app({ ... })
 ```
 
-Then access the exported global.
-
-```js
-const { h, app } = hyperapp
-```
-
-Or with npm / Yarn.
-
-<pre>
-npm i <a href="https://www.npmjs.com/package/hyperapp">hyperapp</a>
-</pre>
-
-Then setup a [build pipeline](#build-pipeline) and import it.
+Let's make it interactive! Add the following code below the view declaration.
 
 ```jsx
-import { h, app } from "hyperapp"
+actions: {
+  reverse(state) {
+    return {
+      title: state.title.split("").reverse().join("")
+    }
+  }
+}
 ```
 
-## Build Pipeline
+[Actions](/docs/actions.md) allow you to update the state tree to trigger a re-render.
 
-A build pipeline typically consists of a package manager, a compiler and a bundler.
-
-Using a build pipeline we can transform JSX or hyperx markup into [`h`](/docs/api.md#h) calls before runtime. This is much faster than sending a parser down the wire and compiling the view in the browser.
-
-JSX or hyperx
+Modify the view function to take the action and call it when the heading is clicked.
 
 ```jsx
-<main id="app">Hello.</main>
+view: (state, { reverse }) =>
+  <h1 onclick={reverse}>
+    {state.title}
+  </h1>
 ```
 
-Vanilla out
+Well done! You can [try it online](https://codepen.io/hyperapp/pen/NvYdma?editors=0010) too.
 
-```jsx
-h("main", { id: "app" }, "Hello.")
-```
-
-A build pipeline lets you install and update third-party libraries easily, compile modern JavaScript for older browser and bundle your application into small modules to optimize load time.
-
-See [JSX] or [hyperx] for setup instructions.
-
-[hyperx]: /docs/hyperx.md
-[JSX]: /docs/jsx.md
-[t7]: https://github.com/trueadm/t7
+Continue reading to learn more and don't miss out the [tutorials](/docs/tutorials.md) section. Happy coding!

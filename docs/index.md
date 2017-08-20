@@ -6,7 +6,7 @@ Below is an alphabetical list of some of the terms and concepts used throughout 
 [app](/docs/api.md#app)<br>
 [actions](/docs/actions.md)<br>
 [events.action](/docs/events.md#action)<br>
-[attributes](/docs/virtual-nodes.md#attributes)<br>
+[attributes](/docs/vnodes.md#attributes)<br>
 
 ##### B
 [build pipeline](/docs/getting-started.md#build-pipeline)<br>
@@ -18,7 +18,7 @@ Below is an alphabetical list of some of the terms and concepts used throughout 
 [emit](/docs/api.md#emit)<br>
 [events](/docs/events.md)<br>
 [events, custom](/docs/events.md#custom-events)<br>
-[events, VirtualDOM](/docs/vdom-events.md)<br>
+[events, VDOM](/docs/vdom-events.md)<br>
 
 ##### H
 [h](/docs/api.md#h)<br>
@@ -61,4 +61,4 @@ Below is an alphabetical list of some of the terms and concepts used throughout 
 
 ##### V
 [view](/docs/view.md)<br>
-[virtual node](/docs/virtual-nodes.md)<br>
+[virtual node](/docs/vnodes.md)<br>

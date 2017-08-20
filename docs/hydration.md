@@ -31,7 +31,7 @@ The process consists of serving the fully rendered or pre-rendered page together
 </html>
 ```
 
-Then interating over the [root](/docs/root.md) child nodes to create a [virtual node](/docs/virtual-nodes.md) tree.
+Then interating over the [root](/docs/root.md) child nodes to create a [virtual node](/docs/vnodes.md) tree.
 
 ```jsx
 const Hydrator = () => ({

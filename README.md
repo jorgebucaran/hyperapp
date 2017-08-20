@@ -8,7 +8,7 @@ Hyperapp is a JavaScript library for building frontend applications.
 
 - **Minimal**: Hyperapp was born out of the attempt to do [more with less](https://en.wikipedia.org/wiki/Worse_is_better). We have aggressively minimized the concepts you need to understand while remaining on par with what other frameworks can do.
 - **Functional**: Hyperapp's design is based on [The Elm Architecture](https://guide.elm-lang.org/architecture). Create scalable browser-based applications using a functional paradigm. The twist is you don't have to learn a new language.
-- **Batteries-included**: Out of the box, Hyperapp combines state management with a Virtual DOM engine that supports keyed updates & lifecycle events — all with no dependencies.
+- **Batteries-included**: Out of the box, Hyperapp combines state management with a VDOM engine that supports keyed updates & lifecycle events — all with no dependencies.
 
 [Get started with Hyperapp](/docs/getting-started.md)
 

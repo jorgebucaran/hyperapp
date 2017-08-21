@@ -100,3 +100,59 @@ test("components", () => {
     ]
   })
 })
+
+test("iterables children", ()  => {
+  function* iterable() {
+    yield "Hello"
+    yield " world"
+    yield "!"
+  }
+
+  const expectedSimple = {
+    tag     : 'div',
+    data    : {},
+    children: [
+      'Hello',
+      ' world',
+      '!'
+    ]
+  }
+
+  expect(h("div", {}, iterable())).toEqual(expectedSimple)
+
+  function* nestedIterable() {
+    yield h(
+      "div",
+      {},
+      iterable()
+    )
+  }
+
+  const expectedNested = {
+    tag     : 'div',
+    data    : {},
+    children: [
+      {
+        'children': [
+          'Hello',
+          ' world',
+          '!',
+        ],
+        'data'    : {},
+        'tag'     : 'div',
+      }
+    ]
+  }
+
+  expect(h("div", {}, nestedIterable())).toEqual(expectedNested)
+
+  function * emptyIterable() {}
+
+  const expectedEmpty = {
+    tag     : 'div',
+    data    : {},
+    children: []
+  }
+
+  expect(h("div", {}, emptyIterable())).toEqual(expectedEmpty)
+})

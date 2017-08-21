@@ -23,7 +23,7 @@
     "hyperscript"
   ],
   "scripts": {
-    "test": "bundlesize && jest --coverage --no-cache",
+    "test": "jest --coverage --no-cache",
     "build": "npm run bundle && npm run minify",
     "bundle": "rollup -i src/index.js -o dist/hyperapp.js -m -f umd -n hyperapp",
     "minify": "uglifyjs dist/hyperapp.js -o dist/hyperapp.js --mangle --compress warnings=false --pure-funcs=Object.defineProperty -p relative --source-map dist/hyperapp.js.map",
@@ -36,16 +36,9 @@
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.24.1",
-    "bundlesize": "^0.6.1",
     "jest": "^20.0.4",
     "prettier": "~1.5.3",
     "rollup": "^0.45.2",
     "uglify-js": "^2.7.5"
-  },
-  "bundlesize": [
-    {
-      "path": "./dist/hyperapp.js",
-      "threshold": "1.5Kb"
-    }
-  ]
+  }
 }

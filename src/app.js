@@ -65,8 +65,15 @@ export function app(props) {
   }
 
   function update(withState) {
-    if (withState && (withState = emit("update", merge(appState, withState)))) {
-      requestRender((appState = withState))
+    if (withState) {
+      var newState = emit("merge", withState)
+      if (newState === withState) {
+        newState = merge(appState, withState)
+      }
+
+      if ((newState = emit("update", newState))) {
+        requestRender((appState = newState))
+      }
     }
     return appState
   }

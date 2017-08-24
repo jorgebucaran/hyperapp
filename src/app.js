@@ -36,10 +36,7 @@ export function app(props) {
       if (typeof action === "function") {
         actions[key] = function(data) {
           emit("action", { name: name, data: data })
-
-          var result = emit("resolve", action(appState, appActions, data))
-
-          return typeof result === "function" ? result(update) : update(result)
+          return update(emit("resolve", action(appState, appActions, data)))
         }
       } else {
         initialize(actions[key] || (actions[key] = {}), action, name)
@@ -65,6 +62,9 @@ export function app(props) {
   }
 
   function update(withState) {
+    if (typeof withState === "function") {
+      return withState(update)
+    }
     if (withState && (withState = emit("update", merge(appState, withState)))) {
       requestRender((appState = withState))
     }

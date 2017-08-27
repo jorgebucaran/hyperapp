@@ -253,11 +253,15 @@ export function app(props) {
         }
       }
     } else if (element && node !== element.nodeValue) {
-      element = parent.insertBefore(
-        createElement(node, isSVG),
-        (nextSibling = element)
-      )
-      removeElement(parent, nextSibling, oldNode.data)
+      if (typeof node === "string" && typeof oldNode === "string") {
+        element.nodeValue = node
+      } else {
+        element = parent.insertBefore(
+          createElement(node, isSVG),
+          (nextSibling = element)
+        )
+        removeElement(parent, nextSibling, oldNode.data)
+      }
     }
 
     return element

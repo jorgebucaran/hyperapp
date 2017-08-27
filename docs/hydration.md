@@ -36,8 +36,8 @@ Then interating over the [root](/docs/root.md) child nodes to create a [virtual 
 ```jsx
 const Hydrator = () => ({
   events: {
-    load(state, actions, root) {
-      return walk(root, (node, children) => ({
+    load(state, actions, element) {
+      return walk(element, (node, children) => ({
         tag: node.tagName.toLowerCase(),
         data: {},
         children
@@ -57,7 +57,6 @@ function walk(node, map) {
                 ? node.nodeValue.trim() && node.nodeValue
                 : walk(node, map)
           )
-          .filter(node => node)
       : node
   )
 }

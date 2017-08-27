@@ -94,6 +94,9 @@ test("async updates", done => {
     events: {
       load(state, actions) {
         actions.upAsync(1)
+      },
+      update(state, actions, nextState, action) {
+        expect(action).toEqual({ name: "up", data: 1 })
       }
     }
   })
@@ -130,6 +133,10 @@ test("thunks", done => {
     events: {
       load(state, actions) {
         actions.upAsync(1)
+      },
+      update(state, actions, nextState, action) {
+        expect(action).toEqual({ name: "upAsync", data: 1
+       })
       }
     }
   })
@@ -169,6 +176,9 @@ test("thunks + promises", done => {
         return result && typeof result.then === "function"
           ? update => result.then(update)
           : result
+      },
+      update(state, actions, nextState, action) {
+        expect(action).toEqual({ name: "upAsync", data: 1 })
       }
     }
   })

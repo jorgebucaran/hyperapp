@@ -159,8 +159,8 @@ See [Events](/docs/events.md).
 <a id="load"></a>load(<a href="#state">State</a>, <a href="#actions">Actions</a>, <a href="#root">Root</a>): <a href="#vnode">VNode</a>
 <a id="render"></a>render(<a href="#state">State</a>, <a href="#actions">Actions</a>, <a href="#view">View</a>): <a href="#view">View</a>
 <a id="action"></a>action(<a href="#state">State</a>, <a href="#actions">Actions</a>, <a href="#actioninfo">ActionInfo</a>): <a href="#actioninfo">ActionInfo</a>
-<a id="resolve"></a>resolve(<a href="#state">State</a>, <a href="#actions">Actions</a>, <a href="#actionresult">ActionResult</a>): <a href="#actionresult">ActionResult</a>
-<a id="update_event"></a>update(<a href="#state">State</a>, <a href="#actions">Actions</a>, <a href="#state">State</a>): <a href="#state">State</a>
+<a id="resolve"></a>resolve(<a href="#state">State</a>, <a href="#actions">Actions</a>, <a href="#actionresult">ActionResult</a>, <a href="#actioninfo">ActionInfo</a>): <a href="#actionresult">ActionResult</a>
+<a id="update_event"></a>update(<a href="#state">State</a>, <a href="#actions">Actions</a>, <a href="#state">State</a>, <a href="#actioninfo">ActionInfo</a>): <a href="#state">State</a>
 </pre>
 
 #### CustomEvent

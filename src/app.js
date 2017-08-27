@@ -35,8 +35,12 @@ export function app(props) {
 
       if (typeof action === "function") {
         actions[key] = function(data) {
-          emit("action", { name: name, data: data })
-          return update(emit("resolve", action(appState, appActions, data)))
+          var actionInfo = { name: name, data: data }
+          emit("action", actionInfo)
+          return update(
+            actionInfo,
+            emit("resolve", action(appState, appActions, data), actionInfo)
+          )
         }
       } else {
         initialize(actions[key] || (actions[key] = {}), action, name)
@@ -61,19 +65,22 @@ export function app(props) {
     }
   }
 
-  function update(withState) {
+  function update(action, withState) {
     if (typeof withState === "function") {
-      return withState(update)
+      return withState(update.bind(null, action))
     }
-    if (withState && (withState = emit("update", merge(appState, withState)))) {
+    if (
+      withState &&
+      (withState = emit("update", merge(appState, withState), action))
+    ) {
       requestRender((appState = withState))
     }
     return appState
   }
 
-  function emit(name, data) {
+  function emit(name, data, action) {
     return (appEvents[name] || []).map(function(cb) {
-      var result = cb(appState, appActions, data)
+      var result = cb(appState, appActions, data, action)
       if (result != null) {
         data = result
       }

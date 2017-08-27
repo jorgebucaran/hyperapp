@@ -113,11 +113,12 @@ test("resolve", done => {
       load(state, actions) {
         actions.set("bar")
       },
-      resolve(state, actions, result) {
+      resolve(state, actions, result, action) {
         if (typeof result === "string") {
           //
           // Query strings as a valid ActionResult.
           //
+          expect(action).toEqual({ name: "set", data: "bar" })
           const [key, value] = result.slice(1).split("=")
           return { [key]: value }
         }
@@ -152,7 +153,8 @@ test("update", done => {
       load(state, actions) {
         actions.set(null)
       },
-      update(state, actions, nextState) {
+      update(state, actions, nextState, action) {
+        expect(action).toEqual({ name: "set", data: null })
         if (typeof nextState.value !== "string") {
           return state
         }

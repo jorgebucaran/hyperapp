@@ -184,7 +184,6 @@ Array&lt<a href="#mixin">Mixin</a>&gt
   state: <a href="#state">State</a>,
   actions: <a href="#actions">Actions</a>,
   events: <a href="#events">Events</a>,
-  mixins: <a href="#mixins">Mixins</a>,
 }
 </pre>
 

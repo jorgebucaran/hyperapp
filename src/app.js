@@ -72,12 +72,15 @@ export function app(props) {
   }
 
   function emit(name, data) {
-    return (appEvents[name] || []).map(function(cb) {
-      var result = cb(appState, appActions, data)
-      if (result != null) {
-        data = result
-      }
-    }), data
+    return (
+      (appEvents[name] || []).map(function(cb) {
+        var result = cb(appState, appActions, data)
+        if (result != null) {
+          data = result
+        }
+      }),
+      data
+    )
   }
 
   function merge(a, b) {

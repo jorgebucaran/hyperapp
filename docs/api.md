@@ -21,6 +21,7 @@
   - [Root](#root)
 - [Emit](#emit)
 - [Update](#update)
+  - [Reducer](#reducer)
 
 <!-- /TOC -->
 
@@ -208,7 +209,12 @@ See [Custom Events](/docs/events.md#custom-events).
 See [Thunks](/docs/actions.md#thunks).
 
 <pre>
-(<a href="#state">State</a>): any
+(<a href="#state">State</a> | <a href="#reducer">Reducer</a>): any
 </pre>
 
+### Reducer
+
+<pre>
+(<a href="#state">State</a>): <a href="#state">State</a> | Reducer
+</pre>
 

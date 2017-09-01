@@ -76,7 +76,7 @@ app({
   events: {
     resolve(state, actions, result) {
       if (result && typeof result.then === "function") {
-        return result.then(update) && result
+        return update => result.then(update) && result
       }
     }
   }

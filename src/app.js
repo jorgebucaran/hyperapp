@@ -9,7 +9,7 @@ export function app(props) {
   var appRoot = props.root || document.body
   var element = appRoot.children[0]
   var oldNode
-  var willRender
+  var renderLock
 
   for (var i = 0; i <= appMixins.length; i++) {
     var mixin = appMixins[i] ? appMixins[i](emit) : props
@@ -18,8 +18,8 @@ export function app(props) {
       appEvents[key] = (appEvents[key] || []).concat(mixin.events[key])
     })
 
-    initialize(appActions, mixin.actions)
     appState = merge(appState, mixin.state)
+    initialize(appActions, mixin.actions)
   }
 
   requestRender(
@@ -53,14 +53,14 @@ export function app(props) {
       element,
       oldNode,
       (oldNode = emit("render", appView)(appState, appActions)),
-      (willRender = !willRender)
+      (renderLock = !renderLock)
     )
     while ((cb = globalInvokeLaterStack.pop())) cb()
   }
 
   function requestRender() {
-    if (appView && !willRender) {
-      requestAnimationFrame(render, (willRender = !willRender))
+    if (appView && !renderLock) {
+      requestAnimationFrame(render, (renderLock = !renderLock))
     }
   }
 

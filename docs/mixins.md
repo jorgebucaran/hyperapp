@@ -4,14 +4,14 @@ Use [mixins](/docs/api.md#mixins) to encapsulate your application behavior into 
 
 ```jsx
 app({
-  mixins: [MyMixin]
+  mixins: [router(), logger()]
 })
 ```
 
 This mixin logs action information to the console.
 
 ```jsx
-const SimpleLogger = () => ({
+const simpleLogger = options => emit => ({
   events: {
     action(state, actions, { name, data }) {
       console.group("Action Info")

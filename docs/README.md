@@ -1,6 +1,5 @@
 # Documentation
 
-- [API](/docs/api.md)
 - [Index](/docs/index.md)
 - [Tutorials](/docs/tutorials.md)
 - Getting Started

@@ -135,7 +135,7 @@ test("thunks", done => {
   })
 })
 
-test("thunks + promises", done => {
+test("thunks", done => {
   app({
     view: state =>
       h(
@@ -156,19 +156,16 @@ test("thunks + promises", done => {
     },
     actions: {
       upAsync(state, actions, data) {
-        return mockDelay().then(() => ({
-          value: state.value + data
-        }))
+        return update => {
+          mockDelay().then(() => {
+            update(state => ({ value: state.value + data }))
+          })
+        }
       }
     },
     events: {
       load(state, actions) {
         actions.upAsync(1)
-      },
-      resolve(state, actions, result) {
-        return result && typeof result.then === "function"
-          ? update => result.then(update)
-          : result
       }
     }
   })

@@ -7,12 +7,14 @@ export function app(props) {
   var appEvents = {}
   var appMixins = props.mixins || []
   var appRoot = props.root || document.body
-  var element = appRoot.children[0]
+  var element
   var oldNode
   var renderLock
 
-  for (var i = 0; i <= appMixins.length; i++) {
-    var mixin = appMixins[i] ? appMixins[i](emit) : props
+  appMixins.concat(props).map(function(mixin) {
+    if (typeof mixin === "function") {
+      mixin = mixin(emit)
+    }
 
     Object.keys(mixin.events || []).map(function(key) {
       appEvents[key] = (appEvents[key] || []).concat(mixin.events[key])
@@ -20,10 +22,11 @@ export function app(props) {
 
     appState = merge(appState, mixin.state)
     initialize(appActions, mixin.actions)
-  }
+  })
 
   requestRender(
-    (oldNode = emit("load", element)) === element && (oldNode = element = null)
+    (oldNode = emit("load", (element = appRoot.children[0]))) === element &&
+      (oldNode = element = null)
   )
 
   return emit

@@ -21,11 +21,11 @@ test("extend the state", done => {
       }
     },
     mixins: [
-      () => ({
+      {
         state: {
           bar: true
         }
-      })
+      }
     ]
   })
 })
@@ -49,22 +49,22 @@ test("extend events", done => {
       }
     },
     mixins: [
-      () => ({
+      {
         events: {
           load(state, actions) {
             expect(state.value).toBe(0)
             actions.up()
           }
         }
-      }),
-      () => ({
+      },
+      {
         events: {
           load(state, actions) {
             expect(state.value).toBe(1)
             actions.up()
           }
         }
-      })
+      }
     ]
   })
 })
@@ -91,7 +91,7 @@ test("extend actions", done => {
       }
     },
     mixins: [
-      () => ({
+      {
         actions: {
           foo() {
             return {
@@ -99,7 +99,7 @@ test("extend actions", done => {
             }
           }
         }
-      })
+      }
     ]
   })
 })
@@ -122,7 +122,7 @@ test("extend namespace", done => {
       }
     },
     mixins: [
-      () => ({
+      {
         actions: {
           foo: {
             baz(state, actions, data) {
@@ -135,12 +135,12 @@ test("extend namespace", done => {
             }
           }
         }
-      })
+      }
     ]
   })
 })
 
-test("receive emit function", done => {
+test("emit", done => {
   app({
     events: {
       foo() {

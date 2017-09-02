@@ -105,6 +105,6 @@ view: (state, { reverse }) =>
   </h1>
 ```
 
-Well done! You can [try it online](https://codepen.io/hyperapp/pen/NvYdma?editors=0010) too.
+Well done! You can [try it online](https://codepen.io/hyperapp/pen/JyLNap) too.
 
 Continue reading to learn more and don't miss out the [tutorials](/docs/tutorials.md) section. Happy coding!

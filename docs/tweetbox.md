@@ -1,6 +1,6 @@
 # TweetBox
 
-In this example we'll create a TweetBox clone and learn how to organize our UI code using [Components](/docs/components.md).
+In this example we'll create a TweetBox clone and learn how to compose a user interface of with [components](/docs/components.md).
 
 [Try it Online](https://codepen.io/hyperapp/pen/bgWBdV?editors=0010)
 

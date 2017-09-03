@@ -1,6 +1,6 @@
 # Counter
 
-In this example we'll learn how to use [actions](/docs/actions.md) to update the state of your application.
+In this example we'll learn how to use [actions](/docs/actions.md) to update the [state](/docs/state.md).
 
 [Try it Online](https://codepen.io/hyperapp/pen/zNxZLP?editors=0010)
 

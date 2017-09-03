@@ -34,7 +34,7 @@ For an in-depth introduction to JSX, see the official [documentation](https://fa
 
 ## Setup
 
-We can use [Babel](https://github.com/babel/babel) to transform JSX into [`h`](/docs/api.md#h) function calls and a bundler to create a single file we can deliver to the browser.
+We can use [Babel](https://github.com/babel/babel) to transform JSX into `h` function calls and a bundler to create a single file we can deliver to the browser.
 
 In a new directory, create an `index.html` file.
 

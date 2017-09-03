@@ -35,7 +35,7 @@ Instances of abusive, harassing, or otherwise unacceptable behavior may be repor
 
 - We use [Babel](https://babeljs.io) and [Jest](http://facebook.github.io/jest) to run the tests.
 - Feel free to create a new `test/*.test.js` file if none of the existing test files suits your test case.
-- Tests usually start by creating a small application and using a feature, then check if `document.body.innerHTML` matches some expected string. The app call is async, so we often rely on [oncreate](/docs/api.md#oncreate) or [onupdate](/docs/api.md#onupdate) events to detect when the view has been rendered.
+- Tests usually start by creating a small application and using a feature, then check if `document.body.innerHTML` matches some expected string. The app call is async, so we often rely on [oncreate](/docs/vdom-events.md#oncreate) or [onupdate](/docs/vdom-events.md#onupdate) events to detect when the view has been rendered.
 - We use [requestAnimationFrame](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame) to throttle renders, but it is not natively supported by Jest. For this reason you'll often see the following code at the top of a test file:
 
   ```js

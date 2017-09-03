@@ -10,11 +10,11 @@ app({
       <h1>{state.count}</h1>
       <button onclick={actions.up}>＋</button>
     </main>,
-  mixins: [Hydrator]
+  mixins: [hydrator()]
 })
 ```
 
-The process consists of serving the fully rendered or pre-rendered page together with your application.
+The process consists of serving the fully pre-rendered page together with your application.
 
 ```html
 <html>
@@ -31,10 +31,10 @@ The process consists of serving the fully rendered or pre-rendered page together
 </html>
 ```
 
-Then interating over the [root](/docs/root.md) child nodes to create a [virtual node](/docs/vnodes.md) tree.
+Then iterate over the [root](/docs/root.md) child nodes to create a [virtual node](/docs/vnodes.md) tree.
 
 ```jsx
-const Hydrator = () => ({
+const hydrator = () => ({
   events: {
     load(state, actions, element) {
       return walk(element, (node, children) => ({

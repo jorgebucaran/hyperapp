@@ -1,6 +1,6 @@
 # Countdown Timer
 
-In this example and learn how to use the [events](/docs/events.md) property to register global events.
+In this example we'll learn how to use [events](/docs/events.md) to register timers and global events.
 
 [Try it Online](https://codepen.io/hyperapp/pen/evOZLv?editors=0010)
 

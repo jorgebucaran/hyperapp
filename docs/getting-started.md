@@ -108,6 +108,6 @@ Well done! You can [try it online](https://codepen.io/hyperapp/pen/JyLNap) too.
 
 ---
 
-Go back to the [documentation](/docs/README.md) to learn more and don't miss out the [tutorials](/docs/tutorials.md) section.
+Go back to the [documentation](/docs/README.md) and don't miss out the [tutorials](/docs/tutorials.md) section.
 
 Happy coding!

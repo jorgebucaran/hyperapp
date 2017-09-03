@@ -51,14 +51,15 @@ If you don't know all the properties that you want to place in a component ahead
 Note that when using JSX, components [must be capitalized](https://facebook.github.io/react/docs/jsx-in-depth.html#user-defined-components-must-be-capitalized) or contain a `.` in their name.
 
 ```jsx
-<component />   // JSX
-h("component")  // Compiled output.
+<Component>
+  <obj.subcomponent />
+</Component>
 
-<Component />
-h(Component)
+// Compiled output.
 
-<obj.component />
-h(obj.component)
+h(Component, {}, [
+  h(obj.subcomponent)
+])
 ```
 
 ## Component Lifecycle Events

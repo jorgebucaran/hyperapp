@@ -12,9 +12,7 @@ export function app(props) {
   var renderLock
 
   appMixins.concat(props).map(function(mixin) {
-    if (typeof mixin === "function") {
-      mixin = mixin(emit)
-    }
+    mixin = typeof mixin === "function" ? mixin(emit) : mixin
 
     Object.keys(mixin.events || []).map(function(key) {
       appEvents[key] = (appEvents[key] || []).concat(mixin.events[key])

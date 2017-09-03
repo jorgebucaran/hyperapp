@@ -1,6 +1,6 @@
 # View
 
-Use the [view](/docs/api.md#view) to describe your application user interface as a function of the [state](/docs/state.md).
+Use the view to describe your application user interface as a function of the [state](/docs/state.md).
 
 ```jsx
 app({

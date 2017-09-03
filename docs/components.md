@@ -48,6 +48,19 @@ If you don't know all the properties that you want to place in a component ahead
 </ul>
 ```
 
+Note that when using JSX, components [must be capitalized](https://facebook.github.io/react/docs/jsx-in-depth.html#user-defined-components-must-be-capitalized) or contain a `.` in their name.
+
+```jsx
+<component />   // JSX
+h("component")  // Compiled output.
+
+<Component />
+h(Component)
+
+<obj.component />
+h(obj.component)
+```
+
 ## Component Lifecycle Events
 
 Components share the same lifecycle events as virtual nodes.

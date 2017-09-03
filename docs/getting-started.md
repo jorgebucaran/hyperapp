@@ -2,7 +2,7 @@
 
 ## Installation
 
-Download the minified library from a [CDN](https://unpkg.com/hyperapp).
+Download the minified library from the [CDN](https://unpkg.com/hyperapp).
 
 ```html
 <script src="https://unpkg.com/hyperapp"></script>
@@ -30,7 +30,6 @@ See [JSX] or [hyperx] for setup instructions.
 
 [hyperx]: /docs/hyperx.md
 [JSX]: /docs/jsx.md
-
 
 ## Hello World
 
@@ -64,7 +63,7 @@ state: {
 }
 ```
 
-The view describes the application's user interface.
+The view describes the user interface.
 
 ```js
 state => h("h1", {}, state.title)
@@ -76,13 +75,13 @@ You can create a view using [JSX] or [hyperx] too.
 state => <h1>{state.title}</h1>
 ```
 
-The [app](/docs/api.md#app) function wraps it all together and renders the view on the DOM.
+The app function wraps it all together and renders the view on the DOM.
 
 ```jsx
 app({ ... })
 ```
 
-Let's make it interactive! Add the following code below the view declaration.
+To make it interactive add the following code below the view.
 
 ```jsx
 actions: {
@@ -94,7 +93,7 @@ actions: {
 }
 ```
 
-[Actions](/docs/actions.md) allow you to update the state tree to trigger a re-render.
+[Actions](/docs/actions.md) allow you to update the state tree and trigger a re-render.
 
 Modify the view function to take the action and call it when the heading is clicked.
 
@@ -107,4 +106,8 @@ view: (state, { reverse }) =>
 
 Well done! You can [try it online](https://codepen.io/hyperapp/pen/JyLNap) too.
 
-Continue reading to learn more and don't miss out the [tutorials](/docs/tutorials.md) section. Happy coding!
+---
+
+Go back to the [documentation](/docs/README.md) to learn more and don't miss out the [tutorials](/docs/tutorials.md) section.
+
+Happy coding!

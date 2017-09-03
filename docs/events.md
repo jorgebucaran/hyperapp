@@ -4,9 +4,9 @@ Events are functions called at various points in the life of your application. U
 
 ## Default Events
 
-### load
+### `load`
 
-Use [load](/docs/api.md#load) to initialize your application before the initial [view](/docs/view.md) render, listen to global events, etc.
+Use `load` to initialize your application before the initial [view](/docs/view.md) render, listen to global events, etc.
 
 [Try it Online](https://codepen.io/hyperapp/pen/Bpyraw?editors=0010)
 
@@ -32,13 +32,13 @@ app({
 
 #### Hydration
 
-Return a valid [virtual node](/docs/vnodes.md) tree to enable re-[hydration](/docs/hydration.md).
+To enable DOM re-[hydration](/docs/hydration.md) you can return a [virtual node](/docs/vnodes.md) that matches your rendered HTML.
 
 ```jsx
 app({
   events: {
-    load(state, actions, root) {
-      return walk(root, (node, children) => ({
+    load(state, actions, element) {
+      return walk(element, (node, children) => ({
         tag: node.tagName.toLowerCase(),
         data: {},
         children
@@ -48,9 +48,9 @@ app({
 })
 ```
 
-### action
+### `action`
 
-Use [action](/docs/api.md#action) to log, inspect or extract information about actions before they are called.
+Use `action` to log, inspect or extract information about actions before they are called.
 
 ```jsx
 app({
@@ -65,9 +65,9 @@ app({
 })
 ```
 
-### resolve
+### `resolve`
 
-Use [resolve](/docs/api.md#resolve) to validate the result of an action or modify its return type. This event is fired immediately after an action is called.
+Use resolve to validate the result of an action or modify its return type. This event is fired immediately after an action is called.
 
 Allow actions to return a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise).
 
@@ -97,9 +97,9 @@ app({
 })
 ```
 
-### update
+### `update`
 
-Use [update](/docs/api.md#update_event) to record, validate or prevent state updates.
+Use `update` to record, validate or prevent state updates.
 
 Return `false` to cancel the update and prevent the view from re-rendering.
 
@@ -116,9 +116,9 @@ app({
 })
 ```
 
-### render
+### `render`
 
-Use [render](/docs/api.md#render) to overwrite the [view](/docs/view.md) function before it is called.
+Use `render` to overwrite the [view](/docs/view.md) function before it is called. If your application does not consume a view this event is not fired.
 
 ```jsx
 app({
@@ -132,7 +132,7 @@ app({
 
 ## Custom Events
 
-Create custom events with the [`emit`](/docs/api.md#emit) function.
+Create custom events with the `emit` function.
 
 ```jsx
 emit("myEvent", data)
@@ -151,7 +151,7 @@ app({
 })
 ```
 
-The `emit` function is available as the return value of the [`app`](/docs/api.md#app) function call itself.
+The `emit` function is available as the return value of the app function call.
 
 ```js
 const emit = app({
@@ -159,15 +159,7 @@ const emit = app({
 })
 ```
 
-Or in [mixins](/docs/mixins.md), as the first argument to the function.
-
-```js
-function MyMixin(emit) {
-  // ...
-}
-```
-
-The `emit` function returns the supplied data, reduced by successively calling each event handler of the specified event.
+Or inside [mixin](/docs/mixins.md#creating-custom-events) functions.
 
 ### Interoperability
 
@@ -189,19 +181,19 @@ const emit = app({
 emit("populate", yourData)
 ```
 
-If you find yourself mapping events to actions one-to-one, use a mixin to encapsulate this process.
+If you find yourself mapping events to actions often, you can encapsulate this functionality in a mixin.
 
 ```jsx
-const Dispatcher = () => ({
+const dispatcher = () => ({
   events: {
-    dispatch(state, actions, { action, data }) {
-      return actions[action](data)
+    dispatch(state, actions, { type, data }) {
+      return actions[type](data)
     }
   }
 })
 
 const emit = app({
-  mixins: [Dispatcher]
+  mixins: [dispatcher()]
 })
 ```
 
@@ -209,7 +201,7 @@ You can now use emit to call any action.
 
 ```jsx
 emit("dispatch", {
-  action: "toggle",
+  type: "toggle",
   data: {
     index: 0
   }

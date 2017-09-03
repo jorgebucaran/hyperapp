@@ -1,6 +1,6 @@
 # View
 
-Use the [view](/docs/api.md#view) to describe your application user interface as a function of the [state](/docs/state.md).
+Use the view to describe your application user interface as a function of the [state](/docs/state.md).
 
 ```jsx
 app({
@@ -19,7 +19,7 @@ app({
 })
 ```
 
-Bind user events and [actions](/docs/actions.md) together to create interactive applications.
+Then bind user events and [actions](/docs/actions.md) together to create interactive applications.
 
 [Try it Online](https://codepen.io/hyperapp/pen/zNxZLP?editors=0010)
 
@@ -35,10 +35,14 @@ app({
       <button onclick={actions.up}>＋</button>
     </main>,
   actions: {
-    down: state => ({ count: state.count - 1 }),
-    up: state => ({ count: state.count + 1 })
+    down(state) {
+      return { count: state.count - 1 }
+    },
+    up(state) {
+      return { count: state.count + 1 }
+    },
   }
 })
 ```
 
-The view function is called to generate a new [virtual node](/docs/vnodes.md) as a result of state changes caused by actions.
+The view function is called every time we need to generate a new [virtual node](/docs/vnodes.md) as a result of state changes triggered by actions.

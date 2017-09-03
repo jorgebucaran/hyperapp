@@ -1,9 +1,9 @@
 # Index
 
-Below is an alphabetical list of some of the terms and concepts used throughout the documentation. Click on a link to find out more.
+Below is an alphabetical list of some of the terms and concepts used throughout the documentation. Click on any link to find out more.
 
 ##### A
-[app](/docs/api.md#app)<br>
+[app](/src/app.js)<br>
 [actions](/docs/actions.md)<br>
 [events.action](/docs/events.md#action)<br>
 [attributes](/docs/vnodes.md#attributes)<br>
@@ -12,13 +12,12 @@ Below is an alphabetical list of some of the terms and concepts used throughout 
 [components](/docs/components.md)<br>
 
 ##### E
-[emit](/docs/api.md#emit)<br>
+[emit](/docs/events.md#custom-events)<br>
 [events](/docs/events.md)<br>
-[events, custom](/docs/events.md#custom-events)<br>
 [events, VDOM](/docs/vdom-events.md)<br>
 
 ##### H
-[h](/docs/api.md#h)<br>
+[h](/src/h.js)<br>
 [hyperx](/docs/hyperx.md)<br>
 [hyperxify](https://github.com/substack/hyperxify)<br>
 
@@ -29,7 +28,7 @@ Below is an alphabetical list of some of the terms and concepts used throughout 
 [keys](/docs/keys.md)<br>
 
 ##### L
-[events.load](/docs/api.md#load)<br>
+[events.load](/docs/events.md#load)<br>
 
 ##### M
 [mixins](/docs/mixins.md)<br>

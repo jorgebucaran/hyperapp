@@ -1,6 +1,6 @@
 # Root
 
-Use the [root](/docs/api.md#root) to target the DOM node where the [view](/docs/view.md) will be rendered into.
+Use the root to target the DOM node where the [view](/docs/view.md) will be rendered into.
 
 ```html
 <body>

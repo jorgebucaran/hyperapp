@@ -2,8 +2,6 @@
 
 A virtual node is a JavaScript object that represents a DOM tree.
 
-It consists of a `tag` name, `data` [attributes](#attributes) and `children` array.
-
 ```js
 {
   tag: "div",
@@ -12,54 +10,47 @@ It consists of a `tag` name, `data` [attributes](#attributes) and `children` arr
   },
   children: [{
     tag: "h1",
-    data: null,
+    data: {},
     children: ["Hi."]
   }]
 }
 ```
 
-The VDOM engine consumes a virtual node to produce a DOM tree.
-
-```html
-<div id="app">
-  <h1>Hi.</h1>
-</div>
-```
-
-Create a virtual node using [`h`](/docs/api.md#h).
+To create a virtual node use the `h` function.
 
 ```js
-const tree = h("div", { id: "app" }, [
-  h("h1", null, "Hi.")
+const node = h("div", { id: "app" }, [
+  h("h1", {}, "Hi.")
 ])
 ```
 
-Or with [JSX](/docs/jsx.md), [hyperx](/docs/hyperx.md), etc.
+Or [JSX](/docs/jsx.md), [hyperx](/docs/hyperx.md), [t7](https://github.com/trueadm/t7), etc. with a module bundler like [rollup](https://github.com/rollup/rollup) or [webpack](https://github.com/webpack/webpack).
 
 ```jsx
-const vnode = (
+const node = (
   <div id="app">
     <h1>Hi.</h1>
   </div>
 )
 ```
 
-## Attributes
-
-Any valid [HTMLAttributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes), [SVGAttributes](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute), [DOMEvents](https://developer.mozilla.org/en-US/docs/Web/Events), [VDOMEvents](/docs/vdom-events.md) or [keys](/docs/keys.md).
+A virtual node data can be any valid [HTML](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes) or [SVG](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute) attributes, [DOM](https://developer.mozilla.org/en-US/docs/Web/Events), [VDOM](/docs/vdom-events.md) events and [keys](/docs/keys.md).
 
 ```jsx
-const MyButton = props =>
+const button = (
   <button
-    class="btn-large"
+    class="ui button"
+    tabindex={0}
     style={{
-      fontSize: "5em",
-      color: "Tomato"
+      fontSize: "3em"
     }}
-    onclick={props.doSomething}
+    onclick={() => {
+      // ...
+    }}
   >
-    {props.title}
+    Click Me
   </button>
 )
 ```
 
+A function that returns a virtual node is known as a [component](/docs/components.md).

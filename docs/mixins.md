@@ -58,14 +58,14 @@ This mixin adds a new application event that fires after an action is complete. 
 const didAction = () => emit => ({
   events: {
     resolve(state, actions, result) {
-      const resolve = (result, update) =>
+      const deepUpdate = (state, result) =>
         typeof result === "function"
-          ? update(state => resolve(result(state), update))
+          ? deepUpdate(state, result(state))
           : emit("didAction", result)
 
       return typeof result === "function"
-        ? update => result(state => resolve(state, update))
-        : resolve(result)
+        ? update => result(next => update(state => deepUpdate(state, next)))
+        : deepUpdate(state, result)
     }
   }
 })
@@ -79,7 +79,7 @@ app({
 
 ## Intercepting Events
 
-This mixin adds a wildcard event that can be used to intercept any other event.
+This mixin adds an event that can be used to intercept any other event.
 
 ```jsx
 const catchThemAll = (events = []) => emit => ({

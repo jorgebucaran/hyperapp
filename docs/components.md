@@ -39,7 +39,7 @@ If you don't know all the properties that you want to place in a component ahead
 ```jsx
 <ul>
   {state.todos
-    .map(({ id, value, done }) =>
+    .map((todo) =>
       <TodoItem
         {...todo}
         toggle={actions.toggle}

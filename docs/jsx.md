@@ -118,6 +118,7 @@ npm i -D \
 </pre>
 
 Create a `.babelrc` file.
+
 ```js
 {
   "presets": ["es2015"],
@@ -167,7 +168,6 @@ npm i -D \
   <a href="https://www.npmjs.com/package/babel-preset-es2015-rollup">babel-preset-es2015-rollup</a> \
   <a href="https://www.npmjs.com/package/babel-plugin-transform-react-jsx">babel-plugin-transform-react-jsx</a>
 </pre>
-
 
 Create a `rollup.config.js` file.
 

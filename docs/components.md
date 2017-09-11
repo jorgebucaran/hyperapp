@@ -67,4 +67,3 @@ h(Component, {}, [
 Components share the same lifecycle events as virtual nodes.
 
 See [VDOM events](/docs/vdom-events.md) for details.
-

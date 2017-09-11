@@ -68,7 +68,7 @@ npm i -D \
 
 Create a `.babelrc` file.
 
-```
+```json
 {
   "presets": ["es2015"]
 }
@@ -98,6 +98,7 @@ npm i -D \
 </pre>
 
 Create a `.babelrc` file.
+
 ```js
 {
   "presets": ["es2015"]
@@ -128,4 +129,3 @@ Bundle the application.
 <pre>
 $(<a href="https://docs.npmjs.com/cli/bin">npm bin</a>)/webpack -p
 </pre>
-

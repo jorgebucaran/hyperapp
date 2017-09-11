@@ -7,12 +7,14 @@ Use the root to target the DOM node where the [view](/docs/view.md) will be rend
   <div id="app"></div>
 </body>
 ```
+
 ```jsx
 app({
   view: () => <h1>Hi.</h1>,
   root: document.getElementById("app")
 })
 ```
+
 ```html
 <body>
   <div id="app">
@@ -28,12 +30,9 @@ app({
   view: () => <h1>Hi.</h1>
 })
 ```
+
 ```html
 <body>
   <h1>Hi.</h1>
 </body>
 ```
-
-
-
-

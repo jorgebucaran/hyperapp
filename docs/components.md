@@ -4,7 +4,7 @@ A component is a function that returns a [virtual node](/docs/vnodes.md). Compon
 
 [Try it Online](https://codepen.io/hyperapp/pen/zNxRLy)
 
-```js
+```jsx
 const TodoItem = ({ id, value, done, toggle }) =>
   <li
     class={done && "done"}
@@ -67,4 +67,3 @@ h(Component, {}, [
 Components share the same lifecycle events as virtual nodes.
 
 See [VDOM events](/docs/vdom-events.md) for details.
-

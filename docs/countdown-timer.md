@@ -56,7 +56,7 @@ app({
 
 The state consists of two properties: `count`, to track the seconds elapsed; and `paused`, to check if the clock is currently running.
 
-```jsx
+```js
 state: {
   count: SECONDS,
   paused: true
@@ -75,7 +75,7 @@ The view displays the seconds inside a `<h1>` element and binds two buttons to `
 
 To simulate the clock we use [`setInterval`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setInterval) and call `actions.tick` every second.
 
-```jsx
+```js
 events: {
   load(state, actions){
     setInterval(actions.tick, 1000)
@@ -87,7 +87,7 @@ Inside `tick`, we check the current second count and if it's zero, reset the cou
 
 If `state.count` is greater than zero and the clock is not paused, we decrement the count by one.
 
-```jsx
+```js
 if (state.count === 0) {
   actions.reset()
   actions.toggle()

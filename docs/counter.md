@@ -26,7 +26,7 @@ app({
 
 The state consists of a single property: `count` which is initialized to 0.
 
-```jsx
+```js
 state: {
   count: 0
 }
@@ -47,13 +47,13 @@ The view also defines two buttons with `onclick` handlers attached to them. The 
 
 The `disabled` attribute is dynamically toggled depending on the value of the counter. This prevents the decrement button from being clicked when the counter reaches zero.
 
-```jsx
+```js
 disabled={state.count <= 0}
 ```
 
 Note that neither of the actions update the state directly, instead, they return a partial state.
 
-```jsx
+```js
 sub: state => ({ count: state.count - 1 }),
 add: state => ({ count: state.count + 1 })
 ```

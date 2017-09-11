@@ -40,4 +40,3 @@ Instances of abusive, harassing, or otherwise unacceptable behavior may be repor
   ```js
   window.requestAnimationFrame = setTimeout
   ```
-

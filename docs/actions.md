@@ -4,7 +4,7 @@ Use actions to manipulate the [state](/docs/state.md) tree. If your application 
 
 [Try it Online](https://codepen.io/hyperapp/pen/WpGqpp?editors=0010)
 
-```jsx
+```js
 app({
   actions: {
     populate(state, actions, { repos = [], isFetching }) {
@@ -54,7 +54,7 @@ app({
 
 Actions can return a function instead of a partial state. This function is called a _thunk_. They operate like regular actions, but will not trigger a state update unless `update` is called from within the thunk.
 
-```jsx
+```js
 app({
   actions: {
     setData(state, actions, data) {
@@ -68,7 +68,7 @@ app({
 
 If you are using the previous state to calculate the new state, it's possible that the state was changed by another action that finished before the thunk. In this case you can call `update` with a reducer function that takes the most up-to-date state.
 
-```jsx
+```js
 app({
   actions: {
     setData(state, actions, data) {
@@ -84,7 +84,7 @@ app({
 
 The action returns the result of the thunk, allowing you to use actions as all-purpose getters.
 
-```jsx
+```js
 app({
   actions: {
     getState(state) {
@@ -96,7 +96,7 @@ app({
 
 A getter retrieves a property from the state tree or the result of a computation.
 
-```jsx
+```js
 app({
   actions: {
     isAdult({ id }) {
@@ -112,7 +112,7 @@ Use [thunks](#thunks) to update the state asynchronously, e.g., inside a callbac
 
 [Try it Online](https://codepen.io/hyperapp/pen/ZeByKv?editors=0010)
 
-```jsx
+```js
 app({
   actions: {
     getURL(state) {
@@ -129,7 +129,7 @@ app({
 
 Actions need not have a return value, in which case they will not trigger a state update. You can use actions this way to create side effects, call other actions, etc.
 
-```jsx
+```js
 app({
   actions: {
     setURL(state, actions, data) {
@@ -158,7 +158,7 @@ app({
 
 Actions can be nested inside one or more namespaces. Use them to organize your actions by categories or domains.
 
-```jsx
+```js
 app({
   actions: {
     ...userActions,
@@ -167,4 +167,3 @@ app({
   }
 })
 ```
-

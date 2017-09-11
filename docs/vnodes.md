@@ -53,4 +53,6 @@ const button = (
 )
 ```
 
+> Warning: use of the `innerHTML` attribute can lead to [cross-site scripting (XSS) vunerabilities](https://en.wikipedia.org/wiki/Cross-site_scripting) if not properly sanitized.
+
 A function that returns a virtual node is known as a [component](/docs/components.md).

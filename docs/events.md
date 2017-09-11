@@ -10,7 +10,7 @@ Use `load` to initialize your application before the initial [view](/docs/view.m
 
 [Try it Online](https://codepen.io/hyperapp/pen/Bpyraw?editors=0010)
 
-```jsx
+```js
 app({
   state: { x: 0, y: 0 },
   view: state => state.x + ", " + state.y,
@@ -34,7 +34,7 @@ app({
 
 To enable DOM re-[hydration](/docs/hydration.md) you can return a [virtual node](/docs/vnodes.md) that matches your rendered HTML.
 
-```jsx
+```js
 app({
   events: {
     load(state, actions, element) {
@@ -52,7 +52,7 @@ app({
 
 Use `action` to log, inspect or extract information about actions before they are called.
 
-```jsx
+```js
 app({
   events: {
     action(state, actions, { name, data }) {
@@ -67,11 +67,11 @@ app({
 
 ### `resolve`
 
-Use resolve to validate the result of an action or modify its return type. This event is fired immediately after an action is called.
+Use `resolve` to validate the result of an action or modify its return type. This event is fired immediately after an action is called.
 
 Allow actions to return a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise).
 
-```jsx
+```js
 app({
   events: {
     resolve(state, actions, result) {
@@ -85,7 +85,7 @@ app({
 
 Allow actions to return an [Observable](https://github.com/tc39/proposal-observable).
 
-```jsx
+```js
 app({
   events: {
     resolve(state, actions, result) {
@@ -103,7 +103,7 @@ Use `update` to record, validate or prevent state updates.
 
 Return `false` to cancel the update and prevent the view from re-rendering.
 
-```jsx
+```js
 app({
   events: {
     update(state, actions, nextState) {
@@ -120,7 +120,7 @@ app({
 
 Use `render` to overwrite the [view](/docs/view.md) function before it is called. If your application does not consume a view this event is not fired.
 
-```jsx
+```js
 app({
   events: {
     render(state, actions, view) {
@@ -134,13 +134,13 @@ app({
 
 Create custom events with the `emit` function.
 
-```jsx
+```js
 emit("myEvent", data)
 ```
 
 Then subscribe to them like any other event.
 
-```jsx
+```js
 app({
   events: {
     myEvent(state, actions, data) {
@@ -183,7 +183,7 @@ emit("populate", yourData)
 
 If you find yourself mapping events to actions often, you can encapsulate this functionality in a mixin.
 
-```jsx
+```js
 const dispatcher = () => ({
   events: {
     dispatch(state, actions, { type, data }) {
@@ -199,7 +199,7 @@ const emit = app({
 
 You can now use emit to call any action.
 
-```jsx
+```js
 emit("dispatch", {
   type: "toggle",
   data: {
@@ -207,7 +207,3 @@ emit("dispatch", {
   }
 })
 ```
-
-
-
-

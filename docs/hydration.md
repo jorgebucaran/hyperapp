@@ -33,7 +33,7 @@ The process consists of serving the fully pre-rendered page together with your a
 
 Then iterate over the [root](/docs/root.md) child nodes to create a [virtual node](/docs/vnodes.md) tree.
 
-```jsx
+```js
 const hydrator = () => ({
   events: {
     load(state, actions, element) {

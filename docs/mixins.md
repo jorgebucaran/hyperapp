@@ -2,7 +2,7 @@
 
 Use mixins to encapsulate your application behavior into reusable modules, to share or just to organize your code.
 
-```jsx
+```js
 const mixin = options => ({
   state,
   actions,
@@ -12,7 +12,7 @@ const mixin = options => ({
 
 This mixin logs action information to the console.
 
-```jsx
+```js
 const logger = ({ log = console.log } = {}) => ({
   events: {
     action(state, actions, info) {
@@ -28,7 +28,7 @@ app({
 
 A mixin can be a plain object if it takes no options.
 
-```jsx
+```js
 app({
   mixins: [
     {
@@ -54,7 +54,7 @@ const mixin = options => emit => ({
 
 This mixin adds a new application event that fires after an action is complete. To implement this mixin we intercept the action result inside [`resolve`](/docs/events.md#resolve) and wrap the thunk / update pipeline.
 
-```jsx
+```js
 const didAction = () => emit => ({
   events: {
     resolve(state, actions, result) {
@@ -81,7 +81,7 @@ app({
 
 This mixin adds an event that can be used to intercept any other event.
 
-```jsx
+```js
 const catchThemAll = (events = []) => emit => ({
   events: {
     ...events.reduce(
@@ -116,7 +116,7 @@ app({
 
 This mixin measures the elapsed time between actions and logs the result to the console. Action metadata is only available inside [`action`](/docs/events.md#action), so we use a stack to collect and share action information with other events.
 
-```jsx
+```js
 function actionPerformanceTimer({ ignore = [] } = {}) {
   const actionStack = []
 

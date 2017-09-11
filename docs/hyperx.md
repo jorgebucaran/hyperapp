@@ -99,7 +99,7 @@ npm i -D \
 
 Create a `.babelrc` file.
 
-```js
+```json
 {
   "presets": ["es2015"]
 }
@@ -107,7 +107,7 @@ Create a `.babelrc` file.
 
 Create a `webpack.config.js` file:
 
-```jsx
+```js
 module.exports = {
   entry: "./index.js",
   output: {

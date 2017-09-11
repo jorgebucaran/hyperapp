@@ -22,7 +22,7 @@ npm i <a href="https://www.npmjs.com/package/hyperapp">hyperapp</a>
 
 Then with a module bundler like [rollup](https://github.com/rollup/rollup) or [webpack](https://github.com/webpack/webpack), use as you would anything else.
 
-```jsx
+```js
 import { h, app } from "hyperapp"
 ```
 
@@ -71,19 +71,19 @@ state => h("h1", {}, state.title)
 
 You can create a view using [JSX] or [hyperx] too.
 
-```jsx
+```js
 state => <h1>{state.title}</h1>
 ```
 
 The app function wraps it all together and renders the view on the DOM.
 
-```jsx
+```js
 app({ ... })
 ```
 
 To make it interactive add the following code below the view.
 
-```jsx
+```js
 actions: {
   reverse(state) {
     return {

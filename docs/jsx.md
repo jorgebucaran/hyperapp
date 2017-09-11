@@ -15,7 +15,7 @@ const main = (
 
 JSX is not part of the ECMAScript standard, but using the appropriate tooling we can compile JSX into JavaScript browsers understand.
 
-```jsx
+```js
 var h = hyperapp.h
 
 h("div", {}, [
@@ -83,7 +83,7 @@ npm i -D \
 
 Create a `.babelrc` file:
 
-```js
+```json
 {
   "presets": ["es2015"],
     "plugins": [
@@ -119,7 +119,7 @@ npm i -D \
 
 Create a `.babelrc` file.
 
-```js
+```json
 {
   "presets": ["es2015"],
     "plugins": [
@@ -171,7 +171,7 @@ npm i -D \
 
 Create a `rollup.config.js` file.
 
-```jsx
+```js
 import babel from "rollup-plugin-babel"
 import resolve from "rollup-plugin-node-resolve"
 import uglify from "rollup-plugin-uglify"

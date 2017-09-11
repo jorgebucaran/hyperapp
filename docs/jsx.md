@@ -49,7 +49,7 @@ In a new directory, create an `index.html` file.
 </html>
 ```
 
-And an `index.js` file:
+And an `index.js` file.
 
 ```jsx
 import { h, app } from "hyperapp"
@@ -81,7 +81,7 @@ npm i -D \
   <a href="https://www.npmjs.com/package/uglifyjs">uglifyjs</a>
 </pre>
 
-Create a `.babelrc` file:
+Create a `.babelrc` file.
 
 ```json
 {
@@ -133,7 +133,7 @@ Create a `.babelrc` file.
 }
 ```
 
-Create a `webpack.config.js` file:
+Create a `webpack.config.js` file.
 
 ```js
 module.exports = {

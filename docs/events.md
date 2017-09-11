@@ -67,7 +67,7 @@ app({
 
 ### `resolve`
 
-Use resolve to validate the result of an action or modify its return type. This event is fired immediately after an action is called.
+Use `resolve` to validate the result of an action or modify its return type. This event is fired immediately after an action is called.
 
 Allow actions to return a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise).
 

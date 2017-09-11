@@ -105,7 +105,7 @@ Create a `.babelrc` file.
 }
 ```
 
-Create a `webpack.config.js` file:
+Create a `webpack.config.js` file.
 
 ```js
 module.exports = {

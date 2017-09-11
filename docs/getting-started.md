@@ -55,7 +55,7 @@ app({
 
 You should see "hello!" is displayed on the page.
 
-The state describes the application's data.
+The [state](/docs/state.md) describes the application's data.
 
 ```js
 state: {
@@ -63,7 +63,7 @@ state: {
 }
 ```
 
-The view describes the user interface.
+The [view](/docs/view.md) describes the user interface.
 
 ```js
 state => h("h1", {}, state.title)

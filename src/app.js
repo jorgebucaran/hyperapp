@@ -198,10 +198,10 @@ export function app(props) {
     }
 
     if (Array.isArray(element)) {
-      var remaining = element.slice(1)
+      var remaining = element.slice(1), remainingNodes
       element = element[0]
       if (Array.isArray(oldNode)) {
-        var remainingNodes = oldNode.slice(1)
+        remainingNodes = oldNode.slice(1)
         oldNode = oldNode[0]
       }
       remaining.map(function(element, i) {

@@ -24,7 +24,7 @@ export function app(props) {
 
   requestRender(
     (oldNode = emit("load", (element = appRoot.children[0]))) === element &&
-      (oldNode = element = null)
+    (oldNode = element = null)
   )
 
   return emit
@@ -180,6 +180,35 @@ export function app(props) {
   }
 
   function patch(parent, element, oldNode, node, isSVG, nextSibling) {
+    if (Array.isArray(node)) {
+      if (Array.isArray(element) && Array.isArray(oldNode)) {
+        var elementCopy = element.slice(0)
+        var oldCopy = oldNode.slice(0)
+        var ret = node.map(function(t, i) {
+          return patch(parent, elementCopy.shift(), oldCopy.shift(), t, isSVG, nextSibling)
+        })
+        elementCopy.forEach(function(element, i) {
+          removeElement(parent, element, oldCopy[i] && oldCopy[i].data)
+        })
+        return ret
+      }
+      return node.map(function(t, i) {
+        return patch(parent, i === 0 ? element : null, i === 0 ? oldNode : null, t, isSVG, nextSibling)
+      })
+    }
+
+    if (Array.isArray(element)) {
+      var remaining = element.slice(1)
+      element = element[0]
+      if (Array.isArray(oldNode)) {
+        var remainingNodes = oldNode.slice(1)
+        oldNode = oldNode[0]
+      }
+      remaining.map(function(element, i) {
+        removeElement(parent, element, remainingNodes && remainingNodes[i] && remainingNodes[i].data)
+      })
+    }
+
     if (oldNode == null) {
       element = parent.insertBefore(createElement(node, isSVG), element)
     } else if (node.tag != null && node.tag === oldNode.tag) {

@@ -53,6 +53,25 @@ const button = (
 )
 ```
 
-> Warning: use of the `innerHTML` attribute can lead to [cross-site scripting (XSS) vunerabilities](https://en.wikipedia.org/wiki/Cross-site_scripting) if not properly sanitized.
-
 A function that returns a virtual node is known as a [component](/docs/components.md).
+
+## innerHTML
+
+Use of the innerHTML method can lead to cross-site scripting ([XSS](https://en.wikipedia.org/wiki/Cross-site_scripting)) vunerabilities if not properly sanitized. If you can't use virtual nodes for any reason, create your own dangerouslySetInnerHTML function to explicitly state the intent of performing an "unsafe" operation.
+
+```js
+function dangerouslySetInnerHTML(html) {
+  return element => {
+    element.innerHTML = html
+  }
+}
+
+function ItemContent({ item }) {
+  return (
+    <div>
+      <a href={item.url} oncreate={dangerouslySetInnerHTML(item.summary)} />
+    </div>
+  )
+}
+```
+

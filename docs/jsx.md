@@ -30,11 +30,13 @@ h("div", {}, [
 
 This is much faster than sending a parser down the wire and compiling the view in the browser.
 
+---
+
 For an in-depth introduction to JSX, see the official [documentation](https://facebook.github.io/react/docs/introducing-jsx.html).
 
 ## Setup
 
-We can use [Babel](https://github.com/babel/babel) to transform JSX into `h` function calls and a bundler to create a single file we can deliver to the browser.
+We'll use [Babel](https://github.com/babel/babel) to transform JSX into `h()` function calls and a bundler to create a single file to deliver to the browser.
 
 In a new directory, create an `index.html` file.
 
@@ -67,7 +69,7 @@ Install dependencies.
 npm i <a href="https://www.npmjs.com/package/hyperapp">hyperapp</a>
 </pre>
 
-## [Browserify](https://gist.github.com/jbucaran/21bbf0bbb0fe97345505664883100706 "Get this gist")
+### [Browserify](https://gist.github.com/jbucaran/21bbf0bbb0fe97345505664883100706 "Get this gist")
 
 Install development dependencies.
 <pre>
@@ -105,7 +107,7 @@ $(<a href="https://docs.npmjs.com/cli/bin">npm bin</a>)/browserify \
   -p bundle-collapser/plugin index.js | uglifyjs > bundle.js
 </pre>
 
-## [Webpack](https://gist.github.com/jbucaran/6010a83891043a6e0c37a3cec684c08e "Get this gist")
+### [Webpack](https://gist.github.com/jbucaran/6010a83891043a6e0c37a3cec684c08e "Get this gist")
 
 Install development dependencies.
 <pre>
@@ -156,7 +158,7 @@ Bundle the application.
 $(<a href="https://docs.npmjs.com/cli/bin">npm bin</a>)/webpack -p
 </pre>
 
-## [Rollup](https://gist.github.com/jbucaran/0c0da8f1256a0a66090151cfda777c2c "Get this gist")
+### [Rollup](https://gist.github.com/jbucaran/0c0da8f1256a0a66090151cfda777c2c "Get this gist")
 
 Install development dependencies.
 <pre>

@@ -26,7 +26,7 @@ Then with a module bundler like [rollup](https://github.com/rollup/rollup) or [w
 import { h, app } from "hyperapp"
 ```
 
-See [JSX] or [hyperx] for setup instructions.
+See [JSX] or [hyperx] for tooling setup instructions.
 
 [hyperx]: /docs/hyperx.md
 [JSX]: /docs/jsx.md
@@ -99,15 +99,13 @@ Modify the view function to take the action and call it when the heading is clic
 
 ```jsx
 view: (state, { reverse }) =>
-  <h1 onclick={reverse}>
-    {state.title}
-  </h1>
+  h("h1", { onclick: reverse }, state.title)
 ```
 
 Well done! You can [try it online](https://codepen.io/hyperapp/pen/JyLNap) too.
 
 ---
 
-Go back to the [documentation](/docs/README.md) and don't miss out the [tutorials](/docs/tutorials.md) section.
+Continue reading the [documentation](/docs/README.md) and don't miss out the [tutorials](/docs/tutorials.md) section.
 
 Happy coding!

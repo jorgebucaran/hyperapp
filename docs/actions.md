@@ -99,7 +99,7 @@ A getter retrieves a property from the state tree or the result of a computation
 ```js
 app({
   actions: {
-    isAdult({ id }) {
+    isAdult(state, actions, { id }) {
       return () => state.users[id].age >= state.adultAge
     }
   }

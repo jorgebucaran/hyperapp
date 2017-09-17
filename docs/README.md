@@ -5,6 +5,9 @@
 - Getting Started
   - [Installation](/docs/getting-started.md#installation)
   - [Hello World](/docs/getting-started.md#hello-world)
+- Building
+  - [JSX](/docs/jsx.md)
+  - [Hyperx](/docs/hyperx.md)
 - Architecture
   - [State](/docs/state.md)
   - [View](/docs/view.md)

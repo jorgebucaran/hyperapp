@@ -45,4 +45,4 @@ app({
 })
 ```
 
-The view function is called every time we need to generate new [virtual nodes](/docs/vnodes.md) as a result of state changes triggered by actions.
+The view function is called every time we need to generate new [vnodes](/docs/vnodes.md) as a result of state changes triggered by actions.

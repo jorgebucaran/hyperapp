@@ -31,7 +31,7 @@ The process consists of serving the fully pre-rendered page together with your a
 </html>
 ```
 
-Then iterate over the [root](/docs/root.md) child nodes to create a [virtual node](/docs/vnodes.md) tree.
+Then iterate over the [root](/docs/root.md) child nodes to create a [vnode](/docs/vnodes.md) tree.
 
 ```js
 const hydrator = () => ({

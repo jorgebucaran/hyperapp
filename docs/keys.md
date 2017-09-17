@@ -13,7 +13,7 @@ const ImageGallery = images =>
   </ul>
 ```
 
-By setting the `key` property on a [virtual node](/docs/virtual-node.md), you declare that the node should correspond to a particular DOM element. This allow us to re-order the element into its new position, if the position changed, rather than risk destroying it.
+By setting the `key` property on a [vnode](/docs/virtual-node.md), you declare that the node should correspond to a particular DOM element. This allow us to re-order the element into its new position, if the position changed, rather than risk destroying it.
 
 ## Gotchas
 

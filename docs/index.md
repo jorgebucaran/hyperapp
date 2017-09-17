@@ -72,4 +72,4 @@ Below is an alphabetical list of some of the terms and concepts used throughout 
 ## V
 
 [view](/docs/view.md)<br>
-[virtual node](/docs/vnodes.md)<br>
+[vnode](/docs/vnodes.md)<br>

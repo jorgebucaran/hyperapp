@@ -16,7 +16,7 @@
   - [Mixins](/docs/mixins.md)
   - [Root](/docs/root.md)
 - Concepts
-  - [Virtual Nodes](/docs/vnodes.md)
+  - [VNodes](/docs/vnodes.md)
   - [VDOM Events](/docs/vdom-events.md)
   - [Components](/docs/components.md)
   - [Hydration](/docs/hydration.md)

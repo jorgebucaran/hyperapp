@@ -1,6 +1,6 @@
 # VDOM Events
 
-VDOM or lifecycle events are functions called at various points in the life of a [virtual node](/docs/vnodes.md). They are used like any other data attribute.
+VDOM or lifecycle events are functions called at various points in the life of a [vnode](/docs/vnodes.md). They are used like any other data attribute.
 
 ## `oncreate`
 
@@ -12,13 +12,13 @@ The `oncreate` event is fired after the element is created and attached to the D
 
 Use it to manipulate the DOM node directly, make a network request, start an animation, etc.
 
-```jsx
+```js
 app({
   view: () =>
     <input
       type="text"
-      oncreate={elm => {
-        elm.focus()
+      oncreate={element => {
+        element.focus()
       }}
     />
 })
@@ -34,7 +34,7 @@ The `onupdate` event is fired every time we update the element attributes.
 
 This event will fire even if the attributes have not changed. You can use `oldProps` inside the function to check if they changed or not.
 
-```jsx
+```js
 app({
   view: state =>
     <main>
@@ -60,7 +60,7 @@ The `onremove` event is fired before the element is removed from the DOM.
 
 Use it for cleaning up resources like timers, creating slide out animations, etc.
 
-```jsx
+```js
 app({
   view: () =>
     <div
@@ -84,20 +84,20 @@ This example shows how to integrate with the [CodeMirror](https://codemirror.net
 
 [Try it Online](https://hyperapp-code-mirror.glitch.me)
 
-```jsx
+```js
 const Editor = props =>
   <div
-    oncreate={elm => {
-      const cm = CodeMirror(node => elm.appendChild(node))
+    oncreate={element => {
+      const cm = CodeMirror(node => element.appendChild(node))
 
       // Share it.
-      elm.CodeMirror = {
+      element.CodeMirror = {
         set(props) {
           Object.keys(props).forEach(key => cm.setOption(key, props[key]))
         }
       }
 
-      elm.CodeMirror.set(props)
+      element.CodeMirror.set(props)
     }}
     onupdate={({ CodeMirror }) => CodeMirror.set(props)}
   />

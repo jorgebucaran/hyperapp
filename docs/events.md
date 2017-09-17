@@ -30,9 +30,11 @@ app({
 })
 ```
 
+Be careful not to inadvertently return a value from the `load` event unless you are [hydrating](#hydration) pre-rendered HTML.
+
 #### Hydration
 
-To enable DOM re-[hydration](/docs/hydration.md) you can return a [virtual node](/docs/vnodes.md) that matches your rendered HTML.
+To enable DOM re-[hydration](/docs/hydration.md) you must return a [vnode](/docs/vnodes.md) that matches your rendered HTML.
 
 ```js
 app({

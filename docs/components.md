@@ -1,69 +1,84 @@
 # Components
 
-A component is a function that returns a [virtual node](/docs/vnodes.md). Components are reusable blocks of code that encapsulate markup, styles and behaviors that belong together.
+A component is a function that returns a [vnode](/docs/vnodes.md). Components are reusable blocks of code that encapsulate markup, styles and behaviors that belong together.
 
 [Try it Online](https://codepen.io/hyperapp/pen/zNxRLy)
 
 ```jsx
-const TodoItem = ({ id, value, done, toggle }) =>
-  <li
-    class={done && "done"}
-    onclick={e =>
-      toggle({
-        value: done,
-        id: id
-      })}
-  >
-    {value}
-  </li>
+function TodoItem({ id, value, done, toggle }) {
+  return (
+    <li
+      class={done && "done"}
+      onclick={e =>
+        toggle({
+          value: done,
+          id: id
+        })}
+    >
+      {value}
+    </li>
+  )
+}
 
-const mainView = (state, actions) =>
-  <div>
-    <h1>Todo</h1>
-    <ul>
-      {state.todos
-        .map(({ id, value, done }) =>
+function mainView(state, actions) {
+  return (
+    <div>
+      <h1>Todo</h1>
+      <ul>
+        {state.todos.map(({ id, value, done }) => (
           <TodoItem
             id={id}
             value={value}
             done={done}
             toggle={actions.toggle}
           />
-        )}
-    </ul>
-  </div>
+        ))}
+      </ul>
+    </div>
+  )
+}
 ```
 
 If you don't know all the properties that you want to place in a component ahead of time, you can use the [spread syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_operator).
 
 ```jsx
-<ul>
-  {state.todos
-    .map((todo) =>
-      <TodoItem
-        {...todo}
-        toggle={actions.toggle}
-      />
-    )}
-</ul>
+function TodoList({ todos, toggle }) {
+  return (
+    <ul>{todos.map(todo =>
+      <TodoItem {...todo}
+        toggle={toggle}
+      />)}
+    </ul>
+  )
+}
 ```
 
 Note that when using JSX, components [must be capitalized](https://facebook.github.io/react/docs/jsx-in-depth.html#user-defined-components-must-be-capitalized) or contain a `.` in their name.
 
-```jsx
-<Component>
-  <obj.subcomponent />
-</Component>
+## Children Composition
 
-// Compiled output.
+Components receive their children elements in the second argument.
 
-h(Component, {}, [
-  h(obj.subcomponent)
-])
+```js
+function Box({ color }, children) {
+  return (
+    <div class={`box box-${color}`}>
+      {children}
+    </div>
+  )
+}
 ```
 
-## Component Lifecycle Events
+This lets you and other components pass arbitrary children down to them.
 
-Components share the same lifecycle events as virtual nodes.
-
-See [VDOM events](/docs/vdom-events.md) for details.
+```js
+function HelloBox({ name }) {
+  return (
+    <Box color="green">
+      <h1 class="title">
+        Hello, {name}!
+      </h1>
+    </Box>
+  )
+}
+```

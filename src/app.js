@@ -14,7 +14,7 @@ export function app(props) {
   appMixins.concat(props).map(function(mixin) {
     mixin = typeof mixin === "function" ? mixin(emit) : mixin
 
-    Object.keys(mixin.events || []).map(function(key) {
+    Object.keys(mixin.events || {}).map(function(key) {
       appEvents[key] = (appEvents[key] || []).concat(mixin.events[key])
     })
 

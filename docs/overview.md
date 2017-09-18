@@ -7,7 +7,7 @@ What makes Hyperapp unique among the alternatives like React, Preact, and Mithri
 ## Benchmarks
 
 - [DBMonster](https://codepen.io/hyperapp/pen/wrMvjz?editors=0010)
-- [JS Web Frameworks Benchmark - Round 6](http://www.stefankrause.net/js-frameworks-benchmark6/webdriver-ts/table.html).
+- [JS Web Frameworks Benchmark - Round 6](http://www.stefankrause.net/js-frameworks-benchmark6/webdriver-ts/table.html)
 
 ## Browser Support
 

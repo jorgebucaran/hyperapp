@@ -14,7 +14,11 @@ Then with a module bundler like [Rollup](https://github.com/rollup/rollup) or [W
 import { h, app } from "hyperapp"
 ```
 
-Or download the minified library from a [CDN](https://unpkg.com/hyperapp).
+Hyperapp is compatible with all bundlers and works well with [Hyperx](/docs/hyperx.md) or [JSX](/docs/jsx.md).
+
+## Download
+
+Download the [latest release](https://github.com/hyperapp/hyperapp/releases/latest) or load directly from [unpkg](https://unpkg.com/hyperapp), [jsDelivr](https://cdn.jsdelivr.net/npm/hyperapp@latest/dist/hyperapp.js), or [CDNJS](https://cdnjs.com/libraries/hyperapp).
 
 ```html
 <script src="https://unpkg.com/hyperapp"></script>
@@ -25,11 +29,6 @@ Then find it in `window.hyperapp`.
 ```js
 const { h, app } = hyperapp
 ```
-
-See [JSX] or [Hyperx] for detailed setup instructions.
-
-[Hyperx]: /docs/hyperx.md
-[JSX]: /docs/jsx.md
 
 ## Hello World
 

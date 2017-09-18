@@ -6,17 +6,19 @@
 
 Hyperapp is a JavaScript library for building frontend applications.
 
-- **Minimal**: Hyperapp was born out of the attempt to do [more with less](https://en.wikipedia.org/wiki/Worse_is_better). We have aggressively minimized the concepts you need to understand while remaining on par with what other frameworks can do.
+- **Minimal**: Hyperapp was born out of the attempt to do more with less. We have aggressively minimized the concepts you need to understand while remaining on par with what other frameworks can do.
 - **Functional**: Hyperapp's design is based on [The Elm Architecture](https://guide.elm-lang.org/architecture). Create scalable browser-based applications using a functional paradigm. The twist is you don't have to learn a new language.
 - **Batteries-included**: Out of the box, Hyperapp combines state management with a VDOM engine that supports keyed updates & lifecycle events — all with no dependencies.
 
-[Get started with Hyperapp](/docs/getting-started.md)
+[Get started with Hyperapp](/docs/getting-started.md) or [read the docs](/docs).
 
 ## Hello World
 
 [Try it Online](https://codepen.io/hyperapp/pen/zNxZLP?editors=0010)
 
 ```jsx
+import { h, app } from "hyperapp"
+
 app({
   state: {
     count: 0
@@ -24,8 +26,8 @@ app({
   view: (state, actions) =>
     <main>
       <h1>{state.count}</h1>
-      <button onclick={actions.down}>ー</button>
-      <button onclick={actions.up}>＋</button>
+      <button onclick={actions.down}>–</button>
+      <button onclick={actions.up}>+</button>
     </main>,
   actions: {
     down: state => ({ count: state.count - 1 }),
@@ -34,15 +36,15 @@ app({
 })
 ```
 
-## Documentation
-
-The documentation is in the [docs](/docs) directory.
-
 ## Community
 
 - [Slack](https://hyperappjs.herokuapp.com)
-- [/r/hyperapp](https://www.reddit.com/r/hyperapp)
+- [/r/Hyperapp](https://www.reddit.com/r/hyperapp)
 - [Twitter](https://twitter.com/hyperappjs)
+
+## Browser Support
+
+Hyperapp supports all ES5-compliant browsers, including Internet Explorer 10 and above.
 
 ## License
 

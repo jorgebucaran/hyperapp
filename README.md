@@ -33,6 +33,12 @@ app({
   }
 })
 ```
+## Browser Support
+Firefox | Chrome | IE   | Edge | Safari
+-------|---------|------|------|-------
+55 ✔️   | 61 ✔️    | 11 ✔️ | 15 ✔️ | 10 ✔️ 
+|      |         | 10 ✔️ |      |      |
+|      |         | 9  ⓧ|      |      |
 
 ## Documentation
 

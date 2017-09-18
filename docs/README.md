@@ -4,7 +4,6 @@
 - [Tutorials](/docs/tutorials.md)
 - Getting Started
   - [Installation](/docs/getting-started.md#installation)
-  - [Download](/docs/getting-started.md#download)
   - [Hello World](/docs/getting-started.md#hello-world)
 - Building
   - [JSX](/docs/jsx.md)

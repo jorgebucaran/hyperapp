@@ -36,10 +36,6 @@ app({
 })
 ```
 
-## Browser Support
-
-Hyperapp supports all ES5-compliant browsers, including Internet Explorer 10 and above.
-
 ## Community
 
 - [Slack](https://hyperappjs.herokuapp.com)

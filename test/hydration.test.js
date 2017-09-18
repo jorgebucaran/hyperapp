@@ -24,7 +24,7 @@ const Hydrator = () => ({
     load(state, actions, root) {
       return walk(root, (node, children) => ({
         tag: node.tagName.toLowerCase(),
-        data: {},
+        props: {},
         children
       }))
     }

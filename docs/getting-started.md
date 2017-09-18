@@ -2,33 +2,33 @@
 
 ## Installation
 
-Download the minified library from the [CDN](https://unpkg.com/hyperapp).
-
-```html
-<script src="https://unpkg.com/hyperapp"></script>
-```
-
-And import it.
-
-```js
-const { h, app } = hyperapp
-```
-
-Or install with npm / Yarn.
+Install with npm or Yarn.
 
 <pre>
 npm i <a href="https://www.npmjs.com/package/hyperapp">hyperapp</a>
 </pre>
 
-Then with a module bundler like [rollup](https://github.com/rollup/rollup) or [webpack](https://github.com/webpack/webpack), use as you would anything else.
+Then with a module bundler like [Rollup](https://github.com/rollup/rollup) or [Webpack](https://github.com/webpack/webpack), use as you would anything else.
 
 ```js
 import { h, app } from "hyperapp"
 ```
 
-See [JSX] or [hyperx] for tooling setup instructions.
+Or download the minified library from a [CDN](https://unpkg.com/hyperapp).
 
-[hyperx]: /docs/hyperx.md
+```html
+<script src="https://unpkg.com/hyperapp"></script>
+```
+
+Then find it in `window.hyperapp`.
+
+```js
+const { h, app } = hyperapp
+```
+
+See [JSX] or [Hyperx] for detailed setup instructions.
+
+[Hyperx]: /docs/hyperx.md
 [JSX]: /docs/jsx.md
 
 ## Hello World
@@ -69,7 +69,7 @@ The [view](/docs/view.md) describes the user interface.
 state => h("h1", {}, state.title)
 ```
 
-You can create a view using [JSX] or [hyperx] too.
+You can create a view using [JSX] or [Hyperx] too.
 
 ```js
 state => <h1>{state.title}</h1>

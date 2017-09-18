@@ -40,11 +40,3 @@ app({
 ```bash
 browserify index.js | uglifyjs > bundle.js
 ```
-
-## Hyperapp vs. React
-
-At a conceptual level, Hyperapp and React have a lot of similarities. Both libraries use a VDOM, lifecycle events, and key-based reconciliation.
-
-React popularized the view as a function of the state. Hyperapp attempts to further this idea providing a built-in state management solution that digests the core principles of [Redux](https://redux.js.org) and the [Elm Architecture](https://guide.elm-lang.org/architecture/).
-
-Hyperapp has stateless, pure functional [components](/docs/components.md) as the only means available to split up complex user interfaces into reusable blocks.

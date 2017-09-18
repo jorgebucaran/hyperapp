@@ -5,12 +5,12 @@ A vnode or vnode is a JavaScript object that describes a DOM tree.
 ```js
 {
   tag: "div",
-  data: {
+  props: {
     id: "app"
   },
   children: [{
     tag: "h1",
-    data: {},
+    props: {},
     children: ["Hi."]
   }]
 }
@@ -42,22 +42,24 @@ const node = (
 
 ## Attributes
 
-The data property can include any valid attributes: [HTML](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes), [SVG](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute), [DOM events](https://developer.mozilla.org/en-US/docs/Web/Events), [VDOM events](/docs/vdom-events.md) and [keys](/docs/keys.md).
+Also referred to as props, can include any valid [HTML](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes) or [SVG](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute) attributes, [DOM events](https://developer.mozilla.org/en-US/docs/Web/Events), [VDOM events](/docs/vdom-events.md) and [keys](/docs/keys.md).
 
 ```jsx
-const button = (
-  <button
-    class="ui button"
-    tabindex={0}
-    style={{
-      fontSize: "3em"
-    }}
-    onclick={() => {
-      // ...
-    }}
-  >
-    Click Me
-  </button>
+const button = h(
+  "button",
+  {
+    props: {
+      class: "ui button",
+      tabindex: 0,
+      style: {
+        fontSize: "3em"
+      },
+      onclick() {
+        // ...
+      }
+    }
+  },
+  ["Click Me"]
 )
 ```
 

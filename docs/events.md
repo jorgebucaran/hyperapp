@@ -42,7 +42,7 @@ app({
     load(state, actions, element) {
       return walk(element, (node, children) => ({
         tag: node.tagName.toLowerCase(),
-        data: {},
+        props: {},
         children
       }))
     }

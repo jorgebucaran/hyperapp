@@ -1,48 +1,45 @@
 export as namespace Hyperapp
 
-/** @namespace [Virtual DOM] */
+/** @namespace [VDOM] */
 
-/** The Virtual DOM representation of an Element
+/** The VDOM representation of an Element
  *
- * @memberOf [Virtual DOM]
+ * @memberOf [VDOM]
 */
-export interface VirtualNode<Data> {
+export interface VNode<Props> {
   tag: string
-  data: Data
-  children: VirtualNodeChild<{} | null>[]
+  props: Props
+  children: VNodeChild<{} | null>[]
 }
 
-/** In the Virtual DOM a Child could be either a Virtual Node or a string
+/** In the VDOM a Child could be either a VNode or a string
  *
- * @memberOf [Virtual DOM]
+ * @memberOf [VDOM]
 */
-export type VirtualNodeChild<Data> = VirtualNode<Data> | string
+export type VNodeChild<Props> = VNode<Props> | string
 
-export interface Component<Data> {
-  /** A Component is a function that return a custom Virtual Node
+export interface Component<Props> {
+  /** A Component is a function that return a custom VNode
    *
-   * @memberOf [Virtual DOM]
+   * @memberOf [VDOM]
   */
-  (data: Data, children: VirtualNodeChild<{} | null>[]): VirtualNode<Data>
+  (data: Props, children: VNodeChild<{} | null>[]): VNode<Props>
 }
 
-/** The soft way to create a Virtual Node
+/** The soft way to create a VNode
  * @param tag       Either a tag name e.g. 'div'. Or a Component function
- * @param data      Any valid HTML atributes, events, styles, and meta data
- * @param children  The children of the VirtualNode
+ * @param props     Any valid HTML atributes, events, styles, and meta data
+ * @param children  The children of the VNode
  *
- * @memberOf [Virtual DOM]
+ * @memberOf [VDOM]
 */
-export function h<Data>(
-  tag: Component<Data> | string,
-  data?: Data,
-  children?:
-    | VirtualNodeChild<{} | null>[]
-    | VirtualNodeChild<{} | null>
-    | number
-): VirtualNode<Data>
+export function h<Props>(
+  tag: Component<Props> | string,
+  data?: Props,
+  children?: VNodeChild<{} | null>[] | VNodeChild<{} | null> | number
+): VNode<Props>
 
-/** @namespace [Application] */
+/** @namespace [App] */
 
 export interface State {}
 
@@ -50,20 +47,20 @@ export interface Thunk {
   (update: Function): any | null | void
 }
 
-export type ActionsResult<State extends Hyperapp.State> =
+export type ActionResult<State extends Hyperapp.State> =
   | Partial<State>
   | Thunk
   | {}
   | null
   | void
 
-export type VirtualActions<
+export type WrappedActions<
   State extends Hyperapp.State,
   Actions extends Hyperapp.Actions<State>
 > = {
   [P in keyof Actions]: (
     data: any
-  ) => ActionsResult<State> | VirtualActions<State, Actions>
+  ) => ActionResult<State> | WrappedActions<State, Actions>
 }
 
 export interface Actions<State extends Hyperapp.State> {
@@ -71,18 +68,18 @@ export interface Actions<State extends Hyperapp.State> {
     | Actions<State>
     | ((
         state: State,
-        actions: VirtualActions<State, Actions<State>>,
+        actions: WrappedActions<State, Actions<State>>,
         data: any
-      ) => ActionsResult<State>)
+      ) => ActionResult<State>)
 }
 
-export interface VirtualEvents<
+export interface CustomEvents<
   State extends Hyperapp.State,
   Actions extends Hyperapp.Actions<State>
 > {
   [action: string]: (
     state: State,
-    actions: VirtualActions<State, Actions>,
+    actions: WrappedActions<State, Actions>,
     data: any
   ) => any
 }
@@ -91,22 +88,19 @@ export interface Events<
   State extends Hyperapp.State,
   Actions extends Hyperapp.Actions<State>
 > {
-  load?: (
-    state: State,
-    actions: VirtualActions<State, Actions>
-  ) => void
+  load?: (state: State, actions: WrappedActions<State, Actions>) => void
   resolve?: (
     state: State,
-    actions: VirtualActions<State, Actions>,
-    result: ActionsResult<State>
-  ) => ActionsResult<State>
+    actions: WrappedActions<State, Actions>,
+    result: ActionResult<State>
+  ) => ActionResult<State>
 }
 
 export interface View<
   State extends Hyperapp.State,
   Actions extends Hyperapp.Actions<State>
 > {
-  (state: State, actions: VirtualActions<State, Actions>): VirtualNode<{}>
+  (state: State, actions: WrappedActions<State, Actions>): VNode<{}>
 }
 
 export interface Mixin<
@@ -114,13 +108,11 @@ export interface Mixin<
   Actions extends Hyperapp.Actions<State>,
   Events extends Hyperapp.Events<State, Actions>
 > {
-  (): Application<State, Actions, Events>
-  (): (
-    emit: Emit<State, Actions, Events>
-  ) => Application<State, Actions, Events>
+  (): App<State, Actions, Events>
+  (): (emit: Emit<State, Actions, Events>) => App<State, Actions, Events>
 }
 
-export interface Application<
+export interface App<
   State extends Hyperapp.State,
   Actions extends Hyperapp.Actions<State>,
   Events extends Hyperapp.Events<State, Actions>
@@ -142,7 +134,7 @@ export interface Emit<
    * @param name  The name of the event to call
    * @param data  Will be reduced by each event handler
    *
-   * @memberOF [Application]
+   * @memberOF [App]
   */
   (name: keyof Events, data?: any): any
 }
@@ -151,13 +143,13 @@ export function app<
   State extends Hyperapp.State,
   Actions extends Hyperapp.Actions<State>,
   Events extends Hyperapp.Events<State, Actions>
->(app: Application<State, Actions, Events>): Emit<State, Actions, Events>
+>(app: App<State, Actions, Events>): Emit<State, Actions, Events>
 
 /** @namespace [JSX] */
 
 declare global {
   namespace JSX {
-    interface Element<Data> extends VirtualNode<Data> {}
+    interface Element<Data> extends VNode<Data> {}
     interface IntrinsicElements {
       [elemName: string]: any
     }

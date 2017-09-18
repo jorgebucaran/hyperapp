@@ -102,7 +102,7 @@ export function app(props) {
   }
 
   function getKey(node) {
-    if (node && (node = node.data)) {
+    if (node && (node = node.props)) {
       return node.key
     }
   }
@@ -115,14 +115,14 @@ export function app(props) {
         ? document.createElementNS("http://www.w3.org/2000/svg", node.tag)
         : document.createElement(node.tag)
 
-      if (node.data && node.data.oncreate) {
+      if (node.props && node.props.oncreate) {
         globalInvokeLaterStack.push(function() {
-          node.data.oncreate(element)
+          node.props.oncreate(element)
         })
       }
 
-      for (var i in node.data) {
-        setData(element, i, node.data[i])
+      for (var i in node.props) {
+        setData(element, i, node.props[i])
       }
 
       for (var i = 0; i < node.children.length; ) {
@@ -183,7 +183,7 @@ export function app(props) {
     if (oldNode == null) {
       element = parent.insertBefore(createElement(node, isSVG), element)
     } else if (node.tag != null && node.tag === oldNode.tag) {
-      updateElement(element, oldNode.data, node.data)
+      updateElement(element, oldNode.props, node.props)
 
       isSVG = isSVG || node.tag === "svg"
 
@@ -247,7 +247,7 @@ export function app(props) {
         var oldChild = oldNode.children[i]
         var oldKey = getKey(oldChild)
         if (null == oldKey) {
-          removeElement(element, oldElements[i], oldChild.data)
+          removeElement(element, oldElements[i], oldChild.props)
         }
         i++
       }
@@ -255,8 +255,8 @@ export function app(props) {
       for (var i in oldKeyed) {
         var keyedNode = oldKeyed[i]
         var reusableNode = keyedNode[1]
-        if (!keyed[reusableNode.data.key]) {
-          removeElement(element, keyedNode[0], reusableNode.data)
+        if (!keyed[reusableNode.props.key]) {
+          removeElement(element, keyedNode[0], reusableNode.props)
         }
       }
     } else if (element && node !== element.nodeValue) {
@@ -267,7 +267,7 @@ export function app(props) {
           createElement(node, isSVG),
           (nextSibling = element)
         )
-        removeElement(parent, nextSibling, oldNode.data)
+        removeElement(parent, nextSibling, oldNode.props)
       }
     }
 

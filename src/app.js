@@ -30,7 +30,7 @@ export function app(props) {
   return emit
 
   function initialize(actions, withActions, lastName) {
-    Object.keys(withActions || []).map(function(key) {
+    Object.keys(withActions || {}).map(function(key) {
       var action = withActions[key]
       var name = lastName ? lastName + "." + key : key
 

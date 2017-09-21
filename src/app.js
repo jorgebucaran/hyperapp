@@ -121,12 +121,12 @@ export function app(props) {
         })
       }
 
-      for (var i in node.props) {
-        setData(element, i, node.props[i])
-      }
-
       for (var i = 0; i < node.children.length; ) {
         element.appendChild(createElement(node.children[i++], isSVG))
+      }
+
+      for (var i in node.props) {
+        setData(element, i, node.props[i])
       }
     }
 

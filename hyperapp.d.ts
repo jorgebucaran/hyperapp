@@ -54,13 +54,13 @@ export type ActionResult<State extends Hyperapp.State> =
   | null
   | void
 
-export type WrappedActions<
+export type ActionCallers<
   State extends Hyperapp.State,
   Actions extends Hyperapp.Actions<State>
 > = {
   [P in keyof Actions]: (
     data: any
-  ) => ActionResult<State> | WrappedActions<State, Actions>
+  ) => ActionResult<State> | ActionCallers<State, Actions>
 }
 
 export interface Actions<State extends Hyperapp.State> {
@@ -68,7 +68,7 @@ export interface Actions<State extends Hyperapp.State> {
     | Actions<State>
     | ((
         state: State,
-        actions: WrappedActions<State, Actions<State>>,
+        actions: ActionCallers<State, Actions<State>>,
         data: any
       ) => ActionResult<State>)
 }
@@ -77,21 +77,19 @@ export interface Events<
   State extends Hyperapp.State,
   Actions extends Hyperapp.Actions<State>
 > {
-  [action: string]: ((
-    state: State,
-    actions: WrappedActions<State, Actions>,
-    data: any
-  ) => any ) | undefined
+  [action: string]:
+    | ((state: State, actions: ActionCallers<State, Actions>, data: any) => any)
+    | undefined
 }
 
 export interface DefaultEvents<
   State extends Hyperapp.State,
   Actions extends Hyperapp.Actions<State>
 > extends Hyperapp.Events<State, Actions> {
-  load?: (state: State, actions: WrappedActions<State, Actions>) => void
+  load?: (state: State, actions: ActionCallers<State, Actions>) => void
   resolve?: (
     state: State,
-    actions: WrappedActions<State, Actions>,
+    actions: ActionCallers<State, Actions>,
     result: ActionResult<State>
   ) => ActionResult<State>
 }
@@ -100,7 +98,7 @@ export interface View<
   State extends Hyperapp.State,
   Actions extends Hyperapp.Actions<State>
 > {
-  (state: State, actions: WrappedActions<State, Actions>): VNode<{}>
+  (state: State, actions: ActionCallers<State, Actions>): VNode<{}>
 }
 
 export interface Mixin<

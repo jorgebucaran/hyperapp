@@ -66,7 +66,7 @@ The [view](/docs/view.md) describes the user interface.
 state => h("h1", {}, state.title)
 ```
 
-You can create a view using [JSX] or [Hyperx] too.
+You can create a view using [JSX](/docs/jsx.md) or [Hyperx](/docs/hyperx.md) too.
 
 ```js
 state => <h1>{state.title}</h1>

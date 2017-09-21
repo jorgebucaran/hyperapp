@@ -73,21 +73,21 @@ export interface Actions<State extends Hyperapp.State> {
       ) => ActionResult<State>)
 }
 
-export interface CustomEvents<
-  State extends Hyperapp.State,
-  Actions extends Hyperapp.Actions<State>
-> {
-  [action: string]: (
-    state: State,
-    actions: WrappedActions<State, Actions>,
-    data: any
-  ) => any
-}
-
 export interface Events<
   State extends Hyperapp.State,
   Actions extends Hyperapp.Actions<State>
 > {
+  [action: string]: ((
+    state: State,
+    actions: WrappedActions<State, Actions>,
+    data: any
+  ) => any ) | undefined
+}
+
+export interface DefaultEvents<
+  State extends Hyperapp.State,
+  Actions extends Hyperapp.Actions<State>
+> extends Hyperapp.Events<State, Actions> {
   load?: (state: State, actions: WrappedActions<State, Actions>) => void
   resolve?: (
     state: State,
@@ -106,7 +106,7 @@ export interface View<
 export interface Mixin<
   State extends Hyperapp.State,
   Actions extends Hyperapp.Actions<State>,
-  Events extends Hyperapp.Events<State, Actions>
+  Events extends Hyperapp.DefaultEvents<State, Actions>
 > {
   (): App<State, Actions, Events>
   (): (emit: Emit<State, Actions, Events>) => App<State, Actions, Events>
@@ -115,7 +115,7 @@ export interface Mixin<
 export interface App<
   State extends Hyperapp.State,
   Actions extends Hyperapp.Actions<State>,
-  Events extends Hyperapp.Events<State, Actions>
+  Events extends Hyperapp.DefaultEvents<State, Actions>
 > {
   state?: State
   actions?: Actions

@@ -65,7 +65,7 @@ const button = h(
 
 ## Lifecycle
 
-You can get notified when a vnode is created, updated or removed via [VDOM events](/docs/vdoom-events.md).
+You can get notified when a vnode is created, updated or removed via [VDOM events](/docs/vdom-events.md).
 
 ```js
 app({

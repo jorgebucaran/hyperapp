@@ -15,10 +15,7 @@ export function h(tag, props) {
         stack.push(node[i])
       }
     } else if (node != null && node !== true && node !== false) {
-      if (typeof node === "number") {
-        node = node + ""
-      }
-      children.push(node)
+      children.push(typeof node === "number" ? (node = node + "") : node)
     }
   }
 

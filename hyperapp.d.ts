@@ -23,7 +23,7 @@ export interface Component<Props> {
    *
    * @memberOf [VDOM]
   */
-  (data: Props, children: VNodeChild<{} | null>[]): VNode<Props>
+  (props: Props, children: VNodeChild<{} | null>[]): VNode<{}>
 }
 
 /** The soft way to create a VNode
@@ -35,7 +35,7 @@ export interface Component<Props> {
 */
 export function h<Props>(
   tag: Component<Props> | string,
-  data?: Props,
+  props?: Props,
   children?: VNodeChild<{} | null>[] | VNodeChild<{} | null> | number
 ): VNode<Props>
 

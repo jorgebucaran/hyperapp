@@ -1,4 +1,4 @@
-export as namespace Hyperapp
+export as namespace Hyperapp;
 
 /** @namespace [VDOM] */
 
@@ -7,23 +7,23 @@ export as namespace Hyperapp
  * @memberOf [VDOM]
 */
 export interface VNode<Props> {
-  tag: string
-  props: Props
-  children: VNodeChild<{} | null>[]
+  tag: string;
+  props: Props;
+  children: VNodeChild<{} | null>[];
 }
 
 /** In the VDOM a Child could be either a VNode or a string
  *
  * @memberOf [VDOM]
 */
-export type VNodeChild<Props> = VNode<Props> | string
+export type VNodeChild<Props> = VNode<Props> | string;
 
 export interface Component<Props> {
   /** A Component is a function that return a custom VNode
    *
    * @memberOf [VDOM]
   */
-  (data: Props, children: VNodeChild<{} | null>[]): VNode<Props>
+  (data: Props, children: VNodeChild<{} | null>[]): VNode<any>;
 }
 
 /** The soft way to create a VNode
@@ -37,14 +37,14 @@ export function h<Props>(
   tag: Component<Props> | string,
   data?: Props,
   children?: VNodeChild<{} | null>[] | VNodeChild<{} | null> | number
-): VNode<Props>
+): VNode<Props>;
 
 /** @namespace [App] */
 
 export interface State {}
 
 export interface Thunk {
-  (update: Function): any | null | void
+  (update: Function): any | null | void;
 }
 
 export type ActionResult<State extends Hyperapp.State> =
@@ -52,7 +52,7 @@ export type ActionResult<State extends Hyperapp.State> =
   | Thunk
   | {}
   | null
-  | void
+  | void;
 
 export type ActionCallers<
   State extends Hyperapp.State,
@@ -61,7 +61,7 @@ export type ActionCallers<
   [P in keyof Actions]: (
     data: any
   ) => ActionResult<State> | ActionCallers<State, Actions>
-}
+};
 
 export interface Actions<State extends Hyperapp.State> {
   [action: string]:
@@ -70,7 +70,7 @@ export interface Actions<State extends Hyperapp.State> {
         state: State,
         actions: ActionCallers<State, Actions<State>>,
         data: any
-      ) => ActionResult<State>)
+      ) => ActionResult<State>);
 }
 
 export interface Events<
@@ -79,26 +79,26 @@ export interface Events<
 > {
   [action: string]:
     | ((state: State, actions: ActionCallers<State, Actions>, data: any) => any)
-    | undefined
+    | undefined;
 }
 
 export interface DefaultEvents<
   State extends Hyperapp.State,
   Actions extends Hyperapp.Actions<State>
 > extends Hyperapp.Events<State, Actions> {
-  load?: (state: State, actions: ActionCallers<State, Actions>) => void
+  load?: (state: State, actions: ActionCallers<State, Actions>) => void;
   resolve?: (
     state: State,
     actions: ActionCallers<State, Actions>,
     result: ActionResult<State>
-  ) => ActionResult<State>
+  ) => ActionResult<State>;
 }
 
 export interface View<
   State extends Hyperapp.State,
   Actions extends Hyperapp.Actions<State>
 > {
-  (state: State, actions: ActionCallers<State, Actions>): VNode<{}>
+  (state: State, actions: ActionCallers<State, Actions>): VNode<{}>;
 }
 
 export interface Mixin<
@@ -106,8 +106,8 @@ export interface Mixin<
   Actions extends Hyperapp.Actions<State>,
   Events extends Hyperapp.DefaultEvents<State, Actions>
 > {
-  (): App<State, Actions, Events>
-  (): (emit: Emit<State, Actions, Events>) => App<State, Actions, Events>
+  (): App<State, Actions, Events>;
+  (): (emit: Emit<State, Actions, Events>) => App<State, Actions, Events>;
 }
 
 export interface App<
@@ -115,12 +115,12 @@ export interface App<
   Actions extends Hyperapp.Actions<State>,
   Events extends Hyperapp.DefaultEvents<State, Actions>
 > {
-  state?: State
-  actions?: Actions
-  events?: Events
-  view?: View<State, Actions>
-  root?: HTMLElement | null
-  mixins?: Mixin<{}, {}, {}>[]
+  state?: State;
+  actions?: Actions;
+  events?: Events;
+  view?: View<State, Actions>;
+  root?: HTMLElement | null;
+  mixins?: Mixin<{}, {}, {}>[];
 }
 
 export interface Emit<
@@ -134,14 +134,14 @@ export interface Emit<
    *
    * @memberOF [App]
   */
-  (name: keyof Events, data?: any): any
+  (name: keyof Events, data?: any): any;
 }
 
 export function app<
   State extends Hyperapp.State,
   Actions extends Hyperapp.Actions<State>,
   Events extends Hyperapp.Events<State, Actions>
->(app: App<State, Actions, Events>): Emit<State, Actions, Events>
+>(app: App<State, Actions, Events>): Emit<State, Actions, Events>;
 
 /** @namespace [JSX] */
 
@@ -149,7 +149,7 @@ declare global {
   namespace JSX {
     interface Element<Data> extends VNode<Data> {}
     interface IntrinsicElements {
-      [elemName: string]: any
+      [elemName: string]: any;
     }
   }
 }

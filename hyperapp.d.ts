@@ -26,6 +26,12 @@ export interface Component<Props> {
   (props: Props, children: VNodeChild<{} | null>[]): VNode<{}>
 }
 
+/** All the possible types for the children parameter in the h function
+ * 
+ * @memberOf [VDOM]
+ */
+export type VNodeChildren = Array<VNodeChild<{} | null> | number> | VNodeChild<{} | null> | number
+
 /** The soft way to create a VNode
  * @param tag       Either a tag name e.g. 'div'. Or a Component function
  * @param props     Any valid HTML atributes, events, styles, and meta data
@@ -36,7 +42,7 @@ export interface Component<Props> {
 export function h<Props>(
   tag: Component<Props> | string,
   props?: Props,
-  children?: VNodeChild<{} | null>[] | VNodeChild<{} | null> | number
+  children?: VNodeChildren
 ): VNode<Props>
 
 /** @namespace [App] */

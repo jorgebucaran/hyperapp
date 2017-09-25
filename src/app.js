@@ -54,11 +54,8 @@ export function app(props, oldNode) {
 
   function setProp(prop, value, source) {
     var target = {}
-    for (var key in source) {
-      target[key] = source[key]
-    }
     target[prop] = value
-    return target
+    return merge(source, target)
   }
 
   function initialize(actions, withActions, lastPath) {

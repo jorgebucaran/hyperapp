@@ -6,8 +6,20 @@ beforeEach(() => {
   document.body.innerHTML = ""
 })
 
-test("load", done => {
+test("called on load", done => {
   app({
+    view: state =>
+    h(
+      "div",
+      {
+        oncreate() {
+          expect(state).toEqual({ value: "bar" })
+          expect(document.body.innerHTML).toBe(`<div>bar</div>`)
+          done()
+        }
+      },
+      state.value
+    ),
     state: {
       value: "foo"
     },
@@ -16,44 +28,16 @@ test("load", done => {
         return { value }
       }
     },
-    events: {
-      load(state, actions) {
+    subscriptions: [
+      (state, actions) => {
+        expect(state).toEqual({ value: "foo" })
         actions.set("bar")
-      },
-      update(state, actions, nextState) {
-        expect(state.value).toBe("foo")
-        expect(nextState.value).toBe("bar")
-        done()
       }
-    }
+    ]
   })
 })
 
-test("render", done => {
-  app({
-    state: {
-      value: "foo"
-    },
-    view: state =>
-      h(
-        "div",
-        {
-          oncreate() {
-            expect(document.body.innerHTML).toBe(`<main><div>foo</div></main>`)
-            done()
-          }
-        },
-        state.value
-      ),
-    events: {
-      render(state, actions, view) {
-        return state => h("main", {}, view(state, actions))
-      }
-    }
-  })
-})
-
-test("action", done => {
+test("action passed to curried return function", done => {
   app({
     view: state =>
       h(
@@ -75,19 +59,19 @@ test("action", done => {
         return { value }
       }
     },
-    events: {
-      load(state, actions) {
-        actions.set("bar")
+    subscriptions: [
+      (state, actions) => action => {
+        expect(action.name).toBe("set")
+        expect(action.data).toBe("bar")
       },
-      action(state, actions, { name, data }) {
-        expect(name).toBe("set")
-        expect(data).toBe("bar")
+      (state, actions) => {
+        actions.set("bar")
       }
-    }
+    ]
   })
 })
 
-test("resolve", done => {
+test("action result passed to curried return from curried action function", done => {
   app({
     view: state =>
       h(
@@ -109,11 +93,8 @@ test("resolve", done => {
         return `?value=bar`
       }
     },
-    events: {
-      load(state, actions) {
-        actions.set("bar")
-      },
-      resolve(state, actions, result) {
+    subscriptions: [
+      (state, actions) => action => result => {
         if (typeof result === "string") {
           //
           // Query strings as a valid ActionResult.
@@ -121,12 +102,22 @@ test("resolve", done => {
           const [key, value] = result.slice(1).split("=")
           return { [key]: value }
         }
+      },
+      (state, actions) => {
+        actions.set("bar")
       }
-    }
+    ]
   })
 })
 
-test("update", done => {
+const validateStateUpdate = validate => (state, actions) => action => result => {
+  if (typeof result === "function") {
+    return update => result(nextResult => update(validate(state, nextResult)))
+  }
+  return validate(state, result)
+}
+
+test("validate sync and async state updates", done => {
   app({
     view: state =>
       h(
@@ -144,36 +135,19 @@ test("update", done => {
       value: "foo"
     },
     actions: {
-      set(state, actions, value) {
-        return { value }
-      }
+      set: (state, actions, value) => ({ value }),
+      setAsync: (state, actions, value) => update => update({ value })
     },
-    events: {
-      load(state, actions) {
-        actions.set(null)
-      },
-      update(state, actions, nextState) {
+    subscriptions: [
+      validateStateUpdate((prevState, nextState) => {
         if (typeof nextState.value !== "string") {
-          return state
+          return prevState
         }
+      }),
+      (state, actions) => {
+        actions.set(null)
+        actions.setAsync(null)
       }
-    }
+    ]
   })
 })
-
-// test("ready", done => {
-//   app({
-//     view: state => h("div", {}, "foo"),
-//     events: {
-//       ready(state, actions, root) {
-//         //
-//         // This event fires after the view is rendered and attached
-//         // to the DOM with your app top-level element / root.
-//         //
-//         root.appendChilde(document.createTextNode("bar"))
-//         expect(document.body.innerHTML).toBe(`<div>foobar</div>`)
-//         done()
-//       }
-//     }
-//   })
-// })

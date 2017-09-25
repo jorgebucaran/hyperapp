@@ -7,47 +7,39 @@ const walk = (node, map) => {
     node,
     node
       ? Array.prototype.map
-          .call(
-            node.childNodes,
-            node =>
-              node.nodeType === Node.TEXT_NODE
-                ? node.nodeValue.trim() && node.nodeValue
-                : walk(node, map)
-          )
-          .filter(node => node)
+        .call(
+        node.childNodes,
+        node =>
+          node.nodeType === Node.TEXT_NODE
+            ? node.nodeValue.trim() && node.nodeValue
+            : walk(node, map)
+        )
+        .filter(node => node)
       : node
   )
 }
 
-const Hydrator = () => ({
-  events: {
-    load(state, actions, root) {
-      return walk(root, (node, children) => ({
-        tag: node.tagName.toLowerCase(),
-        props: {},
-        children
-      }))
-    }
-  }
-})
+const hydrate = root => walk(root, (node, children) => ({
+  tag: node.tagName.toLowerCase(),
+  props: {},
+  children
+}))
 
 beforeEach(() => {
   document.body.innerHTML = ""
 })
 
-test("hydrate from SSR", done => {
+test("hydrate from SSR matching view", done => {
   document.body.innerHTML = `<div id="ssr"><main><p>foo</p></main></div>`
 
+  const root = document.getElementById("ssr");
   app({
-    root: document.getElementById("ssr"),
+    root,
     view: state =>
       h(
         "main",
         {
-          onupdate() {
-            //
-            // Careful: oncreate doesn't fire for rehydrated nodes!
-            //
+          oncreate() {
             expect(document.body.innerHTML).toBe(
               `<div id="ssr"><main><p>foo</p></main></div>`
             )
@@ -55,20 +47,20 @@ test("hydrate from SSR", done => {
           }
         },
         [h("p", {}, "foo")]
-      ),
-    mixins: [Hydrator]
-  })
+      )
+  }, hydrate(root))
 })
 
 test("hydrate from SSR with out-of-date node", done => {
   document.body.innerHTML = `<div id="ssr"><main><h1>foo</h1></main></div>`
 
+  const root = document.getElementById("ssr");
   app({
     view: state =>
       h(
         "main",
         {
-          onupdate() {
+          oncreate() {
             expect(document.body.innerHTML).toBe(
               `<div id="ssr"><main><h1>bar</h1></main></div>`
             )
@@ -77,14 +69,14 @@ test("hydrate from SSR with out-of-date node", done => {
         },
         [h("h1", {}, "bar")]
       ),
-    root: document.getElementById("ssr"),
-    mixins: [Hydrator]
-  })
+    root
+  }, hydrate(root))
 })
 
-test("hydrate from SSR ", done => {
+test("hydrate from incomplete SSR ", done => {
   document.body.innerHTML = `<div id="ssr"><main></main></div>`
 
+  const root = document.getElementById("ssr");
   app({
     view: state =>
       h("main", {}, [
@@ -101,7 +93,6 @@ test("hydrate from SSR ", done => {
           "foo"
         )
       ]),
-    root: document.getElementById("ssr"),
-    mixins: [Hydrator]
-  })
+    root
+  }, hydrate(root))
 })

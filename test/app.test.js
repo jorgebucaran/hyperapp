@@ -29,41 +29,62 @@ test("throttling", done => {
         }
       }
     },
-    events: {
-      load(state, actions) {
+    subscriptions: [
+      (state, actions) => {
         actions.up()
         actions.up()
         actions.up()
         actions.up()
-      },
-      render(state) {
-        //
-        // Because renders are throttled this event is called only once.
-        //
-        expect(state).toEqual({ value: 5 })
       }
-    }
+    ]
   })
 })
 
 test("interop", done => {
-  const emit = app({
-    events: {
+  const appActions = app({
+    actions: {
       foo(state, actions, data) {
         expect(data).toBe("bar")
         done()
       }
     }
   })
-  emit("foo", "bar")
+  appActions.foo("bar")
 })
 
 test("optional view", done => {
   app({
-    events: {
-      load() {
-        done()
-      }
+    subscriptions: [
+      done
+    ]
+  })
+})
+
+test("higher-order app", done => {
+  const appEnhancer = prevApp => props => prevApp(Object.assign(props, {
+    state: {
+      value: 0
+    },
+    actions: {
+      up: ({value}) => ({ value: value + 1})
     }
+  }))
+  app(appEnhancer)({
+    view: state =>
+      h(
+        "div",
+        {
+          oncreate() {
+            expect(document.body.innerHTML).toBe("<div>1</div>")
+            done()
+          }
+        },
+        state.value
+      ),
+    subscriptions: [
+      (state, actions) => {
+        actions.up()
+      }
+    ]
   })
 })

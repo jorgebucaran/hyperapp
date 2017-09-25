@@ -10,22 +10,40 @@ beforeEach(() => {
 
 test("namespacing", done => {
   app({
-    view: state => "",
+    view: state =>
+    h(
+      "div",
+      {
+        oncreate() {
+          expect(document.body.innerHTML).toBe(`<div>only the baz will do</div>`)
+          done()
+        }
+      },
+      state.foo.bar.baz
+    ),
+    state: {
+      foo: {
+        bar: {
+          baz: "minimal baz"
+        }
+      }
+    },
     actions: {
       foo: {
         bar: {
           baz(state, actions, data) {
+            expect(state).toEqual({ baz: "minimal baz" })
             expect(data).toBe("foo.bar.baz")
-            done()
+            return { baz: "only the baz will do" }
           }
         }
       }
     },
-    events: {
-      load(state, actions) {
+    subscriptions: [
+      (state, actions) => {
         actions.foo.bar.baz("foo.bar.baz")
       }
-    }
+    ]
   })
 })
 
@@ -52,11 +70,11 @@ test("sync updates", done => {
         }
       }
     },
-    events: {
-      load(state, actions) {
+    subscriptions: [
+      (state, actions) => {
         actions.up()
       }
-    }
+    ]
   })
 })
 
@@ -91,11 +109,11 @@ test("async updates", done => {
         })
       }
     },
-    events: {
-      load(state, actions) {
+    subscriptions: [
+      (state, actions) => {
         actions.upAsync(1)
       }
-    }
+    ]
   })
 })
 
@@ -127,11 +145,11 @@ test("thunks", done => {
         }
       }
     },
-    events: {
-      load(state, actions) {
+    subscriptions: [
+      (state, actions) => {
         actions.upAsync(1)
       }
-    }
+    ]
   })
 })
 
@@ -163,10 +181,10 @@ test("thunks", done => {
         }
       }
     },
-    events: {
-      load(state, actions) {
+    subscriptions: [
+      (state, actions) => {
         actions.upAsync(1)
       }
-    }
+    ]
   })
 })

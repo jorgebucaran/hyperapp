@@ -52,7 +52,7 @@ test("root as document.body", done => {
         {
           oncreate() {
             expect(document.body.innerHTML).toBe(
-              `<div>fizz</div><main><p>foo</p></main>`
+              "<main><p>foo</p></main><div>fizz</div>"
             )
             done()
           }

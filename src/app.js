@@ -8,7 +8,7 @@ export function app(props, oldNode) {
   var appActions = {}
   var appState = props.state
   var appView = props.view
-  var appSubs = props.subscriptions
+  var appSubs = props.subscriptions || []
   var appHooks = []
   var appRoot = props.root || document.body
   var element = appRoot.children[0]

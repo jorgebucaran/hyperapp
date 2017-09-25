@@ -1,0 +1,30 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+    {
+        "name": "Debug Tests (current file)",
+        "type": "node",
+        "request": "launch",
+        "runtimeArgs": [   
+            "--inspect-brk",
+            "${workspaceRoot}/node_modules/jest/bin/jest",
+            "--runInBand",
+            "${file}"
+        ],
+        "console": "integratedTerminal",
+        "internalConsoleOptions": "neverOpen"
+        },
+      {
+        "name": "Debug All Tests",
+        "type": "node",
+        "request": "launch",
+        "runtimeArgs": [   
+          "--inspect-brk",
+          "${workspaceRoot}/node_modules/jest/bin/jest",
+          "--runInBand"
+        ],
+        "console": "integratedTerminal",
+        "internalConsoleOptions": "neverOpen"
+      }
+    ]
+  }

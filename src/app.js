@@ -9,28 +9,80 @@ export function app(props, oldNode) {
   var appState = props.state
   var appView = props.view
   var appSubs = props.subscriptions || []
-  var appHooks = []
   var appRoot = props.root || document.body
   var element = appRoot.children[0]
+  var beforeActionHooks = []
   var renderLock
 
   initialize(appActions, props.actions, [])
 
-  for (var i = 0; i < appSubs.length; i++) {
-    var hook = appSubs[i](appState, appActions)
-    if (typeof hook === "function") {
-      appHooks.push(hook)
+  appSubs.map(function(sub) {
+    if (typeof (sub = sub(appState, appActions)) === "function") {
+      beforeActionHooks.push(sub)
     }
-  }
+  })
 
   requestRender()
 
   return appActions
 
+  function initialize(actions, withActions, lastPath) {
+    Object.keys(withActions || {}).map(function(key) {
+      var action = withActions[key]
+      var path = lastPath.concat(key)
+
+      if (typeof action === "function") {
+        actions[key] = function(data) {
+          var afterActionHooks = []
+
+          beforeActionHooks.map(function(cb) {
+            if (
+              typeof (cb = cb({ name: path.join("."), data: data })) ===
+              "function"
+            ) {
+              afterActionHooks.push(cb)
+            }
+          })
+
+          var result = action(
+            getPath(lastPath, appState),
+            getPath(lastPath, appActions),
+            data
+          )
+
+          afterActionHooks.map(function(cb) {
+            result = cb(result)
+          })
+
+          return typeof result === "function"
+            ? result(function(withState) {
+                return update(lastPath, withState)
+              })
+            : update(lastPath, result)
+        }
+      } else {
+        initialize(actions[key] || (actions[key] = {}), action, path)
+      }
+    })
+  }
+
+  function update(path, withState) {
+    var partialState = getPath(path, appState)
+
+    if (typeof withState === "function") {
+      return update(path, withState(partialState))
+    }
+    if (
+      withState &&
+      (withState = setPath(path, merge(partialState, withState), appState))
+    ) {
+      requestRender((appState = withState))
+    }
+    return appState
+  }
+
   function getPath(path, source) {
-    return path.reduce(function(result, i) {
-      return result[i]
-    }, source)
+    return path.length === 0 ? source : getPath(path.slice(1), source[path[0]])
   }
 
   function setPath(path, value, source) {
@@ -53,46 +105,9 @@ export function app(props, oldNode) {
   }
 
   function setProp(prop, value, source) {
-    var target = {}
+    var target = merge(source)
     target[prop] = value
-    return merge(source, target)
-  }
-
-  function initialize(actions, withActions, lastPath) {
-    Object.keys(withActions || {}).map(function(key) {
-      var action = withActions[key]
-      var path = lastPath.concat(key)
-
-      if (typeof action === "function") {
-        actions[key] = function(data) {
-          var resolveHooks = []
-          for (var i = 0; i < appHooks.length; i++) {
-            var resolve = appHooks[i]({ name: path.join("."), data: data })
-            if (typeof resolve === "function") {
-              resolveHooks.push(resolve)
-            }
-          }
-
-          var result = action(
-            getPath(lastPath, appState),
-            getPath(lastPath, appActions),
-            data
-          )
-
-          for (var i = 0; i < resolveHooks.length; i++) {
-            result = resolveHooks[i](result)
-          }
-
-          return typeof result === "function"
-            ? result(function(withState) {
-                return update(lastPath, withState)
-              })
-            : update(lastPath, result)
-        }
-      } else {
-        initialize(actions[key] || (actions[key] = {}), action, path)
-      }
-    })
+    return target
   }
 
   function render(cb) {
@@ -110,21 +125,6 @@ export function app(props, oldNode) {
     if (appView && !renderLock) {
       requestAnimationFrame(render, (renderLock = !renderLock))
     }
-  }
-
-  function update(path, withState) {
-    var partialState = getPath(path, appState)
-
-    if (typeof withState === "function") {
-      return update(path, withState(partialState))
-    }
-    if (
-      withState &&
-      (withState = setPath(path, merge(partialState, withState), appState))
-    ) {
-      requestRender((appState = withState))
-    }
-    return appState
   }
 
   function merge(a, b) {

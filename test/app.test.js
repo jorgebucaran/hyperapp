@@ -54,37 +54,6 @@ test("interop", done => {
 
 test("optional view", done => {
   app({
-    subscriptions: [
-      done
-    ]
-  })
-})
-
-test("higher-order app", done => {
-  const appEnhancer = prevApp => props => prevApp(Object.assign(props, {
-    state: {
-      value: 0
-    },
-    actions: {
-      up: ({value}) => ({ value: value + 1})
-    }
-  }))
-  app(appEnhancer)({
-    view: state =>
-      h(
-        "div",
-        {
-          oncreate() {
-            expect(document.body.innerHTML).toBe("<div>1</div>")
-            done()
-          }
-        },
-        state.value
-      ),
-    subscriptions: [
-      (state, actions) => {
-        actions.up()
-      }
-    ]
+    subscriptions: [done]
   })
 })

@@ -1,28 +1,23 @@
 var globalInvokeLaterStack = []
 
-export function app(props, oldNode) {
-  if (typeof props === "function") {
-    return props(app)
-  }
-
+export function app(props, node) {
   var appActions = {}
   var appState = props.state
   var appView = props.view
-  var appSubs = props.subscriptions || []
   var appRoot = props.root || document.body
   var element = appRoot.children[0]
-  var beforeActionHooks = []
+  var beforeActionCallbacks = []
   var renderLock
 
   initialize(appActions, props.actions, [])
 
-  appSubs.map(function(sub) {
-    if (typeof (sub = sub(appState, appActions)) === "function") {
-      beforeActionHooks.push(sub)
-    }
-  })
-
-  requestRender()
+  requestRender(
+    (props.hooks || []).map(function(cb) {
+      if (typeof (cb = cb(appState, appActions)) === "function") {
+        beforeActionCallbacks.push(cb)
+      }
+    })
+  )
 
   return appActions
 
@@ -33,14 +28,16 @@ export function app(props, oldNode) {
 
       if (typeof action === "function") {
         actions[key] = function(data) {
-          var afterActionHooks = []
+          var afterActionCallbacks = []
 
-          beforeActionHooks.map(function(cb) {
+          beforeActionCallbacks.map(function(cb) {
             if (
-              typeof (cb = cb({ name: path.join("."), data: data })) ===
-              "function"
+              typeof (cb = cb({
+                name: path.join("."),
+                data: data
+              })) === "function"
             ) {
-              afterActionHooks.push(cb)
+              afterActionCallbacks.push(cb)
             }
           })
 
@@ -50,75 +47,36 @@ export function app(props, oldNode) {
             data
           )
 
-          afterActionHooks.map(function(cb) {
+          afterActionCallbacks.map(function(cb) {
             result = cb(result)
           })
 
-          return typeof result === "function"
-            ? result(function(withState) {
-                return update(lastPath, withState)
-              })
-            : update(lastPath, result)
+          return typeof result === "function" ? result(update) : update(result)
         }
       } else {
         initialize(actions[key] || (actions[key] = {}), action, path)
       }
     })
-  }
 
-  function update(path, withState) {
-    var partialState = getPath(path, appState)
+    function update(withState) {
+      var partialState = getPath(lastPath, appState)
 
-    if (typeof withState === "function") {
-      return update(path, withState(partialState))
+      if (typeof withState === "function") {
+        return update(withState(partialState))
+      }
+      if (
+        withState &&
+        (withState = setPath(
+          lastPath,
+          merge(partialState, withState),
+          appState
+        ))
+      ) {
+        requestRender((appState = withState))
+      }
+
+      return appState
     }
-    if (
-      withState &&
-      (withState = setPath(path, merge(partialState, withState), appState))
-    ) {
-      requestRender((appState = withState))
-    }
-    return appState
-  }
-
-  function getPath(path, source) {
-    return path.length === 0 ? source : getPath(path.slice(1), source[path[0]])
-  }
-
-  function setPath(path, value, source) {
-    var name = path[0]
-    return path.length === 0
-      ? value
-      : setProp(
-          name,
-          path.length > 1
-            ? setPath(
-                path.slice(1),
-                value,
-                source != null && name in source
-                  ? source[name]
-                  : path[1] >= 0 ? [] : {}
-              )
-            : value,
-          source
-        )
-  }
-
-  function setProp(prop, value, source) {
-    var target = merge(source)
-    target[prop] = value
-    return target
-  }
-
-  function render(cb) {
-    element = patch(
-      appRoot,
-      element,
-      oldNode,
-      (oldNode = appView(appState, appActions)),
-      (renderLock = !renderLock)
-    )
-    while ((cb = globalInvokeLaterStack.pop())) cb()
   }
 
   function requestRender() {
@@ -127,18 +85,56 @@ export function app(props, oldNode) {
     }
   }
 
-  function merge(a, b) {
-    var obj = {}
+  function render(cb) {
+    element = patch(
+      appRoot,
+      element,
+      node,
+      (node = appView(appState, appActions)),
+      (renderLock = !renderLock)
+    )
+    while ((cb = globalInvokeLaterStack.pop())) cb()
+  }
 
-    for (var i in a) {
-      obj[i] = a[i]
+  function setPath(path, value, source) {
+    var name = path[0]
+    return path.length === 0
+      ? value
+      : set(
+          name,
+          path.length > 1
+            ? setPath(
+                path.slice(1),
+                value,
+                source != null && name in source ? source[name] : {}
+              )
+            : value,
+          source
+        )
+  }
+
+  function set(prop, value, source) {
+    var target = merge(source)
+    target[prop] = value
+    return target
+  }
+
+  function getPath(path, source) {
+    return path.length === 0 ? source : getPath(path.slice(1), source[path[0]])
+  }
+
+  function merge(target, source) {
+    var result = {}
+
+    for (var i in target) {
+      result[i] = target[i]
     }
 
-    for (var i in b) {
-      obj[i] = b[i]
+    for (var i in source) {
+      result[i] = source[i]
     }
 
-    return obj
+    return result
   }
 
   function getKey(node) {

@@ -29,7 +29,7 @@ test("throttling", done => {
         }
       }
     },
-    subscriptions: [
+    hooks: [
       (state, actions) => {
         actions.up()
         actions.up()
@@ -54,6 +54,6 @@ test("interop", done => {
 
 test("optional view", done => {
   app({
-    subscriptions: [done]
+    hooks: [done]
   })
 })

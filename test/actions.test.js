@@ -8,19 +8,21 @@ beforeEach(() => {
   document.body.innerHTML = ""
 })
 
-test("namespacing", done => {
+test("slices", done => {
   app({
     view: state =>
-    h(
-      "div",
-      {
-        oncreate() {
-          expect(document.body.innerHTML).toBe(`<div>only the baz will do</div>`)
-          done()
-        }
-      },
-      state.foo.bar.baz
-    ),
+      h(
+        "div",
+        {
+          oncreate() {
+            expect(document.body.innerHTML).toBe(
+              `<div>only the baz will do</div>`
+            )
+            done()
+          }
+        },
+        state.foo.bar.baz
+      ),
     state: {
       foo: {
         bar: {
@@ -37,11 +39,17 @@ test("namespacing", done => {
             return { baz: "only the baz will do" }
           }
         }
+      },
+      fizz: {
+        buzz: {
+          fizzbuzz: () => ({ fizzbuzz: "fizzbuz" })
+        }
       }
     },
-    subscriptions: [
+    hooks: [
       (state, actions) => {
         actions.foo.bar.baz("foo.bar.baz")
+        actions.fizz.buzz.fizzbuzz()
       }
     ]
   })
@@ -70,7 +78,7 @@ test("sync updates", done => {
         }
       }
     },
-    subscriptions: [
+    hooks: [
       (state, actions) => {
         actions.up()
       }
@@ -109,7 +117,7 @@ test("async updates", done => {
         })
       }
     },
-    subscriptions: [
+    hooks: [
       (state, actions) => {
         actions.upAsync(1)
       }
@@ -145,7 +153,7 @@ test("thunks", done => {
         }
       }
     },
-    subscriptions: [
+    hooks: [
       (state, actions) => {
         actions.upAsync(1)
       }
@@ -181,7 +189,7 @@ test("thunks", done => {
         }
       }
     },
-    subscriptions: [
+    hooks: [
       (state, actions) => {
         actions.upAsync(1)
       }

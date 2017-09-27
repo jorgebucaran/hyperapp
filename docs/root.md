@@ -23,6 +23,8 @@ app({
 </body>
 ```
 
+Rendering is non-destructive, instead of replacing the contents of your root, we append to it.
+
 If a root isn't supplied, the [document.body](https://developer.mozilla.org/en-US/docs/Web/API/Document/body) will be used instead.
 
 ```jsx

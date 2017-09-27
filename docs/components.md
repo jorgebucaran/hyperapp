@@ -1,6 +1,6 @@
 # Components
 
-A component is a function that returns a [vnode](/docs/vnodes.md). Components are reusable blocks of code that encapsulate markup, styles and behaviors that belong together.
+A component is any function that returns a [virtual node](/docs/vdom.md#virtual-nodes). Components are reusable blocks of code that encapsulate markup, styles and behaviors that belong together.
 
 [Try it Online](https://codepen.io/hyperapp/pen/zNxRLy)
 
@@ -59,7 +59,7 @@ Note that when using JSX, components [must be capitalized](https://facebook.gith
 
 Components receive their children elements in the second argument.
 
-```js
+```jsx
 function Box({ color }, children) {
   return (
     <div class={`box box-${color}`}>
@@ -71,7 +71,7 @@ function Box({ color }, children) {
 
 This lets you and other components pass arbitrary children down to them.
 
-```js
+```jsx
 function HelloBox({ name }) {
   return (
     <Box color="green">

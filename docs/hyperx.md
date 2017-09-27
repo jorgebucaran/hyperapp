@@ -2,7 +2,7 @@
 
 [Hyperx](https://github.com/substack/hyperx) is a standards-compliant ES6 tagged [template string function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#Tagged_template_literals) factory. It is an alternative to [JSX](/docs/jsx.md).
 
-```js
+```jsx
 const hyperx = require("hyperx")
 const html = hyperx(h)
 
@@ -34,7 +34,7 @@ In a new directory, create an `index.html` file.
 
 And an `index.js` file.
 
-```js
+```jsx
 const { h, app } = require("hyperapp")
 const hyperx = require("hyperx")
 const html = hyperx(h)
@@ -107,7 +107,7 @@ Create a `.babelrc` file.
 
 Create a `webpack.config.js` file.
 
-```js
+```jsx
 module.exports = {
   entry: "./index.js",
   output: {

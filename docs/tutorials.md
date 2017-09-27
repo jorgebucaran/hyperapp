@@ -8,4 +8,4 @@ Previous experience with other frameworks is a plus, but not required. Many of t
 - [Countdown Timer](/docs/countdown-timer.md)
 - [Gif Search](/docs/gif-search.md)
 - [TweetBox](/docs/tweetbox.md)
-- [+](https://github.com/hyperapp/hyperapp/fork)
+- [**+**](https://github.com/hyperapp/hyperapp/fork)

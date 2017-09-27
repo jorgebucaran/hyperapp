@@ -10,7 +10,7 @@ npm i <a href="https://www.npmjs.com/package/hyperapp">hyperapp</a>
 
 Then with a module bundler like [Rollup](https://github.com/rollup/rollup) or [Webpack](https://github.com/webpack/webpack), use as you would anything else.
 
-```js
+```jsx
 import { h, app } from "hyperapp"
 ```
 
@@ -22,7 +22,7 @@ Otherwise, download the [latest release](https://github.com/hyperapp/hyperapp/re
 
 Then find it in `window.hyperapp`.
 
-```js
+```jsx
 const { h, app } = hyperapp
 ```
 
@@ -30,7 +30,7 @@ We support all ES5-compliant browsers, including Internet Explorer 10 and above.
 
 ## Hello World
 
-Let's begin with a simple program. Paste this code in a new HTML file and open it in your browser or [try it here](https://codepen.io/hyperapp/pen/PmjRov?editors=1010).
+Let's begin with a simple program. Paste this code in a new HTML file and open it in your browser or [try it online](https://codepen.io/hyperapp/pen/PmjRov?editors=1010).
 
 ```html
 <body>
@@ -52,9 +52,11 @@ app({
 
 You should see "hello!" is displayed on the page.
 
+### Overview
+
 The [state](/docs/state.md) describes the application's data.
 
-```js
+```jsx
 state: {
   title: "hello!"
 }
@@ -62,41 +64,39 @@ state: {
 
 The [view](/docs/view.md) describes the user interface.
 
-```js
+```jsx
 state => h("h1", {}, state.title)
 ```
 
 You can create a view using [JSX](/docs/jsx.md) or [Hyperx](/docs/hyperx.md) too.
 
-```js
+```jsx
 state => <h1>{state.title}</h1>
 ```
 
 The app function wraps it all together and renders the view on the DOM.
 
-```js
-app({ ... })
-```
+### Actions
 
-To make it interactive add the following code below the view.
+Let's make this example interactive using actions. [Actions](/docs/actions.md) allow you to update the state tree and trigger a re-render.
 
-```js
-actions: {
-  reverse(state) {
-    return {
-      title: state.title.split("").reverse().join("")
+```jsx
+app({
+  // ...,
+  actions: {
+    reverse(state) {
+      return {
+        title: state.title.split("").reverse().join("")
+      }
     }
   }
-}
+})
 ```
-
-[Actions](/docs/actions.md) allow you to update the state tree and trigger a re-render.
 
 Modify the view function to take the action and call it when the heading is clicked.
 
 ```jsx
-view: (state, { reverse }) =>
-  h("h1", { onclick: reverse }, state.title)
+view: ({ title }, { reverse }) => h("h1", { onclick: reverse }, title)
 ```
 
 Well done! You can [try it online](https://codepen.io/hyperapp/pen/JyLNap) too.

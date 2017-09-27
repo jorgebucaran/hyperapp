@@ -14,19 +14,19 @@ app({
       <h1>
         {state.count}
       </h1>
-      <button onclick={actions.sub} disabled={state.count <= 0}>ー</button>
-      <button onclick={actions.add}>＋</button>
+      <button onclick={actions.down} disabled={state.count <= 0}>—</button>
+      <button onclick={actions.up}>+</button>
     </main>,
   actions: {
-    sub: state => ({ count: state.count - 1 }),
-    add: state => ({ count: state.count + 1 })
+    down: state => ({ count: state.count - 1 }),
+    up: state => ({ count: state.count + 1 })
   }
 })
 ```
 
 The state consists of a single property: `count` which is initialized to 0.
 
-```js
+```jsx
 state: {
   count: 0
 }
@@ -38,24 +38,24 @@ The view function receives the state as the first argument and uses it to displa
 <h1>{state.count}</h1>
 ```
 
-The view also defines two buttons with `onclick` handlers attached to them. The handlers are available in the actions object that is passed to the view as the second argument.
+The + and – buttons `onclick` handlers are handled by your actions, passed to the view as the second argument.
 
 ```jsx
-<button onclick={actions.sub} disabled={state.count <= 0}>-</button>
-<button onclick={actions.add}>+</button>
+<button onclick={actions.down} disabled={state.count <= 0}>-</button>
+<button onclick={actions.up}>+</button>
 ```
 
 The `disabled` attribute is dynamically toggled depending on the value of the counter. This prevents the decrement button from being clicked when the counter reaches zero.
 
-```js
+```jsx
 disabled={state.count <= 0}
 ```
 
-Note that neither of the actions update the state directly, instead, they return a partial state.
+Actions never update the state directly, instead, they return a new state.
 
-```js
-sub: state => ({ count: state.count - 1 }),
-add: state => ({ count: state.count + 1 })
+```jsx
+down: state => ({ count: state.count - 1 }),
+up: state => ({ count: state.count + 1 })
 ```
 
-When the state is updated as a result of calling an action, the view function is called and the application is rendered again.
+When the state is updated as a result of calling an action, the view is called and the application is re-rendered.

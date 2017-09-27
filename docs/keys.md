@@ -25,6 +25,7 @@ Don't use an array index as key, if the index also specifies the order of siblin
 const PlayerList = players =>
   <ul>
     {players
+      .slice()
       .sort((player, nextPlayer) => nextPlayer.score - item.score)
       .map(player =>
         <li key={player.username} class={player.isAlive ? "alive" : "dead"}>

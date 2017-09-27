@@ -1,6 +1,5 @@
 # Documentation
 
-- [Index](/docs/index.md)
 - [Tutorials](/docs/tutorials.md)
 - Getting Started
   - [Installation](/docs/getting-started.md#installation)
@@ -12,12 +11,10 @@
   - [State](/docs/state.md)
   - [View](/docs/view.md)
   - [Actions](/docs/actions.md)
-  - [Events](/docs/events.md)
-  - [Mixins](/docs/mixins.md)
+  - [Hooks](/docs/hooks.md)
   - [Root](/docs/root.md)
 - Concepts
-  - [VNodes](/docs/vnodes.md)
-  - [VDOM Events](/docs/vdom-events.md)
+  - [Virtual DOM](/docs/vdom.md)
   - [Components](/docs/components.md)
   - [Hydration](/docs/hydration.md)
   - [Keys](/docs/keys.md)

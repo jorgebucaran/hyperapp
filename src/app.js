@@ -1,43 +1,43 @@
-var globalInvokeLaterStack = []
+var lifecycleCallbackStack = []
 
 export function app(props, node) {
-  var appActions = {}
-  var appState = props.state
-  var appView = props.view
+  var skipRender
   var appRoot = props.root || document.body
+  var appView = props.view
+  var appState = props.state
+  var appActions = {}
+  var actionHooks = []
   var element = appRoot.children[0]
-  var beforeActionCallbacks = []
-  var renderLock
 
-  initialize(appActions, props.actions, [])
+  createActions(appActions, props.actions, [])
 
   requestRender(
     (props.hooks || []).map(function(cb) {
       if (typeof (cb = cb(appState, appActions)) === "function") {
-        beforeActionCallbacks.push(cb)
+        actionHooks.push(cb)
       }
     })
   )
 
   return appActions
 
-  function initialize(actions, withActions, lastPath) {
-    Object.keys(withActions || {}).map(function(key) {
-      var action = withActions[key]
-      var path = lastPath.concat(key)
+  function createActions(actions, withActions, lastPath) {
+    Object.keys(withActions || {}).map(function(name) {
+      var action = withActions[name]
+      var path = lastPath.concat(name)
 
       if (typeof action === "function") {
-        actions[key] = function(data) {
-          var afterActionCallbacks = []
+        actions[name] = function(data) {
+          var didActionHooks = []
 
-          beforeActionCallbacks.map(function(cb) {
+          actionHooks.map(function(cb) {
             if (
               typeof (cb = cb({
                 name: path.join("."),
                 data: data
               })) === "function"
             ) {
-              afterActionCallbacks.push(cb)
+              didActionHooks.push(cb)
             }
           })
 
@@ -47,28 +47,27 @@ export function app(props, node) {
             data
           )
 
-          afterActionCallbacks.map(function(cb) {
+          didActionHooks.map(function(cb) {
             result = cb(result)
           })
 
           return typeof result === "function" ? result(update) : update(result)
         }
       } else {
-        initialize(actions[key] || (actions[key] = {}), action, path)
+        createActions(actions[name] || (actions[name] = {}), action, path)
       }
     })
 
     function update(withState) {
-      var partialState = getPath(lastPath, appState)
-
       if (typeof withState === "function") {
-        return update(withState(partialState))
+        return update(withState(getPath(lastPath, appState)))
       }
+
       if (
         withState &&
         (withState = setPath(
           lastPath,
-          merge(partialState, withState),
+          merge(getPath(lastPath, appState), withState),
           appState
         ))
       ) {
@@ -80,8 +79,8 @@ export function app(props, node) {
   }
 
   function requestRender() {
-    if (appView && !renderLock) {
-      requestAnimationFrame(render, (renderLock = !renderLock))
+    if (appView && !skipRender) {
+      requestAnimationFrame(render, (skipRender = !skipRender))
     }
   }
 
@@ -91,26 +90,9 @@ export function app(props, node) {
       element,
       node,
       (node = appView(appState, appActions)),
-      (renderLock = !renderLock)
+      (skipRender = !skipRender)
     )
-    while ((cb = globalInvokeLaterStack.pop())) cb()
-  }
-
-  function setPath(path, value, source) {
-    var name = path[0]
-    return path.length === 0
-      ? value
-      : set(
-          name,
-          path.length > 1
-            ? setPath(
-                path.slice(1),
-                value,
-                source != null && name in source ? source[name] : {}
-              )
-            : value,
-          source
-        )
+    while ((cb = lifecycleCallbackStack.pop())) cb()
   }
 
   function set(prop, value, source) {
@@ -119,8 +101,27 @@ export function app(props, node) {
     return target
   }
 
-  function getPath(path, source) {
-    return path.length === 0 ? source : getPath(path.slice(1), source[path[0]])
+  function getPath(paths, source) {
+    return paths.length === 0
+      ? source
+      : source && getPath(paths.slice(1), source[paths[0]])
+  }
+
+  function setPath(paths, value, source) {
+    var name = paths[0]
+    return paths.length === 0
+      ? value
+      : set(
+          name,
+          paths.length > 1
+            ? setPath(
+                paths.slice(1),
+                value,
+                source != null && name in source ? source[name] : {}
+              )
+            : value,
+          source
+        )
   }
 
   function merge(target, source) {
@@ -137,12 +138,6 @@ export function app(props, node) {
     return result
   }
 
-  function getKey(node) {
-    if (node && (node = node.props)) {
-      return node.key
-    }
-  }
-
   function createElement(node, isSVG) {
     if (typeof node === "string") {
       var element = document.createTextNode(node)
@@ -152,7 +147,7 @@ export function app(props, node) {
         : document.createElement(node.tag)
 
       if (node.props && node.props.oncreate) {
-        globalInvokeLaterStack.push(function() {
+        lifecycleCallbackStack.push(function() {
           node.props.oncreate(element)
         })
       }
@@ -162,18 +157,18 @@ export function app(props, node) {
       }
 
       for (var i in node.props) {
-        setData(element, i, node.props[i])
+        setProp(element, i, node.props[i])
       }
     }
 
     return element
   }
 
-  function setData(element, name, value, oldValue) {
+  function setProp(element, name, value, oldValue) {
     if (name === "key") {
     } else if (name === "style") {
-      for (var i in merge(oldValue, (value = value || {}))) {
-        element.style[i] = value[i] || ""
+      for (var name in merge(oldValue, (value = value || {}))) {
+        element.style[name] = value[name] || ""
       }
     } else {
       try {
@@ -190,29 +185,42 @@ export function app(props, node) {
     }
   }
 
-  function updateElement(element, oldData, data) {
-    for (var i in merge(oldData, data)) {
-      var value = data[i]
-      var oldValue = i === "value" || i === "checked" ? element[i] : oldData[i]
+  function updateElement(element, oldProps, props) {
+    for (var name in merge(oldProps, props)) {
+      var value = props[name]
+      var oldValue =
+        name === "value" || name === "checked" ? element[name] : oldProps[name]
 
       if (value !== oldValue) {
-        setData(element, i, value, oldValue)
+        setProp(element, name, value, oldValue)
       }
     }
 
-    if (data && data.onupdate) {
-      globalInvokeLaterStack.push(function() {
-        data.onupdate(element, oldData)
+    if (props && props.onupdate) {
+      lifecycleCallbackStack.push(function() {
+        props.onupdate(element, oldProps)
       })
     }
   }
 
-  function removeElement(parent, element, data) {
-    if (data && data.onremove) {
-      data.onremove(element)
+  function removeElement(parent, element, props) {
+    if (
+      props &&
+      props.onremove &&
+      typeof (props = props.onremove(element)) === "function"
+    ) {
+      props(remove)
     } else {
+      remove()
+    }
+
+    function remove() {
       parent.removeChild(element)
     }
+  }
+
+  function getKey(node) {
+    return node && (node = node.props) && node.key
   }
 
   function patch(parent, element, oldNode, node, isSVG, nextSibling) {

@@ -25,3 +25,5 @@ app({
 ```
 
 The notion of representing the application state as a single source of truth is known as single state tree and the tree is manipulated using [actions](/docs/actions.md).
+
+## State Slices

@@ -9,17 +9,17 @@ beforeEach(() => {
 test("called on load", done => {
   app({
     view: state =>
-    h(
-      "div",
-      {
-        oncreate() {
-          expect(state).toEqual({ value: "bar" })
-          expect(document.body.innerHTML).toBe(`<div>bar</div>`)
-          done()
-        }
-      },
-      state.value
-    ),
+      h(
+        "div",
+        {
+          oncreate() {
+            expect(state).toEqual({ value: "bar" })
+            expect(document.body.innerHTML).toBe(`<div>bar</div>`)
+            done()
+          }
+        },
+        state.value
+      ),
     state: {
       value: "foo"
     },
@@ -28,7 +28,7 @@ test("called on load", done => {
         return { value }
       }
     },
-    subscriptions: [
+    hooks: [
       (state, actions) => {
         expect(state).toEqual({ value: "foo" })
         actions.set("bar")
@@ -37,7 +37,7 @@ test("called on load", done => {
   })
 })
 
-test("action passed to curried return function", done => {
+test("action hook", done => {
   app({
     view: state =>
       h(
@@ -59,8 +59,8 @@ test("action passed to curried return function", done => {
         return { value }
       }
     },
-    subscriptions: [
-      (state, actions) => action => {
+    hooks: [
+      () => action => {
         expect(action.name).toBe("set")
         expect(action.data).toBe("bar")
       },
@@ -71,7 +71,7 @@ test("action passed to curried return function", done => {
   })
 })
 
-test("action result passed to curried return from curried action function", done => {
+test("resolve hook", done => {
   app({
     view: state =>
       h(
@@ -93,12 +93,9 @@ test("action result passed to curried return from curried action function", done
         return `?value=bar`
       }
     },
-    subscriptions: [
+    hooks: [
       (state, actions) => action => result => {
         if (typeof result === "string") {
-          //
-          // Query strings as a valid ActionResult.
-          //
           const [key, value] = result.slice(1).split("=")
           return { [key]: value }
         }
@@ -110,7 +107,10 @@ test("action result passed to curried return from curried action function", done
   })
 })
 
-const validateStateUpdate = validate => (state, actions) => action => result => {
+const validateStateUpdate = validate => (
+  state,
+  actions
+) => action => result => {
   if (typeof result === "function") {
     return update => result(nextResult => update(validate(state, nextResult)))
   }
@@ -138,7 +138,7 @@ test("validate sync and async state updates", done => {
       set: (state, actions, value) => ({ value }),
       setAsync: (state, actions, value) => update => update({ value })
     },
-    subscriptions: [
+    hooks: [
       validateStateUpdate((prevState, nextState) => {
         if (typeof nextState.value !== "string") {
           return prevState

@@ -26,6 +26,11 @@ export interface Component<Props> {
   (props: Props, children: VNodeChild<{} | null>[]): VNode<{}>
 }
 
+export type VNodeChildren =
+  | Array<VNodeChild<{} | null> | number>
+  | VNodeChild<{} | null>
+  | number
+
 /** The soft way to create a VNode
  * @param tag       Either a tag name e.g. 'div'. Or a Component function
  * @param props     Any valid HTML atributes, events, styles, and meta data
@@ -36,7 +41,7 @@ export interface Component<Props> {
 export function h<Props>(
   tag: Component<Props> | string,
   props?: Props,
-  children?: VNodeChild<{} | null>[] | VNodeChild<{} | null> | number
+  children?: VNodeChildren
 ): VNode<Props>
 
 /** @namespace [App] */
@@ -54,23 +59,32 @@ export type ActionResult<State extends Hyperapp.State> =
   | null
   | void
 
-export type ActionCallers<
-  State extends Hyperapp.State,
-  Actions extends Hyperapp.Actions<State>
-> = {
-  [P in keyof Actions]: (
-    data: any
-  ) => ActionResult<State> | ActionCallers<State, Actions>
+export interface Action<State extends Hyperapp.State, Data> {
+  (data: Data): ActionResult<State>
 }
 
-export interface Actions<State extends Hyperapp.State> {
+export interface Actions<
+  State extends Hyperapp.State & Partial<Record<keyof Actions<State>, any>>
+> {
   [action: string]:
-    | Actions<State>
-    | ((
-        state: State,
-        actions: ActionCallers<State, Actions<State>>,
-        data: any
-      ) => ActionResult<State>)
+    | Actions<State[keyof Action<State, any>]>
+    | Action<State, any>
+}
+
+export interface InternalAction<
+  State extends Hyperapp.State,
+  Actions extends Hyperapp.Actions<State>
+> {
+  (state: State, actions: Actions, data: any): ActionResult<State>
+}
+
+export type InternalActions<
+  State extends Hyperapp.State & Partial<Record<keyof Actions, any>>,
+  Actions extends Hyperapp.Actions<State>
+> = {
+  [P in keyof Actions]:
+    | InternalAction<State, Actions>
+    | InternalActions<State[P], Actions[P] & Hyperapp.Actions<State[P]>>
 }
 
 export interface Events<
@@ -78,7 +92,7 @@ export interface Events<
   Actions extends Hyperapp.Actions<State>
 > {
   [action: string]:
-    | ((state: State, actions: ActionCallers<State, Actions>, data: any) => any)
+    | ((state: State, actions: Actions, data: any) => any)
     | undefined
 }
 
@@ -86,10 +100,10 @@ export interface DefaultEvents<
   State extends Hyperapp.State,
   Actions extends Hyperapp.Actions<State>
 > extends Hyperapp.Events<State, Actions> {
-  load?: (state: State, actions: ActionCallers<State, Actions>) => void
+  load?: (state: State, actions: Actions) => void
   resolve?: (
     state: State,
-    actions: ActionCallers<State, Actions>,
+    actions: Actions,
     result: ActionResult<State>
   ) => ActionResult<State>
 }
@@ -98,11 +112,11 @@ export interface View<
   State extends Hyperapp.State,
   Actions extends Hyperapp.Actions<State>
 > {
-  (state: State, actions: ActionCallers<State, Actions>): VNode<{}>
+  (state: State, actions: Actions): VNode<{}>
 }
 
 export interface Mixin<
-  State extends Hyperapp.State,
+  State extends Hyperapp.State & Record<keyof Actions, any>,
   Actions extends Hyperapp.Actions<State>,
   Events extends Hyperapp.DefaultEvents<State, Actions>
 > {
@@ -111,12 +125,12 @@ export interface Mixin<
 }
 
 export interface App<
-  State extends Hyperapp.State,
+  State extends Hyperapp.State & Record<keyof Actions, any>,
   Actions extends Hyperapp.Actions<State>,
   Events extends Hyperapp.DefaultEvents<State, Actions>
 > {
   state?: State
-  actions?: Actions
+  actions?: InternalActions<State, Actions>
   events?: Events
   view?: View<State, Actions>
   root?: HTMLElement | null
@@ -138,7 +152,7 @@ export interface Emit<
 }
 
 export function app<
-  State extends Hyperapp.State,
+  State extends Hyperapp.State & Record<keyof Actions, any>,
   Actions extends Hyperapp.Actions<State>,
   Events extends Hyperapp.Events<State, Actions>
 >(app: App<State, Actions, Events>): Emit<State, Actions, Events>

@@ -19,11 +19,11 @@ The process consists of serving the fully pre-rendered page together with your a
 </html>
 ```
 
-Then traverse your root DOM tree to create a [virtual node](/docs/vdom.md#virtual-nodes) tree.
+Then traverse the DOM tree to create a [virtual node](/docs/vdom.md#virtual-nodes) tree.
 
 ```jsx
 import { h, app } from "hyperapp"
-import { hydrate } from "@hyperapp/hydrate"
+import hydrate from "@hyperapp/hydrate"
 
 app(
   {
@@ -35,31 +35,27 @@ app(
       </main>
     )
   },
-  hydrate(document.getElementById("main"))
+  hydrate
 )
 ```
 
 The implementation of hydrate is simple enough that we can include it here.
 
 ```jsx
-import { h } from "hyperapp"
-
-export function hydrate(element) {
-  return walk(element, (node, children) =>
-    h(node.tagName.toLowerCase(), {}, children))
-}
-
-function walk(node, map) {
-  return map(
-    node,
-    node
-      ? [...node.childNodes].map(
-          node =>
-            node.nodeType === Node.TEXT_NODE
-              ? node.nodeValue.trim() && node.nodeValue
-              : walk(node, map)
-        )
-      : node
+function hydrate(element) {
+  return (
+    element &&
+    h(
+      element.tagName.toLowerCase(),
+      {},
+      [...element.childNodes].map(
+        node =>
+          node.nodeType === Node.TEXT_NODE
+            ? node.nodeValue.trim() ? node.nodeValue : null
+            : walk(node, map)
+      )
+    )
   )
 }
 ```
+

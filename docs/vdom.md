@@ -1,6 +1,5 @@
 # Virtual DOM
 
-...
 
 ## Virtual Nodes
 

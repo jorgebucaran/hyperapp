@@ -11,15 +11,15 @@ app({
       return { repos, isFetching }
     }
   },
-  events: {
-    load(state, actions) {
+  hooks: [
+    (state, actions) {
       actions.populate({ isFetching: true })
 
       fetch(state.url)
         .then(repos => repos.json())
         .then(repos => actions.populate({ repos, isFetching: false }))
     }
-  }
+  ]
 })
 ```
 

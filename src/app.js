@@ -1,6 +1,6 @@
 var lifecycleCallbackStack = []
 
-export function app(props, node) {
+export function app(props, hydrate) {
   var skipRender
   var appRoot = props.root || document.body
   var appView = props.view
@@ -8,6 +8,7 @@ export function app(props, node) {
   var appActions = {}
   var actionHooks = []
   var element = appRoot.children[0]
+  var node = hydrate && hydrate(element)
 
   createActions(appActions, props.actions, [])
 

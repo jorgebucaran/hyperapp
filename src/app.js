@@ -1,61 +1,57 @@
 var lifecycleCallbackStack = []
 
 export function app(props, hydrate) {
+  if (typeof props === "function") {
+    return props(app)
+  }
+
   var skipRender
-  var appRoot = props.root || document.body
   var appView = props.view
   var appState = props.state
   var appActions = {}
-  var actionHooks = []
+  var appRoot = props.root || document.body
   var element = appRoot.children[0]
   var node = hydrate && hydrate(element)
 
-  createActions(appActions, props.actions, [])
-
-  requestRender(
-    (props.hooks || []).map(function(cb) {
-      if (typeof (cb = cb(appState, appActions)) === "function") {
-        actionHooks.push(cb)
-      }
-    })
-  )
+  requestRender(createActions(appActions, props.actions, []))
 
   return appActions
 
+  function requestRender() {
+    if (appView && !skipRender) {
+      requestAnimationFrame(render, (skipRender = !skipRender))
+    }
+  }
+
+  function render(cb) {
+    element = patch(
+      appRoot,
+      element,
+      node,
+      (node = appView(appState, appActions)),
+      (skipRender = !skipRender)
+    )
+    while ((cb = lifecycleCallbackStack.pop())) cb()
+  }
+
   function createActions(actions, withActions, lastPath) {
     Object.keys(withActions || {}).map(function(name) {
-      var action = withActions[name]
-      var path = lastPath.concat(name)
-
-      if (typeof action === "function") {
+      if (typeof withActions[name] === "function") {
         actions[name] = function(data) {
-          var didActionHooks = []
-
-          actionHooks.map(function(cb) {
-            if (
-              typeof (cb = cb({
-                name: path.join("."),
-                data: data
-              })) === "function"
-            ) {
-              didActionHooks.push(cb)
-            }
-          })
-
-          var result = action(
+          return typeof (data = withActions[name](
             getPath(lastPath, appState),
             getPath(lastPath, appActions),
             data
-          )
-
-          didActionHooks.map(function(cb) {
-            result = cb(result)
-          })
-
-          return typeof result === "function" ? result(update) : update(result)
+          )) === "function"
+            ? data(update)
+            : update(data)
         }
       } else {
-        createActions(actions[name] || (actions[name] = {}), action, path)
+        createActions(
+          actions[name] || (actions[name] = {}),
+          withActions[name],
+          lastPath.concat(name)
+        )
       }
     })
 
@@ -77,23 +73,6 @@ export function app(props, hydrate) {
 
       return appState
     }
-  }
-
-  function requestRender() {
-    if (appView && !skipRender) {
-      requestAnimationFrame(render, (skipRender = !skipRender))
-    }
-  }
-
-  function render(cb) {
-    element = patch(
-      appRoot,
-      element,
-      node,
-      (node = appView(appState, appActions)),
-      (skipRender = !skipRender)
-    )
-    while ((cb = lifecycleCallbackStack.pop())) cb()
   }
 
   function set(prop, value, source) {
@@ -118,7 +97,7 @@ export function app(props, hydrate) {
             ? setPath(
                 paths.slice(1),
                 value,
-                source != null && name in source ? source[name] : {}
+                source && name in source ? source[name] : {}
               )
             : value,
           source

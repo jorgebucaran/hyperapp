@@ -7,7 +7,7 @@ beforeEach(() => {
 })
 
 test("throttling", done => {
-  app({
+  const actions = app({
     view: state =>
       h(
         "div",
@@ -28,32 +28,36 @@ test("throttling", done => {
           value: state.value + 1
         }
       }
-    },
-    hooks: [
-      (state, actions) => {
-        actions.up()
-        actions.up()
-        actions.up()
-        actions.up()
-      }
-    ]
-  })
-})
-
-test("interop", done => {
-  const appActions = app({
-    actions: {
-      foo(state, actions, data) {
-        expect(data).toBe("bar")
-        done()
-      }
     }
   })
-  appActions.foo("bar")
+
+  actions.up()
+  actions.up()
+  actions.up()
+  actions.up()
 })
 
-test("optional view", done => {
-  app({
-    hooks: [done]
+test("hoa", done => {
+  function foo(app) {
+    return props =>
+      app(
+        Object.assign(props, {
+          state: { value: 1 }
+        })
+      )
+  }
+
+  app(foo)({
+    view: state =>
+      h(
+        "div",
+        {
+          oncreate() {
+            expect(document.body.innerHTML).toBe("<div>1</div>")
+            done()
+          }
+        },
+        state.value
+      )
   })
 })

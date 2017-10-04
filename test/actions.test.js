@@ -9,7 +9,7 @@ beforeEach(() => {
 })
 
 test("slices", done => {
-  app({
+  const actions = app({
     view: state =>
       h(
         "div",
@@ -45,18 +45,15 @@ test("slices", done => {
           fizzbuzz: () => ({ fizzbuzz: "fizzbuz" })
         }
       }
-    },
-    hooks: [
-      (state, actions) => {
-        actions.foo.bar.baz("foo.bar.baz")
-        actions.fizz.buzz.fizzbuzz()
-      }
-    ]
+    }
   })
+
+  actions.foo.bar.baz("foo.bar.baz")
+  actions.fizz.buzz.fizzbuzz()
 })
 
 test("sync updates", done => {
-  app({
+  const actions = app({
     view: state =>
       h(
         "div",
@@ -77,17 +74,14 @@ test("sync updates", done => {
           value: state.value + 1
         }
       }
-    },
-    hooks: [
-      (state, actions) => {
-        actions.up()
-      }
-    ]
+    }
   })
+
+  actions.up()
 })
 
 test("async updates", done => {
-  app({
+  const actions = app({
     view: state =>
       h(
         "div",
@@ -116,17 +110,13 @@ test("async updates", done => {
           actions.up(byNumber)
         })
       }
-    },
-    hooks: [
-      (state, actions) => {
-        actions.upAsync(1)
-      }
-    ]
+    }
   })
+  actions.upAsync(1)
 })
 
 test("thunks", done => {
-  app({
+  const actions = app({
     view: state =>
       h(
         "div",
@@ -152,17 +142,13 @@ test("thunks", done => {
           })
         }
       }
-    },
-    hooks: [
-      (state, actions) => {
-        actions.upAsync(1)
-      }
-    ]
+    }
   })
+  actions.upAsync(1)
 })
 
 test("thunks", done => {
-  app({
+  const actions = app({
     view: state =>
       h(
         "div",
@@ -188,11 +174,7 @@ test("thunks", done => {
           })
         }
       }
-    },
-    hooks: [
-      (state, actions) => {
-        actions.upAsync(1)
-      }
-    ]
+    }
   })
+  actions.upAsync(1)
 })

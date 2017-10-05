@@ -1,6 +1,6 @@
 # Countdown Timer
 
-In this example we'll learn how to trigger state updates caused by external events.
+In this example we'll learn how to trigger state updates from external events.
 
 [Try it Online](https://codepen.io/hyperapp/pen/evOZLv?editors=0010)
 
@@ -76,13 +76,13 @@ The view displays the seconds inside a `<h1>` element and binds two buttons to `
 <button onclick={actions.reset}>RESET</button>
 ```
 
-To simulate the clock we use [`setInterval`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setInterval) and call `actions.tick` every second.
+To track time we use [`setInterval`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setInterval) and call `tick` every second.
 
 ```jsx
 setInterval(tick, 1000)
 ```
 
-Inside `tick`, we check the current second count and if it's zero, reset the counter back to `SECONDS` and toggle the running clock.
+Inside `tick`, we check the second count and if zero, reset the counter back to `SECONDS` and toggle the running clock.
 
 If `state.count` is greater than zero and the clock is not paused, we decrement the count by one.
 

@@ -7,9 +7,10 @@
   - [Installation](#installation)
 - Concepts
   - [Keys](/docs/keys.md)
+  - [Thunks](/docs/thunks.md)
   - [Lifecycle](/docs/lifecycle.md)
   - [Components](/docs/components.md)
-  - [innerHTML](/docs/innerhtml.md)
+  - [Sanitation](/docs/sanitation.md)
   - [Hydration](/docs/hydration.md)
 
 ## Hello World
@@ -57,7 +58,7 @@ Hyperapp applications consist of a single `app()` call. This function initialize
 
 ### State
 
-The state describes the data model in your application. In this example, it consists of a single property: `count` which we've initialized to 0.
+The state describes the data model in your application. In this example, it consists of a single property: `count` which is initialized to 0.
 
 ```jsx
 state: {
@@ -69,7 +70,7 @@ The notion of representing the application state as a single source of truth is 
 
 ### Actions
 
-Actions are used to manipulate the [state](#state). If your application consumes a [view](#view), changes in the state will trigger a re-render. Actions are called as a result of user events triggered from the view, inside global event listeners, etc.
+Actions are used to manipulate the [state](#state). If your application consumes a [view](#view), changes in the state cause a re-render. Actions are called as a result of user events triggered from the view, inside event listeners, etc.
 
 ```jsx
 actions: {

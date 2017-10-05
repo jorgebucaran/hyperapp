@@ -1,6 +1,6 @@
 # Countdown Timer
 
-In this example we'll learn how to use [hooks](/docs/hooks.md) to subscribe to timers or global events.
+In this example we'll learn how to trigger state updates caused by external events.
 
 [Try it Online](https://codepen.io/hyperapp/pen/evOZLv?editors=0010)
 
@@ -16,7 +16,7 @@ const humanizeTime = t => {
 
 const SECONDS = 5
 
-app({
+const { tick } = app({
   state: {
     count: SECONDS,
     paused: true
@@ -45,11 +45,16 @@ app({
         actions.drop()
       }
     }
-  },
-  hooks: [
-    (state, actions) => setInterval(actions.tick, 1000)
-  ]
+  }
 })
+
+setInterval(tick, 1000)
+```
+
+The `app()` function returns your actions already wired to the state.
+
+```jsx
+const { tick } = app({ ... })
 ```
 
 The state consists of two properties: `count`, to track the seconds elapsed; and `paused`, to check if the clock is currently running.
@@ -71,12 +76,10 @@ The view displays the seconds inside a `<h1>` element and binds two buttons to `
 <button onclick={actions.reset}>RESET</button>
 ```
 
-To simulate the clock we use [`setInterval`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setInterval) and call `actions.tick` every second. 
+To simulate the clock we use [`setInterval`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setInterval) and call `actions.tick` every second.
 
 ```jsx
-hooks: [
-  (state, actions) => setInterval(actions.tick, 1000)
-]
+setInterval(tick, 1000)
 ```
 
 Inside `tick`, we check the current second count and if it's zero, reset the counter back to `SECONDS` and toggle the running clock.

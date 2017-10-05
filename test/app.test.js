@@ -7,7 +7,7 @@ beforeEach(() => {
 })
 
 test("throttling", done => {
-  const actions = app({
+  app({
     view: state =>
       h(
         "div",
@@ -27,14 +27,15 @@ test("throttling", done => {
         return {
           value: state.value + 1
         }
+      },
+      fire(state, actions) {
+        actions.up()
+        actions.up()
+        actions.up()
+        actions.up()
       }
     }
-  })
-
-  actions.up()
-  actions.up()
-  actions.up()
-  actions.up()
+  }).fire()
 })
 
 test("hoa", done => {

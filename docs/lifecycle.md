@@ -9,15 +9,15 @@ The `oncreate` event is fired after the element is created and attached to the D
 Use it to manipulate the DOM node directly, make a network request, start an animation, etc.
 
 ```jsx
-app({
-  view: () =>
+function Textbox({ placeholder }) {
+  return (
     <input
       type="text"
-      oncreate={element => {
-        element.focus()
-      }}
+      placeholder={placeholder}
+      oncreate={element => element.focus()}
     />
-})
+  )
+}
 ```
 
 ## `onupdate`
@@ -27,12 +27,14 @@ The `onupdate` event is fired every time we update the element attributes.
 This event will fire even if the attributes have not changed. You can use `oldProps` inside the event handler to check if they changed or not.
 
 ```jsx
-export function MyComponent({ url, download }) {
+function Textbox({ placeholder }) {
   return (
-    <main
+    <input
+      type="text"
+      placeholder={placeholder}
       onupdate={(element, oldProps) => {
-        if (url !== oldProps.url) {
-          download(url)
+        if (oldProps.placeholder !== placeholder) {
+          // Handle changes here!
         }
       }}
     />
@@ -44,12 +46,15 @@ export function MyComponent({ url, download }) {
 
 The `onremove` event is fired before the element is removed from the DOM.
 
-Use it for cleaning up resources like timers, creating slide out animations, etc.
+Use it for cleaning up resources, creating slide out animations, etc.
 
 ```jsx
-app({
-  view: () => (
-    <div onremove={element => remove => fadeout(element).then(remove)} />
+function MessageWithFadeout({ title }) {
+  return (
+    <div
+      onremove={element => done => fadeout(element).then(done)}>
+      <h1>{title}<h1>
+    </div>
   )
-})
+}
 ```

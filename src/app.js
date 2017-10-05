@@ -1,17 +1,19 @@
+import { h } from "./h"
+
 var lifecycleCallbackStack = []
 
-export function app(props, hydrate) {
-  if (typeof props === "function") {
-    return props(app)
-  }
-
+export function app(props) {
   var skipRender
   var appView = props.view
   var appState = props.state
   var appActions = {}
   var appRoot = props.root || document.body
   var element = appRoot.children[0]
-  var node = hydrate && hydrate(element)
+  var node = hydrate(element, [].map)
+
+  if (typeof props === "function") {
+    return props(app)
+  }
 
   requestRender(createActions(appActions, props.actions, []))
 
@@ -34,32 +36,44 @@ export function app(props, hydrate) {
     while ((cb = lifecycleCallbackStack.pop())) cb()
   }
 
+  function hydrate(element, map) {
+    return (
+      element &&
+      h(
+        element.tagName.toLowerCase(),
+        {},
+        map.call(element.childNodes, function(element) {
+          return element.nodeType === 3
+            ? element.nodeValue
+            : hydrate(element, map)
+        })
+      )
+    )
+  }
+
   function createActions(actions, withActions, lastPath) {
     Object.keys(withActions || {}).map(function(name) {
-      if (typeof withActions[name] === "function") {
-        actions[name] = function(data) {
-          return typeof (data = withActions[name](
-            getPath(lastPath, appState),
-            getPath(lastPath, appActions),
-            data
-          )) === "function"
-            ? data(update)
-            : update(data)
-        }
-      } else {
-        createActions(
-          actions[name] || (actions[name] = {}),
-          withActions[name],
-          lastPath.concat(name)
-        )
-      }
+      return typeof withActions[name] === "function"
+        ? (actions[name] = function(data) {
+            return typeof (data = withActions[name](
+              getPath(lastPath, appState),
+              getPath(lastPath, appActions),
+              data
+            )) === "function"
+              ? data(update)
+              : update(data)
+          })
+        : createActions(
+            actions[name] || (actions[name] = {}),
+            withActions[name],
+            lastPath.concat(name)
+          )
     })
 
     function update(withState) {
       if (typeof withState === "function") {
         return update(withState(getPath(lastPath, appState)))
       }
-
       if (
         withState &&
         (withState = setPath(
@@ -70,7 +84,6 @@ export function app(props, hydrate) {
       ) {
         requestRender((appState = withState))
       }
-
       return appState
     }
   }
@@ -106,15 +119,12 @@ export function app(props, hydrate) {
 
   function merge(target, source) {
     var result = {}
-
     for (var i in target) {
       result[i] = target[i]
     }
-
     for (var i in source) {
       result[i] = source[i]
     }
-
     return result
   }
 
@@ -140,7 +150,6 @@ export function app(props, hydrate) {
         setProp(element, i, node.props[i])
       }
     }
-
     return element
   }
 
@@ -294,7 +303,6 @@ export function app(props, hydrate) {
         removeElement(parent, nextSibling, oldNode.props)
       }
     }
-
     return element
   }
 }

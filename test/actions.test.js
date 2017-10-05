@@ -53,7 +53,7 @@ test("slices", done => {
 })
 
 test("sync updates", done => {
-  const actions = app({
+  app({
     view: state =>
       h(
         "div",
@@ -75,13 +75,11 @@ test("sync updates", done => {
         }
       }
     }
-  })
-
-  actions.up()
+  }).up()
 })
 
 test("async updates", done => {
-  const actions = app({
+  app({
     view: state =>
       h(
         "div",
@@ -111,12 +109,11 @@ test("async updates", done => {
         })
       }
     }
-  })
-  actions.upAsync(1)
+  }).upAsync(1)
 })
 
 test("thunks", done => {
-  const actions = app({
+  app({
     view: state =>
       h(
         "div",
@@ -143,12 +140,11 @@ test("thunks", done => {
         }
       }
     }
-  })
-  actions.upAsync(1)
+  }).upAsync(1)
 })
 
 test("thunks", done => {
-  const actions = app({
+  app({
     view: state =>
       h(
         "div",
@@ -175,6 +171,5 @@ test("thunks", done => {
         }
       }
     }
-  })
-  actions.upAsync(1)
+  }).upAsync(1)
 })

@@ -1,8 +1,6 @@
 # Hydration
 
-Hydration is a perceived performance and search engine optimization technique where you can turn statically rendered DOM nodes into an interactive application.
-
-The process consists of serving the fully pre-rendered page together with your application.
+Hyperapp works transparently with SSR and pre-rendered HTML, enabling SEO optimization and improving your sites time-to-interactive. The process consists of serving a fully pre-rendered page together with your application.
 
 ```html
 <html>
@@ -13,49 +11,11 @@ The process consists of serving the fully pre-rendered page together with your a
 <body>
   <main>
     <h1>0</h1>
+    <button>–</button>
     <button>+</button>
   </main>
 </body>
 </html>
 ```
 
-Then traverse the DOM tree to create a [virtual node](/docs/vdom.md#virtual-nodes) tree.
-
-```jsx
-import { h, app } from "hyperapp"
-import hydrate from "@hyperapp/hydrate"
-
-app(
-  {
-    // ...
-    view: (state, actions) => (
-      <main>
-        <h1>{state.count}</h1>
-        <button onclick={actions.up}>+</button>
-      </main>
-    )
-  },
-  hydrate
-)
-```
-
-The implementation of hydrate is simple enough that we can include it here.
-
-```jsx
-function hydrate(element) {
-  return (
-    element &&
-    h(
-      element.tagName.toLowerCase(),
-      {},
-      [...element.childNodes].map(
-        node =>
-          node.nodeType === Node.TEXT_NODE
-            ? node.nodeValue.trim() ? node.nodeValue : null
-            : walk(node, map)
-      )
-    )
-  )
-}
-```
-
+Then instead of throwing away the server-rendered markdown, we'll walk through your DOM tree and turn nodes into an interactive application. The default [root](/docs/root.md) is `document.body`, but you can specify another if you have multiple apps on the same page.

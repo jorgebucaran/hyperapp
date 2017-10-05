@@ -7,7 +7,7 @@ app({
   actions: {
     setData(state, actions, data) {
       return update => {
-        asyncProcess(data, ({ value }) => update({ value }))
+        asyncProcess(data, ({ value }) => actions.update({ value }))
       }
     }
   }
@@ -22,7 +22,7 @@ app({
     setData(state, actions, data) {
       return update => {
         asyncProcess(data, ({ value }) =>
-          update(state => ({ value: state.value + value }))
+          actions.update(state => ({ value: state.value + value }))
         )
       }
     }

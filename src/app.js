@@ -1,110 +1,131 @@
-var globalInvokeLaterStack = []
+import { h } from "./h"
+
+var lifecycleCallbackStack = []
 
 export function app(props) {
-  var appState
+  var skipRender
   var appView = props.view
+  var appState = props.state
   var appActions = {}
-  var appEvents = {}
-  var appMixins = props.mixins || []
   var appRoot = props.root || document.body
-  var element
-  var oldNode
-  var renderLock
+  var element = appRoot.children[0]
+  var node = hydrate(element, [].map)
 
-  appMixins.concat(props).map(function(mixin) {
-    mixin = typeof mixin === "function" ? mixin(emit) : mixin
+  if (typeof props === "function") {
+    return props(app)
+  }
 
-    Object.keys(mixin.events || {}).map(function(key) {
-      appEvents[key] = (appEvents[key] || []).concat(mixin.events[key])
-    })
+  requestRender(createActions(appActions, props.actions, []))
 
-    appState = merge(appState, mixin.state)
-    initialize(appActions, mixin.actions)
-  })
+  return appActions
 
-  requestRender(
-    (oldNode = emit("load", (element = appRoot.children[0]))) === element &&
-      (oldNode = element = null)
-  )
-
-  return emit
-
-  function initialize(actions, withActions, lastName) {
-    Object.keys(withActions || {}).map(function(key) {
-      var action = withActions[key]
-      var name = lastName ? lastName + "." + key : key
-
-      if (typeof action === "function") {
-        actions[key] = function(data) {
-          emit("action", { name: name, data: data })
-
-          var result = emit("resolve", action(appState, appActions, data))
-
-          return typeof result === "function" ? result(update) : update(result)
-        }
-      } else {
-        initialize(actions[key] || (actions[key] = {}), action, name)
-      }
-    })
+  function requestRender() {
+    if (appView && !skipRender) {
+      requestAnimationFrame(render, (skipRender = !skipRender))
+    }
   }
 
   function render(cb) {
     element = patch(
       appRoot,
       element,
-      oldNode,
-      (oldNode = emit("render", appView)(appState, appActions)),
-      (renderLock = !renderLock)
+      node,
+      (node = appView(appState, appActions)),
+      (skipRender = !skipRender)
     )
-    while ((cb = globalInvokeLaterStack.pop())) cb()
+    while ((cb = lifecycleCallbackStack.pop())) cb()
   }
 
-  function requestRender() {
-    if (appView && !renderLock) {
-      requestAnimationFrame(render, (renderLock = !renderLock))
-    }
-  }
-
-  function update(withState) {
-    if (typeof withState === "function") {
-      return update(withState(appState))
-    }
-    if (withState && (withState = emit("update", merge(appState, withState)))) {
-      requestRender((appState = withState))
-    }
-    return appState
-  }
-
-  function emit(name, data) {
+  function hydrate(element, map) {
     return (
-      (appEvents[name] || []).map(function(cb) {
-        var result = cb(appState, appActions, data)
-        if (result != null) {
-          data = result
-        }
-      }),
-      data
+      element &&
+      h(
+        element.tagName.toLowerCase(),
+        {},
+        map.call(element.childNodes, function(element) {
+          return element.nodeType === 3
+            ? element.nodeValue
+            : hydrate(element, map)
+        })
+      )
     )
   }
 
-  function merge(a, b) {
-    var obj = {}
+  function createActions(actions, withActions, lastPath) {
+    Object.keys(withActions || {}).map(function(name) {
+      return typeof withActions[name] === "function"
+        ? (actions[name] = function(data) {
+            return typeof (data = withActions[name](
+              getPath(lastPath, appState),
+              getPath(lastPath, appActions),
+              data
+            )) === "function"
+              ? data(update)
+              : update(data)
+          })
+        : createActions(
+            actions[name] || (actions[name] = {}),
+            withActions[name],
+            lastPath.concat(name)
+          )
+    })
 
-    for (var i in a) {
-      obj[i] = a[i]
+    function update(withState) {
+      if (typeof withState === "function") {
+        return update(withState(getPath(lastPath, appState)))
+      }
+      if (
+        withState &&
+        (withState = setPath(
+          lastPath,
+          merge(getPath(lastPath, appState), withState),
+          appState
+        ))
+      ) {
+        requestRender((appState = withState))
+      }
+      return appState
     }
-
-    for (var i in b) {
-      obj[i] = b[i]
-    }
-
-    return obj
   }
 
-  function getKey(node) {
-    if (node && (node = node.props)) {
-      return node.key
+  function set(prop, value, source) {
+    var target = merge(source)
+    target[prop] = value
+    return target
+  }
+
+  function getPath(paths, source) {
+    return paths.length === 0
+      ? source
+      : source && getPath(paths.slice(1), source[paths[0]])
+  }
+
+  function setPath(paths, value, source) {
+    var name = paths[0]
+    return paths.length === 0
+      ? value
+      : set(
+          name,
+          paths.length > 1
+            ? setPath(
+                paths.slice(1),
+                value,
+                source && name in source ? source[name] : {}
+              )
+            : value,
+          source
+        )
+  }
+
+  function merge(target, source) {
+    var result = {}
+    for (var i in target) {
+      result[i] = target[i]
     }
+    for (var i in source) {
+      result[i] = source[i]
+    }
+    return result
   }
 
   function createElement(node, isSVG) {
@@ -116,7 +137,7 @@ export function app(props) {
         : document.createElement(node.tag)
 
       if (node.props && node.props.oncreate) {
-        globalInvokeLaterStack.push(function() {
+        lifecycleCallbackStack.push(function() {
           node.props.oncreate(element)
         })
       }
@@ -126,18 +147,17 @@ export function app(props) {
       }
 
       for (var i in node.props) {
-        setData(element, i, node.props[i])
+        setProp(element, i, node.props[i])
       }
     }
-
     return element
   }
 
-  function setData(element, name, value, oldValue) {
+  function setProp(element, name, value, oldValue) {
     if (name === "key") {
     } else if (name === "style") {
-      for (var i in merge(oldValue, (value = value || {}))) {
-        element.style[i] = value[i] || ""
+      for (var name in merge(oldValue, (value = value || {}))) {
+        element.style[name] = value[name] || ""
       }
     } else {
       try {
@@ -154,29 +174,42 @@ export function app(props) {
     }
   }
 
-  function updateElement(element, oldData, data) {
-    for (var i in merge(oldData, data)) {
-      var value = data[i]
-      var oldValue = i === "value" || i === "checked" ? element[i] : oldData[i]
+  function updateElement(element, oldProps, props) {
+    for (var name in merge(oldProps, props)) {
+      var value = props[name]
+      var oldValue =
+        name === "value" || name === "checked" ? element[name] : oldProps[name]
 
       if (value !== oldValue) {
-        setData(element, i, value, oldValue)
+        setProp(element, name, value, oldValue)
       }
     }
 
-    if (data && data.onupdate) {
-      globalInvokeLaterStack.push(function() {
-        data.onupdate(element, oldData)
+    if (props && props.onupdate) {
+      lifecycleCallbackStack.push(function() {
+        props.onupdate(element, oldProps)
       })
     }
   }
 
-  function removeElement(parent, element, data) {
-    if (data && data.onremove) {
-      data.onremove(element)
+  function removeElement(parent, element, props) {
+    if (
+      props &&
+      props.onremove &&
+      typeof (props = props.onremove(element)) === "function"
+    ) {
+      props(remove)
     } else {
+      remove()
+    }
+
+    function remove() {
       parent.removeChild(element)
     }
+  }
+
+  function getKey(node) {
+    return node && (node = node.props) && node.key
   }
 
   function patch(parent, element, oldNode, node, isSVG, nextSibling) {
@@ -270,7 +303,6 @@ export function app(props) {
         removeElement(parent, nextSibling, oldNode.props)
       }
     }
-
     return element
   }
 }

@@ -8,25 +8,48 @@ beforeEach(() => {
   document.body.innerHTML = ""
 })
 
-test("namespacing", done => {
-  app({
-    view: state => "",
+test("slices", done => {
+  const actions = app({
+    view: state =>
+      h(
+        "div",
+        {
+          oncreate() {
+            expect(document.body.innerHTML).toBe(
+              `<div>only the baz will do</div>`
+            )
+            done()
+          }
+        },
+        state.foo.bar.baz
+      ),
+    state: {
+      foo: {
+        bar: {
+          baz: "minimal baz"
+        }
+      }
+    },
     actions: {
       foo: {
         bar: {
           baz(state, actions, data) {
+            expect(state).toEqual({ baz: "minimal baz" })
             expect(data).toBe("foo.bar.baz")
-            done()
+            return { baz: "only the baz will do" }
           }
         }
-      }
-    },
-    events: {
-      load(state, actions) {
-        actions.foo.bar.baz("foo.bar.baz")
+      },
+      fizz: {
+        buzz: {
+          fizzbuzz: () => ({ fizzbuzz: "fizzbuz" })
+        }
       }
     }
   })
+
+  actions.foo.bar.baz("foo.bar.baz")
+  actions.fizz.buzz.fizzbuzz()
 })
 
 test("sync updates", done => {
@@ -51,13 +74,8 @@ test("sync updates", done => {
           value: state.value + 1
         }
       }
-    },
-    events: {
-      load(state, actions) {
-        actions.up()
-      }
     }
-  })
+  }).up()
 })
 
 test("async updates", done => {
@@ -90,13 +108,8 @@ test("async updates", done => {
           actions.up(byNumber)
         })
       }
-    },
-    events: {
-      load(state, actions) {
-        actions.upAsync(1)
-      }
     }
-  })
+  }).upAsync(1)
 })
 
 test("thunks", done => {
@@ -126,13 +139,8 @@ test("thunks", done => {
           })
         }
       }
-    },
-    events: {
-      load(state, actions) {
-        actions.upAsync(1)
-      }
     }
-  })
+  }).upAsync(1)
 })
 
 test("thunks", done => {
@@ -162,11 +170,6 @@ test("thunks", done => {
           })
         }
       }
-    },
-    events: {
-      load(state, actions) {
-        actions.upAsync(1)
-      }
     }
-  })
+  }).upAsync(1)
 })

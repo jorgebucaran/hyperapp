@@ -47,7 +47,7 @@ function MessageWithFadeout({ title }) {
   return (
     <div
       onremove={element => done => fadeout(element).then(done)}>
-      <h1>{title}<h1>
+      <h1>{title}</h1>
     </div>
   )
 }

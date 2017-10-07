@@ -287,7 +287,7 @@ export function app(props) {
 
       for (var i in oldKeyed) {
         var keyedNode = oldKeyed[i]
-        var reusableNode = keyedNode[1]
+        var reusableNode = keyedNode[i]
         if (!keyed[reusableNode.props.key]) {
           removeElement(element, keyedNode[0], reusableNode.props)
         }

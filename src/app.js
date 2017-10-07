@@ -25,6 +25,50 @@ export function app(props) {
     }
   }
 
+  function update(path, withState) {
+    var partialState = getPath(path, appState)
+
+    if (typeof withState === "function") {
+      return update(path, withState(partialState))
+    }
+    if (
+      withState &&
+      (withState = setPath(path, merge(partialState, withState), appState))
+    ) {
+      requestRender((appState = withState))
+    }
+    return appState
+  }
+
+  function getPath(path, source) {
+    return path.length === 0 ? source : getPath(path.slice(1), source[path[0]])
+  }
+
+  function setPath(path, value, source) {
+    var name = path[0]
+    return path.length === 0
+      ? value
+      : setProp(
+          name,
+          path.length > 1
+            ? setPath(
+                path.slice(1),
+                value,
+                source != null && name in source
+                  ? source[name]
+                  : path[1] >= 0 ? [] : {}
+              )
+            : value,
+          source
+        )
+  }
+
+  function setProp(prop, value, source) {
+    var target = merge(source)
+    target[prop] = value
+    return target
+  }
+
   function render(cb) {
     element = patch(
       appRoot,

@@ -45,7 +45,7 @@ test("slices", done => {
           fizzbuzz: () => ({ fizzbuzz: "fizzbuz" })
         }
       }
-    }
+    ]
   })
 
   actions.foo.bar.baz("foo.bar.baz")

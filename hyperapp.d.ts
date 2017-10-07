@@ -5,7 +5,7 @@ export as namespace Hyperapp
 /** The VDOM representation of an Element
  *
  * @memberOf [VDOM]
-*/
+ */
 export interface VNode<Props> {
   tag: string
   props: Props
@@ -15,21 +15,22 @@ export interface VNode<Props> {
 /** In the VDOM a Child could be either a VNode or a string
  *
  * @memberOf [VDOM]
-*/
+ */
 export type VNodeChild<Props> = VNode<Props> | string
 
+/** A Component is a function that return a custom VNode
+ *
+ * @memberOf [VDOM]
+ */
 export interface Component<Props> {
-  /** A Component is a function that return a custom VNode
-   *
-   * @memberOf [VDOM]
-  */
   (props: Props, children: VNodeChild<{} | null>[]): VNode<{}>
 }
 
-export type VNodeChildren =
-  | Array<VNodeChild<{} | null> | number>
-  | VNodeChild<{} | null>
-  | number
+/**The type for the children parameter accepted by h().
+ * 
+ * @memberOf [VDOM]
+ */
+export type VNodeChildren = Array<VNodeChild<{} | null> | number> | VNodeChild<{} | null> | number
 
 /** The soft way to create a VNode
  * @param tag       Either a tag name e.g. 'div'. Or a Component function
@@ -38,46 +39,58 @@ export type VNodeChildren =
  *
  * @memberOf [VDOM]
 */
-export function h<Props>(
-  tag: Component<Props> | string,
-  props?: Props,
-  children?: VNodeChildren
-): VNode<Props>
+export function h<Props>(tag: Component<Props> | string, props?: Props, children?: VNodeChildren): VNode<Props>
 
 /** @namespace [App] */
 
+/** The application state.
+ * 
+ * @memberOf [App]
+ */
 export interface State {}
 
+/** Thunk that may be returned bay an action.
+ * 
+ * @memberOf [App]
+ */
 export interface Thunk {
   (update: Function): any | null | void
 }
 
-export type ActionResult<State extends Hyperapp.State> =
-  | Partial<State>
-  | Thunk
-  | {}
-  | null
-  | void
+/** Result of an action.
+ * 
+ * @memberOf [App]
+ */
+export type ActionResult<State extends Hyperapp.State> = Partial<State> | Thunk | {} | null | void
 
+/** The interface for a single action (exposed when calling actions).
+ * 
+ * @memberOf [App]
+ */
 export interface Action<State extends Hyperapp.State, Data> {
-  (data: Data): ActionResult<State>
+  (data?: Data): ActionResult<State>
 }
 
-export interface Actions<
-  State extends Hyperapp.State & Partial<Record<keyof Actions<State>, any>>
-> {
-  [action: string]:
-    | Actions<State[keyof Action<State, any>]>
-    | Action<State, any>
+/** The interface for actions (exposed when calling actions).
+ * 
+ * @memberOf [App]
+ */
+export interface Actions<State extends Hyperapp.State & Partial<Record<keyof Actions<State>, any>>> {
+  [action: string]: Actions<State[keyof Action<State, any>]> | Action<State, any>
 }
 
-export interface InternalAction<
-  State extends Hyperapp.State,
-  Actions extends Hyperapp.Actions<State>
-> {
-  (state: State, actions: Actions, data: any): ActionResult<State>
+/** The interface for a single action (exposed when implementing actions).
+ * 
+ * @memberOf [App]
+ */
+export interface InternalAction<State extends Hyperapp.State, Actions extends Hyperapp.Actions<State>> {
+  (state: State, actions: Actions, data?: any): ActionResult<State>
 }
 
+/** The interface for actions (exposed when implementing actions).
+ * 
+ * @memberOf [App]
+ */
 export type InternalActions<
   State extends Hyperapp.State & Partial<Record<keyof Actions, any>>,
   Actions extends Hyperapp.Actions<State>
@@ -87,75 +100,40 @@ export type InternalActions<
     | InternalActions<State[P], Actions[P] & Hyperapp.Actions<State[P]>>
 }
 
-export interface Events<
-  State extends Hyperapp.State,
-  Actions extends Hyperapp.Actions<State>
-> {
-  [action: string]:
-    | ((state: State, actions: Actions, data: any) => any)
-    | undefined
-}
-
-export interface DefaultEvents<
-  State extends Hyperapp.State,
-  Actions extends Hyperapp.Actions<State>
-> extends Hyperapp.Events<State, Actions> {
-  load?: (state: State, actions: Actions) => void
-  resolve?: (
-    state: State,
-    actions: Actions,
-    result: ActionResult<State>
-  ) => ActionResult<State>
-}
-
-export interface View<
-  State extends Hyperapp.State,
-  Actions extends Hyperapp.Actions<State>
-> {
+/** The view function.
+ * 
+ * @memberOf [App]
+ */
+export interface View<State extends Hyperapp.State, Actions extends Hyperapp.Actions<State>> {
+  /**
+   * @param state the application state
+   * @param actions the application actions
+   * @return the VNode to render
+   */
   (state: State, actions: Actions): VNode<{}>
 }
 
-export interface Mixin<
-  State extends Hyperapp.State & Record<keyof Actions, any>,
-  Actions extends Hyperapp.Actions<State>,
-  Events extends Hyperapp.DefaultEvents<State, Actions>
-> {
-  (): App<State, Actions, Events>
-  (): (emit: Emit<State, Actions, Events>) => App<State, Actions, Events>
-}
-
+/** Input parameter of the app() function.
+ * 
+ * @memberOf [App]
+ */
 export interface App<
   State extends Hyperapp.State & Record<keyof Actions, any>,
-  Actions extends Hyperapp.Actions<State>,
-  Events extends Hyperapp.DefaultEvents<State, Actions>
+  Actions extends Hyperapp.Actions<State>
 > {
   state?: State
   actions?: InternalActions<State, Actions>
-  events?: Events
   view?: View<State, Actions>
   root?: HTMLElement | null
-  mixins?: Mixin<{}, {}, {}>[]
 }
 
-export interface Emit<
-  State extends Hyperapp.State,
-  Actions extends Hyperapp.Actions<State>,
-  Events extends Hyperapp.Events<State, Actions>
-> {
-  /** Call succesively each event handler of the specified event
-   * @param name  The name of the event to call
-   * @param data  Will be reduced by each event handler
-   *
-   * @memberOF [App]
-  */
-  (name: keyof Events, data?: any): any
-}
-
-export function app<
-  State extends Hyperapp.State & Record<keyof Actions, any>,
-  Actions extends Hyperapp.Actions<State>,
-  Events extends Hyperapp.Events<State, Actions>
->(app: App<State, Actions, Events>): Emit<State, Actions, Events>
+/** The app() function, main entry point of Hyperapp's API.
+ * 
+ * @memberOf [App]
+ */
+export function app<State extends Hyperapp.State & Record<keyof Actions, any>, Actions extends Hyperapp.Actions<State>>(
+  app: App<State, Actions>
+): Actions
 
 /** @namespace [JSX] */
 

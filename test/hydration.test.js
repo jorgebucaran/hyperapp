@@ -11,6 +11,7 @@ test("hydrate without explicit root", done => {
 
   document.body.innerHTML = body
 
+  const root = document.getElementById("ssr");
   app({
     view: state =>
       h(
@@ -31,6 +32,7 @@ test("hydrate with root", done => {
 
   document.body.innerHTML = body
 
+  const root = document.getElementById("ssr");
   app({
     root: document.getElementById("app"),
     view: state =>

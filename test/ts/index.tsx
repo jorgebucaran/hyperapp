@@ -70,20 +70,6 @@ const actions: Hyperapp.InternalActions<State, Actions> = {
   module2: module2Actions
 }
 
-
-const logger: Hyperapp.Hook<State, Actions> = (state, actions) => {
-  console.log("App initialized with state", state)
-
-  return (path, data) => {
-    console.log("Action \"" + path + "\" called with data", data)
-    
-    return (result) => {
-      console.log("Action \"" + path + "\" executed, result", result)
-      return result
-    }
-  }
-}
-
 const appActions = app<State, Actions>({
   state: initialState,
   // no need to set the types here
@@ -104,7 +90,6 @@ const appActions = app<State, Actions>({
       </p>
     </main>
   ),
-  actions,
-  hooks: [logger],  
+  actions,  
   root: document.getElementById("app")
 })

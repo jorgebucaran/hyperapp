@@ -2,41 +2,29 @@
 
 Thank you for taking the time to read our contribution guidelines. You can start to contribute in many ways, from writing tutorials, improving the documentation, filing bug reports and requesting new features.
 
-## Code of Conduct
+## Community
 
-Our open source community strives to:
-
-- **Be nice.**
-- **Be welcoming**: We strive to be a community that welcomes and supports people of all backgrounds and identities.
-- **Be considerate**: Remember that we're a world-wide community, so you might not be communicating in someone else's primary language.
-- **Be professional**: We are a community of professionals, and we conduct ourselves professionally. Do not insult or put down other participants. Harassment and other exclusionary behavior aren't acceptable.
-
-This code is not exhaustive or complete. It serves to distill our common understanding of a collaborative, shared environment, and goals. We expect it to be followed in spirit as much as in the letter.
+Our open source community strives to be nice, welcoming and professional.
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting us at <hyperappjs@gmail.com>.
 
-## Code Style
+## Code
 
-- Prefer descriptive single-word variable / function names to single-letter names.
-- Format your code before committing using [prettier](https://prettier.github.io/prettier) or run the `format` script.
-- We use ES6 modules but the rest of the code base is written in ES5.
+- Format your code before creating a new commit using `npm run format`.
+- We use ES6 modules to organize the code base, but everything else is written in ES5.
 - We prefer keeping all the moving parts inside as few files as possible. We don't have plans to break up the library into smaller modules.
 
-## Filing Bugs
+## Bugs
 
 - Before submitting a bug report, search the issues for similar tickets. Your issue may have already been discussed and resolved. Feel free to add a comment to an existing ticket, even if it's closed.
 - Determine which repository the problem should be reported in. If you have an issue with the Router, you'll be better served in [hyperapp/router](https://github.com/hyperapp/router), etc.
 - If you have a question or need help with something you are building, we recommend joining the [Hyperapp Slack Team](https://hyperappjs.herokuapp.com).
 - Be thorough in your title and report, don't leave out important details, describe your setup and include any relevant code with your issue.
-- Use GitHub [fenced code blocks](https://help.github.com/articles/creating-and-highlighting-code-blocks/) when sharing code. If your code has JSX in it, please use <code>```jsx</code> for accurate syntax highlighting.
+- Use GitHub [fenced code blocks](https://help.github.com/articles/creating-and-highlighting-code-blocks/) when sharing code. If your code has JSX in it, please use <code>```jsx</code> for best syntax highlighting.
 
-## Writing Tests
+## Tests
 
-- We use [Babel](https://babeljs.io) and [Jest](http://facebook.github.io/jest) to run the tests.
+- We use [Babel](https://babeljs.io) and [Jest](http://facebook.github.io/jest) to run our tests.
 - Feel free to create a new `test/*.test.js` file if none of the existing test files suits your test case.
 - Tests usually start by creating a small application and using a feature, then check if `document.body.innerHTML` matches some expected string. The app call is async, so we often rely on [oncreate](/docs/vdom-events.md#oncreate) or [onupdate](/docs/vdom-events.md#onupdate) events to detect when the view has been rendered.
-- We use [requestAnimationFrame](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame) to throttle renders, but it is not natively supported by Jest. For this reason you'll often see the following code at the top of a test file:
-
-  ```js
-  window.requestAnimationFrame = setTimeout
-  ```
+- [window.requestAnimationFrame](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame) it is not natively supported by Jest. As a workaround, we define it using setTimeout. [Example](https://github.com/hyperapp/hyperapp/blob/2fc55d1d97a7f27736fec1dfa5d5b726e64d23a0/test/app.test.js#L3).

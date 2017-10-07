@@ -1,20 +1,6 @@
 # Hydration
 
-Hydration is a perceived performance and search engine optimization technique where you can turn statically rendered DOM nodes into an interactive application.
-
-```jsx
-app({
-  // ...
-  view: (state, actions) =>
-    <main>
-      <h1>{state.count}</h1>
-      <button onclick={actions.up}>＋</button>
-    </main>,
-  mixins: [hydrator()]
-})
-```
-
-The process consists of serving the fully pre-rendered page together with your application.
+Hyperapp works transparently with SSR and pre-rendered HTML, enabling SEO optimization and improving your sites time-to-interactive. The process consists of serving a fully pre-rendered page together with your application.
 
 ```html
 <html>
@@ -25,39 +11,11 @@ The process consists of serving the fully pre-rendered page together with your a
 <body>
   <main>
     <h1>0</h1>
-    <button>＋</button>
+    <button>–</button>
+    <button>+</button>
   </main>
 </body>
 </html>
 ```
 
-Then iterate over the [root](/docs/root.md) child nodes to create a [vnode](/docs/vnodes.md) tree.
-
-```js
-const hydrator = () => ({
-  events: {
-    load(state, actions, element) {
-      return walk(element, (node, children) => ({
-        tag: node.tagName.toLowerCase(),
-        props: {},
-        children
-      }))
-    }
-  }
-})
-
-function walk(node, map) {
-  return map(
-    node,
-    node
-      ? [...node.childNodes]
-          .map(
-            node =>
-              node.nodeType === Node.TEXT_NODE
-                ? node.nodeValue.trim() && node.nodeValue
-                : walk(node, map)
-          )
-      : node
-  )
-}
-```
+Then instead of throwing away the server-rendered markdown, we'll walk through your DOM tree and turn nodes into an interactive application. The default [root](/docs/root.md) is `document.body`, but you can specify another if you have multiple apps on the same page.

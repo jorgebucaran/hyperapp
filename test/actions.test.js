@@ -8,19 +8,21 @@ beforeEach(() => {
   document.body.innerHTML = ""
 })
 
-test("namespacing", done => {
-  app({
+test("slices", done => {
+  const actions = app({
     view: state =>
-    h(
-      "div",
-      {
-        oncreate() {
-          expect(document.body.innerHTML).toBe(`<div>only the baz will do</div>`)
-          done()
-        }
-      },
-      state.foo.bar.baz
-    ),
+      h(
+        "div",
+        {
+          oncreate() {
+            expect(document.body.innerHTML).toBe(
+              `<div>only the baz will do</div>`
+            )
+            done()
+          }
+        },
+        state.foo.bar.baz
+      ),
     state: {
       foo: {
         bar: {
@@ -37,14 +39,17 @@ test("namespacing", done => {
             return { baz: "only the baz will do" }
           }
         }
-      }
-    },
-    subscriptions: [
-      (state, actions) => {
-        actions.foo.bar.baz("foo.bar.baz")
+      },
+      fizz: {
+        buzz: {
+          fizzbuzz: () => ({ fizzbuzz: "fizzbuz" })
+        }
       }
     ]
   })
+
+  actions.foo.bar.baz("foo.bar.baz")
+  actions.fizz.buzz.fizzbuzz()
 })
 
 test("sync updates", done => {
@@ -69,13 +74,8 @@ test("sync updates", done => {
           value: state.value + 1
         }
       }
-    },
-    subscriptions: [
-      (state, actions) => {
-        actions.up()
-      }
-    ]
-  })
+    }
+  }).up()
 })
 
 test("async updates", done => {
@@ -108,13 +108,8 @@ test("async updates", done => {
           actions.up(byNumber)
         })
       }
-    },
-    subscriptions: [
-      (state, actions) => {
-        actions.upAsync(1)
-      }
-    ]
-  })
+    }
+  }).upAsync(1)
 })
 
 test("thunks", done => {
@@ -144,13 +139,8 @@ test("thunks", done => {
           })
         }
       }
-    },
-    subscriptions: [
-      (state, actions) => {
-        actions.upAsync(1)
-      }
-    ]
-  })
+    }
+  }).upAsync(1)
 })
 
 test("thunks", done => {
@@ -180,11 +170,6 @@ test("thunks", done => {
           })
         }
       }
-    },
-    subscriptions: [
-      (state, actions) => {
-        actions.upAsync(1)
-      }
-    ]
-  })
+    }
+  }).upAsync(1)
 })

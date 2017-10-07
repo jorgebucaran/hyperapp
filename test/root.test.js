@@ -41,27 +41,6 @@ test("root", done => {
   })
 })
 
-test("root as document.body", done => {
-  document.body.innerHTML = "<div>fizz</div>"
-
-  app({
-    root: document.body,
-    view: state =>
-      h(
-        "main",
-        {
-          oncreate() {
-            expect(document.body.innerHTML).toBe(
-              "<main><p>foo</p></main><div>fizz</div>"
-            )
-            done()
-          }
-        },
-        [h("p", {}, "foo")]
-      )
-  })
-})
-
 test("nested root", done => {
   document.body.innerHTML = "<main><section></section><div></div></main>"
 

@@ -27,36 +27,39 @@ test("throttling", done => {
         return {
           value: state.value + 1
         }
-      }
-    },
-    subscriptions: [
-      (state, actions) => {
+      },
+      fire(state, actions) {
         actions.up()
         actions.up()
         actions.up()
         actions.up()
-      }
-    ]
-  })
-})
-
-test("interop", done => {
-  const appActions = app({
-    actions: {
-      foo(state, actions, data) {
-        expect(data).toBe("bar")
-        done()
       }
     }
-  })
-  appActions.foo("bar")
+  }).fire()
 })
 
-test("optional view", done => {
-  app({
-    subscriptions: [
-      done
-    ]
+test("hoa", done => {
+  function foo(app) {
+    return props =>
+      app(
+        Object.assign(props, {
+          state: { value: 1 }
+        })
+      )
+  }
+
+  app(foo)({
+    view: state =>
+      h(
+        "div",
+        {
+          oncreate() {
+            expect(document.body.innerHTML).toBe("<div>1</div>")
+            done()
+          }
+        },
+        state.value
+      )
   })
 })
 

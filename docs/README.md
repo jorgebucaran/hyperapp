@@ -1,23 +1,156 @@
 # Documentation
 
-- [Index](/docs/index.md)
 - [Tutorials](/docs/tutorials.md)
+- [Contributing](/docs/contributing.md)
 - Getting Started
-  - [Installation](/docs/getting-started.md#installation)
-  - [Hello World](/docs/getting-started.md#hello-world)
-- Building
-  - [JSX](/docs/jsx.md)
-  - [Hyperx](/docs/hyperx.md)
-- Architecture
-  - [State](/docs/state.md)
-  - [View](/docs/view.md)
-  - [Actions](/docs/actions.md)
-  - [Events](/docs/events.md)
-  - [Mixins](/docs/mixins.md)
-  - [Root](/docs/root.md)
+  - [Hello World](#hello-world)
+  - [Installation](#installation)
 - Concepts
-  - [VNodes](/docs/vnodes.md)
-  - [VDOM Events](/docs/vdom-events.md)
-  - [Components](/docs/components.md)
-  - [Hydration](/docs/hydration.md)
   - [Keys](/docs/keys.md)
+  - [Thunks](/docs/thunks.md)
+  - [Lifecycle](/docs/lifecycle.md)
+  - [Components](/docs/components.md)
+  - [Sanitation](/docs/sanitation.md)
+  - [Hydration](/docs/hydration.md)
+
+## Hello World
+
+Let's walk through a simple +/- counter.
+
+Paste this code in a new HTML file and open it in your browser or [try it online](https://codepen.io/hyperapp/pen/zNxZLP?editors=0010).
+
+```html
+<body>
+<script src="https://unpkg.com/hyperapp"></script>
+<script>
+
+const { h, app } = hyperapp
+
+app({
+  state: {
+    count: 0
+  },
+  view: (state, actions) => (
+    h("main", {}, [
+      h("h1", {}, state.count),
+      h("button", {
+        onclick: actions.down,
+        disabled: state.count <= 0
+      }, "–"),
+      h("button", {
+        onclick: actions.up
+      }, "+")
+    ])
+  ),
+  actions: {
+    down: state => ({ count: state.count - 1 }),
+    up: state => ({ count: state.count + 1 })
+  }
+})
+
+</script>
+</body>
+```
+
+In this example we are using a `<script>` tag to download the minified library from a CDN. In a production environment you will probably be using a module bundler to build your application instead.
+
+Hyperapp applications consist of a single `app()` call. This function initializes and renders the application to the page. The `h()` function returns a virtual node tree. A virtual node is a JavaScript object that describes a DOM tree. Hyperapp consumes this object to update the DOM.
+
+### State
+
+The state describes the data model in your application. In this example, it consists of a single property: `count` which is initialized to 0.
+
+```jsx
+state: {
+  count: 0
+}
+```
+
+The notion of representing the application state as a single source of truth is known as single state tree and the tree is populated using [actions](#actions).
+
+### Actions
+
+Actions are used to manipulate the [state](#state). If your application consumes a [view](#view), changes in the state cause a re-render. Actions are called as a result of user events triggered from the view, inside event listeners, etc.
+
+```jsx
+actions: {
+  down: state => ({ count: state.count - 1 }),
+  up: state => ({ count: state.count + 1 })
+}
+```
+
+Returning a new state from an action updates the current state and schedules a view re-render on the next [repaint](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame). Actions must never mutate the state directly.
+
+### View
+
+The view describes your user interface as a function of the [state](#state).
+Bind user events and [actions](#actions) together to create interactive applications. The view function is called every time we need to re-render the application due to state changes.
+
+Popular alternatives to the built-in `h()` function include [JSX](https://facebook.github.io/jsx/), [Hyperx](https://github.com/choojs/hyperx), [t7](https://github.com/trueadm/t7) and [@hyperapp/html](https://github.com/hyperapp/html).
+
+```html
+<body>
+<script src="https://unpkg.com/hyperapp"></script>
+<script src="https://unpkg.com/@hyperapp/html"></script>
+<script>
+
+const { h, app } = hyperapp
+const { main, h1, button } = html
+
+app({
+  state: {
+    count: 0
+  },
+  view: (state, actions) => (
+    main([
+      h1(state.count),
+      button({
+        onclick: actions.down,
+        disabled: state.count <= 0
+      }, "–"),
+      button({
+        onclick: actions.up
+      }, "+")
+    ])
+  ),
+  actions: {
+    down: state => ({ count: state.count - 1 }),
+    up: state => ({ count: state.count + 1 })
+  }
+})
+
+</script>
+</body>
+```
+
+
+Check out [hyperapp/awesome](https://github.com/hyperapp/awesome-hyperapp#apps-and-boilerplates) for boilerplates to get started with a basic build setup.
+
+
+## Installation
+
+Install with npm or Yarn.
+
+<pre>
+npm i <a href="https://www.npmjs.com/package/hyperapp">hyperapp</a>
+</pre>
+
+Then with a module bundler like [Rollup](https://github.com/rollup/rollup) or [Webpack](https://github.com/webpack/webpack), use as you would anything else.
+
+```jsx
+import { h, app } from "hyperapp"
+```
+
+Or download directly from [unpkg](https://unpkg.com/hyperapp), [jsDelivr](https://cdn.jsdelivr.net/npm/hyperapp@latest/dist/hyperapp.js), or [CDNJS](https://cdnjs.com/libraries/hyperapp).
+
+```html
+<script src="https://unpkg.com/hyperapp"></script>
+```
+
+Then find it in `window.hyperapp`.
+
+```jsx
+const { h, app } = hyperapp
+```
+
+We support all ES5-compliant browsers, including Internet Explorer 10 and above.

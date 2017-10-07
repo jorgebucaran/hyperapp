@@ -744,12 +744,11 @@ test("onremove", done => {
               h("li"),
               h("li", {
                 onremove(element) {
-                  //
-                  // Be sure to remove the element inside this event.
-                  //
-                  element.parentNode.removeChild(element)
-                  expect(document.body.innerHTML).toBe("<ul><li></li></ul>")
-                  done()
+                  return remove => {
+                    remove()
+                    expect(document.body.innerHTML).toBe("<ul><li></li></ul>")
+                    done()
+                  }
                 }
               })
             ]

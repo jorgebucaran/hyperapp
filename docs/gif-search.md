@@ -1,6 +1,6 @@
 # Gif Search
 
-In this example we'll use the [Giphy API](https://api.giphy.com/) to create a GIF search and learn how to update the state asynchronously.
+In this example we'll implement a GIF search using the [Giphy API](https://api.giphy.com/) and learn how to update the state asynchronously.
 
 [Try it Online](https://codepen.io/hyperapp/pen/ZeByKv?editors=0010)
 
@@ -49,7 +49,7 @@ app({
 
 The state consists of two properties: `url`, the GIF URL; and `isFetching` to track when the browser is fetching a new GIF.
 
-```js
+```jsx
 state: {
   url: "",
   isFetching: false
@@ -58,7 +58,7 @@ state: {
 
 The `isFetching` flag is used to hide the GIF while the browser is busy. Without it, the last downloaded GIF would be shown as another one is requested.
 
-```js
+```jsx
 style={{
   display: state.isFetching ? "none" : "block"
 }}
@@ -68,7 +68,7 @@ The view consists of a text input and an `img` element to display the GIF.
 
 Using `onkeyup` retrieve the input text and call `actions.search` to request a new GIF. If a fetch is pending or the text input is empty exit early.
 
-```js
+```jsx
 if (state.isFetching || text === "") {
   return { url: "" }
 }
@@ -78,7 +78,7 @@ Inside `actions.search` use the [Fetch](https://developer.mozilla.org/en-US/docs
 
 When `fetch` is done, we receive the payload with the GIF metadata inside a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise).
 
-```js
+```jsx
 fetch(
   `//api.giphy.com/v1/gifs/search?q=${text}&api_key=${GIPHY_API_KEY}`
 )

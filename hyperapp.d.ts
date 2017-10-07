@@ -113,34 +113,6 @@ export interface View<State extends Hyperapp.State, Actions extends Hyperapp.Act
   (state: State, actions: Actions): VNode<{}>
 }
 
-/** Function optionally returned by OnAction, called after actions are executed, may be used to modify the action result.  
- * 
- * @memberOf [App]
- */
-export interface OnResolve<State extends Hyperapp.State> {
-  (result: ActionResult<State>): ActionResult<State>
-}
-
-/** Function optionally returned by Hook, called before actions are executed. May return an OnResolve function to be called after the action.
- * 
- * @memberOf [App]
- */
-export interface OnAction<State extends Hyperapp.State> {
-  /**
-   * @param action the qualified name of the action (e.g. 'fragment1.action3')
-   * @param data the data sent to the action by the caller
-   */
-  (action: string, data?: any): void | OnResolve<State>
-}
-
-/** A single hook function, this is called when the app is initialized. May return an OnAction function to be executed before actions.
- * 
- * @memberOf [App]
- */
-export interface Hook<State extends Hyperapp.State, Actions extends Hyperapp.Actions<State>> {
-  (state: State, actions: Actions): void | OnAction<State>
-}
-
 /** Input parameter of the app() function.
  * 
  * @memberOf [App]
@@ -153,7 +125,6 @@ export interface App<
   actions?: InternalActions<State, Actions>
   view?: View<State, Actions>
   root?: HTMLElement | null
-  hooks?: Hook<State, Actions>[]
 }
 
 /** The app() function, main entry point of Hyperapp's API.

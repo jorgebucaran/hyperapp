@@ -25,5 +25,5 @@ export function h(tag, props) {
         props: props || {},
         children: children
       }
-    : tag(props, children)
+    : tag(props || {}, children)
 }

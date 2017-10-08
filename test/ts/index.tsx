@@ -56,7 +56,7 @@ const initialState: State = {
   module1: module1InitialState,
   module2: module2InitialState,
   unused2: {
-    foo: 'bar'
+    foo: "bar"
   }
 }
 
@@ -90,6 +90,6 @@ const appActions = app<State, Actions>({
       </p>
     </main>
   ),
-  actions,  
+  actions,
   root: document.getElementById("app")
 })

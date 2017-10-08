@@ -1,21 +1,21 @@
 import { h } from "./h"
 
-var lifecycleCallbackStack = []
+var callbackStack = []
 
 export function app(props) {
+  if (typeof props === "function") {
+    return props(app)
+  }
+
   var skipRender
   var appView = props.view
-  var appState = props.state
+  var appState = {}
   var appActions = {}
   var appRoot = props.root || document.body
   var element = appRoot.children[0]
   var node = hydrate(element, [].map)
 
-  if (typeof props === "function") {
-    return props(app)
-  }
-
-  requestRender(createActions(appActions, props.actions, []))
+  requestRender(flush(setup(props, appState, appActions)))
 
   return appActions
 
@@ -25,15 +25,77 @@ export function app(props) {
     }
   }
 
-  function render(cb) {
-    element = patch(
-      appRoot,
-      element,
-      node,
-      (node = appView(appState, appActions)),
-      (skipRender = !skipRender)
+  function render() {
+    flush(
+      (element = patch(
+        appRoot,
+        element,
+        node,
+        (node = appView(appState, appActions)),
+        (skipRender = !skipRender)
+      ))
     )
-    while ((cb = lifecycleCallbackStack.pop())) cb()
+  }
+
+  function flush(cb) {
+    while ((cb = callbackStack.pop())) cb()
+  }
+
+  function setup(module, state, actions) {
+    copy(state, module.state)
+
+    setupActions(actions, state, module.actions)
+
+    if (module.init) {
+      callbackStack.push(function() {
+        module.init(state, actions)
+      })
+    }
+
+    if (module.modules) {
+      Object.keys(module.modules).map(function(key) {
+        setup(module.modules[key], (state[key] = {}), (actions[key] = {}))
+      })
+    }
+  }
+
+  function setupActions(actions, withState, withActions) {
+    Object.keys(withActions || {}).map(function(name) {
+      if (typeof withActions[name] === "function") {
+        actions[name] = function(data) {
+          return typeof (data = withActions[name](withState, actions, data)) ===
+          "function"
+            ? data(update)
+            : update(data)
+        }
+      } else {
+        setupActions(
+          (actions[name] = {}),
+          withState[name] || (withState[name] = {}),
+          withActions[name]
+        )
+      }
+    })
+
+    function update(data) {
+      return (
+        typeof data === "function"
+          ? update(data(withState))
+          : data && requestRender(copy(withState, data)),
+        withState
+      )
+    }
+  }
+
+  function copy(target, source) {
+    for (var i in source) {
+      target[i] = source[i]
+    }
+    return target
+  }
+
+  function merge(target, source, result) {
+    return copy(copy((result = {}), target), source)
   }
 
   function hydrate(element, map) {
@@ -51,83 +113,6 @@ export function app(props) {
     )
   }
 
-  function createActions(actions, withActions, lastPath) {
-    Object.keys(withActions || {}).map(function(name) {
-      return typeof withActions[name] === "function"
-        ? (actions[name] = function(data) {
-            return typeof (data = withActions[name](
-              getPath(lastPath, appState),
-              getPath(lastPath, appActions),
-              data
-            )) === "function"
-              ? data(update)
-              : update(data)
-          })
-        : createActions(
-            actions[name] || (actions[name] = {}),
-            withActions[name],
-            lastPath.concat(name)
-          )
-    })
-
-    function update(withState) {
-      if (typeof withState === "function") {
-        return update(withState(getPath(lastPath, appState)))
-      }
-      if (
-        withState &&
-        (withState = setPath(
-          lastPath,
-          merge(getPath(lastPath, appState), withState),
-          appState
-        ))
-      ) {
-        requestRender((appState = withState))
-      }
-      return appState
-    }
-  }
-
-  function set(prop, value, source) {
-    var target = merge(source)
-    target[prop] = value
-    return target
-  }
-
-  function getPath(paths, source) {
-    return paths.length === 0
-      ? source
-      : source && getPath(paths.slice(1), source[paths[0]])
-  }
-
-  function setPath(paths, value, source) {
-    var name = paths[0]
-    return paths.length === 0
-      ? value
-      : set(
-          name,
-          paths.length > 1
-            ? setPath(
-                paths.slice(1),
-                value,
-                source && name in source ? source[name] : {}
-              )
-            : value,
-          source
-        )
-  }
-
-  function merge(target, source) {
-    var result = {}
-    for (var i in target) {
-      result[i] = target[i]
-    }
-    for (var i in source) {
-      result[i] = source[i]
-    }
-    return result
-  }
-
   function createElement(node, isSVG) {
     if (typeof node === "string") {
       var element = document.createTextNode(node)
@@ -137,7 +122,7 @@ export function app(props) {
         : document.createElement(node.tag)
 
       if (node.props && node.props.oncreate) {
-        lifecycleCallbackStack.push(function() {
+        callbackStack.push(function() {
           node.props.oncreate(element)
         })
       }
@@ -186,7 +171,7 @@ export function app(props) {
     }
 
     if (props && props.onupdate) {
-      lifecycleCallbackStack.push(function() {
+      callbackStack.push(function() {
         props.onupdate(element, oldProps)
       })
     }
@@ -209,7 +194,9 @@ export function app(props) {
   }
 
   function getKey(node) {
-    return node && (node = node.props) && node.key
+    if (node && node.props) {
+      return node.props.key
+    }
   }
 
   function patch(parent, element, oldNode, node, isSVG, nextSibling) {

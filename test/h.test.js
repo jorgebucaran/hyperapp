@@ -100,3 +100,13 @@ test("components", () => {
     ]
   })
 })
+
+test("component with no props adds default props", () => {
+  const Component = ({ name = "world" }, children) => h("div", {}, "Hello " + name)
+
+  expect(h(Component)).toEqual({
+    tag: "div",
+    props: {},
+    children: ["Hello world"]
+  })
+})

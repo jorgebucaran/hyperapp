@@ -31,7 +31,7 @@ export interface Component<Props> {
 }
 
 /**The type for the children parameter accepted by h().
- * 
+ *
  * @memberOf [VDOM]
  */
 export type VNodeChildren =
@@ -55,32 +55,36 @@ export function h<Props>(
 /** @namespace [App] */
 
 /** The application state.
- * 
+ *
  * @memberOf [App]
  */
 export interface State {}
 
+export interface Update<State extends Hyperapp.State> {
+  (value: Partial<State>): void;
+}
+
 /** Thunk that may be returned bay an action.
- * 
+ *
  * @memberOf [App]
  */
-export interface Thunk {
-  (update: Function): any | null | void
+export interface Thunk<State extends Hyperapp.State> {
+  (update: Update<State>): any | null | void
 }
 
 /** Result of an action.
- * 
+ *
  * @memberOf [App]
  */
 export type ActionResult<State extends Hyperapp.State> =
   | Partial<State>
-  | Thunk
+  | Thunk<State>
   | {}
   | null
   | void
 
 /** The interface for a single action (exposed when calling actions).
- * 
+ *
  * @memberOf [App]
  */
 export interface Action<State extends Hyperapp.State, Data> {
@@ -88,7 +92,7 @@ export interface Action<State extends Hyperapp.State, Data> {
 }
 
 /** The interface for actions (exposed when calling actions).
- * 
+ *
  * @memberOf [App]
  */
 export interface Actions<
@@ -100,7 +104,7 @@ export interface Actions<
 }
 
 /** The interface for a single action (exposed when implementing actions).
- * 
+ *
  * @memberOf [App]
  */
 export interface InternalAction<
@@ -111,7 +115,7 @@ export interface InternalAction<
 }
 
 /** The interface for actions (exposed when implementing actions).
- * 
+ *
  * @memberOf [App]
  */
 export type InternalActions<
@@ -124,7 +128,7 @@ export type InternalActions<
 }
 
 /** The view function.
- * 
+ *
  * @memberOf [App]
  */
 export interface View<
@@ -135,7 +139,7 @@ export interface View<
 }
 
 /** Input parameter of the app() function.
- * 
+ *
  * @memberOf [App]
  */
 export interface App<
@@ -149,7 +153,7 @@ export interface App<
 }
 
 /** The app() function, main entry point of Hyperapp's API.
- * 
+ *
  * @memberOf [App]
  */
 export function app<

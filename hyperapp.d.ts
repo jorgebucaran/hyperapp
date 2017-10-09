@@ -61,7 +61,7 @@ export function h<Props>(
 export interface State {}
 
 export interface Update<State extends Hyperapp.State> {
-  (value: Partial<State>): void;
+  (value: Partial<State>): void
 }
 
 /** Thunk that may be returned bay an action.
@@ -69,7 +69,7 @@ export interface Update<State extends Hyperapp.State> {
  * @memberOf [App]
  */
 export interface Thunk<State extends Hyperapp.State> {
-  (update: Update<State>): any | null | void
+  (update: Update<State>): {} | null | void
 }
 
 /** Result of an action.

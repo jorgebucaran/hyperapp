@@ -1,10 +1,9 @@
 import { h } from "./h"
 
-export function app(props) {
+export function app(props, container) {
+  var root = (container = container || document.body).children[0]
+  var node = elementToNode(root, [].map)
   var callbacks = []
-  var root = props.root || document.body
-  var element = root.children[0]
-  var node = elementToNode(element, [].map)
   var skipRender
   var globalState
   var globalActions
@@ -21,9 +20,9 @@ export function app(props) {
 
   function render() {
     flush(
-      (element = patch(
+      (root = patch(
+        container,
         root,
-        element,
         node,
         (node = props.view(globalState, globalActions)),
         (skipRender = !skipRender)

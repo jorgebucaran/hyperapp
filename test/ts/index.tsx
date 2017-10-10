@@ -40,11 +40,44 @@ const module2Actions: Hyperapp.InternalActions<Module2State, Module2Actions> = {
   add: (state, actions, value: number) => ({ count: state.count + value })
 }
 
+// Async Module
+interface AsyncModuleState {
+  value?: Error | number
+}
+
+const asyncModuleInitialState: AsyncModuleState = {}
+
+interface AsyncModuleActions extends Hyperapp.Actions<AsyncModuleState> {
+  fetch(url: string): Hyperapp.Thunk<AsyncModuleState>
+}
+
+const asyncModuleActions: Hyperapp.InternalActions<
+  AsyncModuleState,
+  AsyncModuleActions
+> = {
+  fetch: (state, actions, url: string) => {
+    return (update: Hyperapp.Update<AsyncModuleState>) => {
+      fetch(url)
+        .then(res => {
+          update({
+            value: res.status
+          })
+        })
+        .catch(err => {
+          update({
+            value: err
+          })
+        })
+    }
+  }
+}
+
 // app
 
 interface State extends Hyperapp.State {
   module1: Module1State
   module2: Module2State
+  async: AsyncModuleState
   // just to demonstrate there can be other attributes than the ones defined in actions
   unused?: number
   unused2: {
@@ -55,6 +88,7 @@ interface State extends Hyperapp.State {
 const initialState: State = {
   module1: module1InitialState,
   module2: module2InitialState,
+  async: asyncModuleInitialState,
   unused2: {
     foo: "bar"
   }
@@ -63,11 +97,13 @@ const initialState: State = {
 interface Actions extends Hyperapp.Actions<State> {
   module1: Module1Actions
   module2: Module2Actions
+  async: AsyncModuleActions
 }
 
 const actions: Hyperapp.InternalActions<State, Actions> = {
   module1: module1Actions,
-  module2: module2Actions
+  module2: module2Actions,
+  async: asyncModuleActions
 }
 
 const appActions = app<State, Actions>({
@@ -87,6 +123,13 @@ const appActions = app<State, Actions>({
         <button onclick={() => actions.module2.reset()}>Reset</button>
         {state.module2.count}
         <button onclick={() => actions.module2.add(1)}>+</button>
+      </p>
+      <h2>Async</h2>
+      <p>
+        <button onclick={() => actions.async.fetch("https://hyperapp.js.org/")}>
+          Fetch
+        </button>
+        <pre>{state.async.value}</pre>
       </p>
     </main>
   ),

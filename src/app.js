@@ -1,25 +1,25 @@
 import { h } from "./h"
 
-var callbackStack = []
+var callbacks = []
 
 export function app(props) {
   if (typeof props === "function") {
     return props(app)
   }
 
-  var skipRender
+  var appState
+  var appActions
   var appView = props.view
-  var appState = {}
-  var appActions = {}
   var appRoot = props.root || document.body
   var element = appRoot.children[0]
-  var node = hydrate(element, [].map)
+  var node = elementToVNode(element, [].map)
+  var skipRender
 
-  requestRender(flush(setup(props, appState, appActions)))
+  repaint(flush(initFromModule(props, (appState = {}), (appActions = {}))))
 
   return appActions
 
-  function requestRender() {
+  function repaint() {
     if (appView && !skipRender) {
       requestAnimationFrame(render, (skipRender = !skipRender))
     }
@@ -38,67 +38,10 @@ export function app(props) {
   }
 
   function flush(cb) {
-    while ((cb = callbackStack.pop())) cb()
+    while ((cb = callbacks.pop())) cb()
   }
 
-  function setup(module, state, actions) {
-    copy(state, module.state)
-
-    setupActions(actions, state, module.actions)
-
-    if (module.init) {
-      callbackStack.push(function() {
-        module.init(state, actions)
-      })
-    }
-
-    if (module.modules) {
-      Object.keys(module.modules).map(function(key) {
-        setup(module.modules[key], (state[key] = {}), (actions[key] = {}))
-      })
-    }
-  }
-
-  function setupActions(actions, withState, withActions) {
-    Object.keys(withActions || {}).map(function(name) {
-      if (typeof withActions[name] === "function") {
-        actions[name] = function(data) {
-          return typeof (data = withActions[name](withState, actions, data)) ===
-          "function"
-            ? data(update)
-            : update(data)
-        }
-      } else {
-        setupActions(
-          (actions[name] = {}),
-          withState[name] || (withState[name] = {}),
-          withActions[name]
-        )
-      }
-    })
-
-    function update(data) {
-      return (
-        typeof data === "function"
-          ? update(data(withState))
-          : data && requestRender(copy(withState, data)),
-        withState
-      )
-    }
-  }
-
-  function copy(target, source) {
-    for (var i in source) {
-      target[i] = source[i]
-    }
-    return target
-  }
-
-  function merge(target, source, result) {
-    return copy(copy((result = {}), target), source)
-  }
-
-  function hydrate(element, map) {
+  function elementToVNode(element, map) {
     return (
       element &&
       h(
@@ -107,10 +50,58 @@ export function app(props) {
         map.call(element.childNodes, function(element) {
           return element.nodeType === 3
             ? element.nodeValue
-            : hydrate(element, map)
+            : elementToVNode(element, map)
         })
       )
     )
+  }
+
+  function initFromModule(module, state, actions) {
+    if (module.init) {
+      callbacks.push(function() {
+        module.init(state, actions)
+      })
+    }
+
+    assign(state, module.state)
+
+    initActions(state, actions, module.actions)
+
+    Object.keys(module.modules || {}).map(function(i) {
+      initFromModule(module.modules[i], (state[i] = {}), (actions[i] = {}))
+    })
+  }
+
+  function initActions(state, actions, source) {
+    Object.keys(source || {}).map(function(i) {
+      typeof source[i] === "function"
+        ? (actions[i] = function(data) {
+            return typeof (data = source[i](state, actions, data)) === "function"
+              ? data(update)
+              : update(data)
+          })
+        : initActions(state[i] || (state[i] = {}), (actions[i] = {}), source[i])
+    })
+
+    function update(data) {
+      return (
+        typeof data === "function"
+          ? update(data(state))
+          : data && repaint(assign(state, data)),
+        appState
+      )
+    }
+  }
+
+  function assign(target, source) {
+    for (var i in source) {
+      target[i] = source[i]
+    }
+    return target
+  }
+
+  function merge(target, source) {
+    return assign(assign({}, target), source)
   }
 
   function createElement(node, isSVG) {
@@ -122,23 +113,23 @@ export function app(props) {
         : document.createElement(node.tag)
 
       if (node.props && node.props.oncreate) {
-        callbackStack.push(function() {
+        callbacks.push(function() {
           node.props.oncreate(element)
         })
       }
 
-      for (var i = 0; i < node.children.length; ) {
-        element.appendChild(createElement(node.children[i++], isSVG))
+      for (var i = 0; i < node.children.length; i++) {
+        element.appendChild(createElement(node.children[i], isSVG))
       }
 
       for (var i in node.props) {
-        setProp(element, i, node.props[i])
+        setElementProp(element, i, node.props[i])
       }
     }
     return element
   }
 
-  function setProp(element, name, value, oldValue) {
+  function setElementProp(element, name, value, oldValue) {
     if (name === "key") {
     } else if (name === "style") {
       for (var name in merge(oldValue, (value = value || {}))) {
@@ -160,18 +151,17 @@ export function app(props) {
   }
 
   function updateElement(element, oldProps, props) {
-    for (var name in merge(oldProps, props)) {
-      var value = props[name]
-      var oldValue =
-        name === "value" || name === "checked" ? element[name] : oldProps[name]
+    for (var i in merge(oldProps, props)) {
+      var value = props[i]
+      var oldValue = i === "value" || i === "checked" ? element[i] : oldProps[i]
 
       if (value !== oldValue) {
-        setProp(element, name, value, oldValue)
+        value !== oldValue && setElementProp(element, i, value, oldValue)
       }
     }
 
     if (props && props.onupdate) {
-      callbackStack.push(function() {
+      callbacks.push(function() {
         props.onupdate(element, oldProps)
       })
     }

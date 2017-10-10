@@ -9,11 +9,18 @@ beforeEach(() => {
 test("init", done => {
   app({
     init(state, actions) {
-      expect(actions.up().value).toBe(2)
+      expect(state).toEqual({
+        value: 0
+      })
+
+      expect(actions.up()).toEqual({
+        value: 1
+      })
+
       done()
     },
     state: {
-      value: 1
+      value: 0
     },
     actions: {
       up(state) {

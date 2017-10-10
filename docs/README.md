@@ -1,7 +1,7 @@
 # Documentation
 
 - [Tutorials](/docs/tutorials.md)
-- [Contributing](/docs/contributing.md)
+- [Contributing](/docs/CONTRIBUTING.md)
 - Getting Started
   - [Hello World](#hello-world)
   - [Installation](#installation)

@@ -81,7 +81,7 @@ export function app(props, container) {
         typeof data === "function"
           ? update(data(state))
           : data && repaint(assign(state, data)),
-        globalState
+        state
       )
     }
   }

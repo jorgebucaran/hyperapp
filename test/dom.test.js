@@ -1,48 +1,12 @@
 import { h, app } from "../src"
 
-function testTrees(name, trees) {
-  test(name, done => {
-    app({
-      root: document.body,
-      view: (state, actions) =>
-        h(
-          "main",
-          {
-            oncreate: actions.next,
-            onupdate: actions.next
-          },
-          [trees[state.index].tree]
-        ),
-      state: {
-        index: 0
-      },
-      actions: {
-        up(state) {
-          return { index: state.index + 1 }
-        },
-        next(state, actions) {
-          expect(document.body.innerHTML).toBe(
-            `<main>${trees[state.index].html.replace(/\s{2,}/g, "")}</main>`
-          )
-
-          if (state.index === trees.length - 1) {
-            return done()
-          }
-
-          actions.up()
-        }
-      }
-    })
-  })
-}
-
 window.requestAnimationFrame = setTimeout
 
 beforeEach(() => {
   document.body.innerHTML = ""
 })
 
-testTrees("replace element", [
+testTreeSegue("replace element", [
   {
     tree: h("main", {}),
     html: `<main></main>`
@@ -53,7 +17,7 @@ testTrees("replace element", [
   }
 ])
 
-testTrees("replace child", [
+testTreeSegue("replace child", [
   {
     tree: h("main", {}, [h("div", {}, "foo")]),
     html: `
@@ -72,7 +36,7 @@ testTrees("replace child", [
   }
 ])
 
-testTrees("insert children on top", [
+testTreeSegue("insert children on top", [
   {
     tree: h("main", {}, [
       h(
@@ -163,7 +127,7 @@ testTrees("insert children on top", [
   }
 ])
 
-testTrees("remove text node", [
+testTreeSegue("remove text node", [
   {
     tree: h("main", {}, [h("div", {}, ["foo"]), "bar"]),
     html: `
@@ -183,7 +147,7 @@ testTrees("remove text node", [
   }
 ])
 
-testTrees("replace keyed", [
+testTreeSegue("replace keyed", [
   {
     tree: h("main", {}, [
       h(
@@ -224,7 +188,7 @@ testTrees("replace keyed", [
   }
 ])
 
-testTrees("reorder keyed", [
+testTreeSegue("reorder keyed", [
   {
     tree: h("main", {}, [
       h(
@@ -344,7 +308,7 @@ testTrees("reorder keyed", [
   }
 ])
 
-testTrees("grow/shrink keyed", [
+testTreeSegue("grow/shrink keyed", [
   {
     tree: h("main", {}, [
       h(
@@ -502,7 +466,7 @@ testTrees("grow/shrink keyed", [
   }
 ])
 
-testTrees("mixed keyed/non-keyed", [
+testTreeSegue("mixed keyed/non-keyed", [
   {
     tree: h("main", {}, [
       h(
@@ -602,7 +566,7 @@ testTrees("mixed keyed/non-keyed", [
   }
 ])
 
-testTrees("styles", [
+testTreeSegue("styles", [
   {
     tree: h("div"),
     html: `<div></div>`
@@ -621,7 +585,7 @@ testTrees("styles", [
   }
 ])
 
-testTrees("update element data", [
+testTreeSegue("update element data", [
   {
     tree: h("div", { id: "foo", class: "bar" }),
     html: `<div id="foo" class="bar"></div>`
@@ -632,7 +596,7 @@ testTrees("update element data", [
   }
 ])
 
-testTrees("removeAttribute", [
+testTreeSegue("removeAttribute", [
   {
     tree: h("div", { id: "foo", class: "bar" }),
     html: `<div id="foo" class="bar"></div>`
@@ -643,7 +607,7 @@ testTrees("removeAttribute", [
   }
 ])
 
-testTrees("skip setAttribute for functions", [
+testTreeSegue("skip setAttribute for functions", [
   {
     tree: h("div", {
       onclick() {
@@ -654,7 +618,7 @@ testTrees("skip setAttribute for functions", [
   }
 ])
 
-testTrees("update element with dynamic props", [
+testTreeSegue("update element with dynamic props", [
   {
     tree: h("input", {
       type: "text",
@@ -821,3 +785,39 @@ test("event bubling", done => {
     }
   })
 })
+
+function testTreeSegue(name, trees) {
+  test(name, done => {
+    app({
+      root: document.body,
+      view: (state, actions) =>
+        h(
+          "main",
+          {
+            oncreate: actions.next,
+            onupdate: actions.next
+          },
+          [trees[state.index].tree]
+        ),
+      state: {
+        index: 0
+      },
+      actions: {
+        up(state) {
+          return { index: state.index + 1 }
+        },
+        next(state, actions) {
+          expect(document.body.innerHTML).toBe(
+            `<main>${trees[state.index].html.replace(/\s{2,}/g, "")}</main>`
+          )
+
+          if (state.index === trees.length - 1) {
+            return done()
+          }
+
+          actions.up()
+        }
+      }
+    })
+  })
+}

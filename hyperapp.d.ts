@@ -7,7 +7,7 @@ export as namespace Hyperapp
  * @memberOf [VDOM]
  */
 export interface VNode<Props> {
-  tag: string
+  type: string
   props: Props
   children: VNodeChild<{} | null>[]
 }
@@ -23,15 +23,11 @@ export type VNodeChild<Props> = VNode<Props> | string
  * @memberOf [VDOM]
  */
 export interface Component<Props> {
-  /** A Component is a function that return a custom VNode
-   *
-   * @memberOf [VDOM]
-  */
   (props: Props, children: VNodeChild<{} | null>[]): VNode<{}>
 }
 
 /**The type for the children parameter accepted by h().
- * 
+ *
  * @memberOf [VDOM]
  */
 export type VNodeChildren =
@@ -40,14 +36,14 @@ export type VNodeChildren =
   | number
 
 /** The soft way to create a VNode
- * @param tag       Either a tag name e.g. 'div'. Or a Component function
+ * @param type      A tag name or a Component function
  * @param props     Any valid HTML atributes, events, styles, and meta data
  * @param children  The children of the VNode
  *
  * @memberOf [VDOM]
 */
 export function h<Props>(
-  tag: Component<Props> | string,
+  type: Component<Props> | string,
   props?: Props,
   children?: VNodeChildren
 ): VNode<Props>
@@ -55,32 +51,36 @@ export function h<Props>(
 /** @namespace [App] */
 
 /** The application state.
- * 
+ *
  * @memberOf [App]
  */
 export interface State {}
 
-/** Thunk that may be returned bay an action.
- * 
- * @memberOf [App]
- */
-export interface Thunk {
-  (update: Function): any | null | void
+export interface Update<State extends Hyperapp.State> {
+  (value: Partial<State>): void
 }
 
-/** Result of an action.
- * 
+/** Thunk that may be returned by an action.
+ *
+ * @memberOf [App]
+ */
+export interface Thunk<State extends Hyperapp.State> {
+  (update: Update<State>): {} | null | void
+}
+
+/** The result of an action.
+ *
  * @memberOf [App]
  */
 export type ActionResult<State extends Hyperapp.State> =
   | Partial<State>
-  | Thunk
+  | Thunk<State>
   | {}
   | null
   | void
 
 /** The interface for a single action (exposed when calling actions).
- * 
+ *
  * @memberOf [App]
  */
 export interface Action<State extends Hyperapp.State, Data> {
@@ -88,7 +88,7 @@ export interface Action<State extends Hyperapp.State, Data> {
 }
 
 /** The interface for actions (exposed when calling actions).
- * 
+ *
  * @memberOf [App]
  */
 export interface Actions<
@@ -100,7 +100,7 @@ export interface Actions<
 }
 
 /** The interface for a single action (exposed when implementing actions).
- * 
+ *
  * @memberOf [App]
  */
 export interface InternalAction<
@@ -111,7 +111,7 @@ export interface InternalAction<
 }
 
 /** The interface for actions (exposed when implementing actions).
- * 
+ *
  * @memberOf [App]
  */
 export type InternalActions<
@@ -124,7 +124,7 @@ export type InternalActions<
 }
 
 /** The view function.
- * 
+ *
  * @memberOf [App]
  */
 export interface View<
@@ -134,8 +134,8 @@ export interface View<
   (state: State, actions: Actions): VNode<{}>
 }
 
-/** Input parameter of the app() function.
- * 
+/** The app() function signature.
+ *
  * @memberOf [App]
  */
 export interface App<
@@ -145,17 +145,16 @@ export interface App<
   state?: State
   actions?: InternalActions<State, Actions>
   view?: View<State, Actions>
-  root?: HTMLElement | null
 }
 
 /** The app() function, main entry point of Hyperapp's API.
- * 
+ *
  * @memberOf [App]
  */
 export function app<
   State extends Hyperapp.State & Record<keyof Actions, any>,
   Actions extends Hyperapp.Actions<State>
->(app: App<State, Actions>): Actions
+>(app: App<State, Actions>, root?: HTMLElement | null): Actions
 
 /** @namespace [JSX] */
 

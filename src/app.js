@@ -2,7 +2,7 @@ import { h } from "./h"
 
 export function app(props, container) {
   var root = (container = container || document.body).children[0]
-  var node = elementToNode(root, [].map)
+  var node = toVNode(root, [].map)
   var callbacks = []
   var skipRender
   var globalState
@@ -34,7 +34,7 @@ export function app(props, container) {
     while ((cb = callbacks.pop())) cb()
   }
 
-  function elementToNode(element, map) {
+  function toVNode(element, map) {
     return (
       element &&
       h(
@@ -43,7 +43,7 @@ export function app(props, container) {
         map.call(element.childNodes, function(element) {
           return element.nodeType === 3
             ? element.nodeValue
-            : elementToNode(element, map)
+            : toVNode(element, map)
         })
       )
     )

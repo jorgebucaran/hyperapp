@@ -789,7 +789,6 @@ test("event bubling", done => {
 function testTreeSegue(name, trees) {
   test(name, done => {
     app({
-      root: document.body,
       view: (state, actions) =>
         h(
           "main",

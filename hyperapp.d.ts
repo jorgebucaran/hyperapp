@@ -7,7 +7,7 @@ export as namespace Hyperapp
  * @memberOf [VDOM]
  */
 export interface VNode<Props> {
-  tag: string
+  type: string
   props: Props
   children: VNodeChild<{} | null>[]
 }
@@ -23,10 +23,6 @@ export type VNodeChild<Props> = VNode<Props> | string
  * @memberOf [VDOM]
  */
 export interface Component<Props> {
-  /** A Component is a function that return a custom VNode
-   *
-   * @memberOf [VDOM]
-  */
   (props: Props, children: VNodeChild<{} | null>[]): VNode<{}>
 }
 
@@ -40,14 +36,14 @@ export type VNodeChildren =
   | number
 
 /** The soft way to create a VNode
- * @param tag       Either a tag name e.g. 'div'. Or a Component function
+ * @param type      A tag name or a Component function
  * @param props     Any valid HTML atributes, events, styles, and meta data
  * @param children  The children of the VNode
  *
  * @memberOf [VDOM]
 */
 export function h<Props>(
-  tag: Component<Props> | string,
+  type: Component<Props> | string,
   props?: Props,
   children?: VNodeChildren
 ): VNode<Props>
@@ -64,7 +60,7 @@ export interface Update<State extends Hyperapp.State> {
   (value: Partial<State>): void
 }
 
-/** Thunk that may be returned bay an action.
+/** Thunk that may be returned by an action.
  *
  * @memberOf [App]
  */
@@ -72,7 +68,7 @@ export interface Thunk<State extends Hyperapp.State> {
   (update: Update<State>): {} | null | void
 }
 
-/** Result of an action.
+/** The result of an action.
  *
  * @memberOf [App]
  */
@@ -138,7 +134,7 @@ export interface View<
   (state: State, actions: Actions): VNode<{}>
 }
 
-/** Input parameter of the app() function.
+/** The app() function signature.
  *
  * @memberOf [App]
  */
@@ -149,7 +145,6 @@ export interface App<
   state?: State
   actions?: InternalActions<State, Actions>
   view?: View<State, Actions>
-  root?: HTMLElement | null
 }
 
 /** The app() function, main entry point of Hyperapp's API.
@@ -159,7 +154,7 @@ export interface App<
 export function app<
   State extends Hyperapp.State & Record<keyof Actions, any>,
   Actions extends Hyperapp.Actions<State>
->(app: App<State, Actions>): Actions
+>(app: App<State, Actions>, root?: HTMLElement | null): Actions
 
 /** @namespace [JSX] */
 

@@ -106,33 +106,37 @@ const actions: Hyperapp.InternalActions<State, Actions> = {
   async: asyncModuleActions
 }
 
-const appActions = app<State, Actions>({
-  state: initialState,
-  // no need to set the types here
-  view: (state, actions) => (
-    <main>
-      <h1>Typescript Demo</h1>
-      <h2>Module 1</h2>
-      <p>
-        <button onclick={() => actions.module1.sub(-1)}>-</button>
-        {state.module1.count}
-        <button onclick={() => actions.module2.add(2)}>+</button>
-      </p>
-      <h2>Module 2</h2>
-      <p>
-        <button onclick={() => actions.module2.reset()}>Reset</button>
-        {state.module2.count}
-        <button onclick={() => actions.module2.add(1)}>+</button>
-      </p>
-      <h2>Async</h2>
-      <p>
-        <button onclick={() => actions.async.fetch("https://hyperapp.js.org/")}>
-          Fetch
-        </button>
-        <pre>{state.async.value}</pre>
-      </p>
-    </main>
-  ),
-  actions,
-  root: document.getElementById("app")
-})
+const appActions = app<State, Actions>(
+  {
+    state: initialState,
+    // no need to set the types here
+    view: (state, actions) => (
+      <main>
+        <h1>Typescript Demo</h1>
+        <h2>Module 1</h2>
+        <p>
+          <button onclick={() => actions.module1.sub(-1)}>-</button>
+          {state.module1.count}
+          <button onclick={() => actions.module2.add(2)}>+</button>
+        </p>
+        <h2>Module 2</h2>
+        <p>
+          <button onclick={() => actions.module2.reset()}>Reset</button>
+          {state.module2.count}
+          <button onclick={() => actions.module2.add(1)}>+</button>
+        </p>
+        <h2>Async</h2>
+        <p>
+          <button
+            onclick={() => actions.async.fetch("https://hyperapp.js.org/")}
+          >
+            Fetch
+          </button>
+          <pre>{state.async.value}</pre>
+        </p>
+      </main>
+    ),
+    actions
+  },
+  document.getElementById("app")
+)

@@ -1,26 +1,24 @@
 import { h } from "./h"
 
-var callbacks = []
-
 export function app(props) {
   if (typeof props === "function") {
     return props(app)
   }
 
-  var appState
-  var appActions
-  var appView = props.view
-  var appRoot = props.root || document.body
-  var element = appRoot.children[0]
-  var node = elementToVNode(element, [].map)
+  var callbacks = []
+  var root = props.root || document.body
+  var element = root.children[0]
+  var node = elementToNode(element, [].map)
   var skipRender
+  var globalState
+  var globalActions
 
-  repaint(flush(initFromModule(props, (appState = {}), (appActions = {}))))
+  repaint(flush(init(props, (globalState = {}), (globalActions = {}))))
 
-  return appActions
+  return globalActions
 
   function repaint() {
-    if (appView && !skipRender) {
+    if (props.view && !skipRender) {
       requestAnimationFrame(render, (skipRender = !skipRender))
     }
   }
@@ -28,10 +26,10 @@ export function app(props) {
   function render() {
     flush(
       (element = patch(
-        appRoot,
+        root,
         element,
         node,
-        (node = appView(appState, appActions)),
+        (node = props.view(globalState, globalActions)),
         (skipRender = !skipRender)
       ))
     )
@@ -41,7 +39,7 @@ export function app(props) {
     while ((cb = callbacks.pop())) cb()
   }
 
-  function elementToVNode(element, map) {
+  function elementToNode(element, map) {
     return (
       element &&
       h(
@@ -50,13 +48,13 @@ export function app(props) {
         map.call(element.childNodes, function(element) {
           return element.nodeType === 3
             ? element.nodeValue
-            : elementToVNode(element, map)
+            : elementToNode(element, map)
         })
       )
     )
   }
 
-  function initFromModule(module, state, actions) {
+  function init(module, state, actions) {
     if (module.init) {
       callbacks.push(function() {
         module.init(state, actions)
@@ -68,7 +66,7 @@ export function app(props) {
     initActions(state, actions, module.actions)
 
     Object.keys(module.modules || {}).map(function(i) {
-      initFromModule(module.modules[i], (state[i] = {}), (actions[i] = {}))
+      init(module.modules[i], (state[i] = {}), (actions[i] = {}))
     })
   }
 
@@ -88,7 +86,7 @@ export function app(props) {
         typeof data === "function"
           ? update(data(state))
           : data && repaint(assign(state, data)),
-        appState
+        globalState
       )
     }
   }
@@ -108,9 +106,9 @@ export function app(props) {
     if (typeof node === "string") {
       var element = document.createTextNode(node)
     } else {
-      var element = (isSVG = isSVG || node.tag === "svg")
-        ? document.createElementNS("http://www.w3.org/2000/svg", node.tag)
-        : document.createElement(node.tag)
+      var element = (isSVG = isSVG || node.type === "svg")
+        ? document.createElementNS("http://www.w3.org/2000/svg", node.type)
+        : document.createElement(node.type)
 
       if (node.props && node.props.oncreate) {
         callbacks.push(function() {
@@ -192,10 +190,10 @@ export function app(props) {
   function patch(parent, element, oldNode, node, isSVG, nextSibling) {
     if (oldNode == null) {
       element = parent.insertBefore(createElement(node, isSVG), element)
-    } else if (node.tag != null && node.tag === oldNode.tag) {
+    } else if (node.type != null && node.type === oldNode.type) {
       updateElement(element, oldNode.props, node.props)
 
-      isSVG = isSVG || node.tag === "svg"
+      isSVG = isSVG || node.type === "svg"
 
       var len = node.children.length
       var oldLen = oldNode.children.length

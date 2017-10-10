@@ -1,7 +1,7 @@
 var i
 var stack = []
 
-export function h(tag, props) {
+export function h(type, props) {
   var node
   var children = []
 
@@ -19,11 +19,7 @@ export function h(tag, props) {
     }
   }
 
-  return typeof tag === "string"
-    ? {
-        tag: tag,
-        props: props || {},
-        children: children
-      }
-    : tag(props || {}, children)
+  return typeof type === "string"
+    ? { type: type, props: props || {}, children: children }
+    : type(props || {}, children)
 }

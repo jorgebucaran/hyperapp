@@ -39,26 +39,46 @@ test("throttling", done => {
 })
 
 test("hoa", done => {
-  function foo(app) {
-    return props =>
-      app(
-        Object.assign(props, {
-          state: { value: 1 }
+  function B(app) {
+    function enhancedApp(props) {
+      return app(
+        Object.assign({}, props, {
+          state: Object.assign(props.state, {
+            value: props.state.value + 1
+          })
         })
       )
+    }
+
+    return props =>
+      typeof props === "function" ? props(enhancedApp) : enhancedApp(props)
   }
 
-  app(foo)({
-    view: state =>
-      h(
-        "div",
-        {
-          oncreate() {
-            expect(document.body.innerHTML).toBe("<div>1</div>")
-            done()
-          }
-        },
-        state.value
+  function A(app) {
+    function enhancedApp(props) {
+      return app(
+        Object.assign({}, props, {
+          state: Object.assign(props.state, {
+            value: props.state.value + 1
+          })
+        })
       )
+    }
+
+    return props =>
+      typeof props === "function" ? props(enhancedApp) : enhancedApp(props)
+  }
+
+  app(A)(B)({
+    state: {
+      value: 0
+    },
+    init(state) {
+      expect(state).toEqual({
+        value: 2
+      })
+
+      done()
+    }
   })
 })

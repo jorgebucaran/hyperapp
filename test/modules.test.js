@@ -55,21 +55,14 @@ test("modules", done => {
       })
 
       expect(actions.foo.up()).toEqual({
-        foo: {
-          value: 1,
-          bar: {
-            text: "hello"
-          }
+        value: 1,
+        bar: {
+          text: "hello"
         }
       })
 
       expect(actions.foo.bar.change()).toEqual({
-        foo: {
-          value: 1,
-          bar: {
-            text: "hola"
-          }
-        }
+        text: "hola"
       })
 
       done()

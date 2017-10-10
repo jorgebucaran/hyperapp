@@ -1,10 +1,6 @@
 import { h } from "./h"
 
 export function app(props) {
-  if (typeof props === "function") {
-    return props(app)
-  }
-
   var callbacks = []
   var root = props.root || document.body
   var element = root.children[0]

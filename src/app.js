@@ -67,14 +67,15 @@ export function app(props, container) {
 
   function initActions(state, actions, source) {
     Object.keys(source || {}).map(function(i) {
-      if (typeof source[i] === "function")
+      if (typeof source[i] === "function") {
         actions[i] = function(data) {
           return typeof (data = source[i](state, actions, data)) === "function"
             ? data(update)
             : update(data)
         }
-      else
+      } else {
         initActions(state[i] || (state[i] = {}), (actions[i] = {}), source[i])
+      }
     })
 
     function update(data) {

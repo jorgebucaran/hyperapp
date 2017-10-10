@@ -65,9 +65,9 @@ export function app(props) {
 
     initActions(state, actions, module.actions)
 
-    Object.keys(module.modules || {}).map(function(i) {
+    for (var i in module.modules) {
       init(module.modules[i], (state[i] = {}), (actions[i] = {}))
-    })
+    }
   }
 
   function initActions(state, actions, source) {

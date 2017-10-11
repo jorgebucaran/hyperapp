@@ -20,7 +20,7 @@ export function app(props, container) {
 
   function render() {
     flush(
-      (root = patch(
+      (root = patchElement(
         container,
         root,
         node,
@@ -184,7 +184,7 @@ export function app(props, container) {
     }
   }
 
-  function patch(parent, element, oldNode, node, isSVG, nextSibling) {
+  function patchElement(parent, element, oldNode, node, isSVG, nextSibling) {
     if (oldNode == null) {
       element = parent.insertBefore(createElement(node, isSVG), element)
     } else if (node.type != null && node.type === oldNode.type) {
@@ -228,19 +228,19 @@ export function app(props, container) {
 
         if (null == newKey) {
           if (null == oldKey) {
-            patch(element, oldElement, oldChild, newChild, isSVG)
+            patchElement(element, oldElement, oldChild, newChild, isSVG)
             j++
           }
           i++
         } else {
           if (oldKey === newKey) {
-            patch(element, keyedNode[0], keyedNode[1], newChild, isSVG)
+            patchElement(element, keyedNode[0], keyedNode[1], newChild, isSVG)
             i++
           } else if (keyedNode[0]) {
             element.insertBefore(keyedNode[0], oldElement)
-            patch(element, keyedNode[0], keyedNode[1], newChild, isSVG)
+            patchElement(element, keyedNode[0], keyedNode[1], newChild, isSVG)
           } else {
-            patch(element, oldElement, null, newChild, isSVG)
+            patchElement(element, oldElement, null, newChild, isSVG)
           }
 
           j++

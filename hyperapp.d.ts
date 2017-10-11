@@ -154,7 +154,7 @@ export interface App<
 export function app<
   State extends Hyperapp.State & Record<keyof Actions, any>,
   Actions extends Hyperapp.Actions<State>
->(app: App<State, Actions>, root?: HTMLElement | null): Actions
+>(app: App<State, Actions>, container?: HTMLElement | null): Actions
 
 /** @namespace [JSX] */
 

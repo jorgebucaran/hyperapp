@@ -1,4 +1,4 @@
-import { h, app } from 'hyperapp'
+import { h, app } from "hyperapp"
 
 // Sub-module (used by Module 1)
 
@@ -21,7 +21,7 @@ const submodule: Hyperapp.Module<SubModuleState, SubModuleActions> = {
     add: (state, actions, value: number) => ({ count: state.count + value })
   },
   init(state, actions) {
-    console.log('Current count (typed!): ' + state.count)
+    console.log("Current count (typed!): " + state.count)
   }
 }
 
@@ -59,7 +59,7 @@ const module1: Hyperapp.Module<
     add: (state, actions, value: number) => ({ count: state.count + value })
   },
   init(state, actions) {
-    console.log('Current count (typed!): ' + state.count)
+    console.log("Current count (typed!): " + state.count)
   },
   modules: {
     submodule
@@ -113,7 +113,7 @@ interface AppState extends Hyperapp.State {
 const state: AppState = {
   async: asyncModuleState,
   unused2: {
-    foo: 'bar'
+    foo: "bar"
   }
 }
 
@@ -157,7 +157,7 @@ const appActions = app<State, Actions, AppState, AppActions>(
         <h2>Async</h2>
         <p>
           <button
-            onclick={() => actions.async.fetch('https://hyperapp.js.org/')}
+            onclick={() => actions.async.fetch("https://hyperapp.js.org/")}
           >
             Fetch
           </button>
@@ -166,5 +166,5 @@ const appActions = app<State, Actions, AppState, AppActions>(
       </main>
     )
   },
-  document.getElementById('app')
+  document.getElementById("app")
 )

@@ -86,7 +86,7 @@ actions: {
 }
 ```
 
-Returning a new state from an action updates the current state and schedules a view re-render on the next [repaint](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame). Actions must never mutate the state directly.
+Actions must never mutate the state directly. Returning a new state from an action updates the current state and schedules a view re-render on the next [repaint](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame).
 
 ### View
 

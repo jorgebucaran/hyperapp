@@ -18,4 +18,4 @@ Hyperapp works transparently with SSR and pre-rendered HTML, enabling SEO optimi
 </html>
 ```
 
-Then instead of throwing away the server-rendered markdown, we'll walk through your DOM tree and turn nodes into an interactive application. The default [root](/docs/root.md) is `document.body`, but you can specify another if you have multiple apps on the same page.
+Then instead of throwing away the server-rendered markdown, we'll turn your DOM nodes into an interactive application.

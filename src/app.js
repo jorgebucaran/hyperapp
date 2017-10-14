@@ -1,42 +1,40 @@
 import { h } from "./h"
 
-var lifecycleCallbackStack = []
-
-export function app(props) {
+export function app(props, container) {
+  var root = (container = container || document.body).children[0]
+  var node = toVNode(root, [].map)
+  var callbacks = []
   var skipRender
-  var appView = props.view
-  var appState = props.state
-  var appActions = {}
-  var appRoot = props.root || document.body
-  var element = appRoot.children[0]
-  var node = hydrate(element, [].map)
+  var globalState
+  var globalActions
 
-  if (typeof props === "function") {
-    return props(app)
-  }
+  repaint(flush(init(props, (globalState = {}), (globalActions = {}))))
 
-  requestRender(createActions(appActions, props.actions, []))
+  return globalActions
 
-  return appActions
-
-  function requestRender() {
-    if (appView && !skipRender) {
+  function repaint() {
+    if (props.view && !skipRender) {
       requestAnimationFrame(render, (skipRender = !skipRender))
     }
   }
 
-  function render(cb) {
-    element = patch(
-      appRoot,
-      element,
-      node,
-      (node = appView(appState, appActions)),
-      (skipRender = !skipRender)
+  function render() {
+    flush(
+      (root = patchElement(
+        container,
+        root,
+        node,
+        (node = props.view(globalState, globalActions)),
+        (skipRender = !skipRender)
+      ))
     )
-    while ((cb = lifecycleCallbackStack.pop())) cb()
   }
 
-  function hydrate(element, map) {
+  function flush(cb) {
+    while ((cb = callbacks.pop())) cb()
+  }
+
+  function toVNode(element, map) {
     return (
       element &&
       h(
@@ -45,115 +43,88 @@ export function app(props) {
         map.call(element.childNodes, function(element) {
           return element.nodeType === 3
             ? element.nodeValue
-            : hydrate(element, map)
+            : toVNode(element, map)
         })
       )
     )
   }
 
-  function createActions(actions, withActions, lastPath) {
-    Object.keys(withActions || {}).map(function(name) {
-      return typeof withActions[name] === "function"
-        ? (actions[name] = function(data) {
-            return typeof (data = withActions[name](
-              getPath(lastPath, appState),
-              getPath(lastPath, appActions),
-              data
-            )) === "function"
-              ? data(update)
-              : update(data)
-          })
-        : createActions(
-            actions[name] || (actions[name] = {}),
-            withActions[name],
-            lastPath.concat(name)
-          )
-    })
+  function init(module, state, actions) {
+    if (module.init) {
+      callbacks.push(function() {
+        module.init(state, actions)
+      })
+    }
 
-    function update(withState) {
-      if (typeof withState === "function") {
-        return update(withState(getPath(lastPath, appState)))
-      }
-      if (
-        withState &&
-        (withState = setPath(
-          lastPath,
-          merge(getPath(lastPath, appState), withState),
-          appState
-        ))
-      ) {
-        requestRender((appState = withState))
-      }
-      return appState
+    assign(state, module.state)
+
+    initActions(state, actions, module.actions)
+
+    for (var i in module.modules) {
+      init(module.modules[i], (state[i] = {}), (actions[i] = {}))
     }
   }
 
-  function set(prop, value, source) {
-    var target = merge(source)
-    target[prop] = value
+  function initActions(state, actions, source) {
+    Object.keys(source || {}).map(function(i) {
+      if (typeof source[i] === "function") {
+        actions[i] = function(data) {
+          return typeof (data = source[i](state, actions, data)) === "function"
+            ? data(update)
+            : update(data)
+        }
+      } else {
+        initActions(state[i] || (state[i] = {}), (actions[i] = {}), source[i])
+      }
+    })
+
+    function update(data) {
+      return (
+        typeof data === "function"
+          ? update(data(state))
+          : data && repaint(assign(state, data)),
+        state
+      )
+    }
+  }
+
+  function assign(target, source) {
+    for (var i in source) {
+      target[i] = source[i]
+    }
     return target
   }
 
-  function getPath(paths, source) {
-    return paths.length === 0
-      ? source
-      : source && getPath(paths.slice(1), source[paths[0]])
-  }
-
-  function setPath(paths, value, source) {
-    var name = paths[0]
-    return paths.length === 0
-      ? value
-      : set(
-          name,
-          paths.length > 1
-            ? setPath(
-                paths.slice(1),
-                value,
-                source && name in source ? source[name] : {}
-              )
-            : value,
-          source
-        )
-  }
-
   function merge(target, source) {
-    var result = {}
-    for (var i in target) {
-      result[i] = target[i]
-    }
-    for (var i in source) {
-      result[i] = source[i]
-    }
-    return result
+    return assign(assign({}, target), source)
   }
 
   function createElement(node, isSVG) {
     if (typeof node === "string") {
       var element = document.createTextNode(node)
     } else {
-      var element = (isSVG = isSVG || node.tag === "svg")
-        ? document.createElementNS("http://www.w3.org/2000/svg", node.tag)
-        : document.createElement(node.tag)
+      var element = (isSVG = isSVG || node.type === "svg")
+        ? document.createElementNS("http://www.w3.org/2000/svg", node.type)
+        : document.createElement(node.type)
 
       if (node.props && node.props.oncreate) {
-        lifecycleCallbackStack.push(function() {
+        callbacks.push(function() {
           node.props.oncreate(element)
         })
       }
 
-      for (var i = 0; i < node.children.length; ) {
-        element.appendChild(createElement(node.children[i++], isSVG))
+      for (var i = 0; i < node.children.length; i++) {
+        element.appendChild(createElement(node.children[i], isSVG))
       }
 
       for (var i in node.props) {
-        setProp(element, i, node.props[i])
+        setElementProp(element, i, node.props[i])
       }
     }
     return element
   }
 
-  function setProp(element, name, value, oldValue) {
+  function setElementProp(element, name, value, oldValue) {
     if (name === "key") {
     } else if (name === "style") {
       for (var name in merge(oldValue, (value = value || {}))) {
@@ -175,18 +146,17 @@ export function app(props) {
   }
 
   function updateElement(element, oldProps, props) {
-    for (var name in merge(oldProps, props)) {
-      var value = props[name]
-      var oldValue =
-        name === "value" || name === "checked" ? element[name] : oldProps[name]
+    for (var i in merge(oldProps, props)) {
+      var value = props[i]
+      var oldValue = i === "value" || i === "checked" ? element[i] : oldProps[i]
 
       if (value !== oldValue) {
-        setProp(element, name, value, oldValue)
+        value !== oldValue && setElementProp(element, i, value, oldValue)
       }
     }
 
     if (props && props.onupdate) {
-      lifecycleCallbackStack.push(function() {
+      callbacks.push(function() {
         props.onupdate(element, oldProps)
       })
     }
@@ -209,16 +179,18 @@ export function app(props) {
   }
 
   function getKey(node) {
-    return node && (node = node.props) && node.key
+    if (node && node.props) {
+      return node.props.key
+    }
   }
 
-  function patch(parent, element, oldNode, node, isSVG, nextSibling) {
+  function patchElement(parent, element, oldNode, node, isSVG, nextSibling) {
     if (oldNode == null) {
       element = parent.insertBefore(createElement(node, isSVG), element)
-    } else if (node.tag != null && node.tag === oldNode.tag) {
+    } else if (node.type != null && node.type === oldNode.type) {
       updateElement(element, oldNode.props, node.props)
 
-      isSVG = isSVG || node.tag === "svg"
+      isSVG = isSVG || node.type === "svg"
 
       var len = node.children.length
       var oldLen = oldNode.children.length
@@ -256,19 +228,19 @@ export function app(props) {
 
         if (null == newKey) {
           if (null == oldKey) {
-            patch(element, oldElement, oldChild, newChild, isSVG)
+            patchElement(element, oldElement, oldChild, newChild, isSVG)
             j++
           }
           i++
         } else {
           if (oldKey === newKey) {
-            patch(element, keyedNode[0], keyedNode[1], newChild, isSVG)
+            patchElement(element, keyedNode[0], keyedNode[1], newChild, isSVG)
             i++
           } else if (keyedNode[0]) {
             element.insertBefore(keyedNode[0], oldElement)
-            patch(element, keyedNode[0], keyedNode[1], newChild, isSVG)
+            patchElement(element, keyedNode[0], keyedNode[1], newChild, isSVG)
           } else {
-            patch(element, oldElement, null, newChild, isSVG)
+            patchElement(element, oldElement, null, newChild, isSVG)
           }
 
           j++

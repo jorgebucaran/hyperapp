@@ -37,28 +37,3 @@ test("throttling", done => {
     }
   }).fire()
 })
-
-test("hoa", done => {
-  function foo(app) {
-    return props =>
-      app(
-        Object.assign(props, {
-          state: { value: 1 }
-        })
-      )
-  }
-
-  app(foo)({
-    view: state =>
-      h(
-        "div",
-        {
-          oncreate() {
-            expect(document.body.innerHTML).toBe("<div>1</div>")
-            done()
-          }
-        },
-        state.value
-      )
-  })
-})

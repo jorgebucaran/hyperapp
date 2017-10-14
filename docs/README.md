@@ -1,7 +1,7 @@
 # Documentation
 
 - [Tutorials](/docs/tutorials.md)
-- [Contributing](/docs/contributing.md)
+- [Contributing](/docs/CONTRIBUTING.md)
 - Getting Started
   - [Hello World](#hello-world)
   - [Installation](#installation)
@@ -54,7 +54,14 @@ app({
 
 In this example we are using a `<script>` tag to download the minified library from a CDN. In a production environment you will probably be using a module bundler to build your application instead.
 
-Hyperapp applications consist of a single `app()` call. This function initializes and renders the application to the page. The `h()` function returns a virtual node tree. A virtual node is a JavaScript object that describes a DOM tree. Hyperapp consumes this object to update the DOM.
+Hyperapp applications consist of a single `app()` call. This function initializes and renders the application to document.body. You can select a different container too.
+
+```js
+app(
+  props,
+  document.getElementById("app")
+)
+```
 
 ### State
 
@@ -79,12 +86,14 @@ actions: {
 }
 ```
 
-Returning a new state from an action updates the current state and schedules a view re-render on the next [repaint](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame). Actions must never mutate the state directly.
+Actions must never mutate the state directly. Returning a new state from an action updates the current state and schedules a view re-render on the next [repaint](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame).
 
 ### View
 
 The view describes your user interface as a function of the [state](#state).
 Bind user events and [actions](#actions) together to create interactive applications. The view function is called every time we need to re-render the application due to state changes.
+
+The `h()` function returns a virtual node, an object that describes a DOM tree. Hyperapp consumes this object to update the DOM.
 
 Popular alternatives to the built-in `h()` function include [JSX](https://facebook.github.io/jsx/), [Hyperx](https://github.com/choojs/hyperx), [t7](https://github.com/trueadm/t7) and [@hyperapp/html](https://github.com/hyperapp/html).
 

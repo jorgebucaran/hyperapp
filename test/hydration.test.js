@@ -6,43 +6,39 @@ beforeEach(() => {
   document.body.innerHTML = ""
 })
 
-test("hydrate without explicit root", done => {
-  const body = `<main><p>foo</p></main>`
+testHydration(
+  "hydrate without container",
+  `<main><p>foo</p></main>`,
+  [h("p", {}, "foo")],
+  null
+)
 
-  document.body.innerHTML = body
+testHydration(
+  "hydrate with container",
+  `<div id="app"><main><p>foo</p></main></div>`,
+  [h("p", {}, "foo")],
+  "app"
+)
 
-  app({
-    view: state =>
-      h(
-        "main",
-        {
-          onupdate() {
-            expect(document.body.innerHTML).toBe(body)
-            done()
-          }
-        },
-        [h("p", {}, "foo")]
-      )
+function testHydration(name, ssrBody, children, container) {
+  test(name, done => {
+    document.body.innerHTML = ssrBody
+
+    app(
+      {
+        view: state =>
+          h(
+            "main",
+            {
+              onupdate() {
+                expect(document.body.innerHTML).toBe(ssrBody)
+                done()
+              }
+            },
+            children
+          )
+      },
+      container && document.getElementById(container)
+    )
   })
-})
-
-test("hydrate with root", done => {
-  const body = `<div id="app"><main><p>foo</p></main></div>`
-
-  document.body.innerHTML = body
-
-  app({
-    root: document.getElementById("app"),
-    view: state =>
-      h(
-        "main",
-        {
-          onupdate() {
-            expect(document.body.innerHTML).toBe(body)
-            done()
-          }
-        },
-        [h("p", {}, "foo")]
-      )
-  })
-})
+}

@@ -1,51 +1,78 @@
 import { h, app } from "hyperapp"
 
-// Module 1
+// Sub-module (used by Module 1)
 
-interface Module1State extends Hyperapp.State {
+interface SubModuleState extends Hyperapp.State {
   count: number
 }
 
-const module1InitialState: Module1State = {
-  count: 0
-}
-
-interface Module1Actions extends Hyperapp.Actions<Module1State> {
+interface SubModuleActions extends Hyperapp.Actions<Module1State> {
   sub(value: number): Partial<Module1State>
   add(value: number): Partial<Module1State>
 }
 
-const module1Actions: Hyperapp.InternalActions<Module1State, Module1Actions> = {
-  sub: (state, actions, value: number) => ({ count: state.count - value }),
-  add: (state, actions, value: number) => ({ count: state.count + value })
+// no need to specify OwnState and OwnActions here since it defaults to full state/actions
+const submodule: Hyperapp.Module<SubModuleState, SubModuleActions> = {
+  state: {
+    count: 0
+  },
+  actions: {
+    sub: (state, actions, value: number) => ({ count: state.count - value }),
+    add: (state, actions, value: number) => ({ count: state.count + value })
+  },
+  init(state, actions) {
+    console.log("Current count (typed!): " + state.count)
+  }
 }
 
-// Module 2
+// Module 1 (utilize modules feature)
 
-interface Module2State {
+// only its own state
+interface Module1OwnState extends Hyperapp.State {
   count: number
 }
-
-const module2InitialState: Module2State = {
-  count: 0
+// state including sub-modules
+interface Module1State extends Module1OwnState {
+  submodule: SubModuleState
+}
+// only its own actions
+interface Module1OwnActions extends Hyperapp.Actions<Module1OwnState> {
+  sub(value: number): Partial<Module1State>
+  add(value: number): Partial<Module1State>
+}
+// actions including sub-modules
+interface Module1Actions extends Module1OwnActions {
+  submodule: SubModuleActions
 }
 
-interface Module2Actions extends Hyperapp.Actions<Module2State> {
-  reset(): Partial<Module2State>
-  add(value: number): Partial<Module2State>
+const module1: Hyperapp.Module<
+  Module1State,
+  Module1Actions,
+  Module1OwnState,
+  Module1OwnActions
+> = {
+  state: {
+    count: 0
+  },
+  actions: {
+    sub: (state, actions, value: number) => ({ count: state.count - value }),
+    add: (state, actions, value: number) => ({ count: state.count + value })
+  },
+  init(state, actions) {
+    console.log("Current count (typed!): " + state.count)
+  },
+  modules: {
+    submodule
+  }
 }
 
-const module2Actions: Hyperapp.InternalActions<Module2State, Module2Actions> = {
-  reset: (state, actions) => ({ count: 0 }),
-  add: (state, actions, value: number) => ({ count: state.count + value })
-}
+// Async Module (without modules feature)
 
-// Async Module
 interface AsyncModuleState {
   value?: Error | number
 }
 
-const asyncModuleInitialState: AsyncModuleState = {}
+const asyncModuleState: AsyncModuleState = {}
 
 interface AsyncModuleActions extends Hyperapp.Actions<AsyncModuleState> {
   fetch(url: string): Hyperapp.Thunk<AsyncModuleState>
@@ -72,11 +99,9 @@ const asyncModuleActions: Hyperapp.InternalActions<
   }
 }
 
-// app
+// App's own state/actions (without modules)
 
-interface State extends Hyperapp.State {
-  module1: Module1State
-  module2: Module2State
+interface AppState extends Hyperapp.State {
   async: AsyncModuleState
   // just to demonstrate there can be other attributes than the ones defined in actions
   unused?: number
@@ -85,30 +110,40 @@ interface State extends Hyperapp.State {
   }
 }
 
-const initialState: State = {
-  module1: module1InitialState,
-  module2: module2InitialState,
-  async: asyncModuleInitialState,
+const state: AppState = {
+  async: asyncModuleState,
   unused2: {
     foo: "bar"
   }
 }
 
-interface Actions extends Hyperapp.Actions<State> {
-  module1: Module1Actions
-  module2: Module2Actions
+interface AppActions extends Hyperapp.Actions<AppState> {
   async: AsyncModuleActions
 }
 
-const actions: Hyperapp.InternalActions<State, Actions> = {
-  module1: module1Actions,
-  module2: module2Actions,
+const actions: Hyperapp.InternalActions<AppState, AppActions> = {
   async: asyncModuleActions
 }
 
-const appActions = app<State, Actions>(
+// App + modules actions/state
+
+interface State extends AppState {
+  module1: Module1State
+}
+
+interface Actions extends AppActions {
+  module1: Module1Actions
+}
+
+// App
+
+const appActions = app<State, Actions, AppState, AppActions>(
   {
-    state: initialState,
+    state: state,
+    actions,
+    modules: {
+      module1
+    },
     // no need to set the types here
     view: (state, actions) => (
       <main>
@@ -117,13 +152,7 @@ const appActions = app<State, Actions>(
         <p>
           <button onclick={() => actions.module1.sub(-1)}>-</button>
           {state.module1.count}
-          <button onclick={() => actions.module2.add(2)}>+</button>
-        </p>
-        <h2>Module 2</h2>
-        <p>
-          <button onclick={() => actions.module2.reset()}>Reset</button>
-          {state.module2.count}
-          <button onclick={() => actions.module2.add(1)}>+</button>
+          <button onclick={() => actions.module1.add(2)}>+</button>
         </p>
         <h2>Async</h2>
         <p>
@@ -135,8 +164,7 @@ const appActions = app<State, Actions>(
           <pre>{state.async.value}</pre>
         </p>
       </main>
-    ),
-    actions
+    )
   },
   document.getElementById("app")
 )

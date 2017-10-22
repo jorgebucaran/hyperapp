@@ -68,7 +68,7 @@ app(
 
 ### State
 
-The state describes the data model in your application. The state must always be an object. In this example, it consists of a single property: `count` which is initialized to 0.
+The state object describes the data model in your application. The state must always be an object. In this example it consists of a single property, `count`, which is initialized to 0.
 
 ```jsx
 state: {

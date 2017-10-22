@@ -1,10 +1,10 @@
 # State Slices
 
-Hyperapp uses a single state tree — that is, this single object contains all your application level state and serves as the single source of truth. This also means, if you are coming from Redux/Flux, that you have only one store for each app. A single state tree makes it straightforward to locate a specific piece of state, and allows for incredibly easy debugging.
+Hyperapp uses a single state tree object that contains all your application level state and serves as the single source of truth. This also means, if you are coming from Redux/Flux, that you have only one store for each app. A single state tree makes it straightforward to locate a specific piece of state, and allows for incredibly easy debugging.
 
-A single state tree is not free from struggle. It can be daunting to update a part of the state deeply nested in the state tree immutably _and_ without resorting to functional lenses / setters or advanced martial arts.
+A single state tree is not free from struggle. It can be daunting to update a part of the state deeply nested in the state tree immutably without resorting to functional lenses / setters or advanced martial arts.
 
-State slices attempt to address this issue by giving you via actions, a slice of the state tree that corresponds to the namespace where both state and action are declared.
+State slices address this issue with actions that access a slice of the state tree that corresponds to the namespace where both state and action are declared.
 
 ```js
 actions: {
@@ -36,7 +36,7 @@ state: {
 }
 ```
 
-...and wanted to update `value`, you had to update an entire record (**including siblings**), since there is no way to single out `value` from a nested state.
+Then when you wanted to update `value`, you had to update an entire record (**including siblings**), since there is no way to single out `value` from a nested state.
 
 In other words, you had to write something like the following in order to update the tree immutably.
 
@@ -68,7 +68,7 @@ state: {
 }
 ```
 
-And have a corresponding action inside a namespace that matches the state you want to update.
+You will have a corresponding action inside a namespace that matches the state you want to update.
 
 ```js
 actions: {

@@ -8,7 +8,19 @@ export function app(props, container) {
   var globalState
   var globalActions
 
-  repaint(flush(init(props, (globalState = {}), (globalActions = {}))))
+  repaint(
+    flush(
+      init(
+        props,
+        (globalState = {}),
+        (globalActions = {}),
+        globalUpdate,
+        function() {
+          return globalState
+        }
+      )
+    )
+  )
 
   return globalActions
 
@@ -49,7 +61,7 @@ export function app(props, container) {
     )
   }
 
-  function init(module, state, actions) {
+  function init(module, state, actions, update, getState) {
     if (module.init) {
       callbacks.push(function() {
         module.init(state, actions)
@@ -58,33 +70,63 @@ export function app(props, container) {
 
     assign(state, module.state)
 
-    initActions(state, actions, module.actions)
+    initActions(state, actions, module.actions, update, getState)
 
     for (var i in module.modules) {
-      init(module.modules[i], (state[i] = {}), (actions[i] = {}))
+      init(
+        module.modules[i],
+        (state[i] = {}),
+        (actions[i] = {}),
+        updateFor(update, get(getState, i), i),
+        get(getState, i)
+      )
     }
   }
 
-  function initActions(state, actions, source) {
+  function globalUpdate(result) {
+    console.log("Calling global update with result: " + JSON.stringify(result))
+    return (
+      typeof result === "function"
+        ? globalUpdate(result(globalState))
+        : result && repaint((globalState = merge(globalState, result))),
+      globalState
+    )
+  }
+
+  function updateFor(update, getState, prop, parentResult) {
+    return function(result) {
+      ;(parentResult = {})[prop] = merge(
+        getState(),
+        typeof result === "function" ? result(getState()) : result
+      )
+      return update(parentResult)[prop]
+    }
+  }
+
+  function initActions(state, actions, source, update, getState) {
     Object.keys(source || {}).map(function(i) {
       if (typeof source[i] === "function") {
         actions[i] = function(data) {
-          return typeof (data = source[i](state, actions, data)) === "function"
+          return typeof (data = source[i](getState(), actions, data)) ===
+            "function"
             ? data(update)
             : update(data)
         }
       } else {
-        initActions(state[i] || (state[i] = {}), (actions[i] = {}), source[i])
+        initActions(
+          state[i] || (state[i] = {}),
+          (actions[i] = {}),
+          source[i],
+          updateFor(update, get(getState, i), i),
+          get(getState, i)
+        )
       }
     })
+  }
 
-    function update(data) {
-      return (
-        typeof data === "function"
-          ? update(data(state))
-          : data && repaint(assign(state, data)),
-        state
-      )
+  function get(getObject, prop) {
+    return function() {
+      return getObject()[prop]
     }
   }
 

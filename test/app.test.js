@@ -7,33 +7,35 @@ beforeEach(() => {
 })
 
 test("throttling", done => {
+  var count = 0
+
   app({
-    view: state =>
-      h(
-        "div",
-        {
-          oncreate() {
-            expect(document.body.innerHTML).toBe("<div>5</div>")
-            done()
-          }
-        },
-        state.value
-      ),
+    view(state, actions) {
+      if (0 >= count) {
+        actions.fire()
+      }
+
+      count += 1
+
+      return h("div", {}, state.value)
+    },
     state: {
-      value: 1
+      value: "foo"
     },
     actions: {
-      up(state) {
-        return {
-          value: state.value + 1
-        }
+      render(state) {
+        return state
       },
       fire(state, actions) {
-        actions.up()
-        actions.up()
-        actions.up()
-        actions.up()
+        actions.render()
+        actions.render()
+        actions.render()
       }
     }
   }).fire()
+
+  setTimeout(() => {
+    expect(count).toBe(2)
+    done()
+  }, 10)
 })

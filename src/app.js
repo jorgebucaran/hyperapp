@@ -1,10 +1,10 @@
 import { h } from "./h"
 
 export function app(props, container) {
+  var lock
+  var callbacks = []
   var root = (container = container || document.body).children[0]
   var node = toVNode(root, [].map)
-  var callbacks = []
-  var skipRender
   var globalState
   var globalActions
 
@@ -13,21 +13,16 @@ export function app(props, container) {
   return globalActions
 
   function repaint() {
-    if (props.view && !skipRender) {
-      requestAnimationFrame(render, (skipRender = !skipRender))
+    if (props.view && !lock) {
+      requestAnimationFrame(render, (lock = !lock))
     }
   }
 
-  function render() {
-    flush(
-      (root = patchElement(
-        container,
-        root,
-        node,
-        (node = props.view(globalState, globalActions)),
-        (skipRender = !skipRender)
-      ))
-    )
+  function render(next) {
+    lock = !lock
+    if ((next = props.view(globalState, globalActions)) && !lock) {
+      flush((root = patchElement(container, root, node, (node = next))))
+    }
   }
 
   function flush(cb) {
@@ -107,7 +102,7 @@ export function app(props, container) {
         ? document.createElementNS("http://www.w3.org/2000/svg", node.type)
         : document.createElement(node.type)
 
-      if (node.props && node.props.oncreate) {
+      if (node.props.oncreate) {
         callbacks.push(function() {
           node.props.oncreate(element)
         })
@@ -155,7 +150,7 @@ export function app(props, container) {
       }
     }
 
-    if (props && props.onupdate) {
+    if (props.onupdate) {
       callbacks.push(function() {
         props.onupdate(element, oldProps)
       })
@@ -223,7 +218,6 @@ export function app(props, container) {
         }
 
         var newKey = getKey(newChild)
-
         var keyedNode = oldKeyed[newKey] || []
 
         if (null == newKey) {

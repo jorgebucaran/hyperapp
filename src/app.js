@@ -84,7 +84,6 @@ export function app(props, container) {
   }
 
   function globalUpdate(result) {
-    console.log("Calling global update with result: " + JSON.stringify(result))
     return (
       typeof result === "function"
         ? globalUpdate(result(globalState))

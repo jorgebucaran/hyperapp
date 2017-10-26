@@ -5,15 +5,20 @@ export function app(props, container) {
   var node = toVNode(root, [].map)
   var callbacks = []
   var skipRender
-  var globalState
-  var globalActions = initModule(
-    props,
-    (globalState = {}),
-    updateGlobalState,
-    getGlobalState
-  )
+  var globalState = {}
+  var globalActions = {}
 
-  repaint(flush())
+  repaint(
+    flush(
+      initModule(
+        props,
+        globalState,
+        globalActions,
+        updateGlobalState,
+        getGlobalState
+      )
+    )
+  )
 
   return globalActions
 
@@ -55,23 +60,28 @@ export function app(props, container) {
   }
 
   /**
-   * Recursively initializes the actions of the given module and its sub-modules.
-   * Also adds the module.init() functions to be called before the next render().
+   * Initializes the given module:
+   *  - computes the initial state
+   *  - initalize all actions
+   *  - add module.init() to be called before the first render
+   *  - initialize sub-modules
    * 
    * @param module the module to initialize
-   * @param state the initial state to update
+   * @param state the initial state (updated by this function)
+   * @param actions the actions object (updated by this function)
    * @param update the update() function for the current state slice
    * @param getState function () => state that returns the current (up-to-date) state slice
-   * @param actions internal variable added to avoid declaration (saves 1 "var "), should not be set
    */
-  function initModule(module, state, update, getState, actions) {
+  function initModule(module, state, actions, update, getState) {
     assign(state, module.state)
 
-    actions = initActions(module.actions, state, update, getState)
+    initActions(module.actions, state, actions, update, getState)
+
     for (var key in module.modules) {
-      actions[key] = initModule(
+      initModule(
         module.modules[key],
         (state[key] = {}),
+        (actions[key] = {}),
         updateFor(update, getState, key),
         getStateFor(getState, key)
       )
@@ -81,36 +91,38 @@ export function app(props, container) {
         module.init(state, actions)
       })
     }
-    return actions
   }
 
   /**
-   * Recursively initializes the given actions.
+   * Initializes the given actions:
+   *  - bind the moduleActions to the current state slice/actions
+   *  - set state = {} for children actions, if needed
+   *  - recursively initialize children actions
    * 
-   * @param actions the actions object, contains actions and other action objects
+   * @param moduleActions the current module's actions, contains actions and other action objects
    * @param state the initial state object, this is passed here to avoid undefined state when 
    *              computing and action's state slice
+   * @param actions the initalized actions object (updated by this function)
    * @param update the update() function for the actions' relevant state slices
    * @param getState function: () => state that return the relevant state slice for the actions
    */
-  function initActions(actions, state, update, getState) {
-    var result = {}
-    Object.keys(actions || {}).map(function(key) {
-      if (typeof actions[key] === "function") {
-        result[key] = function(data) {
-          data = actions[key](getState(), result, data)
+  function initActions(moduleActions, state, actions, update, getState) {
+    Object.keys(moduleActions || {}).map(function(key) {
+      if (typeof moduleActions[key] === "function") {
+        actions[key] = function(data) {
+          data = moduleActions[key](getState(), actions, data)
           return typeof data === "function" ? data(update) : update(data)
         }
       } else {
-        result[key] = initActions(
-          actions[key],
+        initActions(
+          moduleActions[key],
           state[key] || (state[key] = {}),
+          actions[key] || (actions[key] = {}),
           updateFor(update, getState, key),
           getStateFor(getState, key)
         )
       }
     })
-    return result
   }
 
   /**

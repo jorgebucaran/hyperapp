@@ -6,21 +6,14 @@ export function app(props, container) {
   var callbacks = []
   var skipRender
   var globalState
-  var globalActions
-
-  repaint(
-    flush(
-      init(
-        props,
-        (globalState = {}),
-        (globalActions = {}),
-        globalUpdate,
-        function() {
-          return globalState
-        }
-      )
-    )
+  var globalActions = initModule(
+    props,
+    (globalState = {}),
+    updateGlobalState,
+    getGlobalState
   )
+
+  repaint(flush())
 
   return globalActions
 
@@ -61,71 +54,121 @@ export function app(props, container) {
     )
   }
 
-  function init(module, state, actions, update, getState) {
+  /**
+   * Recursively initializes the actions of the given module and its sub-modules.
+   * Also adds the module.init() functions to be called before the next render().
+   * 
+   * @param module the module to initialize
+   * @param state the initial state to update
+   * @param update the update() function for the current state slice
+   * @param getState function () => state that returns the current (up-to-date) state slice
+   * @param actions internal variable added to avoid declaration (saves 1 "var "), should not be set
+   */
+  function initModule(module, state, update, getState, actions) {
+    assign(state, module.state)
+
+    actions = initActions(module.actions, state, update, getState)
+    for (var key in module.modules) {
+      actions[key] = initModule(
+        module.modules[key],
+        (state[key] = {}),
+        updateFor(update, getState, key),
+        getStateFor(getState, key)
+      )
+    }
     if (module.init) {
       callbacks.push(function() {
         module.init(state, actions)
       })
     }
-
-    assign(state, module.state)
-
-    initActions(state, actions, module.actions, update, getState)
-
-    for (var i in module.modules) {
-      init(
-        module.modules[i],
-        (state[i] = {}),
-        (actions[i] = {}),
-        updateFor(update, get(getState, i), i),
-        get(getState, i)
-      )
-    }
+    return actions
   }
 
-  function globalUpdate(result) {
+  /**
+   * Recursively initializes the given actions.
+   * 
+   * @param actions the actions object, contains actions and other action objects
+   * @param state the initial state object, this is passed here to avoid undefined state when 
+   *              computing and action's state slice
+   * @param update the update() function for the actions' relevant state slices
+   * @param getState function: () => state that return the relevant state slice for the actions
+   */
+  function initActions(actions, state, update, getState) {
+    var result = {}
+    Object.keys(actions || {}).map(function(key) {
+      if (typeof actions[key] === "function") {
+        result[key] = function(data) {
+          data = actions[key](getState(), result, data)
+          return typeof data === "function" ? data(update) : update(data)
+        }
+      } else {
+        result[key] = initActions(
+          actions[key],
+          state[key] || (state[key] = {}),
+          updateFor(update, getState, key),
+          getStateFor(getState, key)
+        )
+      }
+    })
+    return result
+  }
+
+  /**
+   * Merge the global state with the given result and triggers a repaint.
+   * This is the update() function for the app's prop.
+   * @param result the result to merge it, a function (globalState) => result, or falsy to not trigger repaint
+   * @returns globalState
+   */
+  function updateGlobalState(result) {
     return (
       typeof result === "function"
-        ? globalUpdate(result(globalState))
+        ? updateGlobalState(result(globalState))
         : result && repaint((globalState = merge(globalState, result))),
       globalState
     )
   }
 
+  /**
+   * Wraps the given update() function and return a new update() that can be used for the state slice getState()[prop].
+   * 
+   * @param update the update() function to wrap
+   * @param getState function: () => state that returns the parrent's state slice 
+   *                 (getState()[prop] contains the current state slice)
+   * @param prop the property of the state slice to create the update() function for
+   * @param parentResult internal variable added to avoid declaration (saves 1 "var "), should not be set
+   * 
+   * @returns the new update function specialized for the given state slice
+   */
   function updateFor(update, getState, prop, parentResult) {
     return function(result) {
+      // computes the result to pass in to the parent's update()
+      // it looks like: { [prop]: merge(getState()[prop], result) }
       ;(parentResult = {})[prop] = merge(
-        getState(),
-        typeof result === "function" ? result(getState()) : result
+        getState()[prop],
+        typeof result === "function" ? result(getState()[prop]) : result
       )
       return update(parentResult)[prop]
     }
   }
 
-  function initActions(state, actions, source, update, getState) {
-    Object.keys(source || {}).map(function(i) {
-      if (typeof source[i] === "function") {
-        actions[i] = function(data) {
-          return typeof (data = source[i](getState(), actions, data)) ===
-            "function"
-            ? data(update)
-            : update(data)
-        }
-      } else {
-        initActions(
-          state[i] || (state[i] = {}),
-          (actions[i] = {}),
-          source[i],
-          updateFor(update, get(getState, i), i),
-          get(getState, i)
-        )
-      }
-    })
+  /**
+   * Getter for the global state. 
+   * This function gets wrapped in getStateFor() as we initialize actions for their state slice.
+   */
+  function getGlobalState() {
+    return globalState
   }
 
-  function get(getObject, prop) {
+  /**
+   * Function: (getState: () => state, prop: string) => () => state[prop].
+   * 
+   * @param getState the getter for the state: () => state that gets wrapped
+   * @param prop the state slice to get
+   * @returns a new state getter function: () => getState()[prop]
+   */
+  function getStateFor(getState, prop) {
     return function() {
-      return getObject()[prop]
+      return getState()[prop]
     }
   }
 

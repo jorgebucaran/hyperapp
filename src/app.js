@@ -5,17 +5,19 @@ export function app(props, container) {
   var node = toVNode(root, [].map)
   var callbacks = []
   var skipRender
-  var globalState = {}
-  var globalActions = {}
+  var globalState
+  var globalActions
 
   repaint(
     flush(
       initModule(
         props,
-        globalState,
-        globalActions,
+        (globalState = {}),
+        (globalActions = {}),
         updateGlobalState,
-        getGlobalState
+        function() {
+          return globalState
+        }
       )
     )
   )
@@ -73,23 +75,26 @@ export function app(props, container) {
    * @param getState function () => state that returns the current (up-to-date) state slice
    */
   function initModule(module, state, actions, update, getState) {
-    assign(state, module.state)
-
-    initActions(module.actions, state, actions, update, getState)
-
-    for (var key in module.modules) {
-      initModule(
-        module.modules[key],
-        (state[key] = {}),
-        (actions[key] = {}),
-        updateFor(update, getState, key),
-        getStateFor(getState, key)
-      )
-    }
     if (module.init) {
       callbacks.push(function() {
         module.init(state, actions)
       })
+    }
+
+    assign(state, module.state)
+
+    initModuleActions(state, actions, module.actions, update, getState)
+
+    for (var key in module.modules) {
+      initModule(
+        module.modules[key],
+        // do not override state is already exist in current module
+        state[key] || (state[key] = {}),
+        // do not override actions is already exist in current module
+        actions[key] || (actions[key] = {}),
+        updateFor(update, getState, key),
+        getStateFor(getState, key)
+      )
     }
   }
 
@@ -106,18 +111,23 @@ export function app(props, container) {
    * @param update the update() function for the actions' relevant state slices
    * @param getState function: () => state that return the relevant state slice for the actions
    */
-  function initActions(moduleActions, state, actions, update, getState) {
+  function initModuleActions(state, actions, moduleActions, update, getState) {
     Object.keys(moduleActions || {}).map(function(key) {
       if (typeof moduleActions[key] === "function") {
         actions[key] = function(data) {
-          data = moduleActions[key](getState(), actions, data)
-          return typeof data === "function" ? data(update) : update(data)
+          return typeof (data = moduleActions[key](
+            getState(),
+            actions,
+            data
+          )) === "function"
+            ? data(update)
+            : update(data)
         }
       } else {
-        initActions(
-          moduleActions[key],
+        initModuleActions(
           state[key] || (state[key] = {}),
-          actions[key] || (actions[key] = {}),
+          (actions[key] = {}),
+          moduleActions[key],
           updateFor(update, getState, key),
           getStateFor(getState, key)
         )
@@ -153,22 +163,12 @@ export function app(props, container) {
    */
   function updateFor(update, getState, prop, parentResult) {
     return function(result) {
-      // computes the result to pass in to the parent's update()
-      // it looks like: { [prop]: merge(getState()[prop], result) }
       ;(parentResult = {})[prop] = merge(
         getState()[prop],
         typeof result === "function" ? result(getState()[prop]) : result
       )
       return update(parentResult)[prop]
     }
-  }
-
-  /**
-   * Getter for the global state. 
-   * This function gets wrapped in getStateFor() as we initialize actions for their state slice.
-   */
-  function getGlobalState() {
-    return globalState
   }
 
   /**

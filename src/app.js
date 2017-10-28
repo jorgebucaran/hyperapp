@@ -69,11 +69,11 @@ export function app(props, container) {
     Object.keys(source || {}).map(function(i) {
       if (typeof source[i] === "function") {
         actions[i] = function(data) {
-          return typeof (data = source[i](state, actions)) !== "function"
-            ? update(data)
-            : typeof (data = data.apply(null, arguments)) !== "function"
-              ? update(data)
-              : data(update)
+          return typeof (data = source[i](state, actions)) === "function"
+            ? typeof (data = data.apply(0, arguments)) === "function"
+              ? data(update)
+              : update(data)
+            : update(data)
         }
       } else {
         initActions(state[i] || (state[i] = {}), (actions[i] = {}), source[i])

@@ -1,4 +1,4 @@
-import { h } from "./h"
+import { h } from "./h.js"
 
 export function app(props, container) {
   var root = (container = container || document.body).children[0]

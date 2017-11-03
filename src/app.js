@@ -52,7 +52,6 @@ export function app(props, container) {
     }
 
     assign(state, module.state)
-
     initActions(state, actions, module.actions, path)
 
     for (var i in module.modules) {
@@ -63,39 +62,40 @@ export function app(props, container) {
         path.concat(i)
       )
     }
-  }
 
-  function initActions(state, actions, from, path) {
-    Object.keys(from || {}).map(function(i) {
-      if (typeof from[i] === "function") {
-        actions[i] = function(data) {
-          var result = from[i](getPath(path, globalState), actions)
+    function initActions(state, actions, from, path) {
+      Object.keys(from || {}).map(function(i) {
+        return typeof from[i] === "function"
+          ? (actions[i] = function(data) {
+              if (
+                typeof (state = from[i](
+                  getPath(path, globalState),
+                  actions
+                )) === "function"
+              ) {
+                state = state(data)
+              }
 
-          if (typeof result === "function") {
-            result = result(data)
-          }
+              if (
+                state &&
+                !state.then &&
+                state !== (data = getPath(path, globalState))
+              ) {
+                repaint(
+                  (globalState = setPath(path, merge(data, state), globalState))
+                )
+              }
 
-          if (
-            result != null &&
-            result.then == null &&
-            result !== (data = getPath(path, globalState))
-          ) {
-            repaint(
-              (globalState = setPath(path, merge(data, result), globalState))
+              return state
+            })
+          : initActions(
+              state[i] || (state[i] = {}),
+              (actions[i] = {}),
+              from[i],
+              path.concat(i)
             )
-          }
-
-          return result
-        }
-      } else {
-        initActions(
-          state[i] || (state[i] = {}),
-          (actions[i] = {}),
-          from[i],
-          path.concat(i)
-        )
-      }
-    })
+      })
+    }
   }
 
   function assign(to, from) {

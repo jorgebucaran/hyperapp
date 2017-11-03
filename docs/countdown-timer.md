@@ -16,12 +16,11 @@ const humanizeTime = t => {
 
 const SECONDS = 5
 
-app({
+const { tick } = app({
   state: {
     count: SECONDS,
     paused: true
   },
-  init: (state, { tick }) => setInterval(tick, 1000),
   view: (state, actions) =>
     <main>
       <h1>
@@ -49,13 +48,13 @@ app({
   }
 })
 
-
+setInterval(tick, 1000)
 ```
 
-The `init` function is called with your state and actions. Use it to subscribe to global events, timers, etc.
+The `app()` function returns your actions already wired to the state.
 
 ```jsx
-init: (state, { tick }) => setInterval(tick, 1000),
+const { tick } = app({ ... })
 ```
 
 The state consists of two properties: `count`, to track the seconds elapsed; and `paused`, to check if the clock is currently running.

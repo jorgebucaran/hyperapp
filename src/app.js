@@ -8,7 +8,7 @@ export function app(props, container) {
   var globalState = {}
   var globalActions = {}
 
-  repaint(flush(init(props, globalState, globalActions, [])))
+  repaint(init(props, globalState, globalActions, []))
 
   return globalActions
 
@@ -21,12 +21,9 @@ export function app(props, container) {
   function render(next) {
     lock = !lock
     if ((next = props.view(globalState, globalActions)) && !lock) {
-      flush((root = patchElement(container, root, node, (node = next))))
+      root = patchElement(container, root, node, (node = next))
     }
-  }
-
-  function flush(cb) {
-    while ((cb = callbacks.pop())) cb()
+    while ((next = callbacks.pop())) next()
   }
 
   function toVNode(element, map) {
@@ -45,14 +42,8 @@ export function app(props, container) {
   }
 
   function init(module, state, actions, path) {
-    if (module.init) {
-      callbacks.push(function() {
-        module.init(state, actions)
-      })
-    }
-
     assign(state, module.state)
-    initActions(state, actions, module.actions, path)
+    create(state, actions, module.actions, path)
 
     for (var i in module.modules) {
       init(
@@ -63,37 +54,39 @@ export function app(props, container) {
       )
     }
 
-    function initActions(state, actions, from, path) {
+    function create(state, actions, from, path) {
       Object.keys(from || {}).map(function(i) {
-        return typeof from[i] === "function"
-          ? (actions[i] = function(data) {
-              if (
-                typeof (state = from[i](
-                  getPath(path, globalState),
-                  actions
-                )) === "function"
-              ) {
-                state = state(data)
-              }
+        if (typeof from[i] === "function") {
+          actions[i] = function(data) {
+            if (
+              typeof (state = from[i](
+                getObject(path, globalState),
+                actions
+              )) === "function"
+            ) {
+              state = state(data)
+            }
 
-              if (
-                state &&
-                !state.then &&
-                state !== (data = getPath(path, globalState))
-              ) {
-                repaint(
-                  (globalState = setPath(path, merge(data, state), globalState))
-                )
-              }
+            if (
+              state &&
+              !state.then &&
+              state !== (data = getObject(path, globalState))
+            ) {
+              repaint(
+                (globalState = setObject(path, merge(data, state), globalState))
+              )
+            }
 
-              return state
-            })
-          : initActions(
-              state[i] || (state[i] = {}),
-              (actions[i] = {}),
-              from[i],
-              path.concat(i)
-            )
+            return state
+          }
+        } else {
+          create(
+            state[i] || (state[i] = {}),
+            (actions[i] = {}),
+            from[i],
+            path.concat(i)
+          )
+        }
       })
     }
   }
@@ -109,28 +102,28 @@ export function app(props, container) {
     return assign(assign({}, to), from)
   }
 
-  function set(from, prop, value) {
-    var to = merge(from)
+  function set(obj, prop, value) {
+    var to = {}
     to[prop] = value
-    return to
+    return merge(obj, to)
   }
 
-  function setPath(path, value, from) {
+  function setObject(path, value, obj) {
     var name = path[0]
     return path.length === 0
       ? value
       : set(
-          from,
+          obj,
           name,
-          path.length > 1 ? setPath(path.slice(1), value, from[name]) : value
+          path.length > 1 ? setObject(path.slice(1), value, obj[name]) : value
         )
   }
 
-  function getPath(path, from) {
+  function getObject(path, obj) {
     for (var i = 0; i < path.length; i++) {
-      from = from[path[i]]
+      obj = obj[path[i]]
     }
-    return from
+    return obj
   }
 
   function createElement(node, isSVG) {
@@ -185,7 +178,7 @@ export function app(props, container) {
       var oldValue = i === "value" || i === "checked" ? element[i] : oldProps[i]
 
       if (value !== oldValue) {
-        value !== oldValue && setElementProp(element, i, value, oldValue)
+        setElementProp(element, i, value, oldValue)
       }
     }
 

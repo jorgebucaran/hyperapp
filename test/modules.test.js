@@ -6,14 +6,6 @@ beforeEach(() => {
 
 test("modules", done => {
   const foo = {
-    init: state => {
-      expect(state).toEqual({
-        value: true,
-        bar: {
-          value: true
-        }
-      })
-    },
     state: {
       value: true
     },
@@ -22,9 +14,6 @@ test("modules", done => {
     },
     modules: {
       bar: {
-        init: state => {
-          expect(state).toEqual({ value: true })
-        },
         state: {
           value: true
         },
@@ -35,22 +24,24 @@ test("modules", done => {
     }
   }
 
-  app({
-    init: (state, actions) => {
-      expect(state).toEqual({
-        foo: {
-          value: true,
-          bar: {
-            value: true
-          }
-        }
-      })
-
-      expect(actions.foo.up()).toEqual({ value: false })
-      expect(actions.foo.bar.change()).toEqual({ value: false })
-
-      done()
+  const actions = app({
+    actions: {
+      getState: state => state
     },
     modules: { foo }
   })
+
+  expect(actions.getState()).toEqual({
+    foo: {
+      value: true,
+      bar: {
+        value: true
+      }
+    }
+  })
+
+  expect(actions.foo.up()).toEqual({ value: false })
+  expect(actions.foo.bar.change()).toEqual({ value: false })
+
+  done()
 })

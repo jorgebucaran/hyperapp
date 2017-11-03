@@ -1,69 +1,53 @@
 import { h, app } from "../src"
 
-window.requestAnimationFrame = setTimeout
-
 beforeEach(() => {
   document.body.innerHTML = ""
 })
 
 test("modules", done => {
   const foo = {
-    init(state) {
+    init: state => {
       expect(state).toEqual({
-        value: 0,
+        value: true,
         bar: {
-          text: "hello"
+          value: true
         }
       })
     },
     state: {
-      value: 0
+      value: true
     },
     actions: {
-      up(state) {
-        return { value: state.value + 1 }
-      }
+      up: state => ({ value: !state.value })
     },
     modules: {
       bar: {
-        init(state) {
-          expect(state).toEqual({
-            text: "hello"
-          })
+        init: state => {
+          expect(state).toEqual({ value: true })
         },
         state: {
-          text: "hello"
+          value: true
         },
         actions: {
-          change(state) {
-            return { text: "hola" }
-          }
+          change: state => ({ value: !state.value })
         }
       }
     }
   }
 
   app({
-    init(state, actions) {
+    init: (state, actions) => {
       expect(state).toEqual({
         foo: {
-          value: 0,
+          value: true,
           bar: {
-            text: "hello"
+            value: true
           }
         }
       })
 
-      expect(actions.foo.up()).toEqual({
-        value: 1,
-        bar: {
-          text: "hello"
-        }
-      })
-
-      expect(actions.foo.bar.change()).toEqual({
-        text: "hola"
-      })
+      expect(actions.foo.up()).toEqual({ value: false })
+      expect(actions.foo.bar.change()).toEqual({ value: false })
 
       done()
     },

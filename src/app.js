@@ -1,33 +1,28 @@
 import { h } from "./h"
 
 export function app(props, container) {
+  var lock
+  var callbacks = []
   var root = (container = container || document.body).children[0]
   var node = toVNode(root, [].map)
-  var callbacks = []
-  var skipRender
-  var globalState
-  var globalActions
+  var globalState = {}
+  var globalActions = {}
 
-  repaint(flush(init(props, (globalState = {}), (globalActions = {}))))
+  repaint(flush(init(props, globalState, globalActions, [])))
 
   return globalActions
 
   function repaint() {
-    if (props.view && !skipRender) {
-      requestAnimationFrame(render, (skipRender = !skipRender))
+    if (props.view && !lock) {
+      setTimeout(render, (lock = !lock))
     }
   }
 
-  function render() {
-    flush(
-      (root = patchElement(
-        container,
-        root,
-        node,
-        (node = props.view(globalState, globalActions)),
-        (skipRender = !skipRender)
-      ))
-    )
+  function render(next) {
+    lock = !lock
+    if ((next = props.view(globalState, globalActions)) && !lock) {
+      flush((root = patchElement(container, root, node, (node = next))))
+    }
   }
 
   function flush(cb) {
@@ -49,7 +44,7 @@ export function app(props, container) {
     )
   }
 
-  function init(module, state, actions) {
+  function init(module, state, actions, path) {
     if (module.init) {
       callbacks.push(function() {
         module.init(state, actions)
@@ -58,45 +53,84 @@ export function app(props, container) {
 
     assign(state, module.state)
 
-    initActions(state, actions, module.actions)
+    initActions(state, actions, module.actions, path)
 
     for (var i in module.modules) {
-      init(module.modules[i], (state[i] = {}), (actions[i] = {}))
-    }
-  }
-
-  function initActions(state, actions, source) {
-    Object.keys(source || {}).map(function(i) {
-      if (typeof source[i] === "function") {
-        actions[i] = function(data) {
-          return typeof (data = source[i](state, actions, data)) === "function"
-            ? data(update)
-            : update(data)
-        }
-      } else {
-        initActions(state[i] || (state[i] = {}), (actions[i] = {}), source[i])
-      }
-    })
-
-    function update(data) {
-      return (
-        typeof data === "function"
-          ? update(data(state))
-          : data && repaint(assign(state, data)),
-        state
+      init(
+        module.modules[i],
+        (state[i] = {}),
+        (actions[i] = {}),
+        path.concat(i)
       )
     }
   }
 
-  function assign(target, source) {
-    for (var i in source) {
-      target[i] = source[i]
-    }
-    return target
+  function initActions(state, actions, from, path) {
+    Object.keys(from || {}).map(function(i) {
+      if (typeof from[i] === "function") {
+        actions[i] = function(data) {
+          var result = from[i](getPath(path, globalState), actions)
+
+          if (typeof result === "function") {
+            result = result(data)
+          }
+
+          if (
+            result != null &&
+            result.then == null &&
+            result !== (data = getPath(path, globalState))
+          ) {
+            repaint(
+              (globalState = setPath(path, merge(data, result), globalState))
+            )
+          }
+
+          return result
+        }
+      } else {
+        initActions(
+          state[i] || (state[i] = {}),
+          (actions[i] = {}),
+          from[i],
+          path.concat(i)
+        )
+      }
+    })
   }
 
-  function merge(target, source) {
-    return assign(assign({}, target), source)
+  function assign(to, from) {
+    for (var i in from) {
+      to[i] = from[i]
+    }
+    return to
+  }
+
+  function merge(to, from) {
+    return assign(assign({}, to), from)
+  }
+
+  function set(from, prop, value) {
+    var to = merge(from)
+    to[prop] = value
+    return to
+  }
+
+  function setPath(path, value, from) {
+    var name = path[0]
+    return path.length === 0
+      ? value
+      : set(
+          from,
+          name,
+          path.length > 1 ? setPath(path.slice(1), value, from[name]) : value
+        )
+  }
+
+  function getPath(path, from) {
+    for (var i = 0; i < path.length; i++) {
+      from = from[path[i]]
+    }
+    return from
   }
 
   function createElement(node, isSVG) {
@@ -107,7 +141,7 @@ export function app(props, container) {
         ? document.createElementNS("http://www.w3.org/2000/svg", node.type)
         : document.createElement(node.type)
 
-      if (node.props && node.props.oncreate) {
+      if (node.props.oncreate) {
         callbacks.push(function() {
           node.props.oncreate(element)
         })
@@ -151,11 +185,11 @@ export function app(props, container) {
       var oldValue = i === "value" || i === "checked" ? element[i] : oldProps[i]
 
       if (value !== oldValue) {
-        setElementProp(element, i, value, oldValue)
+        value !== oldValue && setElementProp(element, i, value, oldValue)
       }
     }
 
-    if (props && props.onupdate) {
+    if (props.onupdate) {
       callbacks.push(function() {
         props.onupdate(element, oldProps)
       })
@@ -223,7 +257,6 @@ export function app(props, container) {
         }
 
         var newKey = getKey(newChild)
-
         var keyedNode = oldKeyed[newKey] || []
 
         if (null == newKey) {

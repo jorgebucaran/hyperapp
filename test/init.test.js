@@ -1,14 +1,12 @@
 import { h, app } from "../src"
 
-window.requestAnimationFrame = setTimeout
-
 beforeEach(() => {
   document.body.innerHTML = ""
 })
 
 test("init", done => {
   app({
-    init(state, actions) {
+    init: (state, actions) => {
       expect(state).toEqual({
         value: 0
       })
@@ -23,11 +21,7 @@ test("init", done => {
       value: 0
     },
     actions: {
-      up(state) {
-        return {
-          value: state.value + 1
-        }
-      }
+      up: state => ({ value: state.value + 1 })
     }
   })
 })

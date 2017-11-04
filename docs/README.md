@@ -1,16 +1,18 @@
 # Documentation
 
-- [Tutorials](/docs/tutorials.md)
-- [Contributing](/docs/CONTRIBUTING.md)
+- [Tutorials](tutorials.md)
+- [Contributing](CONTRIBUTING.md)
 - Getting Started
   - [Hello World](#hello-world)
   - [Installation](#installation)
 - Concepts
-  - [Keys](/docs/keys.md)
-  - [Lifecycle](/docs/lifecycle.md)
-  - [Components](/docs/components.md)
-  - [Sanitation](/docs/sanitation.md)
-  - [Hydration](/docs/hydration.md)
+  - [Slices](slices.md)
+  - [Modules](modules.md)
+  - [Keys](keys.md)
+  - [Lifecycle](lifecycle.md)
+  - [Components](components.md)
+  - [Sanitation](sanitation.md)
+  - [Hydration](hydration.md)
 
 ## Hello World
 
@@ -66,7 +68,7 @@ app(
 
 ### State
 
-The state describes the data model in your application. In this example, it consists of a single property: `count` which is initialized to 0.
+The state object describes the data model in your application. The state must always be an object. In this example it consists of a single property, `count`, which is initialized to 0.
 
 ```jsx
 state: {

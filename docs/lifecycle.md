@@ -40,14 +40,14 @@ function Textbox({ placeholder }) {
 
 ## `onremove`
 
-This event is fired before the element is removed from the DOM. Use it for cleaning up resources, creating slide out animations, etc.
+This event is fired before the element is removed from the DOM. Use it for cleaning up resources, creating slide out animations, etc. A function returned from `onremove` receives a callback argument that once called will remove the element for you when you are done with your business. Otherwise you must also remove the element yourself.
 
 ```jsx
 function MessageWithFadeout({ title }) {
   return (
     <div
       onremove={element => done => fadeout(element).then(done)}>
-      <h1>{title}<h1>
+      <h1>{title}</h1>
     </div>
   )
 }

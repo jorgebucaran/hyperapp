@@ -1,52 +1,18 @@
 import { h } from "./h"
 
 export function app(props, container) {
+  var renderLock
+  var lifecycleStack = []
   var root = (container = container || document.body).children[0]
-  var node = toVNode(root, [].map)
-  var callbacks = []
-  var skipRender
-  var globalState
-  var globalActions
+  var node = toVnode(root, [].map)
+  var appState = {}
+  var appActions = {}
 
-  repaint(
-    flush(
-      initModule(
-        props,
-        (globalState = {}),
-        (globalActions = {}),
-        updateGlobalState,
-        function() {
-          return globalState
-        }
-      )
-    )
-  )
+  repaint(init(appState, appActions, props, []))
 
-  return globalActions
+  return appActions
 
-  function repaint() {
-    if (props.view && !skipRender) {
-      requestAnimationFrame(render, (skipRender = !skipRender))
-    }
-  }
-
-  function render() {
-    flush(
-      (root = patchElement(
-        container,
-        root,
-        node,
-        (node = props.view(globalState, globalActions)),
-        (skipRender = !skipRender)
-      ))
-    )
-  }
-
-  function flush(cb) {
-    while ((cb = callbacks.pop())) cb()
-  }
-
-  function toVNode(element, map) {
+  function toVnode(element, map) {
     return (
       element &&
       h(
@@ -55,144 +21,93 @@ export function app(props, container) {
         map.call(element.childNodes, function(element) {
           return element.nodeType === 3
             ? element.nodeValue
-            : toVNode(element, map)
+            : toVnode(element, map)
         })
       )
     )
   }
 
-  /**
-   * Initializes the given module:
-   *  - computes the initial state
-   *  - initalize all actions
-   *  - add module.init() to be called before the first render
-   *  - initialize sub-modules
-   * 
-   * @param module the module to initialize
-   * @param state the initial state (updated by this function)
-   * @param actions the actions object (updated by this function)
-   * @param update the update() function for the current state slice
-   * @param getState function () => state that returns the current (up-to-date) state slice
-   */
-  function initModule(module, state, actions, update, getState) {
-    if (module.init) {
-      callbacks.push(function() {
-        module.init(state, actions)
-      })
-    }
-
-    assign(state, module.state)
-
-    initModuleActions(state, actions, module.actions, update, getState)
-
-    for (var key in module.modules) {
-      initModule(
-        module.modules[key],
-        // do not override state is already exist in current module
-        state[key] || (state[key] = {}),
-        // do not override actions is already exist in current module
-        actions[key] || (actions[key] = {}),
-        updateFor(update, getState, key),
-        getStateFor(getState, key)
-      )
+  function repaint() {
+    if (props.view && !renderLock) {
+      setTimeout(render, (renderLock = !renderLock))
     }
   }
 
-  /**
-   * Initializes the given actions:
-   *  - bind the moduleActions to the current state slice/actions
-   *  - set state = {} for children actions, if needed
-   *  - recursively initialize children actions
-   * 
-   * @param moduleActions the current module's actions, contains actions and other action objects
-   * @param state the initial state object, this is passed here to avoid undefined state when 
-   *              computing and action's state slice
-   * @param actions the initalized actions object (updated by this function)
-   * @param update the update() function for the actions' relevant state slices
-   * @param getState function: () => state that return the relevant state slice for the actions
-   */
-  function initModuleActions(state, actions, moduleActions, update, getState) {
-    Object.keys(moduleActions || {}).map(function(key) {
-      if (typeof moduleActions[key] === "function") {
+  function render(next) {
+    renderLock = !renderLock
+    if ((next = props.view(appState, appActions)) && !renderLock) {
+      root = patchElement(container, root, node, (node = next))
+    }
+    while ((next = lifecycleStack.pop())) next()
+  }
+
+  function initDeep(state, actions, from, path) {
+    Object.keys(from || {}).map(function(key) {
+      if (typeof from[key] === "function") {
         actions[key] = function(data) {
-          return typeof (data = moduleActions[key](
-            getState(),
-            actions,
-            data
-          )) === "function"
-            ? data(update)
-            : update(data)
+          var result = from[key]((state = getObject(path, appState)), actions)
+
+          if (typeof result === "function") {
+            result = result(data)
+          }
+
+          if (result && result !== state && !result.then) {
+            repaint(
+              (appState = setObject(path, merge(state, result), appState))
+            )
+          }
+
+          return result
         }
       } else {
-        initModuleActions(
+        initDeep(
           state[key] || (state[key] = {}),
           (actions[key] = {}),
-          moduleActions[key],
-          updateFor(update, getState, key),
-          getStateFor(getState, key)
+          from[key],
+          path.concat(key)
         )
       }
     })
   }
 
-  /**
-   * Merge the global state with the given result and triggers a repaint.
-   * This is the update() function for the app's prop.
-   * @param result the result to merge it, a function (globalState) => result, or falsy to not trigger repaint
-   * @returns globalState
-   */
-  function updateGlobalState(result) {
-    return (
-      typeof result === "function"
-        ? updateGlobalState(result(globalState))
-        : result && repaint((globalState = merge(globalState, result))),
-      globalState
-    )
-  }
+  function init(state, actions, from, path) {
+    var modules = from.modules
 
-  /**
-   * Wraps the given update() function and return a new update() that can be used for the state slice getState()[prop].
-   * 
-   * @param update the update() function to wrap
-   * @param getState function: () => state that returns the parrent's state slice 
-   *                 (getState()[prop] contains the current state slice)
-   * @param prop the property of the state slice to create the update() function for
-   * @param parentResult internal variable added to avoid declaration (saves 1 "var "), should not be set
-   * 
-   * @returns the new update function specialized for the given state slice
-   */
-  function updateFor(update, getState, prop, parentResult) {
-    return function(result) {
-      ;(parentResult = {})[prop] = merge(
-        getState()[prop],
-        typeof result === "function" ? result(getState()[prop]) : result
-      )
-      return update(parentResult)[prop]
+    initDeep(state, actions, from.actions, path)
+    set(state, from.state)
+
+    for (var i in modules) {
+      init((state[i] = {}), (actions[i] = {}), modules[i], path.concat(i))
     }
   }
 
-  /**
-   * Function: (getState: () => state, prop: string) => () => state[prop].
-   * 
-   * @param getState the getter for the state: () => state that gets wrapped
-   * @param prop the state slice to get
-   * @returns a new state getter function: () => getState()[prop]
-   */
-  function getStateFor(getState, prop) {
-    return function() {
-      return getState()[prop]
+  function set(to, from) {
+    for (var i in from) {
+      to[i] = from[i]
     }
+    return to
   }
 
-  function assign(target, source) {
-    for (var i in source) {
-      target[i] = source[i]
-    }
-    return target
+  function merge(to, from) {
+    return set(set({}, to), from)
   }
 
-  function merge(target, source) {
-    return assign(assign({}, target), source)
+  function setObject(path, value, from) {
+    var to = {}
+    return path.length === 0
+      ? value
+      : ((to[path[0]] =
+          1 < path.length
+            ? setObject(path.slice(1), value, from[path[0]])
+            : value),
+        merge(from, to))
+  }
+
+  function getObject(path, from) {
+    for (var i = 0; i < path.length; i++) {
+      from = from[path[i]]
+    }
+    return from
   }
 
   function createElement(node, isSVG) {
@@ -203,8 +118,8 @@ export function app(props, container) {
         ? document.createElementNS("http://www.w3.org/2000/svg", node.type)
         : document.createElement(node.type)
 
-      if (node.props && node.props.oncreate) {
-        callbacks.push(function() {
+      if (node.props.oncreate) {
+        lifecycleStack.push(function() {
           node.props.oncreate(element)
         })
       }
@@ -251,8 +166,8 @@ export function app(props, container) {
       }
     }
 
-    if (props && props.onupdate) {
-      callbacks.push(function() {
+    if (props.onupdate) {
+      lifecycleStack.push(function() {
         props.onupdate(element, oldProps)
       })
     }
@@ -319,7 +234,6 @@ export function app(props, container) {
         }
 
         var newKey = getKey(newChild)
-
         var keyedNode = oldKeyed[newKey] || []
 
         if (null == newKey) {

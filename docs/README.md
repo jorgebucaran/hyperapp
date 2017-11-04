@@ -7,7 +7,6 @@
   - [Installation](#installation)
 - Concepts
   - [Keys](/docs/keys.md)
-  - [Thunks](/docs/thunks.md)
   - [Lifecycle](/docs/lifecycle.md)
   - [Components](/docs/components.md)
   - [Sanitation](/docs/sanitation.md)
@@ -54,7 +53,9 @@ app({
 
 In this example we are using a `<script>` tag to download the minified library from a CDN. In a production environment you will probably be using a module bundler to build your application instead.
 
-Hyperapp applications consist of a single `app()` call. This function initializes and renders the application to document.body. You can select a different container too.
+Hyperapp applications consist of a single `app()` call. This function initializes and renders the application to document.body.
+
+You can select a different container too.
 
 ```js
 app(
@@ -86,7 +87,15 @@ actions: {
 }
 ```
 
-Actions must never mutate the state directly. Returning a new state from an action updates the current state and schedules a view re-render on the next [repaint](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame).
+Actions must never mutate the state directly. Returning a new state from an action updates the current state and schedules a re-render.
+
+You can also pass arguments to actions by returning a function.
+
+```jsx
+actions: {
+  upWithValue: state => value => ({ count: state.count + value })
+}
+```
 
 ### View
 
@@ -95,7 +104,7 @@ Bind user events and [actions](#actions) together to create interactive applicat
 
 The `h()` function returns a virtual node, an object that describes a DOM tree. Hyperapp consumes this object to update the DOM.
 
-Popular alternatives to the built-in `h()` function include [JSX](https://facebook.github.io/jsx/), [Hyperx](https://github.com/choojs/hyperx), [t7](https://github.com/trueadm/t7) and [@hyperapp/html](https://github.com/hyperapp/html).
+Popular alternatives to the built-in `h()` function include [JSX](https://facebook.github.io/jsx/), [lit-html](https://github.com/PolymerLabs/lit-html), [hyperx](https://github.com/choojs/hyperx), [t7](https://github.com/trueadm/t7) and [@hyperapp/html](https://github.com/hyperapp/html).
 
 ```html
 <body>
@@ -132,8 +141,7 @@ app({
 </body>
 ```
 
-
-Check out [hyperapp/awesome](https://github.com/hyperapp/awesome-hyperapp#apps-and-boilerplates) for boilerplates to get started with a basic build setup.
+Check out [hyperapp/awesome](https://github.com/hyperapp/awesome#apps-and-boilerplates) for templates and boilerplates to help you getting started and don't miss our [Tutorials](/docs/tutorials.md) section.
 
 
 ## Installation

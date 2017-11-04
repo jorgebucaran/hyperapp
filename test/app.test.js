@@ -1,13 +1,14 @@
 import { h, app } from "../src"
 
-window.requestAnimationFrame = setTimeout
-
 beforeEach(() => {
   document.body.innerHTML = ""
 })
 
-test("throttling", done => {
+test("debouncing", done => {
   app({
+    state: {
+      value: 1
+    },
     view: state =>
       h(
         "div",
@@ -19,16 +20,9 @@ test("throttling", done => {
         },
         state.value
       ),
-    state: {
-      value: 1
-    },
     actions: {
-      up(state) {
-        return {
-          value: state.value + 1
-        }
-      },
-      fire(state, actions) {
+      up: state => ({ value: state.value + 1 }),
+      fire: (state, actions) => {
         actions.up()
         actions.up()
         actions.up()
@@ -36,4 +30,27 @@ test("throttling", done => {
       }
     }
   }).fire()
+})
+
+test("actions in the view", done => {
+  app({
+    state: {
+      value: 0
+    },
+    view: (state, actions) => {
+      if (state.value < 1) {
+        return actions.up()
+      }
+
+      setTimeout(() => {
+        expect(document.body.innerHTML).toBe("<div>1</div>")
+        done()
+      })
+
+      return h("div", {}, state.value)
+    },
+    actions: {
+      up: state => ({ value: state.value + 1 })
+    }
+  })
 })

@@ -1,12 +1,12 @@
 import { h } from "./h.js"
 
 export function app(props, container) {
-  var renderLock
-  var lifecycleStack = []
   var root = (container = container || document.body).children[0]
   var node = toVnode(root, [].map)
   var appState = {}
   var appActions = {}
+  var lifecycle = []
+  var patchLock
 
   repaint(init(appState, appActions, props, []))
 
@@ -28,17 +28,17 @@ export function app(props, container) {
   }
 
   function repaint() {
-    if (props.view && !renderLock) {
-      setTimeout(render, (renderLock = !renderLock))
+    if (props.view && !patchLock) {
+      setTimeout(render, (patchLock = !patchLock))
     }
   }
 
   function render(next) {
-    renderLock = !renderLock
-    if ((next = props.view(appState, appActions)) && !renderLock) {
+    patchLock = !patchLock
+    if ((next = props.view(appState, appActions)) && !patchLock) {
       root = patchElement(container, root, node, (node = next))
     }
-    while ((next = lifecycleStack.pop())) next()
+    while ((next = lifecycle.pop())) next()
   }
 
   function initDeep(state, actions, from, path) {
@@ -119,7 +119,7 @@ export function app(props, container) {
         : document.createElement(node.type)
 
       if (node.props.oncreate) {
-        lifecycleStack.push(function() {
+        lifecycle.push(function() {
           node.props.oncreate(element)
         })
       }
@@ -143,14 +143,14 @@ export function app(props, container) {
       }
     } else {
       try {
-        element[name] = value
+        element[name] = null == value ? "" : value
       } catch (_) {}
 
       if (typeof value !== "function") {
-        if (value || 0 === value) {
-          element.setAttribute(name, value)
-        } else {
+        if (null == value || false === value) {
           element.removeAttribute(name)
+        } else {
+          element.setAttribute(name, value)
         }
       }
     }
@@ -167,7 +167,7 @@ export function app(props, container) {
     }
 
     if (props.onupdate) {
-      lifecycleStack.push(function() {
+      lifecycle.push(function() {
         props.onupdate(element, oldProps)
       })
     }

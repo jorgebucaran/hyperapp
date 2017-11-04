@@ -33,10 +33,19 @@ test("slices", done => {
     actions: {
       foo: {
         bar: {
-          baz(state, actions, data) {
-            expect(state).toEqual({ baz: "minimal baz" })
-            expect(data).toBe("foo.bar.baz")
-            return { baz: "only the baz will do" }
+          baz(state, actions) {
+            return data => {
+              expect(state).toEqual({ baz: "minimal baz" })
+              expect(data).toBe("foo.bar.baz")
+              return { baz: "only the baz will do" }
+            }
+          },
+          buz(state, actions) {
+            return (data1, data2, data3) => {
+              expect(data1).toBe("foo")
+              expect(data2).toBe("bar")
+              expect(data3).toBe("baz")
+            }
           }
         }
       },
@@ -49,6 +58,7 @@ test("slices", done => {
   })
 
   actions.foo.bar.baz("foo.bar.baz")
+  actions.foo.bar.buz("foo", "bar", "baz")
   actions.fizz.buzz.fizzbuzz()
 })
 
@@ -98,15 +108,17 @@ test("async updates", done => {
       value: 2
     },
     actions: {
-      up(state, actions, byNumber) {
-        return {
+      up(state, actions) {
+        return byNumber => ({
           value: state.value + byNumber
-        }
-      },
-      upAsync(state, actions, byNumber) {
-        mockDelay().then(() => {
-          actions.up(byNumber)
         })
+      },
+      upAsync(state, actions) {
+        return byNumber => {
+          mockDelay().then(() => {
+            actions.up(byNumber)
+          })
+        }
       }
     }
   }).upAsync(1)
@@ -132,8 +144,8 @@ test("thunks", done => {
       value: 3
     },
     actions: {
-      upAsync(state, actions, data) {
-        return update => {
+      upAsync(state, actions) {
+        return data => update => {
           mockDelay().then(() => {
             update({ value: state.value + data })
           })
@@ -163,8 +175,8 @@ test("thunks", done => {
       value: 4
     },
     actions: {
-      upAsync(state, actions, data) {
-        return update => {
+      upAsync(state, actions) {
+        return data => update => {
           mockDelay().then(() => {
             update(state => ({ value: state.value + data }))
           })

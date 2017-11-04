@@ -1,2 +1,2 @@
-export { h } from "./h"
-export { app } from "./app"
+export { h } from "./h.js"
+export { app } from "./app.js"

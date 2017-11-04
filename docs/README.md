@@ -1,21 +1,21 @@
 # Documentation
 
-- Tutorials
-  - [Countdown Timer](countdown-timer.md)
-  - [Gif Search](gif-search.md)
-  - [TweetBox](tweetbox.md)
 - [Contributing](CONTRIBUTING.md)
-- Getting Started
+- Quickstart
   - [Hello World](#hello-world)
   - [Installation](#installation)
 - Concepts
+  - [Components](components.md)
+  - [Lifecycle](lifecycle.md)
+  - [Keys](keys.md)
   - [Slices](slices.md)
   - [Modules](modules.md)
-  - [Keys](keys.md)
-  - [Lifecycle](lifecycle.md)
-  - [Components](components.md)
   - [Sanitation](sanitation.md)
   - [Hydration](hydration.md)
+- Tutorials
+  - [TweetBox](tweetbox.md)
+  - [Gif Search](gif-search.md)
+  - [Countdown Timer](countdown-timer.md)
 
 ## Hello World
 
@@ -146,7 +146,7 @@ app({
 </body>
 ```
 
-Check out [hyperapp/awesome](https://github.com/hyperapp/awesome#apps-and-boilerplates) for templates and boilerplates to help you getting started and don't miss our [Tutorials](/docs/tutorials.md) section.
+Check out [hyperapp/awesome](https://github.com/hyperapp/awesome#apps-and-boilerplates) for templates and boilerplates to help you getting started.
 
 
 ## Installation

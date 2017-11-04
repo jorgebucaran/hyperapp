@@ -1,6 +1,9 @@
 # Documentation
 
-- [Tutorials](tutorials.md)
+- Tutorials
+  - [Countdown Timer](countdown-timer.md)
+  - [Gif Search](gif-search.md)
+  - [TweetBox](tweetbox.md)
 - [Contributing](CONTRIBUTING.md)
 - Getting Started
   - [Hello World](#hello-world)

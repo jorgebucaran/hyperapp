@@ -25,7 +25,7 @@ app({
       </div>
     </main>,
   actions: {
-    search: (state, actions, { target }) => {
+    search: (state, actions) => ({ target }) => {
       const text = target.value
 
       if (state.isFetching || text === "") {
@@ -41,7 +41,7 @@ app({
           data[0] && actions.setUrl(data[0].images.original.url)
         })
     },
-    setUrl: (state, actions, url) => ({ url }),
+    setUrl: state => url => ({ url }),
     toggleFetching: state => ({ isFetching: !state.isFetching })
   }
 })

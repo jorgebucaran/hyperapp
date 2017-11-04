@@ -1,7 +1,5 @@
 import { h, app } from "../src"
 
-window.requestAnimationFrame = setTimeout
-
 beforeEach(() => {
   document.body.innerHTML = ""
 })
@@ -15,7 +13,9 @@ test("container", done => {
           "div",
           {
             oncreate() {
-              expect(document.body.innerHTML).toBe("<main><div>foo</div></main>")
+              expect(document.body.innerHTML).toBe(
+                "<main><div>foo</div></main>"
+              )
               done()
             }
           },
@@ -28,7 +28,6 @@ test("container", done => {
 
 test("nested container", done => {
   document.body.innerHTML = "<main><section></section><div></div></main>"
-
   app(
     {
       view: state =>
@@ -57,6 +56,9 @@ test("container with mutated host", done => {
 
   app(
     {
+      state: {
+        value: "foo"
+      },
       view: (state, actions) =>
         h(
           "p",
@@ -65,7 +67,6 @@ test("container with mutated host", done => {
               expect(document.body.innerHTML).toBe(
                 `<main><div><p>foo</p></div></main>`
               )
-
               host.insertBefore(
                 document.createElement("header"),
                 host.firstChild
@@ -83,15 +84,8 @@ test("container with mutated host", done => {
           },
           state.value
         ),
-      state: {
-        value: "foo"
-      },
       actions: {
-        bar(state) {
-          return {
-            value: "bar"
-          }
-        }
+        bar: state => ({ value: "bar" })
       }
     },
     container

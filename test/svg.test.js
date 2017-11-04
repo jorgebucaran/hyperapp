@@ -1,7 +1,5 @@
 import { h, app } from "../src"
 
-window.requestAnimationFrame = setTimeout
-
 const SVG_NS = "http://www.w3.org/2000/svg"
 
 const deepExpectNS = (element, ns) =>

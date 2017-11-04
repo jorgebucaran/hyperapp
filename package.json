@@ -18,11 +18,10 @@
     "hyperapp",
     "elm",
     "jsx",
-    "hyperx",
     "vdom"
   ],
   "scripts": {
-    "test": "jest --coverage --no-cache && tsc --project test/ts",
+    "test": "jest --coverage --no-cache && tsc -p test/ts",
     "build": "npm run bundle && npm run minify",
     "bundle": "rollup -i src/index.js -o dist/hyperapp.js -m -f umd -n hyperapp",
     "minify": "uglifyjs dist/hyperapp.js -o dist/hyperapp.js --mangle --compress warnings=false --pure-funcs=Object.defineProperty -p relative --source-map dist/hyperapp.js.map",
@@ -34,11 +33,11 @@
     "presets": "env"
   },
   "devDependencies": {
-    "babel-preset-env": "1.6.0",
+    "babel-preset-env": "1.6.1",
     "jest": "^21.2.1",
     "prettier": "~1.7.4",
     "rollup": "^0.50.0",
-    "typescript": "^2.5.2",
+    "typescript": "~2.5.2",
     "uglify-js": "^2.7.5"
   }
 }

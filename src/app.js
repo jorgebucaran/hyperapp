@@ -1,32 +1,18 @@
 import { h } from "./h"
 
 export function app(props, container) {
-  var lock
-  var callbacks = []
+  var renderLock
+  var lifecycleStack = []
   var root = (container = container || document.body).children[0]
-  var node = toVNode(root, [].map)
-  var globalState = {}
-  var globalActions = {}
+  var node = toVnode(root, [].map)
+  var appState = {}
+  var appActions = {}
 
-  repaint(init(props, globalState, globalActions, []))
+  repaint(init(appState, appActions, props, []))
 
-  return globalActions
+  return appActions
 
-  function repaint() {
-    if (props.view && !lock) {
-      setTimeout(render, (lock = !lock))
-    }
-  }
-
-  function render(next) {
-    lock = !lock
-    if ((next = props.view(globalState, globalActions)) && !lock) {
-      root = patchElement(container, root, node, (node = next))
-    }
-    while ((next = callbacks.pop())) next()
-  }
-
-  function toVNode(element, map) {
+  function toVnode(element, map) {
     return (
       element &&
       h(
@@ -35,63 +21,67 @@ export function app(props, container) {
         map.call(element.childNodes, function(element) {
           return element.nodeType === 3
             ? element.nodeValue
-            : toVNode(element, map)
+            : toVnode(element, map)
         })
       )
     )
   }
 
-  function init(module, state, actions, path) {
-    assign(state, module.state)
-    create(state, actions, module.actions, path)
-
-    for (var i in module.modules) {
-      init(
-        module.modules[i],
-        (state[i] = {}),
-        (actions[i] = {}),
-        path.concat(i)
-      )
-    }
-
-    function create(state, actions, from, path) {
-      Object.keys(from || {}).map(function(i) {
-        if (typeof from[i] === "function") {
-          actions[i] = function(data) {
-            if (
-              typeof (state = from[i](
-                getObject(path, globalState),
-                actions
-              )) === "function"
-            ) {
-              state = state(data)
-            }
-
-            if (
-              state &&
-              !state.then &&
-              state !== (data = getObject(path, globalState))
-            ) {
-              repaint(
-                (globalState = setObject(path, merge(data, state), globalState))
-              )
-            }
-
-            return state
-          }
-        } else {
-          create(
-            state[i] || (state[i] = {}),
-            (actions[i] = {}),
-            from[i],
-            path.concat(i)
-          )
-        }
-      })
+  function repaint() {
+    if (props.view && !renderLock) {
+      setTimeout(render, (renderLock = !renderLock))
     }
   }
 
-  function assign(to, from) {
+  function render(next) {
+    renderLock = !renderLock
+    if ((next = props.view(appState, appActions)) && !renderLock) {
+      root = patchElement(container, root, node, (node = next))
+    }
+    while ((next = lifecycleStack.pop())) next()
+  }
+
+  function initDeep(state, actions, from, path) {
+    Object.keys(from || {}).map(function(key) {
+      if (typeof from[key] === "function") {
+        actions[key] = function(data) {
+          var result = from[key]((state = getObject(path, appState)), actions)
+
+          if (typeof result === "function") {
+            result = result(data)
+          }
+
+          if (result && result !== state && !result.then) {
+            repaint(
+              (appState = setObject(path, merge(state, result), appState))
+            )
+          }
+
+          return result
+        }
+      } else {
+        initDeep(
+          state[key] || (state[key] = {}),
+          (actions[key] = {}),
+          from[key],
+          path.concat(key)
+        )
+      }
+    })
+  }
+
+  function init(state, actions, from, path) {
+    var modules = from.modules
+
+    initDeep(state, actions, from.actions, path)
+    set(state, from.state)
+
+    for (var i in modules) {
+      init((state[i] = {}), (actions[i] = {}), modules[i], path.concat(i))
+    }
+  }
+
+  function set(to, from) {
     for (var i in from) {
       to[i] = from[i]
     }
@@ -99,31 +89,25 @@ export function app(props, container) {
   }
 
   function merge(to, from) {
-    return assign(assign({}, to), from)
+    return set(set({}, to), from)
   }
 
-  function set(obj, prop, value) {
+  function setObject(path, value, from) {
     var to = {}
-    to[prop] = value
-    return merge(obj, to)
-  }
-
-  function setObject(path, value, obj) {
-    var name = path[0]
     return path.length === 0
       ? value
-      : set(
-          obj,
-          name,
-          path.length > 1 ? setObject(path.slice(1), value, obj[name]) : value
-        )
+      : ((to[path[0]] =
+          1 < path.length
+            ? setObject(path.slice(1), value, from[path[0]])
+            : value),
+        merge(from, to))
   }
 
-  function getObject(path, obj) {
+  function getObject(path, from) {
     for (var i = 0; i < path.length; i++) {
-      obj = obj[path[i]]
+      from = from[path[i]]
     }
-    return obj
+    return from
   }
 
   function createElement(node, isSVG) {
@@ -135,7 +119,7 @@ export function app(props, container) {
         : document.createElement(node.type)
 
       if (node.props.oncreate) {
-        callbacks.push(function() {
+        lifecycleStack.push(function() {
           node.props.oncreate(element)
         })
       }
@@ -183,7 +167,7 @@ export function app(props, container) {
     }
 
     if (props.onupdate) {
-      callbacks.push(function() {
+      lifecycleStack.push(function() {
         props.onupdate(element, oldProps)
       })
     }

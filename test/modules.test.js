@@ -21,6 +21,12 @@ test("modules", done => {
     },
     actions: {
       up(state) {
+        expect(state).toEqual({
+          value: 0,
+          bar: {
+            text: "hello"
+          }
+        })
         return { value: state.value + 1 }
       }
     },
@@ -36,6 +42,9 @@ test("modules", done => {
         },
         actions: {
           change(state) {
+            expect(state).toEqual({
+              text: "hello"
+            })
             return { text: "hola" }
           }
         }

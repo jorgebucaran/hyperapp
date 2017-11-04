@@ -8,7 +8,19 @@ export function app(props, container) {
   var globalState
   var globalActions
 
-  repaint(flush(init(props, (globalState = {}), (globalActions = {}))))
+  repaint(
+    flush(
+      initModule(
+        props,
+        (globalState = {}),
+        (globalActions = {}),
+        updateGlobalState,
+        function() {
+          return globalState
+        }
+      )
+    )
+  )
 
   return globalActions
 
@@ -49,7 +61,20 @@ export function app(props, container) {
     )
   }
 
-  function init(module, state, actions) {
+  /**
+   * Initializes the given module:
+   *  - computes the initial state
+   *  - initalize all actions
+   *  - add module.init() to be called before the first render
+   *  - initialize sub-modules
+   * 
+   * @param module the module to initialize
+   * @param state the initial state (updated by this function)
+   * @param actions the actions object (updated by this function)
+   * @param update the update() function for the current state slice
+   * @param getState function () => state that returns the current (up-to-date) state slice
+   */
+  function initModule(module, state, actions, update, getState) {
     if (module.init) {
       callbacks.push(function() {
         module.init(state, actions)
@@ -58,35 +83,104 @@ export function app(props, container) {
 
     assign(state, module.state)
 
-    initActions(state, actions, module.actions)
+    initModuleActions(state, actions, module.actions, update, getState)
 
-    for (var i in module.modules) {
-      init(module.modules[i], (state[i] = {}), (actions[i] = {}))
+    for (var key in module.modules) {
+      initModule(
+        module.modules[key],
+        // do not override state is already exist in current module
+        state[key] || (state[key] = {}),
+        // do not override actions is already exist in current module
+        actions[key] || (actions[key] = {}),
+        updateFor(update, getState, key),
+        getStateFor(getState, key)
+      )
     }
   }
 
-  function initActions(state, actions, source) {
-    Object.keys(source || {}).map(function(i) {
-      if (typeof source[i] === "function") {
-        actions[i] = function(data) {
-          return typeof (data = source[i](state, actions)) === "function"
-            ? typeof (data = data.apply(0, arguments)) === "function"
-              ? data(update)
-              : update(data)
+  /**
+   * Initializes the given actions:
+   *  - bind the moduleActions to the current state slice/actions
+   *  - set state = {} for children actions, if needed
+   *  - recursively initialize children actions
+   * 
+   * @param moduleActions the current module's actions, contains actions and other action objects
+   * @param state the initial state object, this is passed here to avoid undefined state when 
+   *              computing and action's state slice
+   * @param actions the initalized actions object (updated by this function)
+   * @param update the update() function for the actions' relevant state slices
+   * @param getState function: () => state that return the relevant state slice for the actions
+   */
+  function initModuleActions(state, actions, moduleActions, update, getState) {
+    Object.keys(moduleActions || {}).map(function(key) {
+      if (typeof moduleActions[key] === "function") {
+        actions[key] = function(data) {
+          return typeof (data = moduleActions[key](
+            getState(),
+            actions,
+            data
+          )) === "function"
+            ? data(update)
             : update(data)
         }
       } else {
-        initActions(state[i] || (state[i] = {}), (actions[i] = {}), source[i])
+        initModuleActions(
+          state[key] || (state[key] = {}),
+          (actions[key] = {}),
+          moduleActions[key],
+          updateFor(update, getState, key),
+          getStateFor(getState, key)
+        )
       }
     })
+  }
 
-    function update(data) {
-      return (
-        typeof data === "function"
-          ? update(data(state))
-          : data && repaint(assign(state, data)),
-        state
+  /**
+   * Merge the global state with the given result and triggers a repaint.
+   * This is the update() function for the app's prop.
+   * @param result the result to merge it, a function (globalState) => result, or falsy to not trigger repaint
+   * @returns globalState
+   */
+  function updateGlobalState(result) {
+    return (
+      typeof result === "function"
+        ? updateGlobalState(result(globalState))
+        : result && repaint((globalState = merge(globalState, result))),
+      globalState
+    )
+  }
+
+  /**
+   * Wraps the given update() function and return a new update() that can be used for the state slice getState()[prop].
+   * 
+   * @param update the update() function to wrap
+   * @param getState function: () => state that returns the parrent's state slice 
+   *                 (getState()[prop] contains the current state slice)
+   * @param prop the property of the state slice to create the update() function for
+   * @param parentResult internal variable added to avoid declaration (saves 1 "var "), should not be set
+   * 
+   * @returns the new update function specialized for the given state slice
+   */
+  function updateFor(update, getState, prop, parentResult) {
+    return function(result) {
+      ;(parentResult = {})[prop] = merge(
+        getState()[prop],
+        typeof result === "function" ? result(getState()[prop]) : result
       )
+      return update(parentResult)[prop]
+    }
+  }
+
+  /**
+   * Function: (getState: () => state, prop: string) => () => state[prop].
+   * 
+   * @param getState the getter for the state: () => state that gets wrapped
+   * @param prop the state slice to get
+   * @returns a new state getter function: () => getState()[prop]
+   */
+  function getStateFor(getState, prop) {
+    return function() {
+      return getState()[prop]
     }
   }
 

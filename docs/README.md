@@ -6,7 +6,7 @@
   - [Hello World](#hello-world)
   - [Installation](#installation)
 - Concepts
-  - [State Slices](state-slices.md)
+  - [Slices](slices.md)
   - [Modules](modules.md)
   - [Keys](keys.md)
   - [Lifecycle](lifecycle.md)

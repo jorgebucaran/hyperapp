@@ -1,4 +1,4 @@
-# State Slices
+# Slices
 
 Hyperapp uses a single state tree object that contains all your application level state and serves as the single source of truth. This also means, if you are coming from Redux/Flux, that you have only one store for each app. A single state tree makes it straightforward to locate a specific piece of state, and allows for incredibly easy debugging.
 

@@ -1,40 +1,18 @@
 import { h } from "./h"
 
 export function app(props, container) {
+  var renderLock
+  var lifecycleStack = []
   var root = (container = container || document.body).children[0]
-  var node = toVNode(root, [].map)
-  var callbacks = []
-  var skipRender
-  var globalState
-  var globalActions
+  var node = toVnode(root, [].map)
+  var appState = {}
+  var appActions = {}
 
-  repaint(flush(init(props, (globalState = {}), (globalActions = {}))))
+  repaint(init(appState, appActions, props, []))
 
-  return globalActions
+  return appActions
 
-  function repaint() {
-    if (props.view && !skipRender) {
-      requestAnimationFrame(render, (skipRender = !skipRender))
-    }
-  }
-
-  function render() {
-    flush(
-      (root = patchElement(
-        container,
-        root,
-        node,
-        (node = props.view(globalState, globalActions)),
-        (skipRender = !skipRender)
-      ))
-    )
-  }
-
-  function flush(cb) {
-    while ((cb = callbacks.pop())) cb()
-  }
-
-  function toVNode(element, map) {
+  function toVnode(element, map) {
     return (
       element &&
       h(
@@ -43,60 +21,93 @@ export function app(props, container) {
         map.call(element.childNodes, function(element) {
           return element.nodeType === 3
             ? element.nodeValue
-            : toVNode(element, map)
+            : toVnode(element, map)
         })
       )
     )
   }
 
-  function init(module, state, actions) {
-    if (module.init) {
-      callbacks.push(function() {
-        module.init(state, actions)
-      })
-    }
-
-    assign(state, module.state)
-
-    initActions(state, actions, module.actions)
-
-    for (var i in module.modules) {
-      init(module.modules[i], (state[i] = {}), (actions[i] = {}))
+  function repaint() {
+    if (props.view && !renderLock) {
+      setTimeout(render, (renderLock = !renderLock))
     }
   }
 
-  function initActions(state, actions, source) {
-    Object.keys(source || {}).map(function(i) {
-      if (typeof source[i] === "function") {
-        actions[i] = function(data) {
-          return typeof (data = source[i](state, actions, data)) === "function"
-            ? data(update)
-            : update(data)
+  function render(next) {
+    renderLock = !renderLock
+    if ((next = props.view(appState, appActions)) && !renderLock) {
+      root = patchElement(container, root, node, (node = next))
+    }
+    while ((next = lifecycleStack.pop())) next()
+  }
+
+  function initDeep(state, actions, from, path) {
+    Object.keys(from || {}).map(function(key) {
+      if (typeof from[key] === "function") {
+        actions[key] = function(data) {
+          var result = from[key]((state = getObject(path, appState)), actions)
+
+          if (typeof result === "function") {
+            result = result(data)
+          }
+
+          if (result && result !== state && !result.then) {
+            repaint(
+              (appState = setObject(path, merge(state, result), appState))
+            )
+          }
+
+          return result
         }
       } else {
-        initActions(state[i] || (state[i] = {}), (actions[i] = {}), source[i])
+        initDeep(
+          state[key] || (state[key] = {}),
+          (actions[key] = {}),
+          from[key],
+          path.concat(key)
+        )
       }
     })
+  }
 
-    function update(data) {
-      return (
-        typeof data === "function"
-          ? update(data(state))
-          : data && repaint(assign(state, data)),
-        state
-      )
+  function init(state, actions, from, path) {
+    var modules = from.modules
+
+    initDeep(state, actions, from.actions, path)
+    set(state, from.state)
+
+    for (var i in modules) {
+      init((state[i] = {}), (actions[i] = {}), modules[i], path.concat(i))
     }
   }
 
-  function assign(target, source) {
-    for (var i in source) {
-      target[i] = source[i]
+  function set(to, from) {
+    for (var i in from) {
+      to[i] = from[i]
     }
-    return target
+    return to
   }
 
-  function merge(target, source) {
-    return assign(assign({}, target), source)
+  function merge(to, from) {
+    return set(set({}, to), from)
+  }
+
+  function setObject(path, value, from) {
+    var to = {}
+    return path.length === 0
+      ? value
+      : ((to[path[0]] =
+          1 < path.length
+            ? setObject(path.slice(1), value, from[path[0]])
+            : value),
+        merge(from, to))
+  }
+
+  function getObject(path, from) {
+    for (var i = 0; i < path.length; i++) {
+      from = from[path[i]]
+    }
+    return from
   }
 
   function createElement(node, isSVG) {
@@ -107,8 +118,8 @@ export function app(props, container) {
         ? document.createElementNS("http://www.w3.org/2000/svg", node.type)
         : document.createElement(node.type)
 
-      if (node.props && node.props.oncreate) {
-        callbacks.push(function() {
+      if (node.props.oncreate) {
+        lifecycleStack.push(function() {
           node.props.oncreate(element)
         })
       }
@@ -151,12 +162,12 @@ export function app(props, container) {
       var oldValue = i === "value" || i === "checked" ? element[i] : oldProps[i]
 
       if (value !== oldValue) {
-        value !== oldValue && setElementProp(element, i, value, oldValue)
+        setElementProp(element, i, value, oldValue)
       }
     }
 
-    if (props && props.onupdate) {
-      callbacks.push(function() {
+    if (props.onupdate) {
+      lifecycleStack.push(function() {
         props.onupdate(element, oldProps)
       })
     }
@@ -223,7 +234,6 @@ export function app(props, container) {
         }
 
         var newKey = getKey(newChild)
-
         var keyedNode = oldKeyed[newKey] || []
 
         if (null == newKey) {

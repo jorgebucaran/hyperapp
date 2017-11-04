@@ -60,7 +60,7 @@ app({
       update={e => actions.update(e.target.value)}
     />,
   actions: {
-    update: (state, actions, text) => ({
+    update: state => text => ({
       text,
       count: state.count + state.text.length - text.length
     })
@@ -90,7 +90,7 @@ The view consists of a single TweetBox component.
 To update the text and calculate the remaining characters, call `actions.update`.
 
 ```jsx
-update: (state, actions, text) => ({
+update: state => text => ({
   text,
   count: state.count + state.text.length - text.length
 })

@@ -1,7 +1,5 @@
 import { h, app } from "../src"
 
-window.requestAnimationFrame = setTimeout
-
 beforeEach(() => {
   document.body.innerHTML = ""
 })
@@ -23,7 +21,6 @@ testHydration(
 function testHydration(name, ssrBody, children, container) {
   test(name, done => {
     document.body.innerHTML = ssrBody
-
     app(
       {
         view: state =>

@@ -8,9 +8,6 @@ const foo = {
 }
 
 app({
-  init(state) {
-    console.log(state) // => { foo: { value: 1 } }
-  },
   modules: { foo }
 })
 ```
@@ -29,9 +26,6 @@ const foo = {
 }
 
 app({
-  init(state) {
-    console.log(state) // => { foo: { bar: { value: 1 } } }
-  },
   modules: { foo }
 })
 ```

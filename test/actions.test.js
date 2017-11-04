@@ -2,14 +2,19 @@ import { h, app } from "../src"
 
 const mockDelay = () => new Promise(resolve => setTimeout(resolve, 50))
 
-window.requestAnimationFrame = setTimeout
-
 beforeEach(() => {
   document.body.innerHTML = ""
 })
 
 test("slices", done => {
   const actions = app({
+    state: {
+      foo: {
+        bar: {
+          baz: "minimal baz"
+        }
+      }
+    },
     view: state =>
       h(
         "div",
@@ -23,17 +28,10 @@ test("slices", done => {
         },
         state.foo.bar.baz
       ),
-    state: {
-      foo: {
-        bar: {
-          baz: "minimal baz"
-        }
-      }
-    },
     actions: {
       foo: {
         bar: {
-          baz(state, actions, data) {
+          baz: state => data => {
             expect(state).toEqual({ baz: "minimal baz" })
             expect(data).toBe("foo.bar.baz")
             return { baz: "only the baz will do" }
@@ -54,6 +52,9 @@ test("slices", done => {
 
 test("sync updates", done => {
   app({
+    state: {
+      value: 1
+    },
     view: state =>
       h(
         "div",
@@ -65,21 +66,17 @@ test("sync updates", done => {
         },
         state.value
       ),
-    state: {
-      value: 1
-    },
     actions: {
-      up(state) {
-        return {
-          value: state.value + 1
-        }
-      }
+      up: state => ({ value: state.value + 1 })
     }
   }).up()
 })
 
 test("async updates", done => {
   app({
+    state: {
+      value: 2
+    },
     view: state =>
       h(
         "div",
@@ -94,82 +91,10 @@ test("async updates", done => {
         },
         state.value
       ),
-    state: {
-      value: 2
-    },
     actions: {
-      up(state, actions, byNumber) {
-        return {
-          value: state.value + byNumber
-        }
-      },
-      upAsync(state, actions, byNumber) {
-        mockDelay().then(() => {
-          actions.up(byNumber)
-        })
-      }
-    }
-  }).upAsync(1)
-})
-
-test("thunks", done => {
-  app({
-    view: state =>
-      h(
-        "div",
-        {
-          oncreate() {
-            expect(document.body.innerHTML).toBe(`<div>3</div>`)
-          },
-          onupdate() {
-            expect(document.body.innerHTML).toBe(`<div>4</div>`)
-            done()
-          }
-        },
-        state.value
-      ),
-    state: {
-      value: 3
-    },
-    actions: {
-      upAsync(state, actions, data) {
-        return update => {
-          mockDelay().then(() => {
-            update({ value: state.value + data })
-          })
-        }
-      }
-    }
-  }).upAsync(1)
-})
-
-test("thunks", done => {
-  app({
-    view: state =>
-      h(
-        "div",
-        {
-          oncreate() {
-            expect(document.body.innerHTML).toBe(`<div>4</div>`)
-          },
-          onupdate() {
-            expect(document.body.innerHTML).toBe(`<div>5</div>`)
-            done()
-          }
-        },
-        state.value
-      ),
-    state: {
-      value: 4
-    },
-    actions: {
-      upAsync(state, actions, data) {
-        return update => {
-          mockDelay().then(() => {
-            update(state => ({ value: state.value + data }))
-          })
-        }
-      }
+      up: state => data => ({ value: state.value + data }),
+      upAsync: (state, actions) => data =>
+        mockDelay().then(() => actions.up(data))
     }
   }).upAsync(1)
 })

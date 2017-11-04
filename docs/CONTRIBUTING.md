@@ -4,8 +4,8 @@ Thank you for taking the time to read our contribution guidelines. You can contr
 
 ## Style
 
+- We write in ES5.
 - Format your code before creating a new commit using `npm run format`.
-- The code is written in ES5.
 - We prefer keeping all the moving parts inside as few files as possible. We don't have plans to break up the library into smaller modules.
 
 ## Bugs
@@ -20,7 +20,7 @@ Thank you for taking the time to read our contribution guidelines. You can contr
 
 - We use [Babel](https://babeljs.io) and [Jest](http://facebook.github.io/jest) to run the tests.
 - Feel free to create a new `test/*.test.js` file if none of the existing test files suits your test case.
-- Tests usually start by creating a small application and using a feature, then check if `document.body.innerHTML` matches some string. The app() call is async, so we often use [oncreate](lifecycle.md#oncreate) or [onupdate](lifecycle.md#onupdate) events to detect when the view has been rendered.
+- Tests usually start by creating a small application and using a feature, then check if `document.body.innerHTML` matches some string. The app() call is async, so we often use [`oncreate`](lifecycle.md#oncreate) or [`onupdate`](lifecycle.md#onupdate) events to detect when the view has been rendered.
 
 ## Humans
 

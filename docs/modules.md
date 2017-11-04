@@ -17,7 +17,7 @@ Modules make it easy to share and modularize your app without losing transparenc
 As you would expect, modules are allowed to have modules too.
 
 ```jsx
-const bar  = {
+const bar = {
   state: { value: 1 }
 }
 

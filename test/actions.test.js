@@ -185,3 +185,64 @@ test("thunks", done => {
     }
   }).upAsync(1)
 })
+
+test("state immutable", done => {
+  let initialState
+  const up = state => ({ value: state.value + 1 })
+
+  const actions = app({
+    state: {
+      value: 0,
+      module1: { value: 1 },
+      module2: { value: 2 }
+    },
+    init(state) {
+      initialState = state
+    },
+    actions: {
+      up,
+      get(state) {
+        return _ => state
+      },
+      module1: { up }
+    }
+  })
+
+  const state1 = actions.up()
+  expect(state1.value).toBe(1)
+  expect(state1).not.toBe(initialState)
+  expect(state1.module1).toBe(initialState.module1)
+  expect(state1.module2).toBe(initialState.module2)
+
+  actions.module1.up()
+  const state2 = actions.get()
+  expect(state2.value).toBe(state1.value)
+  expect(state2).not.toBe(state1)
+  expect(state2.module1).not.toBe(state1.module1)
+  expect(state2.module2).toBe(state1.module2)
+
+  done()
+})
+
+test("Allow reuse state", done => {
+  app({
+    view: state =>
+      h(
+        "div",
+        {
+          oncreate() {
+            console.log(document.body.innerHTML)
+            expect(document.body.innerHTML).toBe(`<div>{"child":{}}</div>`)
+            done()
+          }
+        },
+        JSON.stringify(state)
+      ),
+    state: {},
+    actions: {
+      recurse(state) {
+        return { child: state }
+      }
+    }
+  }).recurse()
+})

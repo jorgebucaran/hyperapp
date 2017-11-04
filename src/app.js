@@ -147,7 +147,7 @@ export function app(props, container) {
       } catch (_) {}
 
       if (typeof value !== "function") {
-        if (value) {
+        if (value || 0 === value) {
           element.setAttribute(name, value)
         } else {
           element.removeAttribute(name)
@@ -174,12 +174,8 @@ export function app(props, container) {
   }
 
   function removeElement(parent, element, props) {
-    if (
-      props &&
-      props.onremove &&
-      typeof (props = props.onremove(element)) === "function"
-    ) {
-      props(remove)
+    if (props && props.onremove) {
+      props.onremove(element, remove)
     } else {
       remove()
     }

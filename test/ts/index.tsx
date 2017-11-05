@@ -19,9 +19,6 @@ const submodule: Hyperapp.Module<SubModuleState, SubModuleActions> = {
   actions: {
     sub: (state, actions, value: number) => ({ count: state.count - value }),
     add: (state, actions, value: number) => ({ count: state.count + value })
-  },
-  init(state, actions) {
-    console.log("Current count (typed!): " + state.count)
   }
 }
 
@@ -57,9 +54,6 @@ const module1: Hyperapp.Module<
   actions: {
     sub: (state, actions, value: number) => ({ count: state.count - value }),
     add: (state, actions, value: number) => ({ count: state.count + value })
-  },
-  init(state, actions) {
-    console.log("Current count (typed!): " + state.count)
   },
   modules: {
     submodule

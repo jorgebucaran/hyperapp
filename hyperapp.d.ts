@@ -123,17 +123,6 @@ export type InternalActions<
     | InternalActions<State[P], Actions[P] & Hyperapp.Actions<State[P]>>
 }
 
-/**The initialization function, ran after the actions have been initialized.
- * 
- * @memberOf [App]
- */
-export interface Init<
-  State extends Hyperapp.State,
-  Actions extends Hyperapp.Actions<State>
-> {
-  (state: State, actions: Actions): void
-}
-
 /** The view function.
  *
  * @memberOf [App]
@@ -146,16 +135,16 @@ export interface View<
 }
 
 /** Definition for a single module: a self-contained set of actions that operates on a state tree.
- * 
+ *
  * OwnState and OwnActions may be set to ensure that the initial state and all actions are implemented.
- * 
+ *
  * @param State The full state of the module including sub-modules
  * @param Actions The actions of the module including sub-modules
  * @param OwnState Optional, if set, the state of this module excluding sub-modules
  *                 defaults to partial state
  * @param OwnActions Optional, if set, the actions of this module excluding sub-modules
  *                   defaults to partial actions
- * 
+ *
  * @memberOf [App]
  */
 export interface Module<
@@ -166,7 +155,6 @@ export interface Module<
 > {
   state?: OwnState
   actions?: InternalActions<State, OwnActions & Hyperapp.Actions<State>>
-  init?: Init<State, Actions>
   modules?: Modules<
     Partial<State> & Record<keyof Partial<Actions>, any>,
     Partial<Actions> & Hyperapp.Actions<State>
@@ -174,7 +162,7 @@ export interface Module<
 }
 
 /** The map of modules indexed by state slice.
- * 
+ *
  * @memberOf [App]
  */
 export type Modules<
@@ -195,7 +183,7 @@ export type Modules<
  *                 defaults to partial state
  * @param OwnActions Optional, if set, the actions of this module excluding sub-modules
  *                   defaults to partial actions
- * 
+ *
  * @memberOf [App]
  */
 export interface AppProps<
@@ -215,7 +203,7 @@ export interface AppProps<
  *                 defaults to partial state
  * @param OwnActions Optional, if set, the actions of this module excluding sub-modules
  *                   defaults to partial actions
- * 
+ *
  * @memberOf [App]
  */
 export function app<

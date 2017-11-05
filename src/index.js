@@ -190,7 +190,8 @@ function app(props, container) {
   }
 
   function patch(parent, element, oldNode, node, isSVG, nextSibling) {
-    if (oldNode == null) {
+    if (oldNode === node) {
+    } else if (oldNode == null) {
       element = parent.insertBefore(createElement(node, isSVG), element)
     } else if (node.type != null && node.type === oldNode.type) {
       updateElement(element, oldNode.props, node.props)

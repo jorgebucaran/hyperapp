@@ -2,17 +2,17 @@ export { h, app }
 
 function app(props, container) {
   var root = (container = container || document.body).children[0]
-  var node = toVnode(root, [].map)
+  var node = vnode(root, [].map)
   var appState = {}
   var appActions = {}
   var lifecycle = []
   var patchLock
 
   repaint(init(appState, appActions, props, []))
-
+ 
   return appActions
 
-  function toVnode(element, map) {
+  function vnode(element, map) {
     return (
       element &&
       h(
@@ -21,7 +21,7 @@ function app(props, container) {
         map.call(element.childNodes, function(element) {
           return element.nodeType === 3
             ? element.nodeValue
-            : toVnode(element, map)
+            : vnode(element, map)
         })
       )
     )
@@ -36,25 +36,34 @@ function app(props, container) {
   function render(next) {
     patchLock = !patchLock
     if ((next = props.view(appState, appActions)) && !patchLock) {
-      root = patchElement(container, root, node, (node = next))
+      root = patch(container, root, node, (node = next))
     }
     while ((next = lifecycle.pop())) next()
+  }
+
+  function init(state, actions, from, path) {
+    var modules = from.modules
+
+    initDeep(state, actions, from.actions, path)
+    set(state, from.state)
+
+    for (var i in modules) {
+      init((state[i] = {}), (actions[i] = {}), modules[i], path.concat(i))
+    }
   }
 
   function initDeep(state, actions, from, path) {
     Object.keys(from || {}).map(function(key) {
       if (typeof from[key] === "function") {
         actions[key] = function(data) {
-          var result = from[key]((state = getObject(path, appState)), actions)
+          var result = from[key]((state = get(path, appState)), actions)
 
           if (typeof result === "function") {
             result = result(data)
           }
 
           if (result && result !== state && !result.then) {
-            repaint(
-              (appState = setObject(path, merge(state, result), appState))
-            )
+            repaint((appState = setDeep(path, merge(state, result), appState)))
           }
 
           return result
@@ -70,15 +79,8 @@ function app(props, container) {
     })
   }
 
-  function init(state, actions, from, path) {
-    var modules = from.modules
-
-    initDeep(state, actions, from.actions, path)
-    set(state, from.state)
-
-    for (var i in modules) {
-      init((state[i] = {}), (actions[i] = {}), modules[i], path.concat(i))
-    }
+  function merge(to, from) {
+    return set(set({}, to), from)
   }
 
   function set(to, from) {
@@ -88,22 +90,18 @@ function app(props, container) {
     return to
   }
 
-  function merge(to, from) {
-    return set(set({}, to), from)
-  }
-
-  function setObject(path, value, from) {
+  function setDeep(path, value, from) {
     var to = {}
     return path.length === 0
       ? value
       : ((to[path[0]] =
           1 < path.length
-            ? setObject(path.slice(1), value, from[path[0]])
+            ? setDeep(path.slice(1), value, from[path[0]])
             : value),
         merge(from, to))
   }
 
-  function getObject(path, from) {
+  function get(path, from) {
     for (var i = 0; i < path.length; i++) {
       from = from[path[i]]
     }
@@ -175,12 +173,12 @@ function app(props, container) {
 
   function removeElement(parent, element, props) {
     if (props && props.onremove) {
-      props.onremove(element, remove)
+      props.onremove(element, done)
     } else {
-      remove()
+      done()
     }
 
-    function remove() {
+    function done() {
       parent.removeChild(element)
     }
   }
@@ -191,7 +189,7 @@ function app(props, container) {
     }
   }
 
-  function patchElement(parent, element, oldNode, node, isSVG, nextSibling) {
+  function patch(parent, element, oldNode, node, isSVG, nextSibling) {
     if (oldNode == null) {
       element = parent.insertBefore(createElement(node, isSVG), element)
     } else if (node.type != null && node.type === oldNode.type) {
@@ -234,19 +232,19 @@ function app(props, container) {
 
         if (null == newKey) {
           if (null == oldKey) {
-            patchElement(element, oldElement, oldChild, newChild, isSVG)
+            patch(element, oldElement, oldChild, newChild, isSVG)
             j++
           }
           i++
         } else {
           if (oldKey === newKey) {
-            patchElement(element, keyedNode[0], keyedNode[1], newChild, isSVG)
+            patch(element, keyedNode[0], keyedNode[1], newChild, isSVG)
             i++
           } else if (keyedNode[0]) {
             element.insertBefore(keyedNode[0], oldElement)
-            patchElement(element, keyedNode[0], keyedNode[1], newChild, isSVG)
+            patch(element, keyedNode[0], keyedNode[1], newChild, isSVG)
           } else {
-            patchElement(element, oldElement, null, newChild, isSVG)
+            patch(element, oldElement, null, newChild, isSVG)
           }
 
           j++
@@ -281,6 +279,7 @@ function app(props, container) {
         removeElement(parent, nextSibling, oldNode.props)
       }
     }
+
     return element
   }
 }
@@ -305,6 +304,10 @@ function h(type, props) {
   }
 
   return typeof type === "string"
-    ? { type: type, props: props || {}, children: children }
+    ? {
+        type: type,
+        props: props || {},
+        children: children
+      }
     : type(props || {}, children)
 }

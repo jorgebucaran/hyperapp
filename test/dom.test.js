@@ -608,9 +608,7 @@ testTreeSegue("removeAttribute", [
 testTreeSegue("skip setAttribute for functions", [
   {
     tree: h("div", {
-      onclick() {
-        /**/
-      }
+      onclick() {}
     }),
     html: `<div></div>`
   }
@@ -639,6 +637,25 @@ testTreeSegue("update element with dynamic props", [
   }
 ])
 
+testTreeSegue("don't touch textnodes if equal", [
+  {
+    tree: h(
+      "main",
+      {
+        oncreate(element) {
+          element.childNodes[0].textContent = "foobar"
+        }
+      },
+      "foo"
+    ),
+    html: `<main>foobar</main>`
+  },
+  {
+    tree: h("main", {}, "foobar"),
+    html: `<main>foobar</main>`
+  }
+])
+
 function testTreeSegue(name, trees) {
   test(name, done => {
     app({
@@ -657,9 +674,14 @@ function testTreeSegue(name, trees) {
       actions: {
         up: state => ({ index: state.index + 1 }),
         next: (state, actions) => {
-          expect(document.body.innerHTML).toBe(
-            `<main>${trees[state.index].html.replace(/\s{2,}/g, "")}</main>`
-          )
+          try {
+            expect(document.body.innerHTML).toBe(
+              `<main>${trees[state.index].html.replace(/\s{2,}/g, "")}</main>`
+            )
+          } catch (e) {
+            console.log(e)
+            done()
+          }
 
           if (state.index === trees.length - 1) {
             return done()

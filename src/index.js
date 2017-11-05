@@ -9,7 +9,7 @@ function app(props, container) {
   var patchLock
 
   repaint(init(appState, appActions, props, []))
- 
+
   return appActions
 
   function vnode(element, map) {

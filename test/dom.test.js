@@ -655,7 +655,7 @@ testTreeSegue("don't touch textnodes if equal", [
     html: `<main>foobar</main>`
   }
 ])
-
+var xx = 0
 function testTreeSegue(name, trees) {
   test(name, done => {
     app({
@@ -674,14 +674,9 @@ function testTreeSegue(name, trees) {
       actions: {
         up: state => ({ index: state.index + 1 }),
         next: (state, actions) => {
-          try {
-            expect(document.body.innerHTML).toBe(
-              `<main>${trees[state.index].html.replace(/\s{2,}/g, "")}</main>`
-            )
-          } catch (e) {
-            console.log(e)
-            done()
-          }
+          expect(document.body.innerHTML).toBe(
+            `<main>${trees[state.index].html.replace(/\s{2,}/g, "")}</main>`
+          )
 
           if (state.index === trees.length - 1) {
             return done()

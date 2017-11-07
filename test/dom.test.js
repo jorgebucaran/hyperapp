@@ -655,7 +655,7 @@ testTreeSegue("don't touch textnodes if equal", [
     html: `<main>foobar</main>`
   }
 ])
-var xx = 0
+
 function testTreeSegue(name, trees) {
   test(name, done => {
     app({

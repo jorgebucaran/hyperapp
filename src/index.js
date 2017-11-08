@@ -56,7 +56,12 @@ function app(props, container) {
     Object.keys(from || {}).map(function(key) {
       if (typeof from[key] === "function") {
         function dispatch(action, data) {
-          var result = action((state = get(path, appState)), actions)
+          var result
+          if(typeof action !== "function") {
+            result = action
+          } else {
+            result = action((state = get(path, appState)), actions)
+          }
 
           if (typeof result === "function") {
             result = result(data)

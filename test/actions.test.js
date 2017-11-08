@@ -153,3 +153,51 @@ test("anonymous actions observable", done => {
     }
   }).upObserve(1)
 })
+
+test("constant", done => {
+  app({
+    state: {
+      value: 2
+    },
+    view: state =>
+      h(
+        "div",
+        {
+          oncreate() {
+            expect(document.body.innerHTML).toBe(`<div>3</div>`)
+            done()
+          }
+        },
+        state.value
+      ),
+      actions: {
+        set: (state, actions) => ({ value: 3 })
+      }
+  }).set()
+})
+
+test("async updates promise", done => {
+  app({
+    state: {
+      value: 2
+    },
+    view: state =>
+      h(
+        "div",
+        {
+          oncreate() {
+            expect(document.body.innerHTML).toBe(`<div>2</div>`)
+          },
+          onupdate() {
+            expect(document.body.innerHTML).toBe(`<div>3</div>`)
+            done()
+          }
+        },
+        state.value
+      ),
+    actions: {
+      setAsync: (state, actions) =>
+        mockDelay().then(() => ({ value: 3 }))
+    }
+  }).setAsync()
+})

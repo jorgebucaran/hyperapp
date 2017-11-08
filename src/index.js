@@ -55,18 +55,30 @@ function app(props, container) {
   function initDeep(state, actions, from, path) {
     Object.keys(from || {}).map(function(key) {
       if (typeof from[key] === "function") {
-        actions[key] = function(data) {
-          var result = from[key]((state = get(path, appState)), actions)
+        function dispatch(action, data) {
+          var result = action((state = get(path, appState)), actions)
 
           if (typeof result === "function") {
             result = result(data)
           }
 
-          if (result && result !== state && !result.then) {
-            repaint((appState = setDeep(path, merge(state, result), appState)))
+          if (result && result !== state) {
+            if (result.then) {
+              result = result.then(dispatch)
+            } else if (result.subscribe) {
+              result = result.subscribe({ next: dispatch })
+            } else {
+              repaint(
+                (appState = setDeep(path, merge(state, result), appState))
+              )
+            }
           }
 
           return result
+        }
+
+        actions[key] = function(data) {
+          return dispatch(from[key], data)
         }
       } else {
         initDeep(

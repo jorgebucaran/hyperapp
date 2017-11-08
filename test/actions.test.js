@@ -2,6 +2,8 @@ import { h, app } from "../src"
 
 const mockDelay = () => new Promise(resolve => setTimeout(resolve, 50))
 
+const mockObservable = (fn) => ({ subscribe: ({ next }) => { setInterval(next, 50, fn()) } })
+
 beforeEach(() => {
   document.body.innerHTML = ""
 })
@@ -93,8 +95,61 @@ test("async updates", done => {
       ),
     actions: {
       up: state => data => ({ value: state.value + data }),
-      upAsync: (state, actions) => data =>
+      upAsync: (state, actions) => data => {
         mockDelay().then(() => actions.up(data))
+      }
     }
   }).upAsync(1)
+})
+
+test("anonymous actions promise", done => {
+  app({
+    state: {
+      value: 2
+    },
+    view: state =>
+      h(
+        "div",
+        {
+          oncreate() {
+            expect(document.body.innerHTML).toBe(`<div>2</div>`)
+          },
+          onupdate() {
+            expect(document.body.innerHTML).toBe(`<div>3</div>`)
+            done()
+          }
+        },
+        state.value
+      ),
+      actions: {
+        upAsync: (state, actions) => data =>
+          mockDelay().then(() => (state) => ({ value: state.value + data }))
+      }
+  }).upAsync(1)
+})
+
+test("anonymous actions observable", done => {
+  app({
+    state: {
+      value: 2
+    },
+    view: state =>
+      h(
+        "div",
+        {
+          oncreate() {
+            expect(document.body.innerHTML).toBe(`<div>2</div>`)
+          },
+          onupdate() {
+            expect(document.body.innerHTML).toBe(`<div>3</div>`)
+            done()
+          }
+        },
+        state.value
+      ),
+    actions: {
+      upObserve: (state, actions) => data =>
+        mockObservable(() => (state) => ({ value: state.value + data }))
+    }
+  }).upObserve(1)
 })

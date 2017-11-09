@@ -35,9 +35,10 @@
   "devDependencies": {
     "babel-preset-env": "1.6.1",
     "jest": "^21.2.1",
-    "prettier": "~1.7.4",
-    "rollup": "^0.50.0",
+    "prettier": "~1.8.2",
+    "rollup": "^0.51.2",
     "typescript": "~2.5.2",
     "uglify-js": "^2.7.5"
   }
 }
+

@@ -56,9 +56,10 @@ export function h<Props>(
  */
 export type ActionResult<State> = Partial<State> | Promise<any> | null | void
 
-export type MyAction<State, Actions> =
-  | ((state: State, actions: Actions) => (data: any) => ActionResult<State>)
-  | ((state: State, actions: Actions) => ActionResult<State>)
+export type MyAction<State, Actions> = (
+  state: State,
+  actions: Actions
+) => ((data: any) => ActionResult<State>) | ActionResult<State>
 
 /** The interface for actions (exposed when implementing actions).
  *
@@ -85,11 +86,11 @@ export interface View<State, Actions> {
  */
 export interface AppProps<State, Actions> {
   state?: State
-  actions?: MyActions<State, Actions>
   view?: View<State, Actions>
+  actions?: MyActions<State, Actions>
 }
 
-/** The app() function, main entry point of Hyperapp's API.
+/** The app() function, entry point of Hyperapp's API.
  *
  * @param State The full state of the module including sub-modules
  * @param Actions The actions of the module including sub-modules

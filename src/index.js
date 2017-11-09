@@ -3,12 +3,12 @@ export { h, app }
 function app(props, container) {
   var root = (container = container || document.body).children[0]
   var node = vnode(root, [].map)
-  var appState = {}
+  var appState = props.state || {}
   var appActions = {}
   var lifecycle = []
-  var patchLock
+  var lock
 
-  repaint(init(appState, appActions, props, []))
+  repaint(init(appState, appActions, props.actions, []))
 
   return appActions
 
@@ -28,55 +28,46 @@ function app(props, container) {
   }
 
   function repaint() {
-    if (props.view && !patchLock) {
-      setTimeout(render, (patchLock = !patchLock))
+    if (props.view && !lock) {
+      setTimeout(render, (lock = !lock))
     }
   }
 
   function render(next) {
-    patchLock = !patchLock
-    if ((next = props.view(appState, appActions)) && !patchLock) {
+    lock = !lock
+    if ((next = props.view(appState, appActions)) && !lock) {
       root = patch(container, root, node, (node = next))
     }
     while ((next = lifecycle.pop())) next()
   }
 
   function init(state, actions, from, path) {
-    var modules = from.modules
+    for (var key in from) {
+      typeof from[key] === "function"
+        ? (function(key) {
+            actions[key] = function(data) {
+              var result = from[key]((state = get(path, appState)), actions)
 
-    initDeep(state, actions, from.actions, path)
-    set(state, from.state)
+              if (typeof result === "function") {
+                result = result(data)
+              }
 
-    for (var i in modules) {
-      init((state[i] = {}), (actions[i] = {}), modules[i], path.concat(i))
+              if (result && result !== state && !result.then) {
+                repaint(
+                  (appState = setDeep(path, merge(state, result), appState))
+                )
+              }
+
+              return result
+            }
+          })(key)
+        : init(
+            state[key] || (state[key] = {}),
+            (actions[key] = {}),
+            from[key],
+            path.concat(key)
+          )
     }
-  }
-
-  function initDeep(state, actions, from, path) {
-    Object.keys(from || {}).map(function(key) {
-      if (typeof from[key] === "function") {
-        actions[key] = function(data) {
-          var result = from[key]((state = get(path, appState)), actions)
-
-          if (typeof result === "function") {
-            result = result(data)
-          }
-
-          if (result && result !== state && !result.then) {
-            repaint((appState = setDeep(path, merge(state, result), appState)))
-          }
-
-          return result
-        }
-      } else {
-        initDeep(
-          state[key] || (state[key] = {}),
-          (actions[key] = {}),
-          from[key],
-          path.concat(key)
-        )
-      }
-    })
   }
 
   function merge(to, from) {

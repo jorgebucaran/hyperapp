@@ -1,102 +1,85 @@
 import { h, app } from "hyperapp"
 
-// Sub-module (used by Module 1)
+// A counter "module"
 
-interface SubModuleState {
+interface CounterState {
   count: number
 }
 
-interface SubModuleActions {
-  sub(value: number): Partial<SubModuleState>
-  add(value: number): Partial<SubModuleState>
+interface CounterActions {
+  sub(): Partial<CounterState>
+  add(value: number): Partial<CounterState>
 }
 
-// no need to specify OwnState and OwnActions here since it defaults to full state/actions
-const submodule: Hyperapp.Module<SubModuleState, SubModuleActions> = {
-  state: {
-    count: 0
-  },
-  actions: {
-    add: (state, actions) => (value: number) => ({
-      count: state.count + value
-    }),
-    sub: (state, actions) => ({ count: state.count - 1 })
-  }
+const counterState: CounterState = {
+  count: 0
+}
+
+const counterActions: Hyperapp.InternalActions<CounterState, CounterActions> = {
+  sub: (state, actions) => ({ count: state.count - 1 }),
+  add: (state, actions) => (value: number) => ({
+    count: state.count + value
+  })
 }
 
 // just to check that it compiles
-function testSubmodule() {
-  const actions = app<SubModuleState, SubModuleActions>(submodule)
+function testCounter() {
+  const actions = app<CounterState, CounterActions>({
+    state: counterState,
+    actions: counterActions
+  })
   console.log(actions.add(6).count)
 }
 
-// Module 1 (utilize modules feature)
+// Module 1 (uses the counter)
 
-// only its own state
-interface Module1OwnState {
+interface Module1State {
   count: number
+  counter: CounterState
 }
-// state including sub-modules
-interface Module1State extends Module1OwnState {
-  submodule: SubModuleState
-}
-// only its own actions
-interface Module1OwnActions {
-  sub(value: number): Partial<Module1State>
+
+interface Module1Actions {
+  counter: CounterActions
+  sub(): Partial<Module1State>
   add(value: number): Partial<Module1State>
 }
-// actions including sub-modules
-interface Module1Actions extends Module1OwnActions {
-  submodule: SubModuleActions
+
+const module1State: Module1State = {
+  counter: counterState,
+  count: 0
 }
 
-const module1: Hyperapp.Module<
-  Module1State,
-  Module1Actions,
-  Module1OwnState,
-  Module1OwnActions
-> = {
-  state: {
-    count: 0
-  },
-  actions: {
-    add: (state, actions) => (value: number) => ({
-      count: state.count + value
-    }),
-    sub: (state, actions) => ({ count: state.count - 1 })
-  },
-  modules: {
-    submodule
-  }
+const module1Actions: Hyperapp.InternalActions<Module1State, Module1Actions> = {
+  counter: counterActions,
+  sub: (state, actions) => ({ count: state.count - 1 }),
+  add: (state, actions) => (value: number) => ({
+    count: state.count + value
+  })
 }
 
 function testModule1() {
-  const actions = app<
-    Module1State,
-    Module1Actions,
-    Module1OwnState,
-    Module1OwnActions
-  >(module1)
+  const actions = app<Module1State, Module1Actions>({
+    state: module1State,
+    actions: module1Actions
+  })
   console.log(actions.add(8).count)
+  console.log(actions.counter.sub().count)
 }
 
-// Async Module (without modules feature)
+// Async Module
 
-interface AsyncModuleState {
+interface AsyncState {
   value?: Error | number
 }
 
-const asyncModuleState: AsyncModuleState = {}
-
-interface AsyncModuleActions {
+interface AsyncActions {
   setResult(value: Error | number): void
   fetch(url: string): Promise<void>
 }
 
-const asyncModuleActions: Hyperapp.InternalActions<
-  AsyncModuleState,
-  AsyncModuleActions
-> = {
+const asyncState: AsyncState = {}
+
+const asyncActions: Hyperapp.InternalActions<AsyncState, AsyncActions> = {
   setResult: (state, actions) => (value: number | Error) => ({ value }),
   fetch: (state, actions) => (url: string) =>
     fetch(url)
@@ -110,9 +93,9 @@ const asyncModuleActions: Hyperapp.InternalActions<
 }
 
 function testAsync() {
-  const actions = app<AsyncModuleState, AsyncModuleActions>({
-    state: asyncModuleState,
-    actions: asyncModuleActions
+  const actions = app<AsyncState, AsyncActions>({
+    state: asyncState,
+    actions: asyncActions
   })
   actions.fetch("blah").then(() => {
     console.log("Done!")
@@ -121,8 +104,10 @@ function testAsync() {
 
 // App's own state/actions (without modules)
 
-interface OwnState {
-  async: AsyncModuleState
+interface State {
+  module1: Module1State
+  async: AsyncState
+  count: number
   // just to demonstrate there can be other attributes than the ones defined in actions
   unused?: number
   unused2: {
@@ -130,44 +115,41 @@ interface OwnState {
   }
 }
 
-const state: OwnState = {
-  async: asyncModuleState,
+const state: State = {
+  module1: module1State,
+  async: asyncState,
+  count: 0,
   unused2: {
     foo: "bar"
   }
 }
 
-interface OwnActions {
-  async: AsyncModuleActions
-}
-
-const actions: Hyperapp.InternalActions<OwnState, OwnActions> = {
-  async: asyncModuleActions
-}
-
-// App + modules actions/state
-
-interface State extends OwnState {
-  module1: Module1State
-}
-
-interface Actions extends OwnActions {
+interface Actions {
   module1: Module1Actions
+  async: AsyncActions
+  add(value: number): Partial<State>
+}
+
+const actions: Hyperapp.InternalActions<State, Actions> = {
+  module1: module1Actions,
+  async: asyncActions,
+  add: (state, actions) => (value: number) => ({
+    count: state.count + value
+  })
 }
 
 // App
 
-const appActions = app<State, Actions, OwnState, OwnActions>(
+const appActions = app<State, Actions>(
   {
     state,
     actions,
-    modules: { module1 },
     view: (state, actions) => (
       <main>
         <h1>Typescript Demo</h1>
         <h2>Module 1</h2>
         <p>
-          <button onclick={() => actions.module1.sub(1)}>-</button>
+          <button onclick={() => actions.module1.sub()}>-</button>
           {state.module1.count}
           <button onclick={() => actions.module1.add(2)}>+</button>
         </p>

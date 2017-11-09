@@ -56,7 +56,7 @@ export function h<Props>(
  */
 export type ActionResult<State> = Partial<State> | Promise<any> | null | void
 
-export type InternalAction<State, Actions> =
+export type MyAction<State, Actions> =
   | ((state: State, actions: Actions) => (data: any) => ActionResult<State>)
   | ((state: State, actions: Actions) => ActionResult<State>)
 
@@ -64,10 +64,8 @@ export type InternalAction<State, Actions> =
  *
  * @memberOf [App]
  */
-export type InternalActions<State, Actions> = {
-  [P in keyof Actions]:
-    | InternalAction<State, Actions>
-    | InternalActions<any, Actions[P]>
+export type MyActions<State, Actions> = {
+  [P in keyof Actions]: MyAction<State, Actions> | MyActions<any, Actions[P]>
 }
 
 /** The view function.
@@ -87,7 +85,7 @@ export interface View<State, Actions> {
  */
 export interface AppProps<State, Actions> {
   state?: State
-  actions?: InternalActions<State, Actions>
+  actions?: MyActions<State, Actions>
   view?: View<State, Actions>
 }
 

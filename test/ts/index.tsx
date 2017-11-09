@@ -15,7 +15,7 @@ const counterState: CounterState = {
   count: 0
 }
 
-const counterActions: Hyperapp.InternalActions<CounterState, CounterActions> = {
+const counterActions: Hyperapp.MyActions<CounterState, CounterActions> = {
   sub: (state, actions) => ({ count: state.count - 1 }),
   add: (state, actions) => (value: number) => ({
     count: state.count + value
@@ -49,7 +49,7 @@ const module1State: Module1State = {
   count: 0
 }
 
-const module1Actions: Hyperapp.InternalActions<Module1State, Module1Actions> = {
+const module1Actions: Hyperapp.MyActions<Module1State, Module1Actions> = {
   counter: counterActions,
   sub: (state, actions) => ({ count: state.count - 1 }),
   add: (state, actions) => (value: number) => ({
@@ -79,7 +79,7 @@ interface AsyncActions {
 
 const asyncState: AsyncState = {}
 
-const asyncActions: Hyperapp.InternalActions<AsyncState, AsyncActions> = {
+const asyncActions: Hyperapp.MyActions<AsyncState, AsyncActions> = {
   setResult: (state, actions) => (value: number | Error) => ({ value }),
   fetch: (state, actions) => (url: string) =>
     fetch(url)
@@ -130,7 +130,7 @@ interface Actions {
   add(value: number): Partial<State>
 }
 
-const actions: Hyperapp.InternalActions<State, Actions> = {
+const actions: Hyperapp.MyActions<State, Actions> = {
   module1: module1Actions,
   async: asyncActions,
   add: (state, actions) => (value: number) => ({

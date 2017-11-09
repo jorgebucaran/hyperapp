@@ -41,7 +41,7 @@ export type VNodeChildren =
  * @param children  The children of the VNode
  *
  * @memberOf [VDOM]
-*/
+ */
 export function h<Props>(
   type: Component<Props> | string,
   props?: Props,
@@ -64,10 +64,10 @@ export type InternalAction<State, Actions> =
  *
  * @memberOf [App]
  */
-export type InternalActions<State, Actions, OwnActions = Actions> = {
-  [P in keyof OwnActions]:
+export type InternalActions<State, Actions> = {
+  [P in keyof Actions]:
     | InternalAction<State, Actions>
-    | InternalActions<any, any>
+    | InternalActions<any, Actions[P]>
 }
 
 /** The view function.
@@ -78,61 +78,16 @@ export interface View<State, Actions> {
   (state: State, actions: Actions): VNode<{}>
 }
 
-export type Diff<T extends string, U extends string> = ({ [P in T]: P } &
-  { [P in U]: never } & { [x: string]: never })[T]
-
-type Sub<A, B> = { [P in keyof A]: A[P] } & { [P in keyof B]: never }
-
-/** Definition for a single module: a self-contained set of actions that operates on a state tree.
- *
- * OwnState and OwnActions may be set to ensure that the initial state and all actions are implemented.
- *
- * @param State The full state of the module including sub-modules
- * @param Actions The actions of the module including sub-modules
- * @param OwnState Optional, if set, the state of this module excluding sub-modules
- *                 defaults to full state
- * @param OwnActions Optional, if set, the actions of this module excluding sub-modules
- *                   defaults to full actions
- *
- * @memberOf [App]
- */
-export interface Module<
-  State,
-  Actions,
-  OwnState = State,
-  OwnActions = Actions
-> {
-  state?: OwnState
-  actions?: InternalActions<State, Actions, OwnActions>
-  // Should be Modules<State - OwnState, Actions - OwnActions> - see https://github.com/Microsoft/TypeScript/issues/4183
-  modules?: Modules<any, any>
-}
-
-/** The map of modules indexed by state slice.
- *
- * @memberOf [App]
- */
-export type Modules<State, Actions> = {
-  [S in keyof State]?: Module<State[S], Actions[S & keyof Actions]>
-}
-
 /** The props object that serves as an input to app().
  *
  * @param State The full state of the module including sub-modules
  * @param Actions The actions of the module including sub-modules
- * @param OwnState Optional, if set, the state of this module excluding sub-modules
- *                 defaults to partial state
- * @param OwnActions Optional, if set, the actions of this module excluding sub-modules
- *                   defaults to partial actions
  *
  * @memberOf [App]
  */
-export interface AppProps<
-  State,
-  Actions,
-  OwnState = State,
-  OwnActions = Actions
-> extends Module<State, Actions, OwnState, OwnActions> {
+export interface AppProps<State, Actions> {
+  state?: State
+  actions?: InternalActions<State, Actions>
   view?: View<State, Actions>
 }
 
@@ -140,15 +95,11 @@ export interface AppProps<
  *
  * @param State The full state of the module including sub-modules
  * @param Actions The actions of the module including sub-modules
- * @param OwnState Optional, if set, the state of this module excluding sub-modules
- *                 defaults to partial state
- * @param OwnActions Optional, if set, the actions of this module excluding sub-modules
- *                   defaults to partial actions
  *
  * @memberOf [App]
  */
-export function app<State, Actions, OwnState = State, OwnActions = Actions>(
-  app: AppProps<State, Actions, OwnState, OwnActions>,
+export function app<State, Actions>(
+  app: AppProps<State, Actions>,
   container?: HTMLElement | null
 ): Actions
 

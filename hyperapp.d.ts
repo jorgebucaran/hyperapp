@@ -50,89 +50,38 @@ export function h<Props>(
 
 /** @namespace [App] */
 
-/** The application state.
- *
- * @memberOf [App]
- */
-export interface State {}
-
-export interface Update<State extends Hyperapp.State> {
-  (value: Partial<State>): void
-}
-
-/** Thunk that may be returned by an action.
- *
- * @memberOf [App]
- */
-export interface Thunk<State extends Hyperapp.State> {
-  (update: Update<State>): {} | null | void
-}
-
 /** The result of an action.
  *
  * @memberOf [App]
  */
-export type ActionResult<State extends Hyperapp.State> =
-  | Partial<State>
-  | Thunk<State>
-  | {}
-  | null
-  | void
+export type ActionResult<State> = Partial<State> | Promise<any> | null | void
 
-/** The interface for a single action (exposed when calling actions).
- *
- * @memberOf [App]
- */
-export interface Action<State extends Hyperapp.State, Data> {
-  (data: Data): ActionResult<State>
-}
-
-/** The interface for actions (exposed when calling actions).
- *
- * @memberOf [App]
- */
-export interface Actions<
-  State extends Hyperapp.State & Partial<Record<keyof Actions<State>, any>>
-> {
-  [action: string]:
-    | Actions<State[keyof Action<State, any>]>
-    | Action<State, any>
-}
-
-/** The interface for a single action (exposed when implementing actions).
- *
- * @memberOf [App]
- */
-export interface InternalAction<
-  State extends Hyperapp.State,
-  Actions extends Hyperapp.Actions<State>
-> {
-  (state: State, actions: Actions, data: any): ActionResult<State>
-}
+export type InternalAction<State, Actions> =
+  | ((state: State, actions: Actions) => (data: any) => ActionResult<State>)
+  | ((state: State, actions: Actions) => ActionResult<State>)
 
 /** The interface for actions (exposed when implementing actions).
  *
  * @memberOf [App]
  */
-export type InternalActions<
-  State extends Hyperapp.State & Partial<Record<keyof Actions, any>>,
-  Actions extends Hyperapp.Actions<State>
-> = {
-  [P in keyof Actions]:
+export type InternalActions<State, Actions, OwnActions = Actions> = {
+  [P in keyof OwnActions]:
     | InternalAction<State, Actions>
-    | InternalActions<State[P], Actions[P] & Hyperapp.Actions<State[P]>>
+    | InternalActions<any, any>
 }
 
 /** The view function.
  *
  * @memberOf [App]
  */
-export interface View<
-  State extends Hyperapp.State,
-  Actions extends Hyperapp.Actions<State>
-> {
+export interface View<State, Actions> {
   (state: State, actions: Actions): VNode<{}>
 }
+
+export type Diff<T extends string, U extends string> = ({ [P in T]: P } &
+  { [P in U]: never } & { [x: string]: never })[T]
+
+type Sub<A, B> = { [P in keyof A]: A[P] } & { [P in keyof B]: never }
 
 /** Definition for a single module: a self-contained set of actions that operates on a state tree.
  *
@@ -141,38 +90,30 @@ export interface View<
  * @param State The full state of the module including sub-modules
  * @param Actions The actions of the module including sub-modules
  * @param OwnState Optional, if set, the state of this module excluding sub-modules
- *                 defaults to partial state
+ *                 defaults to full state
  * @param OwnActions Optional, if set, the actions of this module excluding sub-modules
- *                   defaults to partial actions
+ *                   defaults to full actions
  *
  * @memberOf [App]
  */
 export interface Module<
-  State extends Hyperapp.State & Record<keyof Actions, any>,
-  Actions extends Hyperapp.Actions<State>,
-  OwnState = Partial<State>,
-  OwnActions = Partial<Actions>
+  State,
+  Actions,
+  OwnState = State,
+  OwnActions = Actions
 > {
   state?: OwnState
-  actions?: InternalActions<State, OwnActions & Hyperapp.Actions<State>>
-  modules?: Modules<
-    Partial<State> & Record<keyof Partial<Actions>, any>,
-    Partial<Actions> & Hyperapp.Actions<State>
-  >
+  actions?: InternalActions<State, Actions, OwnActions>
+  // Should be Modules<State - OwnState, Actions - OwnActions> - see https://github.com/Microsoft/TypeScript/issues/4183
+  modules?: Modules<any, any>
 }
 
 /** The map of modules indexed by state slice.
  *
  * @memberOf [App]
  */
-export type Modules<
-  State extends Hyperapp.State & Record<keyof Actions, any>,
-  Actions extends Hyperapp.Actions<State>
-> = {
-  [A in keyof Actions]?: Module<
-    State[A],
-    Actions[A] & Hyperapp.Actions<State[A]>
-  >
+export type Modules<State, Actions> = {
+  [S in keyof State]?: Module<State[S], Actions[S & keyof Actions]>
 }
 
 /** The props object that serves as an input to app().
@@ -187,10 +128,10 @@ export type Modules<
  * @memberOf [App]
  */
 export interface AppProps<
-  State extends Hyperapp.State & Record<keyof Actions, any>,
-  Actions extends Hyperapp.Actions<State>,
-  OwnState = Partial<State>,
-  OwnActions = Partial<Actions>
+  State,
+  Actions,
+  OwnState = State,
+  OwnActions = Actions
 > extends Module<State, Actions, OwnState, OwnActions> {
   view?: View<State, Actions>
 }
@@ -206,12 +147,7 @@ export interface AppProps<
  *
  * @memberOf [App]
  */
-export function app<
-  State extends Hyperapp.State & Record<keyof Actions, any>,
-  Actions extends Hyperapp.Actions<State>,
-  OwnState = Partial<State>,
-  OwnActions = Partial<Actions>
->(
+export function app<State, Actions, OwnState = State, OwnActions = Actions>(
   app: AppProps<State, Actions, OwnState, OwnActions>,
   container?: HTMLElement | null
 ): Actions

@@ -5,26 +5,27 @@
   "main": "dist/hyperapp.js",
   "jsnext:main": "src/index.js",
   "module": "src/index.js",
+  "typings": "hyperapp.d.ts",
   "license": "MIT",
   "repository": "hyperapp/hyperapp",
   "files": [
     "src",
-    "dist"
+    "dist",
+    "hyperapp.d.ts"
   ],
   "author": "Jorge Bucaran",
   "keywords": [
     "hyperapp",
     "elm",
-    "jsx",
     "vdom"
   ],
   "scripts": {
-    "test": "jest --coverage --no-cache",
+    "test": "jest --coverage --no-cache && tsc -p test/ts",
     "build": "npm run bundle && npm run minify",
     "bundle": "rollup -i src/index.js -o dist/hyperapp.js -m -f umd -n hyperapp",
     "minify": "uglifyjs dist/hyperapp.js -o dist/hyperapp.js --mangle --compress warnings=false --pure-funcs=Object.defineProperty -p relative --in-source-map dist/hyperapp.js.map --source-map dist/hyperapp.js.map",
     "prepare": "npm run build",
-    "format": "prettier --semi false --write 'src/**/*.js' 'test/*.js'",
+    "format": "prettier --semi false --write 'src/**/*.js' '{,test/ts/}*.{ts,tsx}'",
     "release": "npm run build && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
   },
   "babel": {
@@ -35,6 +36,7 @@
     "jest": "^21.2.1",
     "prettier": "^1.8.2",
     "rollup": "^0.51.2",
+    "typescript": "^2.6.1",
     "uglify-js": "^2.7.5"
   }
 }

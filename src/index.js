@@ -1,12 +1,29 @@
-export { h, app }
-
-function app(props, container) {
+export function app(props, container) {
+  var lock
   var root = (container = container || document.body).children[0]
   var node = vnode(root, [].map)
+  var lifecycle = []
   var appState = props.state || {}
   var appActions = {}
-  var lifecycle = []
-  var lock
+
+  repaint(init(appState, appActions, props.actions, []))
+
+  return appActions
+
+  function vnode(element, map) {
+    return (
+      element &&
+      h(
+        element.tagName.toLowerCase(),
+        {},
+        map.call(element.childNodes, function(element) {
+          return element.nodeType === 3
+            ? element.nodeValue
+            : vnode(element, map)
+        })
+      )
+    )
+  }
 
   function set(to, from) {
     for (var i in from) {
@@ -35,6 +52,41 @@ function app(props, container) {
       from = from[path[i]]
     }
     return from
+  }
+
+  function init(state, actions, from, path) {
+    for (var key in from) {
+      typeof from[key] === "function"
+        ? (function(key) {
+            actions[key] = function(data) {
+              var result = from[key]((state = get(path, appState)), actions)
+
+              if (typeof result === "function") {
+                result = result(data)
+              }
+
+              if (result && result !== state && !result.then) {
+                repaint(
+                  (appState = setDeep(path, merge(state, result), appState))
+                )
+              }
+
+              return result
+            }
+          })(key)
+        : init(
+            state[key] || (state[key] = {}),
+            (actions[key] = {}),
+            from[key],
+            path.concat(key)
+          )
+    }
+  }
+
+  function getKey(node) {
+    if (node && node.props) {
+      return node.props.key
+    }
   }
 
   function setElementProp(element, name, value, oldValue) {
@@ -109,12 +161,6 @@ function app(props, container) {
       props.onremove(element, done)
     } else {
       done()
-    }
-  }
-
-  function getKey(node) {
-    if (node && node.props) {
-      return node.props.key
     }
   }
 
@@ -226,42 +272,9 @@ function app(props, container) {
       setTimeout(render, (lock = !lock))
     }
   }
-
-  function init(state, actions, from, path) {
-    for (var key in from) {
-      typeof from[key] === "function"
-        ? (function(key) {
-            actions[key] = function(data) {
-              var result = from[key]((state = get(path, appState)), actions)
-
-              if (typeof result === "function") {
-                result = result(data)
-              }
-
-              if (result && result !== state && !result.then) {
-                repaint(
-                  (appState = setDeep(path, merge(state, result), appState))
-                )
-              }
-
-              return result
-            }
-          })(key)
-        : init(
-            state[key] || (state[key] = {}),
-            (actions[key] = {}),
-            from[key],
-            path.concat(key)
-          )
-    }
-  }
-
-  repaint(init(appState, appActions, props.actions, []))
-
-  return appActions
 }
 
-function h(type, props) {
+export function h(type, props) {
   var node
   var stack = []
   var children = []
@@ -287,17 +300,4 @@ function h(type, props) {
         children: children
       }
     : type(props || {}, children)
-}
-
-function vnode(element, map) {
-  return (
-    element &&
-    h(
-      element.tagName.toLowerCase(),
-      {},
-      map.call(element.childNodes, function(element) {
-        return element.nodeType === 3 ? element.nodeValue : vnode(element, map)
-      })
-    )
-  )
 }

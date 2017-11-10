@@ -1,43 +1,4 @@
-function h(type, props) {
-  var node
-  var stack = []
-  var children = []
-
-  for (var i = arguments.length; i-- > 2; ) {
-    stack.push(arguments[i])
-  }
-
-  while (stack.length) {
-    if (Array.isArray((node = stack.pop()))) {
-      for (i = node.length; i--; ) {
-        stack.push(node[i])
-      }
-    } else if (node != null && node !== true && node !== false) {
-      children.push(typeof node === "number" ? (node = node + "") : node)
-    }
-  }
-
-  return typeof type === "string"
-    ? {
-        type: type,
-        props: props || {},
-        children: children
-      }
-    : type(props || {}, children)
-}
-
-function vnode(element, map) {
-  return (
-    element &&
-    h(
-      element.tagName.toLowerCase(),
-      {},
-      map.call(element.childNodes, function(element) {
-        return element.nodeType === 3 ? element.nodeValue : vnode(element, map)
-      })
-    )
-  )
-}
+export { h, app }
 
 function app(props, container) {
   var root = (container = container || document.body).children[0]
@@ -300,4 +261,43 @@ function app(props, container) {
   return appActions
 }
 
-export { h, app }
+function h(type, props) {
+  var node
+  var stack = []
+  var children = []
+
+  for (var i = arguments.length; i-- > 2; ) {
+    stack.push(arguments[i])
+  }
+
+  while (stack.length) {
+    if (Array.isArray((node = stack.pop()))) {
+      for (i = node.length; i--; ) {
+        stack.push(node[i])
+      }
+    } else if (node != null && node !== true && node !== false) {
+      children.push(typeof node === "number" ? (node = node + "") : node)
+    }
+  }
+
+  return typeof type === "string"
+    ? {
+        type: type,
+        props: props || {},
+        children: children
+      }
+    : type(props || {}, children)
+}
+
+function vnode(element, map) {
+  return (
+    element &&
+    h(
+      element.tagName.toLowerCase(),
+      {},
+      map.call(element.childNodes, function(element) {
+        return element.nodeType === 3 ? element.nodeValue : vnode(element, map)
+      })
+    )
+  )
+}

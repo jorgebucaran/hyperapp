@@ -1,4 +1,43 @@
-export { h, app }
+function h(type, props) {
+  var node
+  var stack = []
+  var children = []
+
+  for (var i = arguments.length; i-- > 2; ) {
+    stack.push(arguments[i])
+  }
+
+  while (stack.length) {
+    if (Array.isArray((node = stack.pop()))) {
+      for (i = node.length; i--; ) {
+        stack.push(node[i])
+      }
+    } else if (node != null && node !== true && node !== false) {
+      children.push(typeof node === "number" ? (node = node + "") : node)
+    }
+  }
+
+  return typeof type === "string"
+    ? {
+        type: type,
+        props: props || {},
+        children: children
+      }
+    : type(props || {}, children)
+}
+
+function vnode(element, map) {
+  return (
+    element &&
+    h(
+      element.tagName.toLowerCase(),
+      {},
+      map.call(element.childNodes, function(element) {
+        return element.nodeType === 3 ? element.nodeValue : vnode(element, map)
+      })
+    )
+  )
+}
 
 function app(props, container) {
   var root = (container = container || document.body).children[0]
@@ -8,77 +47,15 @@ function app(props, container) {
   var lifecycle = []
   var lock
 
-  repaint(init(appState, appActions, props.actions, []))
-
-  return appActions
-
-  function vnode(element, map) {
-    return (
-      element &&
-      h(
-        element.tagName.toLowerCase(),
-        {},
-        map.call(element.childNodes, function(element) {
-          return element.nodeType === 3
-            ? element.nodeValue
-            : vnode(element, map)
-        })
-      )
-    )
-  }
-
-  function repaint() {
-    if (props.view && !lock) {
-      setTimeout(render, (lock = !lock))
-    }
-  }
-
-  function render(next) {
-    lock = !lock
-    if ((next = props.view(appState, appActions)) && !lock) {
-      root = patch(container, root, node, (node = next))
-    }
-    while ((next = lifecycle.pop())) next()
-  }
-
-  function init(state, actions, from, path) {
-    for (var key in from) {
-      typeof from[key] === "function"
-        ? (function(key) {
-            actions[key] = function(data) {
-              var result = from[key]((state = get(path, appState)), actions)
-
-              if (typeof result === "function") {
-                result = result(data)
-              }
-
-              if (result && result !== state && !result.then) {
-                repaint(
-                  (appState = setDeep(path, merge(state, result), appState))
-                )
-              }
-
-              return result
-            }
-          })(key)
-        : init(
-            state[key] || (state[key] = {}),
-            (actions[key] = {}),
-            from[key],
-            path.concat(key)
-          )
-    }
-  }
-
-  function merge(to, from) {
-    return set(set({}, to), from)
-  }
-
   function set(to, from) {
     for (var i in from) {
       to[i] = from[i]
     }
     return to
+  }
+
+  function merge(to, from) {
+    return set(set({}, to), from)
   }
 
   function setDeep(path, value, from) {
@@ -97,6 +74,27 @@ function app(props, container) {
       from = from[path[i]]
     }
     return from
+  }
+
+  function setElementProp(element, name, value, oldValue) {
+    if (name === "key") {
+    } else if (name === "style") {
+      for (var name in merge(oldValue, (value = value || {}))) {
+        element.style[name] = value[name] || ""
+      }
+    } else {
+      try {
+        element[name] = null == value ? "" : value
+      } catch (_) {}
+
+      if (typeof value !== "function") {
+        if (null == value || false === value) {
+          element.removeAttribute(name)
+        } else {
+          element.setAttribute(name, value)
+        }
+      }
+    }
   }
 
   function createElement(node, isSVG) {
@@ -124,27 +122,6 @@ function app(props, container) {
     return element
   }
 
-  function setElementProp(element, name, value, oldValue) {
-    if (name === "key") {
-    } else if (name === "style") {
-      for (var name in merge(oldValue, (value = value || {}))) {
-        element.style[name] = value[name] || ""
-      }
-    } else {
-      try {
-        element[name] = null == value ? "" : value
-      } catch (_) {}
-
-      if (typeof value !== "function") {
-        if (null == value || false === value) {
-          element.removeAttribute(name)
-        } else {
-          element.setAttribute(name, value)
-        }
-      }
-    }
-  }
-
   function updateElement(element, oldProps, props) {
     for (var i in merge(oldProps, props)) {
       var value = props[i]
@@ -163,14 +140,14 @@ function app(props, container) {
   }
 
   function removeElement(parent, element, props) {
+    function done() {
+      parent.removeChild(element)
+    }
+
     if (props && props.onremove) {
       props.onremove(element, done)
     } else {
       done()
-    }
-
-    function done() {
-      parent.removeChild(element)
     }
   }
 
@@ -274,32 +251,53 @@ function app(props, container) {
 
     return element
   }
-}
 
-function h(type, props) {
-  var node
-  var stack = []
-  var children = []
-
-  for (var i = arguments.length; i-- > 2; ) {
-    stack.push(arguments[i])
+  function render(next) {
+    lock = !lock
+    if ((next = props.view(appState, appActions)) && !lock) {
+      root = patch(container, root, node, (node = next))
+    }
+    while ((next = lifecycle.pop())) next()
   }
 
-  while (stack.length) {
-    if (Array.isArray((node = stack.pop()))) {
-      for (i = node.length; i--; ) {
-        stack.push(node[i])
-      }
-    } else if (node != null && node !== true && node !== false) {
-      children.push(typeof node === "number" ? (node = node + "") : node)
+  function repaint() {
+    if (props.view && !lock) {
+      setTimeout(render, (lock = !lock))
     }
   }
 
-  return typeof type === "string"
-    ? {
-        type: type,
-        props: props || {},
-        children: children
-      }
-    : type(props || {}, children)
+  function init(state, actions, from, path) {
+    for (var key in from) {
+      typeof from[key] === "function"
+        ? (function(key) {
+            actions[key] = function(data) {
+              var result = from[key]((state = get(path, appState)), actions)
+
+              if (typeof result === "function") {
+                result = result(data)
+              }
+
+              if (result && result !== state && !result.then) {
+                repaint(
+                  (appState = setDeep(path, merge(state, result), appState))
+                )
+              }
+
+              return result
+            }
+          })(key)
+        : init(
+            state[key] || (state[key] = {}),
+            (actions[key] = {}),
+            from[key],
+            path.concat(key)
+          )
+    }
+  }
+
+  repaint(init(appState, appActions, props.actions, []))
+
+  return appActions
 }
+
+export { h, app }

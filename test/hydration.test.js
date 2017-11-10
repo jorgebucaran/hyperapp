@@ -1,23 +1,5 @@
 import { h, app } from "../src"
 
-beforeEach(() => {
-  document.body.innerHTML = ""
-})
-
-testHydration(
-  "hydrate without container",
-  `<main><p>foo</p></main>`,
-  [h("p", {}, "foo")],
-  null
-)
-
-testHydration(
-  "hydrate with container",
-  `<div id="app"><main><p>foo</p></main></div>`,
-  [h("p", {}, "foo")],
-  "app"
-)
-
 function testHydration(name, ssrBody, children, container) {
   test(name, done => {
     document.body.innerHTML = ssrBody
@@ -39,3 +21,23 @@ function testHydration(name, ssrBody, children, container) {
     )
   })
 }
+
+
+beforeEach(() => {
+  document.body.innerHTML = ""
+})
+
+testHydration(
+  "hydrate without container",
+  `<main><p>foo</p></main>`,
+  [h("p", {}, "foo")],
+  null
+)
+
+testHydration(
+  "hydrate with container",
+  `<div id="app"><main><p>foo</p></main></div>`,
+  [h("p", {}, "foo")],
+  "app"
+)
+

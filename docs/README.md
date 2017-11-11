@@ -106,7 +106,7 @@ actions: {
 The view describes your user interface as a function of the [state](#state).
 Bind user events and [actions](#actions) together to create interactive applications. The view function is called every time we need to re-render the application due to state changes.
 
-The `h()` function returns a virtual node, an object that describes a DOM tree. Hyperapp consumes this object to update the DOM.
+The `h()` function returns a [virtual node](vnodes.md), an object that describes a DOM tree. Hyperapp consumes this object to update the DOM.
 
 Popular alternatives to the built-in `h()` function include [JSX](https://facebook.github.io/jsx/), [lit-html](https://github.com/PolymerLabs/lit-html), [hyperx](https://github.com/choojs/hyperx), [t7](https://github.com/trueadm/t7) and [@hyperapp/html](https://github.com/hyperapp/html).
 

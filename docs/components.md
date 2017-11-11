@@ -1,6 +1,6 @@
 # Components
 
-A component is a pure function that returns a virtual node. Unlike a view, they are not pre-wired to your application state or actions. Components are reusable blocks of code that encapsulate markup, styles and behaviors that belong together.
+A component is a pure function that returns a [virtual node](vnodes.md). Unlike a view, they are not pre-wired to your application state or actions. Components are reusable blocks of code that encapsulate markup, styles and behaviors that belong together.
 
 [Try it Online](https://codepen.io/hyperapp/pen/zNxRLy)
 

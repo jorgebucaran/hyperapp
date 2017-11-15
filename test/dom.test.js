@@ -6,7 +6,7 @@ function testTreeSegue(name, trees) {
       state: {
         index: 0
       },
-      view: (state, actions) =>
+      view: state => actions =>
         h(
           "main",
           {
@@ -16,8 +16,8 @@ function testTreeSegue(name, trees) {
           [trees[state.index].tree]
         ),
       actions: {
-        up: state => ({ index: state.index + 1 }),
-        next: (state, actions) => {
+        up: () => state => ({ index: state.index + 1 }),
+        next: () => state => actions => {
           expect(document.body.innerHTML).toBe(
             `<main>${trees[state.index].html.replace(/\s{2,}/g, "")}</main>`
           )
@@ -688,5 +688,3 @@ testTreeSegue("don't touch textnodes if equal", [
     html: `<main>foobar</main>`
   }
 ])
-
-

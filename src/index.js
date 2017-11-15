@@ -38,7 +38,7 @@ export function app(props, container) {
 
   function setDeep(path, value, from) {
     var to = {}
-    return path.length === 0
+    return 0 === path.length
       ? value
       : ((to[path[0]] =
           1 < path.length
@@ -54,26 +54,33 @@ export function app(props, container) {
     return from
   }
 
+  function isFunction(any) {
+    return "function" === typeof any
+  }
+
   function init(state, actions, from, path) {
     for (var key in from) {
-      typeof from[key] === "function"
-        ? (function(key) {
+      isFunction(from[key])
+        ? (function(key, action) {
             actions[key] = function(data) {
-              var result = from[key]((state = get(path, appState)), actions)
+              state = get(path, appState)
 
-              if (typeof result === "function") {
-                result = result(data)
+              if (
+                isFunction((data = action(data))) &&
+                isFunction((data = data(state)))
+              ) {
+                data = data(actions)
               }
 
-              if (result && result !== state && !result.then) {
+              if (data && data !== state && !data.then) {
                 repaint(
-                  (appState = setDeep(path, merge(state, result), appState))
+                  (appState = setDeep(path, merge(state, data), appState))
                 )
               }
 
-              return result
+              return data
             }
-          })(key)
+          })(key, from[key])
         : init(
             state[key] || (state[key] = {}),
             (actions[key] = {}),
@@ -92,15 +99,15 @@ export function app(props, container) {
   function setElementProp(element, name, value, oldValue) {
     if (name === "key") {
     } else if (name === "style") {
-      for (var name in merge(oldValue, (value = value || {}))) {
-        element.style[name] = value[name] || ""
+      for (var i in merge(oldValue, (value = value || {}))) {
+        element.style[i] = null == value[i] ? "" : value[i]
       }
     } else {
       try {
         element[name] = null == value ? "" : value
       } catch (_) {}
 
-      if (typeof value !== "function") {
+      if (!isFunction(value)) {
         if (null == value || false === value) {
           element.removeAttribute(name)
         } else {
@@ -166,7 +173,7 @@ export function app(props, container) {
 
   function patch(parent, element, oldNode, node, isSVG, nextSibling) {
     if (oldNode === node) {
-    } else if (oldNode == null) {
+    } else if (null == oldNode) {
       element = parent.insertBefore(createElement(node, isSVG), element)
     } else if (node.type != null && node.type === oldNode.type) {
       updateElement(element, oldNode.props, node.props)
@@ -261,9 +268,15 @@ export function app(props, container) {
 
   function render(next) {
     lock = !lock
-    if ((next = props.view(appState, appActions)) && !lock) {
+
+    if (isFunction((next = props.view(appState)))) {
+      next = next(appActions)
+    }
+
+    if (next && !lock) {
       root = patch(container, root, node, (node = next))
     }
+
     while ((next = lifecycle.pop())) next()
   }
 
@@ -288,7 +301,8 @@ export function h(type, props) {
       for (i = node.length; i--; ) {
         stack.push(node[i])
       }
-    } else if (node != null && node !== true && node !== false) {
+    } else if (null == node || node === true || node === false) {
+    } else {
       children.push(typeof node === "number" ? (node = node + "") : node)
     }
   }

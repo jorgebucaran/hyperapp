@@ -23,7 +23,7 @@ test("sync updates", done => {
         state.value
       ),
     actions: {
-      up: state => ({ value: state.value + 1 })
+      up: () => state => ({ value: state.value + 1 })
     }
   }).up()
 })
@@ -48,8 +48,8 @@ test("async updates", done => {
         state.value
       ),
     actions: {
-      up: state => data => ({ value: state.value + data }),
-      upAsync: (state, actions) => data =>
+      up: data => state => ({ value: state.value + data }),
+      upAsync: data => state => actions =>
         mockDelay().then(() => actions.up(data))
     }
   }).upAsync(1)

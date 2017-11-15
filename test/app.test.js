@@ -21,8 +21,8 @@ test("debouncing", done => {
         state.value
       ),
     actions: {
-      up: state => ({ value: state.value + 1 }),
-      fire: (state, actions) => {
+      up: () => state => ({ value: state.value + 1 }),
+      fire: () => state => actions => {
         actions.up()
         actions.up()
         actions.up()
@@ -37,7 +37,7 @@ test("actions in the view", done => {
     state: {
       value: 0
     },
-    view: (state, actions) => {
+    view: state => actions => {
       if (state.value < 1) {
         return actions.up()
       }
@@ -50,7 +50,7 @@ test("actions in the view", done => {
       return h("div", {}, state.value)
     },
     actions: {
-      up: state => ({ value: state.value + 1 })
+      up: () => state => ({ value: state.value + 1 })
     }
   })
 })

@@ -25,7 +25,7 @@ test("onupdate", done => {
   app({
     state: { value: "foo" },
 
-    view: (state, actions) =>
+    view: state => actions =>
       h(
         "div",
         {
@@ -42,7 +42,7 @@ test("onupdate", done => {
         state.value
       ),
     actions: {
-      repaint: state => ({})
+      repaint: () => ({})
     }
   })
 })
@@ -52,7 +52,7 @@ test("onremove", done => {
     state: {
       value: true
     },
-    view: (state, actions) =>
+    view: state => actions =>
       state.value
         ? h(
             "ul",
@@ -77,7 +77,7 @@ test("onremove", done => {
           )
         : h("ul", {}, [h("li")]),
     actions: {
-      toggle: state => ({ value: !state.value })
+      toggle: () => state => ({ value: !state.value })
     }
   })
 })
@@ -88,7 +88,7 @@ test("event bubling", done => {
     state: {
       value: true
     },
-    view: (state, actions) =>
+    view: state => actions =>
       h(
         "main",
         {
@@ -129,7 +129,7 @@ test("event bubling", done => {
         ]
       ),
     actions: {
-      toggle: state => ({ value: !state.value })
+      toggle: () => state => ({ value: !state.value })
     }
   })
 })

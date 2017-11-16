@@ -16,8 +16,8 @@ const counterState: CounterState = {
 }
 
 const counterActions: Hyperapp.MyActions<CounterState, CounterActions> = {
-  sub: (state, actions) => ({ count: state.count - 1 }),
-  add: (state, actions) => (value: number) => ({
+  sub: () => state => ({ count: state.count - 1 }),
+  add: (value: number) => state => ({
     count: state.count + value
   })
 }
@@ -51,8 +51,8 @@ const module1State: Module1State = {
 
 const module1Actions: Hyperapp.MyActions<Module1State, Module1Actions> = {
   counter: counterActions,
-  sub: (state, actions) => ({ count: state.count - 1 }),
-  add: (state, actions) => (value: number) => ({
+  sub: () => state => ({ count: state.count - 1 }),
+  add: (value: number) => state => ({
     count: state.count + value
   })
 }
@@ -80,8 +80,8 @@ interface AsyncActions {
 const asyncState: AsyncState = {}
 
 const asyncActions: Hyperapp.MyActions<AsyncState, AsyncActions> = {
-  setResult: (state, actions) => (value: number | Error) => ({ value }),
-  fetch: (state, actions) => (url: string) =>
+  setResult: (value: number | Error) => ({ value }),
+  fetch: (url: string) => () => actions =>
     fetch(url)
       .then(res => res.json())
       .then(value => {
@@ -133,7 +133,7 @@ interface Actions {
 const actions: Hyperapp.MyActions<State, Actions> = {
   module1: module1Actions,
   async: asyncActions,
-  add: (state, actions) => (value: number) => ({
+  add: (value: number) => state => ({
     count: state.count + value
   })
 }

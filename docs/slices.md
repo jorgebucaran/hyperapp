@@ -8,13 +8,13 @@ State slices address this issue with actions that access a slice of the state tr
 
 ```js
 actions: {
-  hello(state) {
-  // The state is the global `state`.
+  hello: data => state => {
+    // The state is the global `state`.
   },
   foo: {
-    bar: { 
-      howdy(state) {
-      // The state is: `state[foo][bar]`
+    bar: {
+      howdy: data => state => {
+        // The state is: `state[foo][bar]`
       }
     }
   }
@@ -42,7 +42,7 @@ In other words, you had to write something like the following in order to update
 
 ```js
 actions: {
-  updateValue(state) {
+  updateValue: data => state => {
     return {
       foo: {
         bar: {
@@ -74,9 +74,9 @@ You will have a corresponding action inside a namespace that matches the state y
 actions: {
   foo: {
     bar: {
-      updateValue(state) {
+      updateValue: data => state => {
         // State is `state[foo][bar]`
-        return { value: state.value + 1 }
+        return { value: state.value + data }
       }
     }
   }

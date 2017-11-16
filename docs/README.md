@@ -33,21 +33,25 @@ app({
   state: {
     count: 0
   },
-  view: (state, actions) => (
+  view: state => actions => (
     h("main", {}, [
       h("h1", {}, state.count),
       h("button", {
-        onclick: actions.down,
+        onclick() {
+          actions.down(1)
+        },
         disabled: state.count <= 0
       }, "–"),
       h("button", {
-        onclick: actions.up
+        onclick() {
+          actions.up(1)
+        },
       }, "+")
     ])
   ),
   actions: {
-    down: state => ({ count: state.count - 1 }),
-    up: state => ({ count: state.count + 1 })
+    down: n => state => ({ count: state.count - n }),
+    up: n => state => ({ count: state.count + n })
   }
 })
 
@@ -86,20 +90,12 @@ Actions are used to manipulate the [state](#state). If your application consumes
 
 ```jsx
 actions: {
-  down: state => ({ count: state.count - 1 }),
-  up: state => ({ count: state.count + 1 })
+  down: n => state => ({ count: state.count - n }),
+  up: n => state => ({ count: state.count + n })
 }
 ```
 
 Actions must never mutate the state directly. Returning a new state from an action updates the current state and schedules a re-render.
-
-You can also pass arguments to actions by returning a function.
-
-```jsx
-actions: {
-  upWithValue: state => value => ({ count: state.count + value })
-}
-```
 
 ### View
 
@@ -123,21 +119,25 @@ app({
   state: {
     count: 0
   },
-  view: (state, actions) => (
+  view: state => actions => (
     main([
       h1(state.count),
       button({
-        onclick: actions.down,
+        onclick() {
+          actions.down(1)
+        },
         disabled: state.count <= 0
       }, "–"),
       button({
-        onclick: actions.up
+        onclick() {
+          actions.up(1)
+        },
       }, "+")
     ])
   ),
   actions: {
-    down: state => ({ count: state.count - 1 }),
-    up: state => ({ count: state.count + 1 })
+    down: n => state => ({ count: state.count - n }),
+    up: n => state => ({ count: state.count + n })
   }
 })
 

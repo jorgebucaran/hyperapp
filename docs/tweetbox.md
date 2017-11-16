@@ -53,14 +53,14 @@ app({
     text: "",
     count: MAX_LENGTH
   },
-  view: (state, actions) =>
+  view: state => actions =>
     <Tweetbox
       text={state.text}
       count={state.count}
       update={e => actions.update(e.target.value)}
     />,
   actions: {
-    update: state => text => ({
+    update: text => state => ({
       text,
       count: state.count + state.text.length - text.length
     })

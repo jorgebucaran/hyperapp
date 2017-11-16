@@ -35,7 +35,7 @@ test("modules", done => {
       value: true
     },
     actions: {
-      change: state => ({ value: !state.value })
+      change: () => state => ({ value: !state.value })
     }
   }
 
@@ -45,7 +45,7 @@ test("modules", done => {
       bar: bar.state
     },
     actions: {
-      up: state => ({ value: !state.value }),
+      up: () => state => ({ value: !state.value }),
       bar: bar.actions
     }
   }
@@ -54,7 +54,7 @@ test("modules", done => {
     state: { foo: foo.state },
     actions: {
       foo: foo.actions,
-      getState: state => state
+      getState: () => state => state
     }
   })
 

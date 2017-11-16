@@ -21,23 +21,22 @@ const { tick } = app({
     count: SECONDS,
     paused: true
   },
-  view: (state, actions) =>
+  view: state => actions => (
     <main>
-      <h1>
-        {humanizeTime(state.count)}
-      </h1>
+      <h1>{humanizeTime(state.count)}</h1>
 
       <button onclick={actions.toggle}>
         {state.paused ? "START" : "PAUSED"}
       </button>
 
       <button onclick={actions.reset}>RESET</button>
-    </main>,
+    </main>
+  ),
   actions: {
-    toggle: state => ({ paused: !state.paused }),
-    reset: state => ({ count: SECONDS }),
-    drop: state => ({ count: state.count - 1 }),
-    tick: (state, actions) => {
+    toggle: () => state => ({ paused: !state.paused }),
+    reset: () => ({ count: SECONDS }),
+    drop: () => state => ({ count: state.count - 1 }),
+    tick: () => state => actions => {
       if (state.count === 0) {
         actions.reset()
         actions.toggle()

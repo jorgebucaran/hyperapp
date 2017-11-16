@@ -59,7 +59,7 @@ test("container with mutated host", done => {
       state: {
         value: "foo"
       },
-      view: (state, actions) =>
+      view: state => actions =>
         h(
           "p",
           {
@@ -85,7 +85,7 @@ test("container with mutated host", done => {
           state.value
         ),
       actions: {
-        bar: state => ({ value: "bar" })
+        bar: () => ({ value: "bar" })
       }
     },
     container

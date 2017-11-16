@@ -273,7 +273,7 @@ export function app(props, container) {
       next = next(appActions)
     }
 
-    if (next && !lock) {
+    if (!lock) {
       root = patch(container, root, node, (node = next))
     }
 

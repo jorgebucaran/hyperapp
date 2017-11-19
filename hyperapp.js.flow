@@ -1,14 +1,10 @@
 declare module "hyperapp" {
   declare type VirtualNode = {
-    tag: string,
-    data: { [string]: any },
+    type: string,
+    props: { [string]: any },
     children: Array<VirtualNode | string>
   };
 
-  declare type Emit = (event: string, data: any) => any;
-
-  declare type Thunk = () => { [string]: any };
-  declare type ActionResult = { [string]: any } | Thunk;
   declare type Action = (
     state: { [string]: any },
     actions: { [string]: Action },
@@ -16,41 +12,22 @@ declare module "hyperapp" {
   ) => ActionResult;
   declare type Actions = { [string]: Action };
 
-  declare type Event = (
-    state: { [string]: any },
-    actions: Actions,
-    data?: any
-  ) => any;
-  declare type Events = { [string]: Event };
-
-  declare type Mixin = (
-    emit: Emit
-  ) => {
-    state?: { [string]: any },
-    actions?: Actions,
-    events?: Events,
-    mixins?: Array<Mixin>
-  };
-
   declare type VirtualComponent = (
     data: { [string]: any } | null,
     children: Array<VirtualNode | string> | VirtualNode | string
   ) => VirtualNode;
 
   declare export function h(
-    tag: string | VirtualComponent,
-    data?: any,
+    type: string | VirtualComponent,
+    props?: any,
     ...children: any | Array<any>
   ): VirtualNode;
 
-  declare type Props = {
-    root?: HTMLElement | Element, 
+  declare type Props = { 
     state: { [string]: any },
     view?: any,
-    actions?: Actions,
-    events?: Events,
-    mixins?: Array<Mixin>
+    actions?: Actions
   };
 
-  declare export function app(props: Props): Emit;
+  declare export function app(props: Props, container?: HTMLElement | Element): Actions;
 };

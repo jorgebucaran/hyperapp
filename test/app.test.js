@@ -1,13 +1,14 @@
 import { h, app } from "../src"
 
-window.requestAnimationFrame = setTimeout
-
 beforeEach(() => {
   document.body.innerHTML = ""
 })
 
-test("throttling", done => {
+test("debouncing", done => {
   app({
+    state: {
+      value: 1
+    },
     view: state =>
       h(
         "div",
@@ -19,51 +20,37 @@ test("throttling", done => {
         },
         state.value
       ),
+    actions: {
+      up: () => state => ({ value: state.value + 1 }),
+      fire: () => state => actions => {
+        actions.up()
+        actions.up()
+        actions.up()
+        actions.up()
+      }
+    }
+  }).fire()
+})
+
+test("actions in the view", done => {
+  app({
     state: {
-      value: 1
+      value: 0
+    },
+    view: state => actions => {
+      if (state.value < 1) {
+        return actions.up()
+      }
+
+      setTimeout(() => {
+        expect(document.body.innerHTML).toBe("<div>1</div>")
+        done()
+      })
+
+      return h("div", {}, state.value)
     },
     actions: {
-      up(state) {
-        return {
-          value: state.value + 1
-        }
-      }
-    },
-    events: {
-      load(state, actions) {
-        actions.up()
-        actions.up()
-        actions.up()
-        actions.up()
-      },
-      render(state) {
-        //
-        // Because renders are throttled this event is called only once.
-        //
-        expect(state).toEqual({ value: 5 })
-      }
-    }
-  })
-})
-
-test("interop", done => {
-  const emit = app({
-    events: {
-      foo(state, actions, data) {
-        expect(data).toBe("bar")
-        done()
-      }
-    }
-  })
-  emit("foo", "bar")
-})
-
-test("optional view", done => {
-  app({
-    events: {
-      load() {
-        done()
-      }
+      up: () => state => ({ value: state.value + 1 })
     }
   })
 })

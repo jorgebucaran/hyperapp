@@ -2,47 +2,47 @@ import { h } from "../src"
 
 test("empty vnode", () => {
   expect(h("div")).toEqual({
-    tag: "div",
-    data: {},
+    type: "div",
+    props: {},
     children: []
   })
 })
 
 test("vnode with a single child", () => {
   expect(h("div", {}, ["foo"])).toEqual({
-    tag: "div",
-    data: {},
+    type: "div",
+    props: {},
     children: ["foo"]
   })
 
   expect(h("div", {}, "foo")).toEqual({
-    tag: "div",
-    data: {},
+    type: "div",
+    props: {},
     children: ["foo"]
   })
 })
 
 test("positional String/Number children", () => {
   expect(h("div", {}, "foo", "bar", "baz")).toEqual({
-    tag: "div",
-    data: {},
+    type: "div",
+    props: {},
     children: ["foo", "bar", "baz"]
   })
 
   expect(h("div", {}, 1, "foo", 2, "baz", 3)).toEqual({
-    tag: "div",
-    data: {},
+    type: "div",
+    props: {},
     children: ["1", "foo", "2", "baz", "3"]
   })
 
   expect(h("div", {}, "foo", h("div", {}, "bar"), "baz", "quux")).toEqual({
-    tag: "div",
-    data: {},
+    type: "div",
+    props: {},
     children: [
       "foo",
       {
-        tag: "div",
-        data: {},
+        type: "div",
+        props: {},
         children: ["bar"]
       },
       "baz",
@@ -51,8 +51,8 @@ test("positional String/Number children", () => {
   })
 })
 
-test("vnode with data", () => {
-  const data = {
+test("vnode with props", () => {
+  const props = {
     id: "foo",
     class: "bar",
     style: {
@@ -60,17 +60,17 @@ test("vnode with data", () => {
     }
   }
 
-  expect(h("div", data, "baz")).toEqual({
-    tag: "div",
-    data,
+  expect(h("div", props, "baz")).toEqual({
+    type: "div",
+    props,
     children: ["baz"]
   })
 })
 
 test("skip null and Boolean children", () => {
   const expected = {
-    tag: "div",
-    data: {},
+    type: "div",
+    props: {},
     children: []
   }
 
@@ -80,23 +80,34 @@ test("skip null and Boolean children", () => {
 })
 
 test("components", () => {
-  const Component = (data, children) => h("div", data, children)
+  const Component = (props, children) => h("div", props, children)
 
   expect(h(Component, { id: "foo" }, "bar")).toEqual({
-    tag: "div",
-    data: { id: "foo" },
+    type: "div",
+    props: { id: "foo" },
     children: ["bar"]
   })
 
   expect(h(Component, { id: "foo" }, [h(Component, { id: "bar" })])).toEqual({
-    tag: "div",
-    data: { id: "foo" },
+    type: "div",
+    props: { id: "foo" },
     children: [
       {
-        tag: "div",
-        data: { id: "bar" },
+        type: "div",
+        props: { id: "bar" },
         children: []
       }
     ]
+  })
+})
+
+test("component with no props adds default props", () => {
+  const Component = ({ name = "world" }, children) =>
+    h("div", {}, "Hello " + name)
+
+  expect(h(Component)).toEqual({
+    type: "div",
+    props: {},
+    children: ["Hello world"]
   })
 })

@@ -1,6 +1,6 @@
 # Countdown Timer
 
-In this example and learn how to use the [events](/docs/events.md) property to register global events.
+In this example we'll learn how to trigger state updates from external events.
 
 [Try it Online](https://codepen.io/hyperapp/pen/evOZLv?editors=0010)
 
@@ -16,28 +16,27 @@ const humanizeTime = t => {
 
 const SECONDS = 5
 
-app({
+const { tick } = app({
   state: {
     count: SECONDS,
     paused: true
   },
-  view: (state, actions) =>
+  view: state => actions => (
     <main>
-      <h1>
-        {humanizeTime(state.count)}
-      </h1>
+      <h1>{humanizeTime(state.count)}</h1>
 
       <button onclick={actions.toggle}>
         {state.paused ? "START" : "PAUSED"}
       </button>
 
       <button onclick={actions.reset}>RESET</button>
-    </main>,
+    </main>
+  ),
   actions: {
-    toggle: state => ({ paused: !state.paused }),
-    reset: state => ({ count: SECONDS }),
-    drop: state => ({ count: state.count - 1 }),
-    tick: (state, actions) => {
+    toggle: () => state => ({ paused: !state.paused }),
+    reset: () => ({ count: SECONDS }),
+    drop: () => state => ({ count: state.count - 1 }),
+    tick: () => state => actions => {
       if (state.count === 0) {
         actions.reset()
         actions.toggle()
@@ -45,13 +44,16 @@ app({
         actions.drop()
       }
     }
-  },
-  events: {
-    load(state, actions) {
-      setInterval(actions.tick, 1000)
-    }
   }
 })
+
+setInterval(tick, 1000)
+```
+
+The `app()` function returns your actions already wired to the state.
+
+```jsx
+const { tick } = app({ ... })
 ```
 
 The state consists of two properties: `count`, to track the seconds elapsed; and `paused`, to check if the clock is currently running.
@@ -73,17 +75,13 @@ The view displays the seconds inside a `<h1>` element and binds two buttons to `
 <button onclick={actions.reset}>RESET</button>
 ```
 
-To simulate the clock we use [`setInterval`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setInterval) and call `actions.tick` every second.
+To track time we use [`setInterval`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setInterval) and call `tick` every second.
 
 ```jsx
-events: {
-  load(state, actions){
-    setInterval(actions.tick, 1000)
-  }
-}
+setInterval(tick, 1000)
 ```
 
-Inside `tick`, we check the current second count and if it's zero, reset the counter back to `SECONDS` and toggle the running clock.
+Inside `tick`, we check the second count and if zero, reset the counter back to `SECONDS` and toggle the running clock.
 
 If `state.count` is greater than zero and the clock is not paused, we decrement the count by one.
 

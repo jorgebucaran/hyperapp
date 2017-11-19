@@ -1,55 +1,62 @@
 # Components
 
-A [component](/docs/api.md#component) is a function that returns a custom [virtual node](/docs/virtual-nodes.md). Components are reusable blocks of code that encapsulate markup, styles and behaviours that belong together.
+A component is a pure function that returns a [virtual node](vnodes.md). Unlike a view, they are not pre-wired to your application state or actions. Components are reusable blocks of code that encapsulate markup, styles and behaviors that belong together.
 
-[Try it Online](https://codepen.io/hyperapp/pen/WRWbKw?editors=0010)
+[Try it Online](https://codepen.io/hyperapp/pen/zNxRLy)
 
-```js
-const Title = ({ url, value }/*, children*/) =>
-  <h1>
-    <a href={url}>{value}</a>
-  </h1>
+```jsx
+const TodoItem = ({ id, value, done, toggle }) => (
+  <li
+    class={done && "done"}
+    onclick={e =>
+      toggle({
+        value: done,
+        id: id
+      })
+    }
+  >
+    {value}
+  </li>
+)
 
-app({
-  view: () =>
-    <main id="app">
-      <Title url="#" value="Jump" />
-    </main>
-})
-```
-
-Here is the corresponding virtual node.
-
-```js
-{
-  tag: "main",
-  data: {
-    id: "app"
-  },
-  children: [{
-    tag: "h1",
-    data: {},
-    children: [{
-      tag: "a",
-      data: {
-        href: "#"
-      },
-      children: ["Jump"]
-    }]
-  }]
-}
+const mainView = state => actions => (
+  <div>
+    <h1>Todo</h1>
+    <ul>
+      {state.todos.map(({ id, value, done }) => (
+        <TodoItem id={id} value={value} done={done} toggle={actions.toggle} />
+      ))}
+    </ul>
+  </div>
+)
 ```
 
 If you don't know all the properties that you want to place in a component ahead of time, you can use the [spread syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_operator).
 
 ```jsx
-const Link = (props, children) =>
-  <a {...props}>{children}</a>
-
-<Link href="#">"Hello."</Link>
+const TodoList = ({ todos, toggle }) => (
+  <ul>{todos.map(todo => <TodoItem {...todo} toggle={toggle} />)}</ul>
+)
 ```
 
-## Component Lifecycle Events
+Note that when using JSX, components [must be capitalized](https://facebook.github.io/react/docs/jsx-in-depth.html#user-defined-components-must-be-capitalized) or contain a `.` in their name.
 
-Components share the same lifecycle events as virtual nodes. See [Lifecyle Events](/docs/lifecycle-events.md) for more information.
+## Children Composition
 
+Components receive children elements in the second argument.
+
+```jsx
+const Box = ({ color }, children) => (
+  <div class={`box box-${color}`}>{children}</div>
+)
+```
+
+This lets you and other components pass arbitrary children down to them.
+
+```jsx
+const HelloBox = ({ name }) => (
+  <Box color="green">
+    <h1 class="title">Hello, {name}!</h1>
+  </Box>
+)
+```

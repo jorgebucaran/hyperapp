@@ -1,6 +1,6 @@
 # TweetBox
 
-In this example we'll create a TweetBox clone and learn how to organize our UI code using [Components](/docs/components.md).
+In this example we'll create a TweetBox.
 
 [Try it Online](https://codepen.io/hyperapp/pen/bgWBdV?editors=0010)
 
@@ -53,14 +53,14 @@ app({
     text: "",
     count: MAX_LENGTH
   },
-  view: (state, actions) =>
+  view: state => actions =>
     <Tweetbox
       text={state.text}
       count={state.count}
       update={e => actions.update(e.target.value)}
     />,
   actions: {
-    update: (state, actions, text) => ({
+    update: text => state => ({
       text,
       count: state.count + state.text.length - text.length
     })
@@ -70,7 +70,7 @@ app({
 
 The state consists of two properties: `text`, the tweet; and `count`, the number of remaining characters, initialized to `MAX_LENGTH`.
 
-```js
+```jsx
 state: {
   text: "",
   count: MAX_LENGTH
@@ -89,8 +89,8 @@ The view consists of a single TweetBox component.
 
 To update the text and calculate the remaining characters, call `actions.update`.
 
-```js
-update: (state, actions, text) => ({
+```jsx
+update: state => text => ({
   text,
   count: state.count + state.text.length - text.length
 })

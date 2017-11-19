@@ -104,7 +104,7 @@ Bind user events and [actions](#actions) together to create interactive applicat
 
 The `h()` function returns a [virtual node](vnodes.md), an object that describes a DOM tree. Hyperapp consumes this object to update the DOM.
 
-Popular alternatives to the built-in `h()` function include [JSX](https://facebook.github.io/jsx/), [lit-html](https://github.com/PolymerLabs/lit-html), [hyperx](https://github.com/choojs/hyperx), [t7](https://github.com/trueadm/t7) and [@hyperapp/html](https://github.com/hyperapp/html).
+Popular alternatives to the built-in `h()` function include [JSX](https://facebook.github.io/jsx/), [hyperx](https://github.com/choojs/hyperx), [t7](https://github.com/trueadm/t7) and [@hyperapp/html](https://github.com/hyperapp/html).
 
 ```html
 <body>

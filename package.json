@@ -25,7 +25,7 @@
     "bundle": "rollup -i src/index.js -o dist/hyperapp.js -m -f umd -n hyperapp",
     "minify": "uglifyjs dist/hyperapp.js -o dist/hyperapp.js --mangle --compress warnings=false --pure-funcs=Object.defineProperty -p relative --in-source-map dist/hyperapp.js.map --source-map dist/hyperapp.js.map",
     "prepare": "npm run build",
-    "format": "prettier --semi false --write 'src/**/*.js' '{,test/ts/}*.{ts,tsx}'",
+    "format": "prettier --semi false --write \"src/**/*.js\" \"{,test/ts/}*.{ts,tsx}\"",
     "release": "npm run build && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
   },
   "babel": {

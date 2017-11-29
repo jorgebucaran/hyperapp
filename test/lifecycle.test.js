@@ -82,6 +82,32 @@ test("onremove", done => {
   })
 })
 
+test("nested onremove", done => {
+  app({
+    state: {
+      value: true
+    },
+    view: state => actions =>
+      state.value
+        ? h(
+            "div",
+            [
+              h("div", {
+                onremove(element, remove) {
+                  remove()
+                  expect(document.body.innerHTML).toBe("<ul><li></li></ul>")
+                  done()
+                }
+              })
+            ]
+          )
+        : h("ul", {}, [h("li")]),
+    actions: {
+      toggle: () => state => ({ value: !state.value })
+    }
+  })
+})
+
 test("event bubling", done => {
   let count = 0
   app({

@@ -76,9 +76,11 @@ export type MyActions<State, Actions> = {
  *
  * @memberOf [App]
  */
-export interface View<State, Actions> {
-  (state: State, actions: Actions): VNode<{}>
-}
+export type View<State, Actions> = (
+  state: State
+) =>
+  | ((actions: Actions) => VNode<{}>)
+  | VNode<{}>
 
 /** The props object that serves as an input to app().
  *

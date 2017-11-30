@@ -1,0 +1,33 @@
+declare module "hyperapp" {
+  declare type VirtualNode = {
+    type: string,
+    props: { [string]: any },
+    children: Array<VirtualNode | string>
+  };
+
+  declare type Action = (
+    state: { [string]: any },
+    actions: { [string]: Action },
+    data?: any
+  ) => ActionResult;
+  declare type Actions = { [string]: Action };
+
+  declare type VirtualComponent = (
+    data: { [string]: any } | null,
+    children: Array<VirtualNode | string> | VirtualNode | string
+  ) => VirtualNode;
+
+  declare export function h(
+    type: string | VirtualComponent,
+    props?: any,
+    ...children: any | Array<any>
+  ): VirtualNode;
+
+  declare type Props = { 
+    state: { [string]: any },
+    view?: any,
+    actions?: Actions
+  };
+
+  declare export function app(props: Props, container?: HTMLElement | Element): Actions;
+};

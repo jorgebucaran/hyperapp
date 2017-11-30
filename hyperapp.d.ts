@@ -57,9 +57,12 @@ export function h<Props>(
 export type ActionResult<State> = Partial<State> | Promise<any> | null | void
 
 export type MyAction<State, Actions> = (
-  state: State,
-  actions: Actions
-) => ((data: any) => ActionResult<State>) | ActionResult<State>
+  data: any
+) =>
+  | ((
+      state: State
+    ) => ((actions: Actions) => ActionResult<State>) | ActionResult<State>)
+  | ActionResult<State>
 
 /** The interface for actions (exposed when implementing actions).
  *

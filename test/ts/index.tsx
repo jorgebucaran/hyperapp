@@ -144,7 +144,7 @@ const appActions = app<State, Actions>(
   {
     state,
     actions,
-    view: (state, actions) => (
+    view: state => actions => (
       <main>
         <h1>Typescript Demo</h1>
         <h2>Module 1</h2>

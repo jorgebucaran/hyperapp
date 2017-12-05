@@ -188,13 +188,20 @@ export function app(props, container) {
     }
   }
 
-  function removeElement(parent, element, props) {
+  function removeElement(parent, element, node) {
     function done() {
       parent.removeChild(element)
+      if (node.children) {
+        for (var i = 0; i < node.children.length; i++) {
+          if (typeof node.children[i] !== "string") {
+            removeElement(element, element.children[i], node.children[i])
+          }
+        }
+      }
     }
 
-    if (props && props.onremove) {
-      props.onremove(element, done)
+    if (node.props && node.props.onremove) {
+      node.props.onremove(element, done)
     } else {
       done()
     }
@@ -268,7 +275,7 @@ export function app(props, container) {
         var oldChild = oldNode.children[i]
         var oldKey = getKey(oldChild)
         if (null == oldKey) {
-          removeElement(element, oldElements[i], oldChild.props)
+          removeElement(element, oldElements[i], oldChild)
         }
         i++
       }
@@ -277,7 +284,7 @@ export function app(props, container) {
         var keyedNode = oldKeyed[i]
         var reusableNode = keyedNode[1]
         if (!keyed[reusableNode.props.key]) {
-          removeElement(element, keyedNode[0], reusableNode.props)
+          removeElement(element, keyedNode[0], reusableNode)
         }
       }
     } else if (element && node !== element.nodeValue) {
@@ -288,7 +295,7 @@ export function app(props, container) {
           createElement(node, isSVG),
           (nextSibling = element)
         )
-        removeElement(parent, nextSibling, oldNode.props)
+        removeElement(parent, nextSibling, oldNode)
       }
     }
 

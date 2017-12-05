@@ -146,12 +146,19 @@ export function app(props, container) {
     }
   }
 
-  function createElement(node, isSVG) {
+  var namespaces = {
+    svg: "http://www.w3.org/2000/svg", 
+    mathml: "http://www.w3.org/1998/Math/MathML",
+    html: "http://www.w3.org/1999/xhtml"
+  }
+
+  function createElement(node, ns) {
     if (typeof node === "string") {
       var element = document.createTextNode(node)
     } else {
-      var element = (isSVG = isSVG || node.type === "svg")
-        ? document.createElementNS("http://www.w3.org/2000/svg", node.type)
+      ns = ns || namespaces[node.type]
+      var element = ns
+        ? document.createElementNS(ns, node.type)
         : document.createElement(node.type)
 
       if (node.props.oncreate) {
@@ -161,7 +168,7 @@ export function app(props, container) {
       }
 
       for (var i = 0; i < node.children.length; i++) {
-        element.appendChild(createElement(node.children[i], isSVG))
+        element.appendChild(createElement(node.children[i], ns))
       }
 
       for (var i in node.props) {
@@ -200,14 +207,14 @@ export function app(props, container) {
     }
   }
 
-  function patch(parent, element, oldNode, node, isSVG, nextSibling) {
+  function patch(parent, element, oldNode, node, ns, nextSibling) {
     if (oldNode === node) {
     } else if (null == oldNode) {
-      element = parent.insertBefore(createElement(node, isSVG), element)
+      element = parent.insertBefore(createElement(node, ns), element)
     } else if (node.type != null && node.type === oldNode.type) {
       updateElement(element, oldNode.props, node.props)
 
-      isSVG = isSVG || node.type === "svg"
+      ns = ns || namespaces[node.type]
 
       var len = node.children.length
       var oldLen = oldNode.children.length
@@ -244,19 +251,19 @@ export function app(props, container) {
 
         if (null == newKey) {
           if (null == oldKey) {
-            patch(element, oldElement, oldChild, newChild, isSVG)
+            patch(element, oldElement, oldChild, newChild, ns)
             j++
           }
           i++
         } else {
           if (oldKey === newKey) {
-            patch(element, keyedNode[0], keyedNode[1], newChild, isSVG)
+            patch(element, keyedNode[0], keyedNode[1], newChild, ns)
             i++
           } else if (keyedNode[0]) {
             element.insertBefore(keyedNode[0], oldElement)
-            patch(element, keyedNode[0], keyedNode[1], newChild, isSVG)
+            patch(element, keyedNode[0], keyedNode[1], newChild, ns)
           } else {
-            patch(element, oldElement, null, newChild, isSVG)
+            patch(element, oldElement, null, newChild, ns)
           }
 
           j++
@@ -285,7 +292,7 @@ export function app(props, container) {
         element.nodeValue = node
       } else {
         element = parent.insertBefore(
-          createElement(node, isSVG),
+          createElement(node, ns),
           (nextSibling = element)
         )
         removeElement(parent, nextSibling, oldNode.props)

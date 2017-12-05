@@ -1,3 +1,32 @@
+export function h(type, props) {
+  var node
+  var stack = []
+  var children = []
+
+  for (var i = arguments.length; i-- > 2; ) {
+    stack.push(arguments[i])
+  }
+
+  while (stack.length) {
+    if (Array.isArray((node = stack.pop()))) {
+      for (i = node.length; i--; ) {
+        stack.push(node[i])
+      }
+    } else if (null == node || node === true || node === false) {
+    } else {
+      children.push(typeof node === "number" ? (node = node + "") : node)
+    }
+  }
+
+  return typeof type === "string"
+    ? {
+        type: type,
+        props: props || {},
+        children: children
+      }
+    : type(props || {}, children)
+}
+
 export function app(props, container) {
   var lock
   var root = (container = container || document.body).children[0]
@@ -285,33 +314,4 @@ export function app(props, container) {
       setTimeout(render, (lock = !lock))
     }
   }
-}
-
-export function h(type, props) {
-  var node
-  var stack = []
-  var children = []
-
-  for (var i = arguments.length; i-- > 2; ) {
-    stack.push(arguments[i])
-  }
-
-  while (stack.length) {
-    if (Array.isArray((node = stack.pop()))) {
-      for (i = node.length; i--; ) {
-        stack.push(node[i])
-      }
-    } else if (null == node || node === true || node === false) {
-    } else {
-      children.push(typeof node === "number" ? (node = node + "") : node)
-    }
-  }
-
-  return typeof type === "string"
-    ? {
-        type: type,
-        props: props || {},
-        children: children
-      }
-    : type(props || {}, children)
 }

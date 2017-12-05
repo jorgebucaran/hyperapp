@@ -23,7 +23,7 @@
     "test": "jest --coverage --no-cache && tsc -p test/ts",
     "build": "npm run bundle && npm run minify",
     "bundle": "rollup -i src/index.js -o dist/hyperapp.js -m -f umd -n hyperapp",
-    "minify": "uglifyjs dist/hyperapp.js -o dist/hyperapp.js --mangle --compress warnings=false --pure-funcs=Object.defineProperty -p relative --in-source-map dist/hyperapp.js.map --source-map dist/hyperapp.js.map",
+    "minify": "uglifyjs dist/hyperapp.js -o dist/hyperapp.js -mc pure_funcs=Object.defineProperty --source-map includeSources,url=hyperapp.js.map",
     "prepare": "npm run build",
     "format": "prettier --semi false --write \"src/**/*.js\" \"{,test/ts/}*.{ts,tsx}\"",
     "release": "npm run build && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
@@ -35,8 +35,8 @@
     "babel-preset-env": "^1.6.1",
     "jest": "^21.2.1",
     "prettier": "^1.8.2",
-    "rollup": "^0.51.2",
+    "rollup": "^0.52.0",
     "typescript": "^2.6.1",
-    "uglify-js": "^2.7.5"
+    "uglify-js": "^3.2.1"
   }
 }

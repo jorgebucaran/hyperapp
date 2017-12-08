@@ -35,7 +35,7 @@ export function app(props, container) {
   var appState = props.state || {}
   var appActions = {}
   var namespaces = {
-    svg: "http://www.w3.org/2000/svg", 
+    svg: "http://www.w3.org/2000/svg",
     math: "http://www.w3.org/1998/Math/MathML"
   }
 

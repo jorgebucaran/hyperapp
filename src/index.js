@@ -27,6 +27,12 @@ export function h(type, props) {
     : type(props || {}, children)
 }
 
+h.ns = {
+  svg: "http://www.w3.org/2000/svg",
+  math: "http://www.w3.org/1998/Math/MathML",
+  html: "http://www.w3.org/1999/xhtml"
+}
+
 export function app(props, container) {
   var lock
   var root = (container = container || document.body).children[0]
@@ -34,10 +40,6 @@ export function app(props, container) {
   var lifecycle = []
   var appState = props.state || {}
   var appActions = {}
-  var namespaces = {
-    svg: "http://www.w3.org/2000/svg",
-    math: "http://www.w3.org/1998/Math/MathML"
-  }
 
   repaint(init(appState, appActions, props.actions, []))
 
@@ -154,10 +156,8 @@ export function app(props, container) {
     if (typeof node === "string") {
       var element = document.createTextNode(node)
     } else {
-      var element = (ns = namespaces[node.type] || node.props.namespace || ns)
-        ? document.createElementNS(ns, node.type)
-        : document.createElement(node.type)
-
+      ns = h.ns[node.type] || node.props.namespace || ns || h.ns.html
+      var element = document.createElementNS(ns, node.type)
       if (node.props.oncreate) {
         lifecycle.push(function() {
           node.props.oncreate(element)
@@ -211,8 +211,8 @@ export function app(props, container) {
     } else if (node.type != null && node.type === oldNode.type) {
       updateElement(element, oldNode.props, node.props)
 
-      ns = namespaces[node.type] || ns
-
+      ns = element.namespaceURI || h.ns.html
+      
       var len = node.children.length
       var oldLen = oldNode.children.length
       var oldKeyed = {}

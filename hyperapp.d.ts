@@ -78,9 +78,7 @@ export type MyActions<State, Actions> = {
  */
 export type View<State, Actions> = (
   state: State
-) =>
-  | ((actions: Actions) => VNode<{}>)
-  | VNode<{}>
+) => ((actions: Actions) => VNode<{}>) | VNode<{}>
 
 /** The props object that serves as an input to app().
  *

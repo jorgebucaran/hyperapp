@@ -9,12 +9,12 @@ export function h(type, props) {
 
   while (stack.length) {
     if (Array.isArray((node = stack.pop()))) {
-      for (i = node.length; i--; ) {
+      for (var i = node.length; i--; ) {
         stack.push(node[i])
       }
-    } else if (null == node || node === true || node === false) {
+    } else if (null == node || true === node || false === node) {
     } else {
-      children.push(typeof node === "number" ? (node = node + "") : node)
+      children.push(typeof node === "number" ? (node += "") : node)
     }
   }
 
@@ -27,95 +27,80 @@ export function h(type, props) {
     : type(props || {}, children)
 }
 
-export function app(props, container) {
+export function app(model, view, container) {
   var lock
   var root = (container = container || document.body).children[0]
   var node = vnode(root, [].map)
-  var lifecycle = []
-  var appState = props.state || {}
-  var appActions = {}
+  var stack = []
 
-  repaint(init(appState, appActions, props.actions, []))
+  repaint(init(model, []))
 
-  return appActions
+  return model
 
   function vnode(element, map) {
     return (
-      element &&
-      h(
-        element.tagName.toLowerCase(),
-        {},
-        map.call(element.childNodes, function(element) {
-          return element.nodeType === 3
+      element && {
+        type: element.tagName.toLowerCase(),
+        props: {},
+        children: map.call(element.childNodes, function(element) {
+          return 3 === element.nodeType
             ? element.nodeValue
             : vnode(element, map)
         })
-      )
+      }
     )
   }
 
-  function set(to, from) {
-    for (var i in from) {
-      to[i] = from[i]
+  function set(target, source) {
+    for (var i in source) {
+      target[i] = source[i]
     }
-    return to
+    return target
   }
 
-  function merge(to, from) {
-    return set(set({}, to), from)
+  function merge(target, source) {
+    return set(set({}, target), source)
   }
 
-  function setDeep(path, value, from) {
-    var to = {}
+  function setDeep(path, value, source) {
+    var target = {}
     return 0 === path.length
       ? value
-      : ((to[path[0]] =
+      : ((target[path[0]] =
           1 < path.length
-            ? setDeep(path.slice(1), value, from[path[0]])
+            ? setDeep(path.slice(1), value, source[path[0]])
             : value),
-        merge(from, to))
+        merge(source, target))
   }
 
-  function get(path, from) {
+  function get(path, source) {
     for (var i = 0; i < path.length; i++) {
-      from = from[path[i]]
+      source = source[path[i]]
     }
-    return from
+    return source
   }
 
-  function isFunction(any) {
-    return "function" === typeof any
-  }
-
-  function init(state, actions, from, path) {
-    for (var key in from) {
-      isFunction(from[key])
+  function init(source, path) {
+    for (var key in source) {
+      typeof source[key] === "function"
         ? (function(key, action) {
-            actions[key] = function(data) {
-              state = get(path, appState)
+            source[key] = function(data) {
+              source = get(path, model)
 
-              if (
-                isFunction((data = action(data))) &&
-                isFunction((data = data(state)))
-              ) {
-                data = data(actions)
+              if (typeof (data = action(data)) === "function") {
+                data = data(source)
               }
 
-              if (data && data !== state && !data.then) {
-                repaint(
-                  (appState = setDeep(path, merge(state, data), appState))
-                )
+              if (data && data !== source && !data.then) {
+                repaint((model = setDeep(path, merge(source, data), model)))
               }
 
               return data
             }
-          })(key, from[key])
-        : init(
-            state[key] || (state[key] = {}),
-            (actions[key] = {}),
-            from[key],
-            path.concat(key)
-          )
+          })(key, source[key])
+        : typeof source[key] === "object" &&
+          !Array.isArray(source[key]) &&
+          init(source[key], path.concat(key))
     }
   }
 
@@ -136,7 +121,7 @@ export function app(props, container) {
         element[name] = null == value ? "" : value
       } catch (_) {}
 
-      if (!isFunction(value)) {
+      if (typeof value !== "function") {
         if (null == value || false === value) {
           element.removeAttribute(name)
         } else {
@@ -155,7 +140,7 @@ export function app(props, container) {
         : document.createElement(node.type)
 
       if (node.props.oncreate) {
-        lifecycle.push(function() {
+        stack.push(function() {
           node.props.oncreate(element)
         })
       }
@@ -182,7 +167,7 @@ export function app(props, container) {
     }
 
     if (props.onupdate) {
-      lifecycle.push(function() {
+      stack.push(function() {
         props.onupdate(element, oldProps)
       })
     }
@@ -297,20 +282,17 @@ export function app(props, container) {
 
   function render(next) {
     lock = !lock
-
-    if (isFunction((next = props.view(appState)))) {
-      next = next(appActions)
-    }
+    next = view(model)
 
     if (!lock) {
       root = patch(container, root, node, (node = next))
     }
 
-    while ((next = lifecycle.pop())) next()
+    while ((next = stack.pop())) next()
   }
 
   function repaint() {
-    if (props.view && !lock) {
+    if (view && !lock) {
       setTimeout(render, (lock = !lock))
     }
   }

@@ -153,6 +153,44 @@ test("nested ondestroy", done => {
   })
 })
 
+test("several nested ondestroy", done => {
+  let childDestroyed = false
+  app({
+    state: {
+      value: true
+    },
+    view: state => actions =>
+      state.value
+        ? h(
+            "ul",
+            {
+              oncreate: () => actions.toggle()
+            },
+            [
+              h("li"),
+              h("li", {}, [
+                h("span", {
+                  ondestroy() {
+                    expect(childDestroyed).toBe(true)
+                    done()
+                  }
+                }, [
+                  h("strong", {
+                    ondestroy() {
+                      childDestroyed = true
+                    }
+                  })
+                ])
+              ])
+            ]
+          )
+        : h("ul", {}, [h("li")]),
+    actions: {
+      toggle: () => state => ({ value: !state.value })
+    }
+  })
+})
+
 test("event bubling", done => {
   let count = 0
   app({

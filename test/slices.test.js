@@ -4,71 +4,52 @@ beforeEach(() => {
   document.body.innerHTML = ""
 })
 
-test("state", done => {
-  const actions = app({
-    view: state =>
-      h(
-        "div",
-        {
-          oncreate() {
-            expect(document.body.innerHTML).toBe(`<div>fizzbuzz</div>`)
-            done()
-          }
-        },
-        state.fizz.buzz.value
-      ),
-    actions: {
-      fizz: {
-        buzz: {
-          fizzbuzz: () => ({ value: "fizzbuzz" })
-        }
-      }
-    }
-  })
+// test("state", done => {
+//   const actions = app({
+//     view: state =>
+//       h(
+//         "div",
+//         {
+//           oncreate() {
+//             expect(document.body.innerHTML).toBe(`<div>fizzbuzz</div>`)
+//             done()
+//           }
+//         },
+//         state.fizz.buzz.value
+//       ),
+//     actions: {
+//       fizz: {
+//         buzz: {
+//           fizzbuzz: () => ({ value: "fizzbuzz" })
+//         }
+//       }
+//     }
+//   })
 
-  actions.fizz.buzz.fizzbuzz()
-})
+//   actions.fizz.buzz.fizzbuzz()
+// })
 
 test("modules", done => {
   const bar = {
-    state: {
-      value: true
-    },
-    actions: {
-      change: () => state => ({ value: !state.value })
-    }
+    value: true,
+    toggle: () => state => ({ value: !state.value })
   }
 
   const foo = {
-    state: {
-      value: true,
-      bar: bar.state
-    },
-    actions: {
-      up: () => state => ({ value: !state.value }),
-      bar: bar.actions
-    }
+    bar,
+    value: true,
+    toggle: () => state => ({ value: !state.value })
   }
 
-  const actions = app({
-    state: { foo: foo.state },
-    actions: {
-      foo: foo.actions,
-      getState: () => state => state
-    }
-  })
+  const model = { foo, bar, getState: () => state => state }
 
-  expect(actions.getState()).toEqual({
-    foo: {
-      value: true,
-      bar: {
-        value: true
-      }
-    }
-  })
+  const store = app(model)
 
-  expect(actions.foo.up()).toEqual({ value: false })
-  expect(actions.foo.bar.change()).toEqual({ value: false })
+  expect(store.foo.value).toEqual(true)
+  expect(store.foo.bar.value).toEqual(true)
+
+  expect(store.foo.toggle()).toEqual({ value: false })
+  expect(store.foo.bar.toggle()).toEqual({ value: false })
 
   done()
 })

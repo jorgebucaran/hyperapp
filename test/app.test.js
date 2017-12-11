@@ -5,52 +5,51 @@ beforeEach(() => {
 })
 
 test("debouncing", done => {
-  app({
-    state: {
-      value: 1
-    },
-    view: state =>
-      h(
-        "div",
-        {
-          oncreate() {
-            expect(document.body.innerHTML).toBe("<div>5</div>")
-            done()
-          }
-        },
-        state.value
-      ),
-    actions: {
-      up: () => state => ({ value: state.value + 1 }),
-      fire: () => state => actions => {
-        actions.up()
-        actions.up()
-        actions.up()
-        actions.up()
-      }
+  const model = {
+    value: 1,
+    up: () => store => ({ value: store.value + 1 }),
+    fire: () => store => {
+      store.up()
+      store.up()
+      store.up()
+      store.up()
     }
-  }).fire()
+  }
+  const view = store =>
+    h(
+      "div",
+      {
+        oncreate() {
+          expect(document.body.innerHTML).toBe("<div>5</div>")
+          done()
+        }
+      },
+      store.value
+    )
+
+  const store = app(model, view)
+
+  store.fire()
 })
 
-test("actions in the view", done => {
-  app({
-    state: {
-      value: 0
-    },
-    view: state => actions => {
-      if (state.value < 1) {
-        return actions.up()
-      }
+test("calling actions in the view", done => {
+  const model = {
+    value: 0,
+    up: () => store => ({ value: store.value + 1 })
+  }
 
-      setTimeout(() => {
-        expect(document.body.innerHTML).toBe("<div>1</div>")
-        done()
-      })
-
-      return h("div", {}, state.value)
-    },
-    actions: {
-      up: () => state => ({ value: state.value + 1 })
+  const view = store => {
+    if (store.value < 1) {
+      return store.up()
     }
-  })
+
+    setTimeout(() => {
+      expect(document.body.innerHTML).toBe("<div>1</div>")
+      done()
+    })
+
+    return h("div", {}, store.value)
+  }
+
+  app(model, view)
 })

@@ -33,23 +33,9 @@ export function app(model, view, container) {
   var node = vnode(root, [].map)
   var stack = []
 
-  repaint(init(model, []))
+  schedule()
 
-  return model
-
-  function vnode(element, map) {
-    return (
-      element && {
-        type: element.tagName.toLowerCase(),
-        props: {},
-        children: map.call(element.childNodes, function(element) {
-          return 3 === element.nodeType
-            ? element.nodeValue
-            : vnode(element, map)
-        })
-      }
-    )
-  }
+  return init([], model)
 
   function set(target, source) {
     for (var i in source) {
@@ -80,7 +66,7 @@ export function app(model, view, container) {
     return source
   }
 
-  function init(source, path) {
+  function init(path, source) {
     for (var key in source) {
       typeof source[key] === "function"
         ? (function(key, action) {
@@ -92,7 +78,7 @@ export function app(model, view, container) {
               }
 
               if (data && data !== source && !data.then) {
-                repaint((model = setDeep(path, merge(source, data), model)))
+                schedule((model = setDeep(path, merge(source, data), model)))
               }
 
               return data
@@ -100,8 +86,40 @@ export function app(model, view, container) {
           })(key, source[key])
         : typeof source[key] === "object" &&
           !Array.isArray(source[key]) &&
-          init(source[key], path.concat(key))
+          init(path.concat(key), source[key])
     }
+    return source
+  }
+
+  function render(next) {
+    lock = !lock
+    next = view(model)
+
+    if (!lock) {
+      root = patch(container, root, node, (node = next))
+    }
+
+    while ((next = stack.pop())) next()
+  }
+
+  function schedule() {
+    if (view && !lock) {
+      setTimeout(render, (lock = !lock))
+    }
+  }
+
+  function vnode(element, map) {
+    return (
+      element && {
+        type: element.tagName.toLowerCase(),
+        props: {},
+        children: map.call(element.childNodes, function(element) {
+          return 3 === element.nodeType
+            ? element.nodeValue
+            : vnode(element, map)
+        })
+      }
+    )
   }
 
   function getKey(node) {
@@ -278,22 +296,5 @@ export function app(model, view, container) {
     }
 
     return element
-  }
-
-  function render(next) {
-    lock = !lock
-    next = view(model)
-
-    if (!lock) {
-      root = patch(container, root, node, (node = next))
-    }
-
-    while ((next = stack.pop())) next()
-  }
-
-  function repaint() {
-    if (view && !lock) {
-      setTimeout(render, (lock = !lock))
-    }
   }
 }

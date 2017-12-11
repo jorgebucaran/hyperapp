@@ -174,8 +174,8 @@ export function app(props, container) {
 
   function removeElement(parent, element, node) {
     function done() {
-      parent.removeChild(element)
       destroyNode(element, node)
+      parent.removeChild(element)
     }
 
     if (node.props && node.props.onremove) {

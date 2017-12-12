@@ -4,44 +4,19 @@ beforeEach(() => {
   document.body.innerHTML = ""
 })
 
-// test("state", done => {
-//   const actions = app({
-//     view: state =>
-//       h(
-//         "div",
-//         {
-//           oncreate() {
-//             expect(document.body.innerHTML).toBe(`<div>fizzbuzz</div>`)
-//             done()
-//           }
-//         },
-//         state.fizz.buzz.value
-//       ),
-//     actions: {
-//       fizz: {
-//         buzz: {
-//           fizzbuzz: () => ({ value: "fizzbuzz" })
-//         }
-//       }
-//     }
-//   })
-
-//   actions.fizz.buzz.fizzbuzz()
-// })
-
-test("modules", done => {
+test("slices", done => {
   const bar = {
     value: true,
-    toggle: () => state => ({ value: !state.value })
+    toggle: () => model => ({ value: !model.value })
   }
 
   const foo = {
     bar,
     value: true,
-    toggle: () => state => ({ value: !state.value })
+    toggle: () => model => ({ value: !model.value })
   }
 
-  const model = { foo, bar, getState: () => state => state }
+  const model = { foo, bar }
 
   const store = app(model)
 

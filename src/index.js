@@ -14,7 +14,7 @@ export function h(type, props) {
       }
     } else if (null == node || true === node || false === node) {
     } else {
-      children.push(typeof node === "number" ? (node += "") : node)
+      children.push(typeof node === "number" ? (node + "") : node)
     }
   }
 
@@ -33,7 +33,7 @@ export function app(model, view, container) {
   var node = vnode(root, [].map)
   var stack = []
 
-  schedule()
+  repaint()
 
   return init([], model)
 
@@ -78,7 +78,7 @@ export function app(model, view, container) {
               }
 
               if (data && data !== source && !data.then) {
-                schedule((model = setDeep(path, merge(source, data), model)))
+                repaint((model = setDeep(path, merge(source, data), model)))
               }
 
               return data
@@ -102,7 +102,7 @@ export function app(model, view, container) {
     while ((next = stack.pop())) next()
   }
 
-  function schedule() {
+  function repaint() {
     if (view && !lock) {
       setTimeout(render, (lock = !lock))
     }

@@ -1,7 +1,7 @@
 {
   "name": "hyperapp",
   "description": "1 KB JavaScript library for building frontend applications.",
-  "version": "0.16.2",
+  "version": "0.17.0",
   "main": "dist/hyperapp.js",
   "jsnext:main": "src/index.js",
   "module": "src/index.js",
@@ -34,9 +34,9 @@
   "devDependencies": {
     "babel-preset-env": "^1.6.1",
     "jest": "^21.2.1",
-    "prettier": "^1.8.2",
-    "rollup": "^0.52.0",
-    "typescript": "^2.6.1",
+    "prettier": "^1.9.1",
+    "rollup": "^0.52.1",
+    "typescript": "^2.6.2",
     "uglify-js": "^3.2.1"
   }
 }

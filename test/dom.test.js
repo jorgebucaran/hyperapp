@@ -2,34 +2,32 @@ import { h, app } from "../src"
 
 function testTreeSegue(name, trees) {
   test(name, done => {
-    app({
-      state: {
-        index: 0
-      },
-      view: state => actions =>
-        h(
-          "main",
-          {
-            oncreate: actions.next,
-            onupdate: actions.next
-          },
-          [trees[state.index].tree]
-        ),
-      actions: {
-        up: () => state => ({ index: state.index + 1 }),
-        next: () => state => actions => {
-          expect(document.body.innerHTML).toBe(
-            `<main>${trees[state.index].html.replace(/\s{2,}/g, "")}</main>`
-          )
+    const model = {
+      index: 0,
+      up: () => store => ({ index: store.index + 1 }),
+      next: () => store => {
+        expect(document.body.innerHTML).toBe(
+          `<main>${trees[store.index].html.replace(/\s{2,}/g, "")}</main>`
+        )
 
-          if (state.index === trees.length - 1) {
-            return done()
-          }
-
-          actions.up()
+        if (store.index === trees.length - 1) {
+          return done()
         }
+
+        store.up()
       }
-    })
+    }
+    const view = store =>
+      h(
+        "main",
+        {
+          oncreate: store.next,
+          onupdate: store.next
+        },
+        [trees[store.index].tree]
+      )
+
+    app(model, view)
   })
 }
 

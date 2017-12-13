@@ -6,7 +6,7 @@ beforeEach(() => {
 
 test("container", done => {
   document.body.innerHTML = "<main></main>"
-  const view = state =>
+  const view = ({ state }) =>
     h(
       "div",
       {
@@ -23,7 +23,7 @@ test("container", done => {
 
 test("nested container", done => {
   document.body.innerHTML = "<main><section></section><div></div></main>"
-  const view = state =>
+  const view = ({ state }) =>
     h(
       "p",
       {
@@ -54,7 +54,7 @@ test("container with mutated host", done => {
     }
   }
 
-  const view = state => actions =>
+  const view = ({ state, actions }) =>
     h(
       "p",
       {

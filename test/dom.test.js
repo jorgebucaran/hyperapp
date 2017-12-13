@@ -8,7 +8,7 @@ function testTreeSegue(name, trees) {
       },
       actions: {
         up: () => state => ({ index: state.index + 1 }),
-        next: () => state => actions => {
+        next: () => (state, actions) => {
           expect(document.body.innerHTML).toBe(
             `<main>${trees[state.index].html.replace(/\s{2,}/g, "")}</main>`
           )
@@ -22,7 +22,7 @@ function testTreeSegue(name, trees) {
       }
     }
 
-    const view = state => actions =>
+    const view = ({ state, actions }) =>
       h(
         "main",
         {

@@ -44,5 +44,6 @@ test("svg", done => {
         h("p", { id: "baz" }, "baz")
       ]
     )
+    
   app({}, view)
 })

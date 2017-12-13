@@ -3,7 +3,8 @@ import { h, app } from "../src"
 function testHydration(name, ssrBody, children, container) {
   test(name, done => {
     document.body.innerHTML = ssrBody
-    const view = state =>
+
+    const view = ({ state }) =>
       h(
         "main",
         {
@@ -14,6 +15,7 @@ function testHydration(name, ssrBody, children, container) {
         },
         children
       )
+      
     app({}, view, container && document.getElementById(container))
   })
 }

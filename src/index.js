@@ -32,12 +32,18 @@ export function app(model, view, container) {
   var root = (container = container || document.body).children[0]
   var node = vnode(root, [].map)
   var lifecycle = []
-  var appState = model.state || {}
-  var appActions = {}
 
-  repaint(init(appState, appActions, model.actions, []))
+  model = assign({}, model)
 
-  return appActions
+  repaint(
+    init(
+      [],
+      (model.state = assign({}, model.state)),
+      (model.actions = assign({}, model.actions))
+    )
+  )
+
+  return model
 
   function vnode(element, map) {
     return (
@@ -53,7 +59,24 @@ export function app(model, view, container) {
     )
   }
 
-  function set(target, source) {
+  function render(next) {
+    lock = !lock
+    next = view(model)
+
+    if (!lock) {
+      root = patch(container, root, node, (node = next))
+    }
+
+    while ((next = lifecycle.pop())) next()
+  }
+
+  function repaint() {
+    if (view && !lock) {
+      setTimeout(render, (lock = !lock))
+    }
+  }
+
+  function assign(target, source) {
     for (var i in source) {
       target[i] = source[i]
     }
@@ -61,7 +84,7 @@ export function app(model, view, container) {
   }
 
   function merge(target, source) {
-    return set(set({}, target), source)
+    return assign(assign({}, target), source)
   }
 
   function setDeep(path, value, source) {
@@ -82,39 +105,27 @@ export function app(model, view, container) {
     return source
   }
 
-  function isFunction(any) {
-    return "function" === typeof any
-  }
-
-  function init(state, actions, source, path) {
-    for (var key in source) {
-      isFunction(source[key])
+  function init(path, state, actions) {
+    for (var key in actions) {
+      typeof actions[key] === "function"
         ? (function(key, action) {
             actions[key] = function(data) {
-              state = get(path, appState)
+              state = get(path, model.state)
 
-              if (
-                isFunction((data = action(data))) &&
-                isFunction((data = data(state)))
-              ) {
-                data = data(actions)
+              if (typeof (data = action(data)) === "function") {
+                data = data(state, actions)
               }
 
               if (data && data !== state && !data.then) {
                 repaint(
-                  (appState = setDeep(path, merge(state, data), appState))
+                  (model.state = setDeep(path, merge(state, data), model.state))
                 )
               }
 
               return data
             }
-          })(key, source[key])
-        : init(
-            state[key] || (state[key] = {}),
-            (actions[key] = {}),
-            source[key],
-            path.concat(key)
-          )
+          })(key, actions[key])
+        : init(path.concat(key), state[key] || (state[key] = {}), actions[key])
     }
   }
 
@@ -135,7 +146,7 @@ export function app(model, view, container) {
         element[name] = null == value ? "" : value
       } catch (_) {}
 
-      if (!isFunction(value)) {
+      if (typeof value !== "function") {
         if (null == value || false === value) {
           element.removeAttribute(name)
         } else {
@@ -306,25 +317,5 @@ export function app(model, view, container) {
     }
 
     return element
-  }
-
-  function render(next) {
-    lock = !lock
-
-    if (isFunction((next = view(appState)))) {
-      next = next(appActions)
-    }
-
-    if (!lock) {
-      root = patch(container, root, node, (node = next))
-    }
-
-    while ((next = lifecycle.pop())) next()
-  }
-
-  function repaint() {
-    if (view && !lock) {
-      setTimeout(render, (lock = !lock))
-    }
   }
 }

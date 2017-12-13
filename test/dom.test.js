@@ -2,19 +2,10 @@ import { h, app } from "../src"
 
 function testTreeSegue(name, trees) {
   test(name, done => {
-    app({
+    const model = {
       state: {
         index: 0
       },
-      view: state => actions =>
-        h(
-          "main",
-          {
-            oncreate: actions.next,
-            onupdate: actions.next
-          },
-          [trees[state.index].tree]
-        ),
       actions: {
         up: () => state => ({ index: state.index + 1 }),
         next: () => state => actions => {
@@ -29,7 +20,19 @@ function testTreeSegue(name, trees) {
           actions.up()
         }
       }
-    })
+    }
+
+    const view = state => actions =>
+      h(
+        "main",
+        {
+          oncreate: actions.next,
+          onupdate: actions.next
+        },
+        [trees[state.index].tree]
+      )
+
+    app(model, view)
   })
 }
 

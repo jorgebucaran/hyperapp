@@ -5,21 +5,10 @@ beforeEach(() => {
 })
 
 test("debouncing", done => {
-  app({
+  const model = {
     state: {
       value: 1
     },
-    view: state =>
-      h(
-        "div",
-        {
-          oncreate() {
-            expect(document.body.innerHTML).toBe("<div>5</div>")
-            done()
-          }
-        },
-        state.value
-      ),
     actions: {
       up: () => state => ({ value: state.value + 1 }),
       fire: () => state => actions => {
@@ -29,28 +18,45 @@ test("debouncing", done => {
         actions.up()
       }
     }
-  }).fire()
+  }
+
+  const view = state =>
+    h(
+      "div",
+      {
+        oncreate() {
+          expect(document.body.innerHTML).toBe("<div>5</div>")
+          done()
+        }
+      },
+      state.value
+    )
+
+  app(model, view).fire()
 })
 
 test("actions in the view", done => {
-  app({
+  const model = {
     state: {
       value: 0
-    },
-    view: state => actions => {
-      if (state.value < 1) {
-        return actions.up()
-      }
-
-      setTimeout(() => {
-        expect(document.body.innerHTML).toBe("<div>1</div>")
-        done()
-      })
-
-      return h("div", {}, state.value)
     },
     actions: {
       up: () => state => ({ value: state.value + 1 })
     }
-  })
+  }
+
+  const view = state => actions => {
+    if (state.value < 1) {
+      return actions.up()
+    }
+
+    setTimeout(() => {
+      expect(document.body.innerHTML).toBe("<div>1</div>")
+      done()
+    })
+
+    return h("div", {}, state.value)
+  }
+
+  app(model, view)
 })

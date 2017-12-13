@@ -5,18 +5,7 @@ beforeEach(() => {
 })
 
 test("state", done => {
-  const actions = app({
-    view: state =>
-      h(
-        "div",
-        {
-          oncreate() {
-            expect(document.body.innerHTML).toBe(`<div>fizzbuzz</div>`)
-            done()
-          }
-        },
-        state.fizz.buzz.value
-      ),
+  const model = {
     actions: {
       fizz: {
         buzz: {
@@ -24,12 +13,24 @@ test("state", done => {
         }
       }
     }
-  })
+  }
+  const view = state =>
+    h(
+      "div",
+      {
+        oncreate() {
+          expect(document.body.innerHTML).toBe(`<div>fizzbuzz</div>`)
+          done()
+        }
+      },
+      state.fizz.buzz.value
+    )
+  const actions = app(model, view)
 
   actions.fizz.buzz.fizzbuzz()
 })
 
-test("modules", done => {
+test("models", done => {
   const bar = {
     state: {
       value: true

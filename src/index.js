@@ -53,42 +53,42 @@ export function app(model, view, container) {
     )
   }
 
-  function set(to, from) {
-    for (var i in from) {
-      to[i] = from[i]
+  function set(target, source) {
+    for (var i in source) {
+      target[i] = source[i]
     }
-    return to
+    return target
   }
 
-  function merge(to, from) {
-    return set(set({}, to), from)
+  function merge(target, source) {
+    return set(set({}, target), source)
   }
 
-  function setDeep(path, value, from) {
-    var to = {}
+  function setDeep(path, value, source) {
+    var target = {}
     return 0 === path.length
       ? value
-      : ((to[path[0]] =
+      : ((target[path[0]] =
           1 < path.length
-            ? setDeep(path.slice(1), value, from[path[0]])
+            ? setDeep(path.slice(1), value, source[path[0]])
             : value),
-        merge(from, to))
+        merge(source, target))
   }
 
-  function get(path, from) {
+  function get(path, source) {
     for (var i = 0; i < path.length; i++) {
-      from = from[path[i]]
+      source = source[path[i]]
     }
-    return from
+    return source
   }
 
   function isFunction(any) {
     return "function" === typeof any
   }
 
-  function init(state, actions, from, path) {
-    for (var key in from) {
-      isFunction(from[key])
+  function init(state, actions, source, path) {
+    for (var key in source) {
+      isFunction(source[key])
         ? (function(key, action) {
             actions[key] = function(data) {
               state = get(path, appState)
@@ -108,11 +108,11 @@ export function app(model, view, container) {
 
               return data
             }
-          })(key, from[key])
+          })(key, source[key])
         : init(
             state[key] || (state[key] = {}),
             (actions[key] = {}),
-            from[key],
+            source[key],
             path.concat(key)
           )
     }

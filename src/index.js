@@ -14,7 +14,7 @@ export function h(type, props) {
       }
     } else if (null == node || node === true || node === false) {
     } else {
-      children.push(typeof node === "number" ? (node = node + "") : node)
+      children.push(typeof node === "number" ? node + "" : node)
     }
   }
 

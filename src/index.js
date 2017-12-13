@@ -31,7 +31,7 @@ export function app(model, view, container) {
   var lock
   var root = (container = container || document.body).children[0]
   var node = vnode(root, [].map)
-  var lifecycle = []
+  var stack = []
 
   model = assign({}, model)
 
@@ -67,7 +67,7 @@ export function app(model, view, container) {
       root = patch(container, root, node, (node = next))
     }
 
-    while ((next = lifecycle.pop())) next()
+    while ((next = stack.pop())) next()
   }
 
   function repaint() {
@@ -165,7 +165,7 @@ export function app(model, view, container) {
         : document.createElement(node.tag)
 
       if (node.props.oncreate) {
-        lifecycle.push(function() {
+        stack.push(function() {
           node.props.oncreate(element)
         })
       }
@@ -192,7 +192,7 @@ export function app(model, view, container) {
     }
 
     if (props.onupdate) {
-      lifecycle.push(function() {
+      stack.push(function() {
         props.onupdate(element, oldProps)
       })
     }

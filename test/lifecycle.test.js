@@ -82,6 +82,115 @@ test("onremove", done => {
   })
 })
 
+test("ondestroy", done => {
+  let destroyed = false
+  app({
+    state: {
+      value: true
+    },
+    view: state => actions =>
+      state.value
+        ? h(
+            "ul",
+            {
+              oncreate: () => actions.toggle()
+            },
+            [
+              h("li"),
+              h("li", {
+                onremove(element, remove) {
+                  expect(destroyed).toBe(false)
+                  remove()
+                  expect(destroyed).toBe(true)
+                  done()
+                },
+                ondestroy() {
+                  destroyed = true
+                }
+              })
+            ]
+          )
+        : h("ul", {}, [h("li")]),
+    actions: {
+      toggle: () => state => ({ value: !state.value })
+    }
+  })
+})
+
+test("nested ondestroy", done => {
+  let removed = false
+  app({
+    state: {
+      value: true
+    },
+    view: state => actions =>
+      state.value
+        ? h(
+            "ul",
+            {
+              oncreate: () => actions.toggle()
+            },
+            [
+              h("li"),
+              h("li", {}, [
+                h("span", {
+                  onremove(element, remove) {
+                    removed = true
+                    remove()
+                  },
+                  ondestroy() {
+                    expect(removed).toBe(false)
+                    done()
+                  }
+                })
+              ])
+            ]
+          )
+        : h("ul", {}, [h("li")]),
+    actions: {
+      toggle: () => state => ({ value: !state.value })
+    }
+  })
+})
+
+test("several nested ondestroy", done => {
+  let childDestroyed = false
+  app({
+    state: {
+      value: true
+    },
+    view: state => actions =>
+      state.value
+        ? h(
+            "ul",
+            {
+              oncreate: () => actions.toggle()
+            },
+            [
+              h("li"),
+              h("li", {}, [
+                h("span", {
+                  ondestroy() {
+                    expect(childDestroyed).toBe(true)
+                    done()
+                  }
+                }, [
+                  h("strong", {
+                    ondestroy() {
+                      childDestroyed = true
+                    }
+                  })
+                ])
+              ])
+            ]
+          )
+        : h("ul", {}, [h("li")]),
+    actions: {
+      toggle: () => state => ({ value: !state.value })
+    }
+  })
+})
+
 test("event bubling", done => {
   let count = 0
   app({

@@ -1,4 +1,4 @@
-export function h(type, props) {
+export function h(tag, props) {
   var node
   var stack = []
   var children = []
@@ -18,13 +18,13 @@ export function h(type, props) {
     }
   }
 
-  return typeof type === "string"
+  return typeof tag === "string"
     ? {
-        type: type,
+        tag: tag,
         props: props || {},
         children: children
       }
-    : type(props || {}, children)
+    : tag(props || {}, children)
 }
 
 export function app(model, view, container) {
@@ -150,9 +150,9 @@ export function app(model, view, container) {
     if (typeof node === "string") {
       var element = document.createTextNode(node)
     } else {
-      var element = (isSVG = isSVG || node.type === "svg")
-        ? document.createElementNS("http://www.w3.org/2000/svg", node.type)
-        : document.createElement(node.type)
+      var element = (isSVG = isSVG || node.tag === "svg")
+        ? document.createElementNS("http://www.w3.org/2000/svg", node.tag)
+        : document.createElement(node.tag)
 
       if (node.props.oncreate) {
         lifecycle.push(function() {
@@ -218,10 +218,10 @@ export function app(model, view, container) {
     if (oldNode === node) {
     } else if (null == oldNode) {
       element = parent.insertBefore(createElement(node, isSVG), element)
-    } else if (node.type != null && node.type === oldNode.type) {
+    } else if (node.tag != null && node.tag === oldNode.tag) {
       updateElement(element, oldNode.props, node.props)
 
-      isSVG = isSVG || node.type === "svg"
+      isSVG = isSVG || node.tag === "svg"
 
       var len = node.children.length
       var oldLen = oldNode.children.length

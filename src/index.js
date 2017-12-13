@@ -12,7 +12,7 @@ export function h(type, props) {
       for (i = node.length; i--; ) {
         stack.push(node[i])
       }
-    } else if (null == node || node === true || node === false) {
+    } else if (null == node || true === node || false === node) {
     } else {
       children.push(typeof node === "number" ? node + "" : node)
     }

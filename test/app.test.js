@@ -11,7 +11,7 @@ test("debouncing", done => {
     },
     actions: {
       up: () => state => ({ value: state.value + 1 }),
-      fire: () => state => actions => {
+      fire: () => (state, actions) => {
         actions.up()
         actions.up()
         actions.up()
@@ -20,7 +20,7 @@ test("debouncing", done => {
     }
   }
 
-  const view = state =>
+  const view = ({ state }) =>
     h(
       "div",
       {
@@ -32,7 +32,9 @@ test("debouncing", done => {
       state.value
     )
 
-  app(model, view).fire()
+  const { actions } = app(model, view)
+
+  actions.fire()
 })
 
 test("actions in the view", done => {
@@ -45,7 +47,7 @@ test("actions in the view", done => {
     }
   }
 
-  const view = state => actions => {
+  const view = ({ state, actions }) => {
     if (state.value < 1) {
       return actions.up()
     }

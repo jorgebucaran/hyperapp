@@ -16,7 +16,7 @@ test("sync updates", done => {
     }
   }
 
-  const view = state =>
+  const view = ({ state }) =>
     h(
       "div",
       {
@@ -28,7 +28,9 @@ test("sync updates", done => {
       state.value
     )
 
-  app(model, view).up()
+  const { actions } = app(model, view)
+
+  actions.up()
 })
 
 test("async updates", done => {
@@ -38,12 +40,12 @@ test("async updates", done => {
     },
     actions: {
       up: data => state => ({ value: state.value + data }),
-      upAsync: data => state => actions =>
+      upAsync: data => (state, actions) =>
         mockDelay().then(() => actions.up(data))
     }
   }
 
-  const view = state =>
+  const view = ({ state }) =>
     h(
       "div",
       {
@@ -58,5 +60,7 @@ test("async updates", done => {
       state.value
     )
 
-  app(model, view).upAsync(1)
+  const { actions } = app(model, view)
+
+  actions.upAsync(1)
 })

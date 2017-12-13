@@ -25,20 +25,20 @@ test("onupdate", done => {
   const model = {
     state: { value: "foo" },
     actions: {
-      repaint: () => ({})
+      setValue: value => ({ value })
     }
   }
 
-  const view = state => actions =>
+  const view = ({ state, actions }) =>
     h(
       "div",
       {
         class: state.value,
         oncreate() {
-          actions.repaint()
+          actions.setValue("bar")
         },
         onupdate(element, oldProps) {
-          expect(element.textContent).toBe("foo")
+          expect(element.textContent).toBe("bar")
           expect(oldProps.class).toBe("foo")
           done()
         }
@@ -59,7 +59,7 @@ test("onremove", done => {
     }
   }
 
-  const view = state => actions =>
+  const view = ({ state, actions }) =>
     state.value
       ? h(
           "ul",
@@ -99,7 +99,7 @@ test("ondestroy", done => {
     }
   }
 
-  const view = state => actions =>
+  const view = ({ state, actions }) =>
     state.value
       ? h(
           "ul",
@@ -139,7 +139,7 @@ test("nested ondestroy", done => {
     }
   }
 
-  const view = state => actions =>
+  const view = ({ state, actions }) =>
     state.value
       ? h(
           "ul",
@@ -179,7 +179,7 @@ test("several nested ondestroy", done => {
     }
   }
 
-  const view = state => actions =>
+  const view = ({ state, actions }) =>
     state.value
       ? h(
           "ul",
@@ -224,7 +224,7 @@ test("event bubling", done => {
     }
   }
 
-  const view = state => actions =>
+  const view = ({ state, actions }) =>
     h(
       "main",
       {

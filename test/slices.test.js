@@ -4,32 +4,6 @@ beforeEach(() => {
   document.body.innerHTML = ""
 })
 
-test("state", done => {
-  const model = {
-    actions: {
-      fizz: {
-        buzz: {
-          fizzbuzz: () => ({ value: "fizzbuzz" })
-        }
-      }
-    }
-  }
-  const view = state =>
-    h(
-      "div",
-      {
-        oncreate() {
-          expect(document.body.innerHTML).toBe(`<div>fizzbuzz</div>`)
-          done()
-        }
-      },
-      state.fizz.buzz.value
-    )
-  const actions = app(model, view)
-
-  actions.fizz.buzz.fizzbuzz()
-})
-
 test("models", done => {
   const bar = {
     state: {
@@ -51,8 +25,10 @@ test("models", done => {
     }
   }
 
-  const actions = app({
-    state: { foo: foo.state },
+  const { actions } = app({
+    state: {
+      foo: foo.state
+    },
     actions: {
       foo: foo.actions,
       getState: () => state => state
@@ -72,4 +48,32 @@ test("models", done => {
   expect(actions.foo.bar.change()).toEqual({ value: false })
 
   done()
+})
+
+test("state/actions tree", done => {
+  const model = {
+    actions: {
+      fizz: {
+        buzz: {
+          fizzbuzz: () => ({ value: "fizzbuzz" })
+        }
+      }
+    }
+  }
+
+  const view = ({ state }) =>
+    h(
+      "div",
+      {
+        oncreate() {
+          expect(document.body.innerHTML).toBe(`<div>fizzbuzz</div>`)
+          done()
+        }
+      },
+      state.fizz.buzz.value
+    )
+
+  const { actions } = app(model, view)
+
+  actions.fizz.buzz.fizzbuzz()
 })

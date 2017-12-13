@@ -41,16 +41,15 @@ export function app(model, view, container) {
 
   function vnode(element, map) {
     return (
-      element &&
-      h(
-        element.tagName.toLowerCase(),
-        {},
-        map.call(element.childNodes, function(element) {
+      element && {
+        tag: element.tagName.toLowerCase(),
+        props: {},
+        children: map.call(element.childNodes, function(element) {
           return element.nodeType === 3
             ? element.nodeValue
             : vnode(element, map)
         })
-      )
+      }
     )
   }
 

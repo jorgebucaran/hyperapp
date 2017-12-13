@@ -27,15 +27,15 @@ export function h(type, props) {
     : type(props || {}, children)
 }
 
-export function app(props, container) {
+export function app(model, view, container) {
   var lock
   var root = (container = container || document.body).children[0]
   var node = vnode(root, [].map)
   var lifecycle = []
-  var appState = props.state || {}
+  var appState = model.state || {}
   var appActions = {}
 
-  repaint(init(appState, appActions, props.actions, []))
+  repaint(init(appState, appActions, model.actions, []))
 
   return appActions
 
@@ -312,7 +312,7 @@ export function app(props, container) {
   function render(next) {
     lock = !lock
 
-    if (isFunction((next = props.view(appState)))) {
+    if (isFunction((next = view(appState)))) {
       next = next(appActions)
     }
 
@@ -324,7 +324,7 @@ export function app(props, container) {
   }
 
   function repaint() {
-    if (props.view && !lock) {
+    if (view && !lock) {
       setTimeout(render, (lock = !lock))
     }
   }

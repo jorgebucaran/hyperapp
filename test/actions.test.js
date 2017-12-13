@@ -7,50 +7,56 @@ beforeEach(() => {
 })
 
 test("sync updates", done => {
-  app({
+  const model = {
     state: {
       value: 1
     },
-    view: state =>
-      h(
-        "div",
-        {
-          oncreate() {
-            expect(document.body.innerHTML).toBe(`<div>2</div>`)
-            done()
-          }
-        },
-        state.value
-      ),
     actions: {
       up: () => state => ({ value: state.value + 1 })
     }
-  }).up()
+  }
+
+  const view = state =>
+    h(
+      "div",
+      {
+        oncreate() {
+          expect(document.body.innerHTML).toBe(`<div>2</div>`)
+          done()
+        }
+      },
+      state.value
+    )
+
+  app(model, view).up()
 })
 
 test("async updates", done => {
-  app({
+  const model = {
     state: {
       value: 2
     },
-    view: state =>
-      h(
-        "div",
-        {
-          oncreate() {
-            expect(document.body.innerHTML).toBe(`<div>2</div>`)
-          },
-          onupdate() {
-            expect(document.body.innerHTML).toBe(`<div>3</div>`)
-            done()
-          }
-        },
-        state.value
-      ),
     actions: {
       up: data => state => ({ value: state.value + data }),
       upAsync: data => state => actions =>
         mockDelay().then(() => actions.up(data))
     }
-  }).upAsync(1)
+  }
+
+  const view = state =>
+    h(
+      "div",
+      {
+        oncreate() {
+          expect(document.body.innerHTML).toBe(`<div>2</div>`)
+        },
+        onupdate() {
+          expect(document.body.innerHTML).toBe(`<div>3</div>`)
+          done()
+        }
+      },
+      state.value
+    )
+
+  app(model, view).upAsync(1)
 })

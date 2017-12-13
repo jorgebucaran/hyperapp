@@ -3,22 +3,18 @@ import { h, app } from "../src"
 function testHydration(name, ssrBody, children, container) {
   test(name, done => {
     document.body.innerHTML = ssrBody
-    app(
-      {
-        view: state =>
-          h(
-            "main",
-            {
-              onupdate() {
-                expect(document.body.innerHTML).toBe(ssrBody)
-                done()
-              }
-            },
-            children
-          )
-      },
-      container && document.getElementById(container)
-    )
+    const view = state =>
+      h(
+        "main",
+        {
+          onupdate() {
+            expect(document.body.innerHTML).toBe(ssrBody)
+            done()
+          }
+        },
+        children
+      )
+    app({}, view, container && document.getElementById(container))
   })
 }
 

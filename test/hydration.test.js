@@ -1,39 +1,21 @@
 import { h, app } from "../src"
 
-function testHydration(name, ssrBody, children, container) {
-  test(name, done => {
-    document.body.innerHTML = ssrBody
+test("hydration", done => {
+  const SSR_BODY = `<div id="app"><main><p>foo</p></main></div>`
 
-    const view = ({ state }) =>
-      h(
-        "main",
-        {
-          onupdate() {
-            expect(document.body.innerHTML).toBe(ssrBody)
-            done()
-          }
-        },
-        children
-      )
-      
-    app({}, view, container && document.getElementById(container))
-  })
-}
+  document.body.innerHTML = SSR_BODY
 
-beforeEach(() => {
-  document.body.innerHTML = ""
+  const view = ({ state }) =>
+    h(
+      "main",
+      {
+        onupdate() {
+          expect(document.body.innerHTML).toBe(SSR_BODY)
+          done()
+        }
+      },
+      [h("p", {}, "foo")]
+    )
+
+  app({}, view, document.getElementById("app"))
 })
-
-testHydration(
-  "hydrate without container",
-  `<main><p>foo</p></main>`,
-  [h("p", {}, "foo")],
-  null
-)
-
-testHydration(
-  "hydrate with container",
-  `<div id="app"><main><p>foo</p></main></div>`,
-  [h("p", {}, "foo")],
-  "app"
-)

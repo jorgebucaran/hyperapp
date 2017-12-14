@@ -28,23 +28,6 @@ export function h(tag, props) {
 }
 
 export function app(model, view, container) {
-  var lock
-  var root = (container = container || document.body).children[0]
-  var node = vnode(root, [].map)
-  var stack = []
-
-  model = assign({}, model)
-
-  repaint(
-    init(
-      [],
-      (model.state = assign({}, model.state)),
-      (model.actions = assign({}, model.actions))
-    )
-  )
-
-  return model
-
   function vnode(element, map) {
     return (
       element && {
@@ -61,10 +44,10 @@ export function app(model, view, container) {
 
   function render(next) {
     lock = !lock
-    next = view(model)
+    next = view(store)
 
-    if (!lock) {
-      root = patch(container, root, node, (node = next))
+    if (container && !lock) {
+      patch(container, container.children[0], node, (node = next))
     }
 
     while ((next = stack.pop())) next()
@@ -77,14 +60,17 @@ export function app(model, view, container) {
   }
 
   function assign(target, source) {
-    for (var i in source) {
-      target[i] = source[i]
-    }
-    return target
-  }
+    var result = {}
 
-  function merge(target, source) {
-    return assign(assign({}, target), source)
+    for (var i in target) {
+      result[i] = target[i]
+    }
+
+    for (var i in source) {
+      result[i] = source[i]
+    }
+
+    return result
   }
 
   function setDeep(path, value, source) {
@@ -95,7 +81,7 @@ export function app(model, view, container) {
           1 < path.length
             ? setDeep(path.slice(1), value, source[path[0]])
             : value),
-        merge(source, target))
+        assign(source, target))
   }
 
   function get(path, source) {
@@ -110,7 +96,7 @@ export function app(model, view, container) {
       typeof actions[key] === "function"
         ? (function(key, action) {
             actions[key] = function(data) {
-              state = get(path, model.state)
+              state = get(path, store.state)
 
               if (typeof (data = action(data)) === "function") {
                 data = data(state, actions)
@@ -118,14 +104,18 @@ export function app(model, view, container) {
 
               if (data && data !== state && !data.then) {
                 repaint(
-                  (model.state = setDeep(path, merge(state, data), model.state))
+                  (store.state = setDeep(
+                    path,
+                    assign(state, data),
+                    store.state
+                  ))
                 )
               }
 
               return data
             }
           })(key, actions[key])
-        : init(path.concat(key), state[key] || (state[key] = {}), actions[key])
+        : init(path.concat(key), (state[key] = state[key] || {}), actions[key])
     }
   }
 
@@ -138,7 +128,7 @@ export function app(model, view, container) {
   function setElementProp(element, name, value, oldValue) {
     if (name === "key") {
     } else if (name === "style") {
-      for (var i in merge(oldValue, (value = value || {}))) {
+      for (var i in assign(oldValue, (value = value || {}))) {
         element.style[i] = null == value[i] ? "" : value[i]
       }
     } else {
@@ -182,7 +172,7 @@ export function app(model, view, container) {
   }
 
   function updateElement(element, oldProps, props) {
-    for (var i in merge(oldProps, props)) {
+    for (var i in assign(oldProps, props)) {
       var value = props[i]
       var oldValue = i === "value" || i === "checked" ? element[i] : oldProps[i]
 
@@ -198,22 +188,21 @@ export function app(model, view, container) {
     }
   }
 
-  function destroyNode(element, node) {
-    if (node.children) {
+  function destroyChildren(element, node) {
+    if (typeof node !== "string") {
       for (var i = 0; i < node.children.length; i++) {
-        if (typeof node.children[i] !== "string") {
-          destroyNode(element.childNodes[i], node.children[i])
-        }
+        destroyChildren(element.childNodes[i], node.children[i])
       }
-    }
-    if (node.props && node.props.ondestroy) {
-      node.props.ondestroy(element)
+
+      if (node.props.ondestroy) {
+        node.props.ondestroy(element)
+      }
     }
   }
 
   function removeElement(parent, element, node) {
     function done() {
-      destroyNode(element, node)
+      destroyChildren(element, node)
       parent.removeChild(element)
     }
 
@@ -318,4 +307,19 @@ export function app(model, view, container) {
 
     return element
   }
+
+  var lock
+  var node = container && vnode(container.children[0], [].map)
+  var stack = []
+  var store = assign({}, model)
+
+  repaint(
+    init(
+      [],
+      (store.state = assign({}, store.state)),
+      (store.actions = assign({}, store.actions))
+    )
+  )
+
+  return store
 }

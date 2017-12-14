@@ -18,7 +18,7 @@ test("oncreate", done => {
       "foo"
     )
 
-  app({}, view)
+  app({}, view, document.body)
 })
 
 test("onupdate", done => {
@@ -46,7 +46,7 @@ test("onupdate", done => {
       state.value
     )
 
-  app(model, view)
+  app(model, view, document.body)
 })
 
 test("onremove", done => {
@@ -84,7 +84,7 @@ test("onremove", done => {
         )
       : h("ul", {}, [h("li")])
 
-  app(model, view)
+  app(model, view, document.body)
 })
 
 test("ondestroy", done => {
@@ -123,7 +123,7 @@ test("ondestroy", done => {
         )
       : h("ul", {}, [h("li")])
 
-  app(model, view)
+  app(model, view, document.body)
 })
 
 test("nested ondestroy", done => {
@@ -164,7 +164,7 @@ test("nested ondestroy", done => {
         )
       : h("ul", {}, [h("li")])
 
-  app(model, view)
+  app(model, view, document.body)
 })
 
 test("several nested ondestroy", done => {
@@ -209,7 +209,7 @@ test("several nested ondestroy", done => {
           ]
         )
       : h("ul", {}, [h("li")])
-  app(model, view)
+  app(model, view, document.body)
 })
 
 test("event bubling", done => {
@@ -265,5 +265,5 @@ test("event bubling", done => {
       ]
     )
 
-  app(model, view)
+  app(model, view, document.body)
 })

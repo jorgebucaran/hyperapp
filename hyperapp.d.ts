@@ -7,7 +7,7 @@ export as namespace Hyperapp
  * @memberOf [VDOM]
  */
 export interface VNode<Props> {
-  type: string
+  tag: string
   props: Props
   children: VNodeChild<{} | null>[]
 }
@@ -26,7 +26,7 @@ export interface Component<Props> {
   (props: Props, children: VNodeChild<{} | null>[]): VNode<{}>
 }
 
-/**The type for the children parameter accepted by h().
+/** The type for the children parameter accepted by h().
  *
  * @memberOf [VDOM]
  */
@@ -43,12 +43,25 @@ export type VNodeChildren =
  * @memberOf [VDOM]
  */
 export function h<Props>(
-  type: Component<Props> | string,
+  tag: Component<Props> | string,
   props?: Props,
   children?: VNodeChildren
 ): VNode<Props>
 
 /** @namespace [App] */
+
+/** The interface for a model.
+ *
+ * @param State The state tree
+ * @param Actions The actions tree
+ *
+ * @memberOf [App]
+ */
+
+export interface Model<State, Actions> {
+  state?: State
+  actions?: Actions
+}
 
 /** The result of an action.
  *
@@ -56,42 +69,22 @@ export function h<Props>(
  */
 export type ActionResult<State> = Partial<State> | Promise<any> | null | void
 
-export type MyAction<State, Actions> = (
+export type Action<State, Actions> = (
   data: any
-) =>
-  | ((
-      state: State
-    ) => ((actions: Actions) => ActionResult<State>) | ActionResult<State>)
-  | ActionResult<State>
+) => (state: State, actions: Actions) => ActionResult<State>
 
-/** The interface for actions (exposed when implementing actions).
- *
- * @memberOf [App]
- */
-export type MyActions<State, Actions> = {
-  [P in keyof Actions]: MyAction<State, Actions> | MyActions<any, Actions[P]>
-}
+// export type Action<State, Actions> = (
+//   data: any,
+//   state: State,
+//   actions: Actions
+// ) => ActionResult<State>
 
 /** The view function.
  *
  * @memberOf [App]
  */
-export type View<State, Actions> = (
-  state: State
-) => ((actions: Actions) => VNode<{}>) | VNode<{}>
+export type View<Model> = (model: Model) => VNode<{}>
 
-/** The props object that serves as an input to app().
- *
- * @param State The full state of the module including sub-modules
- * @param Actions The actions of the module including sub-modules
- *
- * @memberOf [App]
- */
-export interface AppProps<State, Actions> {
-  state?: State
-  view?: View<State, Actions>
-  actions?: MyActions<State, Actions>
-}
 
 /** The app() function, entry point of Hyperapp's API.
  *
@@ -100,10 +93,11 @@ export interface AppProps<State, Actions> {
  *
  * @memberOf [App]
  */
-export function app<State, Actions>(
-  app: AppProps<State, Actions>,
+export function app<Model>(
+  model: Model,
+  view?: View<Model>,
   container?: HTMLElement | null
-): Actions
+): Model
 
 /** @namespace [JSX] */
 

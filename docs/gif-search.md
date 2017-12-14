@@ -5,39 +5,16 @@ In this example we'll implement a gif search using the [Giphy API](https://api.g
 [Try it Online](https://codepen.io/hyperapp/pen/ZeByKv?editors=0010)
 
 ```jsx
-app({
+const GIPHY_API_KEY = "dc6zaTOxFJmzC"
+
+const model = {
   state: {
     url: "",
     query: "",
     isFetching: false
   },
-  view: state => actions => (
-    <main>
-      <input
-        type="text"
-        placeholder="Type here..."
-        onkeyup={({ target: { value } }) => {
-          if (value !== state.query) {
-            actions.setQuery(value)
-            if (!state.isFetching) {
-              actions.downloadGif(value)
-            }
-          }
-        }}
-        autofocus
-      />
-      <div class="container">
-        <img
-          src={state.url}
-          style={{
-            display: state.isFetching || state.url === "" ? "none" : "block"
-          }}
-        />
-      </div>
-    </main>
-  ),
   actions: {
-    downloadGif: query => state => async actions => {
+    downloadGif: query => async (state, actions) => {
       actions.toggleFetching(true)
       actions.setUrl(
         await fetch(
@@ -52,7 +29,35 @@ app({
     setQuery: query => ({ query }),
     toggleFetching: isFetching => ({ isFetching })
   }
-})
+}
+
+const view = ({ state, actions }) => (
+  <main>
+    <input
+      type="text"
+      placeholder="Type here..."
+      autofocus
+      onkeyup={({ target: { value } }) => {
+        if (value !== state.query) {
+          actions.setQuery(value)
+          if (!state.isFetching) {
+            actions.downloadGif(value)
+          }
+        }
+      }}
+    />
+    <div class="container">
+      <img
+        src={state.url}
+        style={{
+          display: state.isFetching || state.url === "" ? "none" : "block"
+        }}
+      />
+    </div>
+  </main>
+)
+
+app(model, view, document.body)
 ```
 
 The state consists of three properties: `url`, the url of the gif; `isFetching` to track when the browser is fetching a new gif, and query, what the user has typed into the text input.

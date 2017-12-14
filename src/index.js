@@ -47,7 +47,7 @@ export function app(model, view, container) {
     next = view(store)
 
     if (container && !lock) {
-      patch(container, container.children[0], node, (node = next))
+      root = patch(container, root, node, (node = next))
     }
 
     while ((next = stack.pop())) next()
@@ -309,7 +309,8 @@ export function app(model, view, container) {
   }
 
   var lock
-  var node = container && vnode(container.children[0], [].map)
+  var root = container && container.children[0]
+  var node = vnode(root, [].map)
   var stack = []
   var store = assign({}, model)
 

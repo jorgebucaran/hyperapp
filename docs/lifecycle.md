@@ -45,8 +45,7 @@ This event is fired before the element is removed from the DOM. Use it for creat
 ```jsx
 function MessageWithFadeout({ title }) {
   return (
-    <div
-      onremove={(element, done) => fadeout(element).then(done)}>
+    <div onremove={(element, done) => fadeout(element).then(done)}>
       <h1>{title}</h1>
     </div>
   )
@@ -58,21 +57,17 @@ function MessageWithFadeout({ title }) {
 This event is fired after the element has been removed from the DOM, either directly or as a result of a parent being removed. Use it for cleaning up resources.
 
 ```jsx
-function Camera({onerror}) {
+function Camera({ onerror }) {
   return (
     <video
       poster="loading.png"
-      oncreate={
-        element => {
-          navigator.mediaDevices
-            .getUserMedia({video: true})
-            .then(stream => (element.srcObject = stream))
-            .catch(onerror)
-        }
-      }
-      ondestroy={
-        element => element.srcObject.getTracks()[0].stop()
-      }
+      oncreate={element => {
+        navigator.mediaDevices
+          .getUserMedia({ video: true })
+          .then(stream => (element.srcObject = stream))
+          .catch(onerror)
+      }}
+      ondestroy={element => element.srcObject.getTracks()[0].stop()}
     />
   )
 }

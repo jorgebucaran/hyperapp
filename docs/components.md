@@ -19,7 +19,7 @@ const TodoItem = ({ id, value, done, toggle }) => (
   </li>
 )
 
-const mainView = state => actions => (
+const mainView = ({ state, actions }) => (
   <div>
     <h1>Todo</h1>
     <ul>

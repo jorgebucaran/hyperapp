@@ -32,7 +32,7 @@ function testTreeSegue(name, trees) {
         [trees[state.index].tree]
       )
 
-    app(model, view)
+    app(model, view, document.body)
   })
 }
 

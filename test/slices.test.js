@@ -4,7 +4,7 @@ beforeEach(() => {
   document.body.innerHTML = ""
 })
 
-test("models", done => {
+test("slices", done => {
   const bar = {
     state: {
       value: true
@@ -25,7 +25,7 @@ test("models", done => {
     }
   }
 
-  const { actions } = app({
+  const model = {
     state: {
       foo: foo.state
     },
@@ -33,7 +33,9 @@ test("models", done => {
       foo: foo.actions,
       getState: () => state => state
     }
-  })
+  }
+
+  const { actions } = app(model)
 
   expect(actions.getState()).toEqual({
     foo: {
@@ -73,7 +75,7 @@ test("state/actions tree", done => {
       state.fizz.buzz.value
     )
 
-  const { actions } = app(model, view)
+  const { actions } = app(model, view, document.body)
 
   actions.fizz.buzz.fizzbuzz()
 })

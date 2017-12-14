@@ -33,7 +33,7 @@ test("svg", done => {
 
             expect(odd.namespaceURI).toBe(MATH_NS)
             deepExpectNS(odd, MATH_NS)
-            
+
             done()
           }
         },
@@ -51,7 +51,7 @@ test("svg", done => {
               h("boop", {})
             ])
           ]),
-          h("math", { id: "mbar" }, [
+          h("math", { id: "mbar", namespace: MATH_NS }, [
             h("quux", {}, [
               h("beep", {}, [h("ping", {}), h("pong", {})]),
               h("bop", {}),

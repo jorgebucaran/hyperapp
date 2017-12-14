@@ -22,7 +22,6 @@ function testHydration(name, ssrBody, children, container) {
   })
 }
 
-
 beforeEach(() => {
   document.body.innerHTML = ""
 })
@@ -40,4 +39,3 @@ testHydration(
   [h("p", {}, "foo")],
   "app"
 )
-

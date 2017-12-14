@@ -33,7 +33,7 @@ const view = ({ state, actions }) => (
   </main>
 )
 
-app(model, view, document.body)
+const { actions } = app(model, view, document.body)
 ```
 
 ## Community

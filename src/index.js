@@ -135,7 +135,7 @@ export function app(props, container) {
       for (var i in merge(oldValue, (value = value || {}))) {
         element.style[i] = null == value[i] ? "" : value[i]
       }
-    } else {
+    } else if (name!=="namespace") {
       try {
         element[name] = null == value ? "" : value
       } catch (_) {}

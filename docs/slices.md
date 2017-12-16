@@ -7,7 +7,7 @@ A single state tree is not free from struggle. It can be daunting to update a pa
 State slices address this issue with actions that access a slice of the state tree that corresponds to the namespace where both state and action are declared.
 
 ```js
-actions: {
+const actions = {
   hello: data => state => {
     // The state is the global `state`.
   },
@@ -26,7 +26,7 @@ State slices allow you to update deeply nested state easily and immutably.
 For example, before when you had something like this:
 
 ```js
-state: {
+const state = {
   foo: {
     bar: {
       value: 0,
@@ -41,7 +41,7 @@ Then when you wanted to update `value`, you had to update an entire record (**in
 In other words, you had to write something like the following in order to update the tree immutably.
 
 ```js
-actions: {
+const actions = {
   updateValue: data => state => {
     return {
       foo: {
@@ -58,7 +58,7 @@ actions: {
 With state slices, it's possible to update `value` more simply. In order to do this, your state must look like this.
 
 ```js
-state: {
+const state = {
   foo: {
     bar: {
       value: 0,
@@ -71,7 +71,7 @@ state: {
 You will have a corresponding action inside a namespace that matches the state you want to update.
 
 ```js
-actions: {
+const actions = {
   foo: {
     bar: {
       updateValue: data => state => {

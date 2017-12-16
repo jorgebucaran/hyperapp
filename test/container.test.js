@@ -6,7 +6,8 @@ beforeEach(() => {
 
 test("container", done => {
   document.body.innerHTML = "<main></main>"
-  const view = ({ state }) =>
+
+  const view = state =>
     h(
       "div",
       {
@@ -18,12 +19,13 @@ test("container", done => {
       "foo"
     )
 
-  app({}, view, document.body.firstChild)
+  app({}, {}, view, document.body.firstChild)
 })
 
 test("nested container", done => {
   document.body.innerHTML = "<main><section></section><div></div></main>"
-  const view = ({ state }) =>
+
+  const view = state =>
     h(
       "p",
       {
@@ -36,7 +38,8 @@ test("nested container", done => {
       },
       "foo"
     )
-  app({}, view, document.body.firstChild.lastChild)
+    
+  app({}, {}, view, document.body.firstChild.lastChild)
 })
 
 test("container with mutated host", done => {
@@ -45,16 +48,15 @@ test("container with mutated host", done => {
   const host = document.body.firstChild
   const container = host.firstChild
 
-  const model = {
-    state: {
-      value: "foo"
-    },
-    actions: {
-      bar: () => ({ value: "bar" })
-    }
+  const state = {
+    value: "foo"
   }
 
-  const view = ({ state, actions }) =>
+  const actions = {
+    bar: () => ({ value: "bar" })
+  }
+
+  const view = (state, actions) =>
     h(
       "p",
       {
@@ -77,5 +79,5 @@ test("container with mutated host", done => {
       state.value
     )
 
-  app(model, view, container)
+  app(state, actions, view, container)
 })

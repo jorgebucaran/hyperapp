@@ -40,35 +40,31 @@ function Textbox({ placeholder }) {
 
 ## `onremove`
 
-This event is fired before the element is removed from the DOM. Use it for creating slide out animations, etc. Use `done` inside the function to remove the element.
+This event is fired before an element is removed from the DOM. Use it for creating animations, transitions, cleaning up resources, etc.
+
+For example, to create a fade out animation, return a function inside the event handler and call `done` when it is over.
 
 ```jsx
-function MessageWithFadeout({ title }) {
-  return (
-    <div onremove={(element, done) => fadeout(element).then(done)}>
-      <h1>{title}</h1>
-    </div>
-  )
-}
+const MessageWithFadeout = ({ title }) => (
+  <div onremove={element => done => fadeout(element).then(done)}>
+    <h1>{title}</h1>
+  </div>
+)
 ```
 
-## `ondestroy`
-
-This event is fired after the element has been removed from the DOM, either directly or as a result of a parent being removed. Use it for cleaning up resources.
+You can use this event for invalidating timers, canceling a network request, removing subscriptions to global events, etc.
 
 ```jsx
-function Camera({ onerror }) {
-  return (
-    <video
-      poster="loading.png"
-      oncreate={element => {
-        navigator.mediaDevices
-          .getUserMedia({ video: true })
-          .then(stream => (element.srcObject = stream))
-          .catch(onerror)
-      }}
-      ondestroy={element => element.srcObject.getTracks()[0].stop()}
-    />
-  )
-}
+const Camera = ({ onerror }) => (
+  <video
+    poster="loading.png"
+    oncreate={element => {
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then(stream => (element.srcObject = stream))
+        .catch(onerror)
+    }}
+    onremove={element => element.srcObject.getTracks()[0].stop()}
+  />
+)
 ```

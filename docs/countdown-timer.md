@@ -5,6 +5,8 @@ In this example we'll learn how to trigger state updates from external events.
 [Try it Online](https://codepen.io/hyperapp/pen/evOZLv?editors=0010)
 
 ```jsx
+import { h, app } from "hyperapp"
+
 const SECONDS = 5
 
 const pad = n => (n < 10 ? "0" + n : n)
@@ -16,27 +18,26 @@ const humanizeTime = t => {
   return `${pad(minutes)}:${pad(seconds)}`
 }
 
-const model = {
-  state: {
-    count: SECONDS,
-    paused: true
-  },
-  actions: {
-    tick: () => (state, actions) => {
-      if (state.count === 0) {
-        actions.reset()
-        actions.toggle()
-      } else if (!state.paused) {
-        actions.drop()
-      }
-    },
-    drop: () => state => ({ count: state.count - 1 }),
-    reset: () => ({ count: SECONDS }),
-    toggle: () => state => ({ paused: !state.paused })
-  }
+const state = {
+  count: SECONDS,
+  paused: true
 }
 
-const view = ({ state, actions }) => (
+const actions = {
+  tick: () => (state, actions) => {
+    if (state.count === 0) {
+      actions.reset()
+      actions.toggle()
+    } else if (!state.paused) {
+      actions.drop()
+    }
+  },
+  drop: () => state => ({ count: state.count - 1 }),
+  reset: () => ({ count: SECONDS }),
+  toggle: () => state => ({ paused: !state.paused })
+}
+
+const view = (state, actions) => (
   <main>
     <h1>{humanizeTime(state.count)}</h1>
 
@@ -48,21 +49,21 @@ const view = ({ state, actions }) => (
   </main>
 )
 
-const { actions } = app(model, view, document.body)
+const main = app(state, actions, view, document.body)
 
-setInterval(actions.tick, 1000)
+setInterval(main.tick, 1000)
 ```
 
-The `app()` function returns an object that has your model state and actions wired to the app.
+The `app()` function returns an object with your actions wired to the state. This means you can use it to call actions and communicate with your application from the outside.
 
 ```jsx
-const { actions } = app({ ... })
+const main = app(state, actions, view, document.body)
 ```
 
 The state consists of two properties: `count`, to track the seconds elapsed; and `paused`, to check if the clock is currently running.
 
 ```jsx
-state: {
+const state = {
   count: SECONDS,
   paused: true
 }
@@ -81,7 +82,7 @@ The view displays the seconds inside a `<h1>` element and binds two buttons to `
 To track time we use [`setInterval`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setInterval) and call `tick` every second.
 
 ```jsx
-setInterval(actions.tick, 1000)
+setInterval(main.tick, 1000)
 ```
 
 Inside `tick`, we check the second count and if zero, reset the counter back to `SECONDS` and toggle the running clock.

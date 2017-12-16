@@ -15,7 +15,7 @@ const counterState: CounterState = {
   count: 0
 }
 
-const counterActions: Hyperapp.MyActions<CounterState, CounterActions> = {
+const counterActions: Hyperapp.ActionsImpl<CounterState, CounterActions> = {
   sub: () => state => ({ count: state.count - 1 }),
   add: (value: number) => state => ({
     count: state.count + value
@@ -24,10 +24,10 @@ const counterActions: Hyperapp.MyActions<CounterState, CounterActions> = {
 
 // just to check that it compiles
 function testCounter() {
-  const actions = app<CounterState, CounterActions>({
-    state: counterState,
-    actions: counterActions
-  })
+  const actions = app<CounterState, CounterActions>(
+    counterState,
+    counterActions
+  )
   console.log(actions.add(6).count)
 }
 
@@ -49,7 +49,7 @@ const module1State: Module1State = {
   count: 0
 }
 
-const module1Actions: Hyperapp.MyActions<Module1State, Module1Actions> = {
+const module1Actions: Hyperapp.ActionsImpl<Module1State, Module1Actions> = {
   counter: counterActions,
   sub: () => state => ({ count: state.count - 1 }),
   add: (value: number) => state => ({
@@ -58,10 +58,10 @@ const module1Actions: Hyperapp.MyActions<Module1State, Module1Actions> = {
 }
 
 function testModule1() {
-  const actions = app<Module1State, Module1Actions>({
-    state: module1State,
-    actions: module1Actions
-  })
+  const actions = app<Module1State, Module1Actions>(
+    module1State,
+    module1Actions
+  )
   console.log(actions.add(8).count)
   console.log(actions.counter.sub().count)
 }
@@ -79,9 +79,9 @@ interface AsyncActions {
 
 const asyncState: AsyncState = {}
 
-const asyncActions: Hyperapp.MyActions<AsyncState, AsyncActions> = {
+const asyncActions: Hyperapp.ActionsImpl<AsyncState, AsyncActions> = {
   setResult: (value: number | Error) => ({ value }),
-  fetch: (url: string) => () => actions =>
+  fetch: (url: string) => (state, actions) =>
     fetch(url)
       .then(res => res.json())
       .then(value => {
@@ -93,10 +93,7 @@ const asyncActions: Hyperapp.MyActions<AsyncState, AsyncActions> = {
 }
 
 function testAsync() {
-  const actions = app<AsyncState, AsyncActions>({
-    state: asyncState,
-    actions: asyncActions
-  })
+  const actions = app<AsyncState, AsyncActions>(asyncState, asyncActions)
   actions.fetch("blah").then(() => {
     console.log("Done!")
   })
@@ -130,7 +127,7 @@ interface Actions {
   add(value: number): Partial<State>
 }
 
-const actions: Hyperapp.MyActions<State, Actions> = {
+const actions: Hyperapp.ActionsImpl<State, Actions> = {
   module1: module1Actions,
   async: asyncActions,
   add: (value: number) => state => ({
@@ -141,29 +138,25 @@ const actions: Hyperapp.MyActions<State, Actions> = {
 // App
 
 const appActions = app<State, Actions>(
-  {
-    state,
-    actions,
-    view: state => actions => (
-      <main>
-        <h1>Typescript Demo</h1>
-        <h2>Module 1</h2>
-        <p>
-          <button onclick={() => actions.module1.sub()}>-</button>
-          {state.module1.count}
-          <button onclick={() => actions.module1.add(2)}>+</button>
-        </p>
-        <h2>Async</h2>
-        <p>
-          <button
-            onclick={() => actions.async.fetch("https://hyperapp.js.org/")}
-          >
-            Fetch
-          </button>
-          <pre>{state.async.value}</pre>
-        </p>
-      </main>
-    )
-  },
+  state,
+  actions,
+  (state, actions) => (
+    <main>
+      <h1>Typescript Demo</h1>
+      <h2>Module 1</h2>
+      <p>
+        <button onclick={() => actions.module1.sub()}>-</button>
+        {state.module1.count}
+        <button onclick={() => actions.module1.add(2)}>+</button>
+      </p>
+      <h2>Async</h2>
+      <p>
+        <button onclick={() => actions.async.fetch("https://hyperapp.js.org/")}>
+          Fetch
+        </button>
+        <pre>{state.async.value}</pre>
+      </p>
+    </main>
+  ),
   document.getElementById("app")
 )

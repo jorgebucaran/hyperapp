@@ -7,23 +7,23 @@ export as namespace Hyperapp
  * @memberOf [VDOM]
  */
 export interface VNode<Props> {
-  type: string
+  tag: string
   props: Props
-  children: VNodeChild<{} | null>[]
+  children: VChildNode<object | null>[]
 }
 
 /** In the VDOM a Child could be either a VNode or a string
  *
  * @memberOf [VDOM]
  */
-export type VNodeChild<Props> = VNode<Props> | string
+export type VChildNode<Props = object> = VNode<Props> | string
 
 /** A Component is a function that return a custom VNode
  *
  * @memberOf [VDOM]
  */
 export interface Component<Props> {
-  (props: Props, children: VNodeChild<{} | null>[]): VNode<{}>
+  (props: Props, children: VChildNode<object | null>[]): VNode<object>
 }
 
 /**The type for the children parameter accepted by h().
@@ -31,8 +31,8 @@ export interface Component<Props> {
  * @memberOf [VDOM]
  */
 export type VNodeChildren =
-  | Array<VNodeChild<{} | null> | number>
-  | VNodeChild<{} | null>
+  | Array<VChildNode<object | null> | number>
+  | VChildNode<object | null>
   | number
 
 /** The soft way to create a VNode
@@ -43,10 +43,10 @@ export type VNodeChildren =
  * @memberOf [VDOM]
  */
 export function h<Props>(
-  type: Component<Props> | string,
+  tag: Component<Props> | string,
   props?: Props,
   children?: VNodeChildren
-): VNode<Props>
+): VNode<object>
 
 /** @namespace [App] */
 
@@ -56,41 +56,32 @@ export function h<Props>(
  */
 export type ActionResult<State> = Partial<State> | Promise<any> | null | void
 
-export type MyAction<State, Actions> = (
-  data: any
-) =>
-  | ((
-      state: State
-    ) => ((actions: Actions) => ActionResult<State>) | ActionResult<State>)
-  | ActionResult<State>
-
-/** The interface for actions (exposed when implementing actions).
+/** The interface for a single action implementation.
  *
  * @memberOf [App]
  */
-export type MyActions<State, Actions> = {
-  [P in keyof Actions]: MyAction<State, Actions> | MyActions<any, Actions[P]>
+export type ActionImpl<State, Actions> = (
+  data: any
+) =>
+  | ((state: State, actions: Actions) => ActionResult<State>)
+  | ActionResult<State>
+
+/** The interface for actions implementations.
+ *
+ * @memberOf [App]
+ */
+export type ActionsImpl<State, Actions> = {
+  [P in keyof Actions]:
+    | ActionImpl<State, Actions>
+    | ActionsImpl<any, Actions[P]>
 }
 
 /** The view function.
  *
  * @memberOf [App]
  */
-export type View<State, Actions> = (
-  state: State
-) => ((actions: Actions) => VNode<{}>) | VNode<{}>
-
-/** The props object that serves as an input to app().
- *
- * @param State The full state of the module including sub-modules
- * @param Actions The actions of the module including sub-modules
- *
- * @memberOf [App]
- */
-export interface AppProps<State, Actions> {
-  state?: State
-  view?: View<State, Actions>
-  actions?: MyActions<State, Actions>
+export interface View<State, Actions> {
+  (state: State, actions: Actions): VNode<object>
 }
 
 /** The app() function, entry point of Hyperapp's API.
@@ -101,7 +92,9 @@ export interface AppProps<State, Actions> {
  * @memberOf [App]
  */
 export function app<State, Actions>(
-  app: AppProps<State, Actions>,
+  state: State,
+  actions: ActionsImpl<State, Actions>,
+  view?: View<State, Actions>,
   container?: HTMLElement | null
 ): Actions
 
@@ -109,7 +102,7 @@ export function app<State, Actions>(
 
 declare global {
   namespace JSX {
-    interface Element<Data> extends VNode<Data> {}
+    interface Element<Data> extends VNode<object> {}
     interface IntrinsicElements {
       [elemName: string]: any
     }

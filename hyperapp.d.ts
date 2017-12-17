@@ -9,21 +9,21 @@ export as namespace Hyperapp
 export interface VNode<Props> {
   type: string
   props: Props
-  children: VChildNode<object | null>[]
+  children: VNodeChild<object | null>[]
 }
 
 /** In the VDOM a Child could be either a VNode or a string
  *
  * @memberOf [VDOM]
  */
-export type VChildNode<Props = object> = VNode<Props> | string
+export type VNodeChild<Props = object> = VNode<Props> | string
 
 /** A Component is a function that return a custom VNode
  *
  * @memberOf [VDOM]
  */
 export interface Component<Props> {
-  (props: Props, children: VChildNode<object | null>[]): VNode<object>
+  (props: Props, children: VNodeChild<object | null>[]): VNode<object>
 }
 
 /**The type for the children parameter accepted by h().
@@ -31,8 +31,8 @@ export interface Component<Props> {
  * @memberOf [VDOM]
  */
 export type VNodeChildren =
-  | Array<VChildNode<object | null> | number>
-  | VChildNode<object | null>
+  | Array<VNodeChild<object | null> | number>
+  | VNodeChild<object | null>
   | number
 
 /** The soft way to create a VNode

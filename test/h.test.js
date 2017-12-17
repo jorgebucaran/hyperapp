@@ -2,7 +2,7 @@ import { h } from "../src"
 
 test("empty vnode", () => {
   expect(h("div")).toEqual({
-    tag: "div",
+    type: "div",
     props: {},
     children: []
   })
@@ -10,13 +10,13 @@ test("empty vnode", () => {
 
 test("vnode with a single child", () => {
   expect(h("div", {}, ["foo"])).toEqual({
-    tag: "div",
+    type: "div",
     props: {},
     children: ["foo"]
   })
 
   expect(h("div", {}, "foo")).toEqual({
-    tag: "div",
+    type: "div",
     props: {},
     children: ["foo"]
   })
@@ -24,24 +24,24 @@ test("vnode with a single child", () => {
 
 test("positional String/Number children", () => {
   expect(h("div", {}, "foo", "bar", "baz")).toEqual({
-    tag: "div",
+    type: "div",
     props: {},
     children: ["foo", "bar", "baz"]
   })
 
   expect(h("div", {}, 1, "foo", 2, "baz", 3)).toEqual({
-    tag: "div",
+    type: "div",
     props: {},
     children: ["1", "foo", "2", "baz", "3"]
   })
 
   expect(h("div", {}, "foo", h("div", {}, "bar"), "baz", "quux")).toEqual({
-    tag: "div",
+    type: "div",
     props: {},
     children: [
       "foo",
       {
-        tag: "div",
+        type: "div",
         props: {},
         children: ["bar"]
       },
@@ -61,7 +61,7 @@ test("vnode with props", () => {
   }
 
   expect(h("div", props, "baz")).toEqual({
-    tag: "div",
+    type: "div",
     props,
     children: ["baz"]
   })
@@ -69,7 +69,7 @@ test("vnode with props", () => {
 
 test("skip null and Boolean children", () => {
   const expected = {
-    tag: "div",
+    type: "div",
     props: {},
     children: []
   }
@@ -83,17 +83,17 @@ test("components", () => {
   const Component = (props, children) => h("div", props, children)
 
   expect(h(Component, { id: "foo" }, "bar")).toEqual({
-    tag: "div",
+    type: "div",
     props: { id: "foo" },
     children: ["bar"]
   })
 
   expect(h(Component, { id: "foo" }, [h(Component, { id: "bar" })])).toEqual({
-    tag: "div",
+    type: "div",
     props: { id: "foo" },
     children: [
       {
-        tag: "div",
+        type: "div",
         props: { id: "bar" },
         children: []
       }
@@ -106,7 +106,7 @@ test("component with no props adds default props", () => {
     h("div", {}, "Hello " + name)
 
   expect(h(Component)).toEqual({
-    tag: "div",
+    type: "div",
     props: {},
     children: ["Hello world"]
   })

@@ -1,4 +1,4 @@
-export function h(tag, props) {
+export function h(type, props) {
   var node
   var stack = []
   var children = []
@@ -18,13 +18,13 @@ export function h(tag, props) {
     }
   }
 
-  return typeof tag === "string"
+  return typeof type === "string"
     ? {
-        tag: tag,
+        type: type,
         props: props || {},
         children: children
       }
-    : tag(props || {}, children)
+    : type(props || {}, children)
 }
 
 export function app(state, actions, view, container) {
@@ -40,7 +40,7 @@ export function app(state, actions, view, container) {
   function vnode(element, map) {
     return (
       element && {
-        tag: element.tagName.toLowerCase(),
+        type: element.tagName.toLowerCase(),
         props: {},
         children: map.call(element.childNodes, function(element) {
           return 3 === element.nodeType
@@ -152,9 +152,9 @@ export function app(state, actions, view, container) {
     if (typeof node === "string") {
       var element = document.createTextNode(node)
     } else {
-      var element = (isSVG = isSVG || "svg" === node.tag)
-        ? document.createElementNS("http://www.w3.org/2000/svg", node.tag)
-        : document.createElement(node.tag)
+      var element = (isSVG = isSVG || "svg" === node.type)
+        ? document.createElementNS("http://www.w3.org/2000/svg", node.type)
+        : document.createElement(node.type)
 
       if (node.props.oncreate) {
         stack.push(function() {
@@ -189,30 +189,43 @@ export function app(state, actions, view, container) {
     }
   }
 
-  function removeElement(parent, element, node, isChild) {
-    if (node.props) {
-      for (var i = 0, cb = node.props.onremove; i < node.children.length; i++) {
-        removeElement(element, element.childNodes[i], node.children[i], true)
+  function removeChildren(element, node, props) {
+    if ((props = node.props)) {
+      for (var i = 0; i < node.children.length; i++) {
+        removeChildren(element.childNodes[i], node.children[i])
       }
 
-      if (cb && typeof (cb = cb(element)) === "function") {
-        cb(function() {
-          return parent.removeChild(element)
-        })
+      if (props.onremove) {
+        props.onremove(element)
       }
     }
+    return element
+  }
 
-    if (!isChild) parent.removeChild(element)
+  function removeElement(parent, element, node, cb) {
+    function done() {
+      parent.removeChild(removeChildren(element, node))
+    }
+
+    if (
+      node.props &&
+      node.props.onbeforeremove &&
+      typeof (cb = node.props.onbeforeremove(element)) === "function"
+    ) {
+      cb(done)
+    } else {
+      done()
+    }
   }
 
   function patch(parent, element, oldNode, node, isSVG, nextSibling) {
     if (oldNode === node) {
     } else if (null == oldNode) {
       element = parent.insertBefore(createElement(node, isSVG), element)
-    } else if (node.tag != null && node.tag === oldNode.tag) {
+    } else if (node.type != null && node.type === oldNode.type) {
       updateElement(element, oldNode.props, node.props)
 
-      isSVG = isSVG || node.tag === "svg"
+      isSVG = isSVG || node.type === "svg"
 
       var len = node.children.length
       var oldLen = oldNode.children.length

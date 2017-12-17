@@ -32,7 +32,7 @@ const node = (
 )
 ```
 
-Virtual node props may include any valid [HTML](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes) or [SVG](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute) attributes, [DOM](https://developer.mozilla.org/en-US/docs/Web/Events), [lifecycle events](lifecycle.md), and [keys](keys.md).
+Virtual node props may include any valid [HTML](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes) or [SVG](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute) attributes, [DOM](https://developer.mozilla.org/en-US/docs/Web/Events), [lifecycle events](lifecycle-events.md), and [keys](keys.md).
 
 ```jsx
 const button = (

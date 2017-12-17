@@ -25,19 +25,18 @@ test("slices", done => {
     }
   }
 
-  const model = {
-    state: {
-      foo: foo.state
-    },
-    actions: {
-      foo: foo.actions,
-      getState: () => state => state
-    }
+  const state = {
+    foo: foo.state
   }
 
-  const { actions } = app(model)
+  const actions = {
+    foo: foo.actions,
+    getState: () => state => state
+  }
 
-  expect(actions.getState()).toEqual({
+  const main = app(state, actions, () => {})
+
+  expect(main.getState()).toEqual({
     foo: {
       value: true,
       bar: {
@@ -46,24 +45,22 @@ test("slices", done => {
     }
   })
 
-  expect(actions.foo.up()).toEqual({ value: false })
-  expect(actions.foo.bar.change()).toEqual({ value: false })
+  expect(main.foo.up()).toEqual({ value: false })
+  expect(main.foo.bar.change()).toEqual({ value: false })
 
   done()
 })
 
 test("state/actions tree", done => {
-  const model = {
-    actions: {
-      fizz: {
-        buzz: {
-          fizzbuzz: () => ({ value: "fizzbuzz" })
-        }
+  const actions = {
+    fizz: {
+      buzz: {
+        fizzbuzz: () => ({ value: "fizzbuzz" })
       }
     }
   }
 
-  const view = ({ state }) =>
+  const view = state =>
     h(
       "div",
       {
@@ -75,7 +72,7 @@ test("state/actions tree", done => {
       state.fizz.buzz.value
     )
 
-  const { actions } = app(model, view, document.body)
+  const main = app({}, actions, view, document.body)
 
-  actions.fizz.buzz.fizzbuzz()
+  main.fizz.buzz.fizzbuzz()
 })

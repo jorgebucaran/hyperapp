@@ -5,6 +5,8 @@ In this example we'll create a TweetBox.
 [Try it Online](https://codepen.io/hyperapp/pen/bgWBdV?editors=0010)
 
 ```jsx
+import { h, app } from "hyperapp"
+
 const MAX_LENGTH = 120
 const OFFSET = 10
 
@@ -49,20 +51,19 @@ const Tweetbox = ({ count, text, update }) => (
   </main>
 )
 
-const model = {
-  state: {
-    text: "",
-    count: MAX_LENGTH
-  },
-  actions: {
-    update: text => state => ({
-      text,
-      count: state.count + state.text.length - text.length
-    })
-  }
+const state = {
+  text: "",
+  count: MAX_LENGTH
 }
 
-const view = ({ state, actions }) => (
+const actions = {
+  update: text => state => ({
+    text,
+    count: state.count + state.text.length - text.length
+  })
+}
+
+const view = (state, actions) => (
   <Tweetbox
     text={state.text}
     count={state.count}
@@ -70,13 +71,13 @@ const view = ({ state, actions }) => (
   />
 )
 
-app(model, view, document.body)
+const main = app(state, actions, view, document.body)
 ```
 
 The state consists of two properties: `text`, the tweet; and `count`, the number of remaining characters, initialized to `MAX_LENGTH`.
 
 ```jsx
-state: {
+const state = {
   text: "",
   count: MAX_LENGTH
 }
@@ -95,10 +96,12 @@ The view consists of a single TweetBox component.
 To update the text and calculate the remaining characters, call `actions.update`.
 
 ```jsx
-update: state => text => ({
-  text,
-  count: state.count + state.text.length - text.length
-})
+const actions = {
+  update: text => state => ({
+    text,
+    count: state.count + state.text.length - text.length
+  })
+}
 ```
 
 The subtracting the length of the current text, from the length of the previous text, tells us how the number of remaining characters has changed. Hence the new count of remaining characters is the old count plus the aforementioned difference.

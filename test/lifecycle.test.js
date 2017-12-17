@@ -18,18 +18,16 @@ test("oncreate", done => {
       "foo"
     )
 
-  app({}, view, document.body)
+  app({}, {}, view, document.body)
 })
 
 test("onupdate", done => {
-  const model = {
-    state: { value: "foo" },
-    actions: {
-      setValue: value => ({ value })
-    }
+  const state = { value: "foo" }
+  const actions = {
+    setValue: value => ({ value })
   }
 
-  const view = ({ state, actions }) =>
+  const view = (state, actions) =>
     h(
       "div",
       {
@@ -46,20 +44,19 @@ test("onupdate", done => {
       state.value
     )
 
-  app(model, view, document.body)
+  app(state, actions, view, document.body)
 })
 
 test("onremove", done => {
-  const model = {
-    state: {
-      value: true
-    },
-    actions: {
-      toggle: () => state => ({ value: !state.value })
-    }
+  const state = {
+    value: true
   }
 
-  const view = ({ state, actions }) =>
+  const actions = {
+    toggle: () => state => ({ value: !state.value })
+  }
+
+  const view = (state, actions) =>
     state.value
       ? h(
           "ul",
@@ -74,157 +71,87 @@ test("onremove", done => {
           [
             h("li"),
             h("li", {
-              onremove(element, remove) {
-                remove()
-                expect(document.body.innerHTML).toBe("<ul><li></li></ul>")
-                done()
-              }
-            })
-          ]
-        )
-      : h("ul", {}, [h("li")])
-
-  app(model, view, document.body)
-})
-
-test("ondestroy", done => {
-  let destroyed = false
-
-  const model = {
-    state: {
-      value: true
-    },
-    actions: {
-      toggle: () => state => ({ value: !state.value })
-    }
-  }
-
-  const view = ({ state, actions }) =>
-    state.value
-      ? h(
-          "ul",
-          {
-            oncreate: () => actions.toggle()
-          },
-          [
-            h("li"),
-            h("li", {
-              onremove(element, remove) {
-                expect(destroyed).toBe(false)
-                remove()
-                expect(destroyed).toBe(true)
-                done()
-              },
-              ondestroy() {
-                destroyed = true
-              }
-            })
-          ]
-        )
-      : h("ul", {}, [h("li")])
-
-  app(model, view, document.body)
-})
-
-test("nested ondestroy", done => {
-  let removed = false
-
-  const model = {
-    state: {
-      value: true
-    },
-
-    actions: {
-      toggle: () => state => ({ value: !state.value })
-    }
-  }
-
-  const view = ({ state, actions }) =>
-    state.value
-      ? h(
-          "ul",
-          {
-            oncreate: () => actions.toggle()
-          },
-          [
-            h("li"),
-            h("li", {}, [
-              h("span", {
-                onremove(element, remove) {
-                  removed = true
+              onremove(element) {
+                return remove => {
                   remove()
-                },
-                ondestroy() {
-                  expect(removed).toBe(false)
+                  expect(document.body.innerHTML).toBe("<ul><li></li></ul>")
                   done()
                 }
-              })
-            ])
+              }
+            })
           ]
         )
       : h("ul", {}, [h("li")])
 
-  app(model, view, document.body)
+  app(state, actions, view, document.body)
 })
 
-test("several nested ondestroy", done => {
-  let childDestroyed = false
-
-  const model = {
-    state: {
-      value: true
-    },
-    actions: {
-      toggle: () => state => ({ value: !state.value })
-    }
+test("nested onremove", done => {
+  const state = {
+    value: true
   }
 
-  const view = ({ state, actions }) =>
+  const actions = {
+    toggle: () => state => ({ value: !state.value })
+  }
+
+  const view = (state, actions) =>
     state.value
       ? h(
           "ul",
           {
-            oncreate: () => actions.toggle()
+            oncreate: () => {
+              expect(document.body.innerHTML).toBe(
+                "<ul><li></li><li><span></span></li></ul>"
+              )
+              actions.toggle()
+            }
           },
           [
             h("li"),
-            h("li", {}, [
-              h(
-                "span",
-                {
-                  ondestroy() {
-                    expect(childDestroyed).toBe(true)
+            h(
+              "li",
+              {
+                onremove(element) {
+                  return remove => {
+                    remove()
+                    expect(document.body.innerHTML).toBe("<ul><li></li></ul>")
                     done()
                   }
-                },
-                [
-                  h("strong", {
-                    ondestroy() {
-                      childDestroyed = true
+                }
+              },
+              [
+                h("span", {
+                  onremove(element) {
+                    return remove => {
+                      remove()
+                      expect(document.body.innerHTML).toBe(
+                        "<ul><li></li><li></li></ul>"
+                      )
                     }
-                  })
-                ]
-              )
-            ])
+                  }
+                })
+              ]
+            )
           ]
         )
       : h("ul", {}, [h("li")])
-  app(model, view, document.body)
+
+  app(state, actions, view, document.body)
 })
 
-test("event bubling", done => {
+test("event bubbling", done => {
   let count = 0
 
-  const model = {
-    state: {
-      value: true
-    },
-    actions: {
-      toggle: () => state => ({ value: !state.value })
-    }
+  const state = {
+    value: true
   }
 
-  const view = ({ state, actions }) =>
+  const actions = {
+    toggle: () => state => ({ value: !state.value })
+  }
+
+  const view = (state, actions) =>
     h(
       "main",
       {
@@ -265,5 +192,5 @@ test("event bubling", done => {
       ]
     )
 
-  app(model, view, document.body)
+  app(state, actions, view, document.body)
 })

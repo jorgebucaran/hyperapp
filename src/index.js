@@ -27,14 +27,23 @@ export function h(tag, props) {
     : tag(props || {}, children)
 }
 
-export function app(model, view, container) {
+export function app(state, actions, view, container) {
+  var lock
+  var root = container && container.children[0]
+  var node = vnode(root, [].map)
+  var stack = []
+
+  repaint(init([], (state = copy(state)), (actions = copy(actions))))
+
+  return actions
+
   function vnode(element, map) {
     return (
       element && {
         tag: element.tagName.toLowerCase(),
         props: {},
         children: map.call(element.childNodes, function(element) {
-          return element.nodeType === 3
+          return 3 === element.nodeType
             ? element.nodeValue
             : vnode(element, map)
         })
@@ -44,7 +53,7 @@ export function app(model, view, container) {
 
   function render(next) {
     lock = !lock
-    next = view(store)
+    next = view(state, actions)
 
     if (container && !lock) {
       root = patch(container, root, node, (node = next))
@@ -55,33 +64,30 @@ export function app(model, view, container) {
 
   function repaint() {
     if (view && !lock) {
-      setTimeout(render, (lock = !lock))
+      lock = !lock
+      setTimeout(render)
     }
   }
 
-  function assign(target, source) {
-    var result = {}
+  function copy(target, source) {
+    var obj = {}
 
-    for (var i in target) {
-      result[i] = target[i]
-    }
+    for (var i in target) obj[i] = target[i]
+    for (var i in source) obj[i] = source[i]
 
-    for (var i in source) {
-      result[i] = source[i]
-    }
-
-    return result
+    return obj
   }
 
-  function setDeep(path, value, source) {
+  function set(path, value, source) {
     var target = {}
-    return 0 === path.length
-      ? value
-      : ((target[path[0]] =
-          1 < path.length
-            ? setDeep(path.slice(1), value, source[path[0]])
-            : value),
-        assign(source, target))
+
+    if (!path.length) {
+      return value
+    } else {
+      target[path[0]] =
+        1 < path.length ? set(path.slice(1), value, source[path[0]]) : value
+      return copy(source, target)
+    }
   }
 
   function get(path, source) {
@@ -91,44 +97,40 @@ export function app(model, view, container) {
     return source
   }
 
-  function init(path, state, actions) {
+  function init(path, slice, actions) {
     for (var key in actions) {
       typeof actions[key] === "function"
         ? (function(key, action) {
             actions[key] = function(data) {
-              state = get(path, store.state)
+              slice = get(path, state)
 
               if (typeof (data = action(data)) === "function") {
-                data = data(state, actions)
+                data = data(slice, actions)
               }
 
-              if (data && data !== state && !data.then) {
-                repaint(
-                  (store.state = setDeep(
-                    path,
-                    assign(state, data),
-                    store.state
-                  ))
-                )
+              if (data && data !== slice && !data.then) {
+                repaint((state = set(path, copy(slice, data), state)))
               }
 
               return data
             }
           })(key, actions[key])
-        : init(path.concat(key), (state[key] = state[key] || {}), actions[key])
+        : init(
+            path.concat(key),
+            (slice[key] = slice[key] || {}),
+            (actions[key] = copy(actions[key]))
+          )
     }
   }
 
   function getKey(node) {
-    if (node && node.props) {
-      return node.props.key
-    }
+    return node && node.props ? node.props.key : null
   }
 
   function setElementProp(element, name, value, oldValue) {
     if (name === "key") {
     } else if (name === "style") {
-      for (var i in assign(oldValue, (value = value || {}))) {
+      for (var i in copy(oldValue, (value = value || {}))) {
         element.style[i] = null == value[i] ? "" : value[i]
       }
     } else {
@@ -150,7 +152,7 @@ export function app(model, view, container) {
     if (typeof node === "string") {
       var element = document.createTextNode(node)
     } else {
-      var element = (isSVG = isSVG || node.tag === "svg")
+      var element = (isSVG = isSVG || "svg" === node.tag)
         ? document.createElementNS("http://www.w3.org/2000/svg", node.tag)
         : document.createElement(node.tag)
 
@@ -172,12 +174,11 @@ export function app(model, view, container) {
   }
 
   function updateElement(element, oldProps, props) {
-    for (var i in assign(oldProps, props)) {
-      var value = props[i]
-      var oldValue = i === "value" || i === "checked" ? element[i] : oldProps[i]
+    for (var i in copy(oldProps, props)) {
+      var oldValue = "value" === i || "checked" === i ? element[i] : oldProps[i]
 
-      if (value !== oldValue) {
-        setElementProp(element, i, value, oldValue)
+      if (props[i] !== oldValue) {
+        setElementProp(element, i, props[i], oldValue)
       }
     }
 
@@ -188,29 +189,20 @@ export function app(model, view, container) {
     }
   }
 
-  function destroyChildren(element, node) {
-    if (typeof node !== "string") {
-      for (var i = 0; i < node.children.length; i++) {
-        destroyChildren(element.childNodes[i], node.children[i])
+  function removeElement(parent, element, node, isChild) {
+    if (node.props) {
+      for (var i = 0, cb = node.props.onremove; i < node.children.length; i++) {
+        removeElement(element, element.childNodes[i], node.children[i], true)
       }
 
-      if (node.props.ondestroy) {
-        node.props.ondestroy(element)
+      if (cb && typeof (cb = cb(element)) === "function") {
+        cb(function() {
+          return parent.removeChild(element)
+        })
       }
     }
-  }
 
-  function removeElement(parent, element, node) {
-    function done() {
-      destroyChildren(element, node)
-      parent.removeChild(element)
-    }
-
-    if (node.props && node.props.onremove) {
-      node.props.onremove(element, done)
-    } else {
-      done()
-    }
+    if (!isChild) parent.removeChild(element)
   }
 
   function patch(parent, element, oldNode, node, isSVG, nextSibling) {
@@ -307,20 +299,4 @@ export function app(model, view, container) {
 
     return element
   }
-
-  var lock
-  var root = container && container.children[0]
-  var node = vnode(root, [].map)
-  var stack = []
-  var store = assign({}, model)
-
-  repaint(
-    init(
-      [],
-      (store.state = assign({}, store.state)),
-      (store.actions = assign({}, store.actions))
-    )
-  )
-
-  return store
 }

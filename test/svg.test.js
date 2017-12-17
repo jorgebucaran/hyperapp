@@ -45,5 +45,5 @@ test("svg", done => {
       ]
     )
 
-  app({}, view, document.body)
+  app({}, {}, view, document.body)
 })

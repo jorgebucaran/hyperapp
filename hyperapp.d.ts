@@ -9,21 +9,21 @@ export as namespace Hyperapp
 export interface VNode<Props> {
   tag: string
   props: Props
-  children: VNodeChild<{} | null>[]
+  children: VChildNode<object | null>[]
 }
 
 /** In the VDOM a Child could be either a VNode or a string
  *
  * @memberOf [VDOM]
  */
-export type VNodeChild<Props = {}> = VNode<Props> | string
+export type VChildNode<Props = object> = VNode<Props> | string
 
 /** A Component is a function that return a custom VNode
  *
  * @memberOf [VDOM]
  */
 export interface Component<Props> {
-  (props: Props, children: VNodeChild<{} | null>[]): VNode<{}>
+  (props: Props, children: VChildNode<object | null>[]): VNode<object>
 }
 
 /**The type for the children parameter accepted by h().
@@ -31,8 +31,8 @@ export interface Component<Props> {
  * @memberOf [VDOM]
  */
 export type VNodeChildren =
-  | Array<VNodeChild<{} | null> | number>
-  | VNodeChild<{} | null>
+  | Array<VChildNode<object | null> | number>
+  | VChildNode<object | null>
   | number
 
 /** The soft way to create a VNode
@@ -46,7 +46,7 @@ export function h<Props>(
   tag: Component<Props> | string,
   props?: Props,
   children?: VNodeChildren
-): VNode<{}>
+): VNode<object>
 
 /** @namespace [App] */
 
@@ -81,7 +81,7 @@ export type ActionsImpl<State, Actions> = {
  * @memberOf [App]
  */
 export interface View<State, Actions> {
-  (state: State, actions: Actions): VNode<{}>
+  (state: State, actions: Actions): VNode<object>
 }
 
 /** The app() function, entry point of Hyperapp's API.
@@ -92,8 +92,8 @@ export interface View<State, Actions> {
  * @memberOf [App]
  */
 export function app<State, Actions>(
-  state?: State,
-  actions?: ActionsImpl<State, Actions>,
+  state: State,
+  actions: ActionsImpl<State, Actions>,
   view?: View<State, Actions>,
   container?: HTMLElement | null
 ): Actions
@@ -102,7 +102,7 @@ export function app<State, Actions>(
 
 declare global {
   namespace JSX {
-    interface Element<Data> extends VNode<Data> {}
+    interface Element<Data> extends VNode<object> {}
     interface IntrinsicElements {
       [elemName: string]: any
     }

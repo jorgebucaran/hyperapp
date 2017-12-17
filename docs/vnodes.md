@@ -4,7 +4,7 @@ A virtual node is a JavaScript object that represents an element in the DOM tree
 
 ```js
 {
-  type: "div",
+  tag: "div",
   props: {
     id: "app"
   },
@@ -19,12 +19,10 @@ A virtual node is a JavaScript object that represents an element in the DOM tree
 To create a virtual node, use the `h` function.
 
 ```js
-const node = h("div", { id: "app" }, [
-  h("h1", {}, "Hi.")
-])
+const node = h("div", { id: "app" }, [h("h1", {}, "Hi.")])
 ```
 
-Instead of using the built-in `h()` function you may use [JSX](https://facebook.github.io/jsx/), [lit-html](https://github.com/PolymerLabs/lit-html), [hyperx](https://github.com/choojs/hyperx), [t7](https://github.com/trueadm/t7) or [@hyperapp/html](https://github.com/hyperapp/html).
+Alternatives to the built-in `h()` function include [JSX](https://facebook.github.io/jsx/), [hyperx](https://github.com/choojs/hyperx), [t7](https://github.com/trueadm/t7) and [@hyperapp/html](https://github.com/hyperapp/html).
 
 ```jsx
 const node = (

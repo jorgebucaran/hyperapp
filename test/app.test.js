@@ -5,22 +5,21 @@ beforeEach(() => {
 })
 
 test("debouncing", done => {
-  const model = {
-    state: {
-      value: 1
-    },
-    actions: {
-      up: () => state => ({ value: state.value + 1 }),
-      fire: () => (state, actions) => {
-        actions.up()
-        actions.up()
-        actions.up()
-        actions.up()
-      }
+  const state = {
+    value: 1
+  }
+
+  const actions = {
+    up: () => state => ({ value: state.value + 1 }),
+    fire: () => (state, actions) => {
+      actions.up()
+      actions.up()
+      actions.up()
+      actions.up()
     }
   }
 
-  const view = ({ state }) =>
+  const view = state =>
     h(
       "div",
       {
@@ -32,22 +31,21 @@ test("debouncing", done => {
       state.value
     )
 
-  const { actions } = app(model, view, document.body)
+  const main = app(state, actions, view, document.body)
 
-  actions.fire()
+  main.fire()
 })
 
 test("actions in the view", done => {
-  const model = {
-    state: {
-      value: 0
-    },
-    actions: {
-      up: () => state => ({ value: state.value + 1 })
-    }
+  const state = {
+    value: 0
   }
 
-  const view = ({ state, actions }) => {
+  const actions = {
+    up: () => state => ({ value: state.value + 1 })
+  }
+
+  const view = (state, actions) => {
     if (state.value < 1) {
       return actions.up()
     }
@@ -60,5 +58,5 @@ test("actions in the view", done => {
     return h("div", {}, state.value)
   }
 
-  app(model, view, document.body)
+  app(state, actions, view, document.body)
 })

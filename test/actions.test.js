@@ -7,16 +7,15 @@ beforeEach(() => {
 })
 
 test("sync updates", done => {
-  const model = {
-    state: {
-      value: 1
-    },
-    actions: {
-      up: () => state => ({ value: state.value + 1 })
-    }
+  const state = {
+    value: 1
   }
 
-  const view = ({ state }) =>
+  const actions = {
+    up: () => state => ({ value: state.value + 1 })
+  }
+
+  const view = state =>
     h(
       "div",
       {
@@ -28,24 +27,23 @@ test("sync updates", done => {
       state.value
     )
 
-  const { actions } = app(model, view, document.body)
+  const main = app(state, actions, view, document.body)
 
-  actions.up()
+  main.up()
 })
 
 test("async updates", done => {
-  const model = {
-    state: {
-      value: 2
-    },
-    actions: {
-      up: data => state => ({ value: state.value + data }),
-      upAsync: data => (state, actions) =>
-        mockDelay().then(() => actions.up(data))
-    }
+  const state = {
+    value: 2
   }
 
-  const view = ({ state }) =>
+  const actions = {
+    up: data => state => ({ value: state.value + data }),
+    upAsync: data => (state, actions) =>
+      mockDelay().then(() => actions.up(data))
+  }
+
+  const view = state =>
     h(
       "div",
       {
@@ -60,7 +58,7 @@ test("async updates", done => {
       state.value
     )
 
-  const { actions } = app(model, view, document.body)
+  const main = app(state, actions, view, document.body)
 
-  actions.upAsync(1)
+  main.upAsync(1)
 })

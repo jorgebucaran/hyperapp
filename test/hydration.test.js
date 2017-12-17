@@ -5,7 +5,7 @@ test("hydration", done => {
 
   document.body.innerHTML = SSR_BODY
 
-  const view = ({ state }) =>
+  const view = state =>
     h(
       "main",
       {
@@ -17,5 +17,5 @@ test("hydration", done => {
       [h("p", {}, "foo")]
     )
 
-  app({}, view, document.getElementById("app"))
+  app({}, {}, view, document.getElementById("app"))
 })

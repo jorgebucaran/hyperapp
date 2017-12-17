@@ -17,15 +17,16 @@ Hyperapp is a JavaScript framework for building frontend applications.
 ```jsx
 import { h, app } from "hyperapp"
 
-const model = {
-  state: { count: 0 },
-  actions: {
-    down: () => state => ({ count: state.count - 1 }),
-    up: () => state => ({ count: state.count + 1 })
-  }
+const state = {
+  count: 0
 }
 
-const view = ({ state, actions }) => (
+const actions = {
+  down: () => state => ({ count: state.count - 1 }),
+  up: () => state => ({ count: state.count + 1 })
+}
+
+const view = (state, actions) => (
   <main>
     <h1>{state.count}</h1>
     <button onclick={actions.down}>-</button>
@@ -33,7 +34,7 @@ const view = ({ state, actions }) => (
   </main>
 )
 
-const { actions } = app(model, view, document.body)
+export const main = app(state, actions, view, document.body)
 ```
 
 ## Community

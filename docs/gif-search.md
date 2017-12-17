@@ -5,33 +5,34 @@ In this example we'll implement a gif search using the [Giphy API](https://api.g
 [Try it Online](https://codepen.io/hyperapp/pen/ZeByKv?editors=0010)
 
 ```jsx
+import { h, app } from "hyperapp"
+
 const GIPHY_API_KEY = "dc6zaTOxFJmzC"
 
-const model = {
-  state: {
-    url: "",
-    query: "",
-    isFetching: false
-  },
-  actions: {
-    downloadGif: query => async (state, actions) => {
-      actions.toggleFetching(true)
-      actions.setUrl(
-        await fetch(
-          `//api.giphy.com/v1/gifs/search?q=${query}&api_key=${GIPHY_API_KEY}`
-        )
-          .then(data => data.json())
-          .then(({ data }) => (data[0] ? data[0].images.original.url : ""))
-      )
-      actions.toggleFetching(false)
-    },
-    setUrl: url => ({ url }),
-    setQuery: query => ({ query }),
-    toggleFetching: isFetching => ({ isFetching })
-  }
+const state = {
+  url: "",
+  query: "",
+  isFetching: false
 }
 
-const view = ({ state, actions }) => (
+const actions = {
+  downloadGif: query => async (state, actions) => {
+    actions.toggleFetching(true)
+    actions.setUrl(
+      await fetch(
+        `//api.giphy.com/v1/gifs/search?q=${query}&api_key=${GIPHY_API_KEY}`
+      )
+        .then(data => data.json())
+        .then(({ data }) => (data[0] ? data[0].images.original.url : ""))
+    )
+    actions.toggleFetching(false)
+  },
+  setUrl: url => ({ url }),
+  setQuery: query => ({ query }),
+  toggleFetching: isFetching => ({ isFetching })
+}
+
+const view = (state, actions) => (
   <main>
     <input
       type="text"
@@ -57,13 +58,13 @@ const view = ({ state, actions }) => (
   </main>
 )
 
-app(model, view, document.body)
+const main = app(state, actions, view, document.body)
 ```
 
 The state consists of three properties: `url`, the url of the gif; `isFetching` to track when the browser is fetching a new gif, and query, what the user has typed into the text input.
 
 ```jsx
-state: {
+const state = {
   url: "",
   query: "",
   isFetching: false
@@ -78,7 +79,7 @@ style={{
 }}
 ```
 
-The view consists of a text input and an `img` element to display the gif.
+The view is made up of a text input and an `img` element to display the gif.
 
 Inside `onkeyup` we retrieve the input text and call `actions.setQuery` to update the current search query, then call `actions.downloadGif` to request a new gif. If a fetch is still pending, we skip the action.
 

@@ -5,6 +5,9 @@ A component is a pure function that returns a [virtual node](vnodes.md). Unlike 
 [Try it Online](https://codepen.io/hyperapp/pen/zNxRLy)
 
 ```jsx
+import { h, app } from "hyperapp"
+import { state, actions } from "./todos"
+
 const TodoItem = ({ id, value, done, toggle }) => (
   <li
     class={done && "done"}
@@ -19,7 +22,7 @@ const TodoItem = ({ id, value, done, toggle }) => (
   </li>
 )
 
-const mainView = ({ state, actions }) => (
+const view = (state, actions) => (
   <div>
     <h1>Todo</h1>
     <ul>
@@ -29,6 +32,8 @@ const mainView = ({ state, actions }) => (
     </ul>
   </div>
 )
+
+const main = app(state, actions, view, document.body)
 ```
 
 If you don't know all the properties that you want to place in a component ahead of time, you can use the [spread syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_operator).

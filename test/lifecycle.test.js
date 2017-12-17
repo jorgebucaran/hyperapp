@@ -47,7 +47,7 @@ test("onupdate", done => {
   app(state, actions, view, document.body)
 })
 
-test("onremove", done => {
+test("onbeforeremove", done => {
   const state = {
     value: true
   }
@@ -71,7 +71,7 @@ test("onremove", done => {
           [
             h("li"),
             h("li", {
-              onremove(element) {
+              onbeforeremove(element) {
                 return remove => {
                   remove()
                   expect(document.body.innerHTML).toBe("<ul><li></li></ul>")
@@ -86,7 +86,9 @@ test("onremove", done => {
   app(state, actions, view, document.body)
 })
 
-test("nested onremove", done => {
+test("onremove", done => {
+  let removed = false
+
   const state = {
     value: true
   }
@@ -100,39 +102,60 @@ test("nested onremove", done => {
       ? h(
           "ul",
           {
-            oncreate: () => {
-              expect(document.body.innerHTML).toBe(
-                "<ul><li></li><li><span></span></li></ul>"
-              )
+            oncreate: () => actions.toggle()
+          },
+          [
+            h("li"),
+            h("li", {}, [
+              h("span", {
+                onremove() {
+                  expect(removed).toBe(false)
+                  done()
+                }
+              })
+            ])
+          ]
+        )
+      : h("ul", {}, [h("li")])
+
+  app(state, actions, view, document.body)
+})
+
+test("onbeforeremove/onremove", done => {
+  let detached = false
+
+  const state = {
+    value: true
+  }
+
+  const actions = {
+    toggle: () => state => ({ value: !state.value })
+  }
+
+  const view = (state, actions) =>
+    state.value
+      ? h(
+          "ul",
+          {
+            oncreate() {
               actions.toggle()
             }
           },
           [
             h("li"),
-            h(
-              "li",
-              {
-                onremove(element) {
-                  return remove => {
-                    remove()
-                    expect(document.body.innerHTML).toBe("<ul><li></li></ul>")
-                    done()
-                  }
-                }
+            h("li", {
+              onremove() {
+                detached = true
               },
-              [
-                h("span", {
-                  onremove(element) {
-                    return remove => {
-                      remove()
-                      expect(document.body.innerHTML).toBe(
-                        "<ul><li></li><li></li></ul>"
-                      )
-                    }
-                  }
-                })
-              ]
-            )
+              onbeforeremove(element) {
+                expect(detached).toBe(false)
+                return remove => {
+                  remove()
+                  expect(detached).toBe(true)
+                  done()
+                }
+              }
+            })
           ]
         )
       : h("ul", {}, [h("li")])

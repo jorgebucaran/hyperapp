@@ -7,7 +7,7 @@ export as namespace Hyperapp
  * @memberOf [VDOM]
  */
 export interface VNode<Props> {
-  tag: string
+  type: string
   props: Props
   children: VChildNode<object | null>[]
 }
@@ -36,14 +36,14 @@ export type VNodeChildren =
   | number
 
 /** The soft way to create a VNode
- * @param type      A tag name or a Component function
+ * @param type      A type name or a Component function
  * @param props     Any valid HTML atributes, events, styles, and meta data
  * @param children  The children of the VNode
  *
  * @memberOf [VDOM]
  */
 export function h<Props>(
-  tag: Component<Props> | string,
+  type: Component<Props> | string,
   props?: Props,
   children?: VNodeChildren
 ): VNode<object>
@@ -70,10 +70,10 @@ export type ActionImpl<State, Actions> = (
  *
  * @memberOf [App]
  */
-export type ActionsImpl<State, Actions> = {
+export type ActionsType<State, Actions> = {
   [P in keyof Actions]:
     | ActionImpl<State, Actions>
-    | ActionsImpl<any, Actions[P]>
+    | ActionsType<any, Actions[P]>
 }
 
 /** The view function.
@@ -93,7 +93,7 @@ export interface View<State, Actions> {
  */
 export function app<State, Actions>(
   state: State,
-  actions: ActionsImpl<State, Actions>,
+  actions: ActionsType<State, Actions>,
   view?: View<State, Actions>,
   container?: HTMLElement | null
 ): Actions

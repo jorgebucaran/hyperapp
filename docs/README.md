@@ -7,7 +7,7 @@
 * Concepts
   * [Virtual Nodes](vnodes.md)
   * [Components](components.md)
-  * [Lifecycle](lifecycle.md)
+  * [Lifecycle Events](lifecycle-events.md)
   * [Keys](keys.md)
   * [Slices](slices.md)
   * [Sanitation](sanitation.md)
@@ -19,7 +19,7 @@
 
 ## Hello World
 
-Let's walk through an example. Paste this code in a new HTML file and open it in your browser or [try it online](https://codepen.io/hyperapp/pen/zNxZLP?editors=0010).
+Let's walk through a small example. Paste this code in a new HTML file and open it in your browser or [try it online](https://codepen.io/hyperapp/pen/zNxZLP?editors=0010).
 
 ```html
 <body>
@@ -38,7 +38,7 @@ const actions = {
 }
 
 const view = (state, actions) =>
-  h("main", {}, [
+  h("div", {}, [
     h("h1", {}, state.count),
     h("button", { onclick: () => actions.down(1) }, "–"),
     h("button", { onclick: () => actions.up(1) }, "+")
@@ -50,13 +50,13 @@ window.main = app(state, actions, view, document.body)
 </body>
 ```
 
-Click on the + and - buttons to increment and decrement the counter. The current count should be displayed on the page inside a `<h1>` tag. Now open your developer console and type:
+Click on the + and - buttons to increment and decrement the counter. The current count should be displayed on the page inside a `<h1>` tag. Now open the developer console and type:
 
 ```js
 main.up(1000)
 ```
 
-You should see the counter update accordingly!
+You should see the counter update accordingly.
 
 In this example we used a `<script>` tag to download the minified library from a CDN. In a production environment you will likely be using a module bundler to build your application instead.
 
@@ -97,13 +97,13 @@ Returning a new state from an action updates the current state and schedules a r
 
 The view describes your application user interface as a function of the state and actions. This function is called every time we need to re-render because the state has changed.
 
-The `h()` function returns a [virtual node](vnodes.md), a lightweight object that describes a DOM tree. Hyperapp consumes this object to update the DOM.
-
 ```js
 const view = (state, actions) => h("h1", {}, "Hello World!")
 ```
 
-We use [JSX](https://facebook.github.io/jsx/) in examples throughout the documentation for familiarity, but you are not required to use it!
+The `h()` function returns a [virtual node](vnodes.md), a lightweight object that describes a DOM tree. Hyperapp consumes this object to update the DOM.
+
+We use [JSX](https://facebook.github.io/jsx/) in examples throughout the documentation for familiarity, but you are not required to use it at all!
 
 Alternatives include [hyperx](https://github.com/choojs/hyperx), [t7](https://github.com/trueadm/t7) and [@hyperapp/html](https://github.com/hyperapp/html).
 
@@ -114,7 +114,7 @@ Alternatives include [hyperx](https://github.com/choojs/hyperx), [t7](https://gi
 <script>
 
 const { h, app } = hyperapp
-const { main, h1, button } = html
+const { div, h1, button } = html
 
 const state = {
   count: 0
@@ -126,7 +126,7 @@ const actions = {
 }
 
 const view = (state, actions) =>
-  main([
+  div([
     h1(state.count),
     button({ onclick: () => actions.down(1) }, "–"),
     button({ onclick: () => actions.up(1) }, "+")

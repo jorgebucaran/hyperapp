@@ -1,4 +1,4 @@
-import { h, app, ActionsImpl } from "hyperapp"
+import { h, app, ActionsType } from "hyperapp"
 
 /**
  *
@@ -49,7 +49,7 @@ namespace Todos {
     store: []
   }
 
-  export const actions: ActionsImpl<State, Actions> = {
+  export const actions: ActionsType<State, Actions> = {
     // store operations
     addToStore: todos => state => ({ store: state.store.concat(todos) }),
     // async operations
@@ -112,7 +112,7 @@ namespace TodoLists {
     todos: Todos.Todo[]
   }
 
-  export const actions: ActionsImpl<State, Actions> = {
+  export const actions: ActionsType<State, Actions> = {
     // sub-modules
     todos: Todos.actions,
     // store operations
@@ -202,7 +202,7 @@ const state: State = {
   init: InitState.NOT_STARTED
 }
 
-const actions: ActionsImpl<State, Actions> = {
+const actions: ActionsType<State, Actions> = {
   // sub-modules
   lists: TodoLists.actions,
   // sync operations

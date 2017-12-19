@@ -7,7 +7,7 @@
 - [Concepts](concepts/README.md)
   - [Virtual Nodes](concepts/vnodes.md)
   - [Components](concepts/components.md)
-  - [Lifecycle Events](concepts/lifecycle-ends.md)
+  - [Lifecycle Events](concepts/lifecycle-events.md)
   - [Keys](concepts/keys.md)
   - [Slices](concepts/slices.md)
   - [Sanitation](concepts/sanitation.md)

@@ -6,95 +6,59 @@ beforeEach(() => {
   document.body.innerHTML = ""
 })
 
-test("slices", done => {
-  const actions = app({
-    state: {
-      foo: {
-        bar: {
-          baz: "minimal baz"
-        }
-      }
-    },
-    view: state =>
-      h(
-        "div",
-        {
-          oncreate() {
-            expect(document.body.innerHTML).toBe(
-              `<div>only the baz will do</div>`
-            )
-            done()
-          }
-        },
-        state.foo.bar.baz
-      ),
-    actions: {
-      foo: {
-        bar: {
-          baz: state => data => {
-            expect(state).toEqual({ baz: "minimal baz" })
-            expect(data).toBe("foo.bar.baz")
-            return { baz: "only the baz will do" }
-          }
+test("sync updates", done => {
+  const state = {
+    value: 1
+  }
+
+  const actions = {
+    up: () => state => ({ value: state.value + 1 })
+  }
+
+  const view = state =>
+    h(
+      "div",
+      {
+        oncreate() {
+          expect(document.body.innerHTML).toBe(`<div>2</div>`)
+          done()
         }
       },
-      fizz: {
-        buzz: {
-          fizzbuzz: () => ({ fizzbuzz: "fizzbuz" })
-        }
-      }
-    }
-  })
+      state.value
+    )
 
-  actions.foo.bar.baz("foo.bar.baz")
-  actions.fizz.buzz.fizzbuzz()
-})
+  const main = app(state, actions, view, document.body)
 
-test("sync updates", done => {
-  app({
-    state: {
-      value: 1
-    },
-    view: state =>
-      h(
-        "div",
-        {
-          oncreate() {
-            expect(document.body.innerHTML).toBe(`<div>2</div>`)
-            done()
-          }
-        },
-        state.value
-      ),
-    actions: {
-      up: state => ({ value: state.value + 1 })
-    }
-  }).up()
+  main.up()
 })
 
 test("async updates", done => {
-  app({
-    state: {
-      value: 2
-    },
-    view: state =>
-      h(
-        "div",
-        {
-          oncreate() {
-            expect(document.body.innerHTML).toBe(`<div>2</div>`)
-          },
-          onupdate() {
-            expect(document.body.innerHTML).toBe(`<div>3</div>`)
-            done()
-          }
+  const state = {
+    value: 2
+  }
+
+  const actions = {
+    up: data => state => ({ value: state.value + data }),
+    upAsync: data => (state, actions) =>
+      mockDelay().then(() => actions.up(data))
+  }
+
+  const view = state =>
+    h(
+      "div",
+      {
+        oncreate() {
+          expect(document.body.innerHTML).toBe(`<div>2</div>`)
         },
-        state.value
-      ),
-    actions: {
-      up: state => data => ({ value: state.value + data }),
-      upAsync: (state, actions) => data =>
-        mockDelay().then(() => actions.up(data))
-    }
-  }).upAsync(1)
+        onupdate() {
+          expect(document.body.innerHTML).toBe(`<div>3</div>`)
+          done()
+        }
+      },
+      state.value
+    )
+
+  const main = app(state, actions, view, document.body)
+
+  main.upAsync(1)
 })

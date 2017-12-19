@@ -9,41 +9,41 @@ const deepExpectNS = (element, ns) =>
   })
 
 test("svg", done => {
-  app({
-    view: () =>
-      h(
-        "div",
-        {
-          oncreate() {
-            const foo = document.getElementById("foo")
-            const bar = document.getElementById("bar")
-            const baz = document.getElementById("baz")
+  const view = () =>
+    h(
+      "div",
+      {
+        oncreate() {
+          const foo = document.getElementById("foo")
+          const bar = document.getElementById("bar")
+          const baz = document.getElementById("baz")
 
-            expect(foo.namespaceURI).not.toBe(SVG_NS)
-            expect(baz.namespaceURI).not.toBe(SVG_NS)
-            expect(bar.namespaceURI).toBe(SVG_NS)
-            expect(bar.getAttribute("viewBox")).toBe("0 0 10 10")
-            deepExpectNS(bar, SVG_NS)
+          expect(foo.namespaceURI).not.toBe(SVG_NS)
+          expect(baz.namespaceURI).not.toBe(SVG_NS)
+          expect(bar.namespaceURI).toBe(SVG_NS)
+          expect(bar.getAttribute("viewBox")).toBe("0 0 10 10")
+          deepExpectNS(bar, SVG_NS)
 
-            done()
-          }
-        },
-        [
-          h("p", { id: "foo" }, "foo"),
-          h("svg", { id: "bar", viewBox: "0 0 10 10" }, [
-            h("quux", {}, [
-              h("beep", {}, [h("ping", {}), h("pong", {})]),
-              h("bop", {}),
-              h("boop", {}, [h("ping", {}), h("pong", {})])
-            ]),
-            h("xuuq", {}, [
-              h("beep", {}),
-              h("bop", {}, [h("ping", {}), h("pong", {})]),
-              h("boop", {})
-            ])
+          done()
+        }
+      },
+      [
+        h("p", { id: "foo" }, "foo"),
+        h("svg", { id: "bar", viewBox: "0 0 10 10" }, [
+          h("quux", {}, [
+            h("beep", {}, [h("ping", {}), h("pong", {})]),
+            h("bop", {}),
+            h("boop", {}, [h("ping", {}), h("pong", {})])
           ]),
-          h("p", { id: "baz" }, "baz")
-        ]
-      )
-  })
+          h("xuuq", {}, [
+            h("beep", {}),
+            h("bop", {}, [h("ping", {}), h("pong", {})]),
+            h("boop", {})
+          ])
+        ]),
+        h("p", { id: "baz" }, "baz")
+      ]
+    )
+
+  app({}, {}, view, document.body)
 })

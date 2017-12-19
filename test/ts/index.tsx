@@ -1,164 +1,246 @@
-import { h, app } from "hyperapp"
+import { h, app, ActionsType } from "hyperapp"
 
-// Sub-module (used by Module 1)
+/**
+ *
+ * This files serves 2 purposes:
+ * 1. checks that the typings are correct, i.e. this file compiles
+ * 2. show a contrieved example of how an app could be written with Hyperapp and Typescript
+ *    Note that this app is not functional: it misses e.g. creating, updating or deleting lists and todo items
+ *    This is because we did not want to bloat this file too much
+ *
+ * This fictional app displays a list of Todo lists (like Trello would do) that it fetches from a server.
+ * The code is divided in 3 parts:
+ * 1. Todos namespace contains state, actions and components that deal with Todo items
+ * 2. TodoLists namespace contains state, actions and components that deals with lists of Todo items
+ * 3. the application (not contained in any namespace) shows how to wire it all together
+ *
+ */
 
-interface SubModuleState extends Hyperapp.State {
-  count: number
-}
-
-interface SubModuleActions extends Hyperapp.Actions<Module1State> {
-  sub(value: number): Partial<Module1State>
-  add(value: number): Partial<Module1State>
-}
-
-// no need to specify OwnState and OwnActions here since it defaults to full state/actions
-const submodule: Hyperapp.Module<SubModuleState, SubModuleActions> = {
-  state: {
-    count: 0
-  },
-  actions: {
-    sub: (state, actions, value: number) => ({ count: state.count - value }),
-    add: (state, actions, value: number) => ({ count: state.count + value })
+/**
+ * This namespace contains state, actions and components that deals with single Todo items.
+ */
+namespace Todos {
+  export interface Todo {
+    id: string
+    listId: string
+    text: string
+    done: boolean
   }
-}
 
-// Module 1 (utilize modules feature)
-
-// only its own state
-interface Module1OwnState extends Hyperapp.State {
-  count: number
-}
-// state including sub-modules
-interface Module1State extends Module1OwnState {
-  submodule: SubModuleState
-}
-// only its own actions
-interface Module1OwnActions extends Hyperapp.Actions<Module1OwnState> {
-  sub(value: number): Partial<Module1State>
-  add(value: number): Partial<Module1State>
-}
-// actions including sub-modules
-interface Module1Actions extends Module1OwnActions {
-  submodule: SubModuleActions
-}
-
-const module1: Hyperapp.Module<
-  Module1State,
-  Module1Actions,
-  Module1OwnState,
-  Module1OwnActions
-> = {
-  state: {
-    count: 0
-  },
-  actions: {
-    sub: (state, actions, value: number) => ({ count: state.count - value }),
-    add: (state, actions, value: number) => ({ count: state.count + value })
-  },
-  modules: {
-    submodule
+  export interface State {
+    store: Todo[]
   }
-}
 
-// Async Module (without modules feature)
+  export interface CreatePayload {
+    text: string
+    listId: string
+  }
 
-interface AsyncModuleState {
-  value?: Error | number
-}
+  // for brievty's sake, let's only add stuff, you can easily infer the other CRUD operations.
+  export interface Actions {
+    // store operations
+    addToStore(todos: Todo[]): void
+    // async operations
+    fetchAll(listId: string): Promise<Todo[]>
+    create(payload: CreatePayload): Promise<Todo>
+  }
 
-const asyncModuleState: AsyncModuleState = {}
+  export const state: State = {
+    store: []
+  }
 
-interface AsyncModuleActions extends Hyperapp.Actions<AsyncModuleState> {
-  fetch(url: string): Hyperapp.Thunk<AsyncModuleState>
-}
-
-const asyncModuleActions: Hyperapp.InternalActions<
-  AsyncModuleState,
-  AsyncModuleActions
-> = {
-  fetch: (state, actions, url: string) => {
-    return (update: Hyperapp.Update<AsyncModuleState>) => {
-      fetch(url)
-        .then(res => {
-          update({
-            value: res.status
-          })
+  export const actions: ActionsType<State, Actions> = {
+    // store operations
+    addToStore: todos => state => ({ store: state.store.concat(todos) }),
+    // async operations
+    fetchAll: listId => (state, actions) => {
+      return fetch("http://example.com/todos?list=" + listId)
+        .then(response => response.json())
+        .then(todos => {
+          actions.addToStore(todos)
+          return todos
         })
-        .catch(err => {
-          update({
-            value: err
+    },
+    create: ({ text, listId }) => (state, actions) => {
+      // let's assume it's a GET, for brievty's sake...
+      return fetch(
+        "http://example.com/todos/create?text=" + text + "&listId=" + listId
+      )
+        .then(response => response.json())
+        .then(id => {
+          const todo = { text, listId, id, done: false }
+          actions.addToStore([todo])
+          return todo
+        })
+    }
+  }
+
+  export const Todo = (todo: Todo) => {
+    return <ul class={todo.done ? "crossed" : ""}>{todo.text}</ul>
+  }
+}
+
+/**
+ * This namespace contains state, actions and components that deals with lists of Todo items.
+ */
+namespace TodoLists {
+  export interface List {
+    id: string
+    name: string
+  }
+
+  export interface State {
+    todos: Todos.State
+    store: List[]
+  }
+
+  export interface Actions {
+    // sub-modules
+    todos: Todos.Actions
+    // store operations
+    addToStore(lists: List[]): void
+    // async operations
+    fetchAll(): Promise<void>
+  }
+
+  export const state = {
+    todos: Todos.state,
+    store: []
+  }
+
+  interface FetchList extends List {
+    todos: Todos.Todo[]
+  }
+
+  export const actions: ActionsType<State, Actions> = {
+    // sub-modules
+    todos: Todos.actions,
+    // store operations
+    addToStore: lists => state => ({ store: state.store.concat(lists) }),
+    // async operations
+    fetchAll: () => (state, actions) => {
+      return fetch("http://example.com/todosLists")
+        .then(response => response.json())
+        .then((lists: FetchList[]) => {
+          // add the lists
+          actions.addToStore(lists.map(l => ({ id: l.id, name: l.name })))
+          // add the todos
+          lists.forEach(list => {
+            actions.todos.addToStore(list.todos)
           })
         })
     }
   }
-}
 
-// App's own state/actions (without modules)
-
-interface AppState extends Hyperapp.State {
-  async: AsyncModuleState
-  // just to demonstrate there can be other attributes than the ones defined in actions
-  unused?: number
-  unused2: {
-    foo: string
+  interface TodoListProps {
+    list: List
+    todos: Todos.Todo[]
   }
-}
 
-const state: AppState = {
-  async: asyncModuleState,
-  unused2: {
-    foo: "bar"
-  }
-}
-
-interface AppActions extends Hyperapp.Actions<AppState> {
-  async: AsyncModuleActions
-}
-
-const actions: Hyperapp.InternalActions<AppState, AppActions> = {
-  async: asyncModuleActions
-}
-
-// App + modules actions/state
-
-interface State extends AppState {
-  module1: Module1State
-}
-
-interface Actions extends AppActions {
-  module1: Module1Actions
-}
-
-// App
-
-const appActions = app<State, Actions, AppState, AppActions>(
-  {
-    state: state,
-    actions,
-    modules: {
-      module1
-    },
-    // no need to set the types here
-    view: (state, actions) => (
-      <main>
-        <h1>Typescript Demo</h1>
-        <h2>Module 1</h2>
-        <p>
-          <button onclick={() => actions.module1.sub(-1)}>-</button>
-          {state.module1.count}
-          <button onclick={() => actions.module1.add(2)}>+</button>
-        </p>
-        <h2>Async</h2>
-        <p>
-          <button
-            onclick={() => actions.async.fetch("https://hyperapp.js.org/")}
-          >
-            Fetch
-          </button>
-          <pre>{state.async.value}</pre>
-        </p>
-      </main>
+  const TodoList = (props: TodoListProps) => {
+    return (
+      <div>
+        <h2>{props.list.name}</h2>
+        <ul>{props.todos.map(Todos.Todo)}</ul>
+      </div>
     )
-  },
-  document.getElementById("app")
-)
+  }
+
+  export interface AllListsProps {
+    state: State
+  }
+
+  export const AllLists = ({ state }: AllListsProps) => {
+    return (
+      <div>
+        {state.store.map(list => {
+          return (
+            <TodoList
+              list={list}
+              todos={state.todos.store.filter(item => item.listId === list.id)}
+            />
+          )
+        })}
+      </div>
+    )
+  }
+}
+
+/**
+ * The rest of the file contains application level code
+ */
+
+enum InitState {
+  NOT_STARTED,
+  WORKING,
+  SUCCESS,
+  FAILURE
+}
+
+interface State {
+  lists: TodoLists.State
+  init: InitState
+  error?: string
+}
+
+interface SetStatePayload {
+  init: InitState
+  error?: string
+}
+
+interface Actions {
+  // sub-modules
+  lists: TodoLists.Actions
+  // sync operations
+  setState(payload: SetStatePayload): void
+  // async operations
+  init(): void
+}
+
+const state: State = {
+  lists: TodoLists.state,
+  init: InitState.NOT_STARTED
+}
+
+const actions: ActionsType<State, Actions> = {
+  // sub-modules
+  lists: TodoLists.actions,
+  // sync operations
+  setState: ({ init, error }) => state => ({ init, error }),
+  // async operations
+  init: () => (state, actions) => {
+    actions.setState({ init: InitState.WORKING })
+    actions.lists
+      .fetchAll()
+      .then(() => {
+        actions.setState({ init: InitState.SUCCESS })
+      })
+      .catch(e => {
+        actions.setState({
+          init: InitState.FAILURE,
+          error: typeof e === "string" ? e : e.message
+        })
+      })
+  }
+}
+
+const main = app<State, Actions>(state, actions, (state, actions) => {
+  switch (state.init) {
+    case InitState.NOT_STARTED:
+    case InitState.WORKING:
+      return <div>Loading...</div>
+    case InitState.FAILURE:
+      return <div>Error while fetching lists: {state.error}</div>
+    default:
+      return (
+        <div>
+          <h1>Todo lists</h1>
+          <div>
+            <TodoLists.AllLists state={state.lists} />
+          </div>
+        </div>
+      )
+  }
+})
+
+main.init()

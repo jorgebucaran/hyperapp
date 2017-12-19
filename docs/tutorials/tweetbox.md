@@ -5,10 +5,12 @@ In this example we'll create a TweetBox.
 [Try it Online](https://codepen.io/hyperapp/pen/bgWBdV?editors=0010)
 
 ```jsx
+import { h, app } from "hyperapp"
+
 const MAX_LENGTH = 120
 const OFFSET = 10
 
-const OverflowWidget = ({ text, offset, count }) =>
+const OverflowWidget = ({ text, offset, count }) => (
   <div class="overflow">
     <h1>Whoops! Too long.</h1>
     <p>
@@ -16,8 +18,9 @@ const OverflowWidget = ({ text, offset, count }) =>
       <span class="overflow-text">{text.slice(count)}</span>
     </p>
   </div>
+)
 
-const Tweetbox = ({ count, text, update }) =>
+const Tweetbox = ({ count, text, update }) => (
   <main>
     <div class="container">
       <ul class="flex-outer">
@@ -26,9 +29,7 @@ const Tweetbox = ({ count, text, update }) =>
         </li>
 
         <li class="flex-inner">
-          <span class={count > OFFSET ? "" : "overflow-count"}>
-            {count}
-          </span>
+          <span class={count > OFFSET ? "" : "overflow-count"}>{count}</span>
 
           <button
             onclick={() => alert(text)}
@@ -39,39 +40,44 @@ const Tweetbox = ({ count, text, update }) =>
         </li>
       </ul>
 
-      {count < 0 &&
+      {count < 0 && (
         <OverflowWidget
           text={text.slice(count - OFFSET)}
           offset={OFFSET}
           count={count}
-        />}
+        />
+      )}
     </div>
   </main>
+)
 
-app({
-  state: {
-    text: "",
-    count: MAX_LENGTH
-  },
-  view: (state, actions) =>
-    <Tweetbox
-      text={state.text}
-      count={state.count}
-      update={e => actions.update(e.target.value)}
-    />,
-  actions: {
-    update: state => text => ({
-      text,
-      count: state.count + state.text.length - text.length
-    })
-  }
-})
+const state = {
+  text: "",
+  count: MAX_LENGTH
+}
+
+const actions = {
+  update: text => state => ({
+    text,
+    count: state.count + state.text.length - text.length
+  })
+}
+
+const view = (state, actions) => (
+  <Tweetbox
+    text={state.text}
+    count={state.count}
+    update={e => actions.update(e.target.value)}
+  />
+)
+
+const main = app(state, actions, view, document.body)
 ```
 
 The state consists of two properties: `text`, the tweet; and `count`, the number of remaining characters, initialized to `MAX_LENGTH`.
 
 ```jsx
-state: {
+const state = {
   text: "",
   count: MAX_LENGTH
 }
@@ -90,10 +96,12 @@ The view consists of a single TweetBox component.
 To update the text and calculate the remaining characters, call `actions.update`.
 
 ```jsx
-update: state => text => ({
-  text,
-  count: state.count + state.text.length - text.length
-})
+const actions = {
+  update: text => state => ({
+    text,
+    count: state.count + state.text.length - text.length
+  })
+}
 ```
 
 The subtracting the length of the current text, from the length of the previous text, tells us how the number of remaining characters has changed. Hence the new count of remaining characters is the old count plus the aforementioned difference.
@@ -127,7 +135,5 @@ The OverflowWidget tag displays the oveflowed part of the message and a few adja
 By passing `OFFSET` into OverflowWidget we are able to slice `text` further and apply our `overflow-text` class to the sliced result.
 
 ```jsx
-<span class="overflow-text">
-  {text.slice(count)}
-</span>
+<span class="overflow-text">{text.slice(count)}</span>
 ```

@@ -1,7 +1,7 @@
 {
   "name": "hyperapp",
   "description": "1 KB JavaScript library for building frontend applications.",
-  "version": "0.16.0",
+  "version": "0.18.0",
   "main": "dist/hyperapp.js",
   "jsnext:main": "src/index.js",
   "module": "src/index.js",
@@ -17,28 +17,26 @@
   "keywords": [
     "hyperapp",
     "elm",
-    "jsx",
     "vdom"
   ],
   "scripts": {
     "test": "jest --coverage --no-cache && tsc -p test/ts",
     "build": "npm run bundle && npm run minify",
     "bundle": "rollup -i src/index.js -o dist/hyperapp.js -m -f umd -n hyperapp",
-    "minify": "uglifyjs dist/hyperapp.js -o dist/hyperapp.js --mangle --compress warnings=false --pure-funcs=Object.defineProperty -p relative --in-source-map dist/hyperapp.js.map --source-map dist/hyperapp.js.map",
+    "minify": "uglifyjs dist/hyperapp.js -o dist/hyperapp.js -mc pure_funcs=Object.defineProperty --source-map includeSources,url=hyperapp.js.map",
     "prepare": "npm run build",
-    "format": "prettier --semi false --write 'src/**/*.js' '{,test/ts/}*.{ts,tsx}'",
+    "format": "prettier --semi false --write {src,test}/**/*.js {,test/ts/}*.{ts,tsx}",
     "release": "npm run build && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
   },
   "babel": {
     "presets": "env"
   },
   "devDependencies": {
-    "babel-preset-env": "1.6.1",
+    "babel-preset-env": "^1.6.1",
     "jest": "^21.2.1",
-    "prettier": "~1.8.2",
-    "rollup": "^0.51.2",
-    "typescript": "~2.5.2",
-    "uglify-js": "^2.7.5"
+    "prettier": "^1.9.2",
+    "rollup": "^0.52.1",
+    "typescript": "^2.6.2",
+    "uglify-js": "^3.2.2"
   }
 }
-

@@ -1,8 +1,6 @@
-# Hello World
+## Hello World
 
-Let's walk through a simple +/- counter.
-
-Paste this code in a new HTML file and open it in your browser or [try it online](https://codepen.io/hyperapp/pen/zNxZLP?editors=0010).
+Let's walk through a small example. Paste this code in a new HTML file and open it in your browser or [try it online](https://codepen.io/hyperapp/pen/zNxZLP?editors=0010).
 
 ```html
 <body>
@@ -11,51 +9,52 @@ Paste this code in a new HTML file and open it in your browser or [try it online
 
 const { h, app } = hyperapp
 
-app({
-  state: {
-    count: 0
-  },
-  view: (state, actions) => (
-    h("main", {}, [
-      h("h1", {}, state.count),
-      h("button", {
-        onclick: actions.down,
-        disabled: state.count <= 0
-      }, "–"),
-      h("button", {
-        onclick: actions.up
-      }, "+")
-    ])
-  ),
-  actions: {
-    down: state => ({ count: state.count - 1 }),
-    up: state => ({ count: state.count + 1 })
-  }
-})
+const state = {
+  count: 0
+}
+
+const actions = {
+  down: value => state => ({ count: state.count - value }),
+  up: value => state => ({ count: state.count + value })
+}
+
+const view = (state, actions) =>
+  h("div", {}, [
+    h("h1", {}, state.count),
+    h("button", { onclick: () => actions.down(1) }, "–"),
+    h("button", { onclick: () => actions.up(1) }, "+")
+  ])
+
+window.main = app(state, actions, view, document.body)
 
 </script>
 </body>
 ```
 
-In this example we are using a `<script>` tag to download the minified library from a CDN. In a production environment you will probably be using a module bundler to build your application instead.
-
-Hyperapp applications consist of a single `app()` call. This function initializes and renders the application to document.body.
-
-You can select a different container too.
+Click on the + and - buttons to increment and decrement the counter. The current count should be displayed on the page inside a `<h1>` tag. Now open the developer console and type:
 
 ```js
-app(
-  props,
-  document.getElementById("app")
-)
+main.up(1000)
 ```
+
+You should see the counter update accordingly.
+
+In this example we used a `<script>` tag to download the minified library from a CDN. In a production environment you will likely be using a module bundler to build your application instead.
+
+Hyperapp applications consist of a single `app()` call.
+
+```js
+const main = app(state, actions, view, container)
+```
+
+This function initializes and renders the application to the given container and returns an object with the actions wired to the state-update—view-render mechanism.
 
 ### State
 
-The state object describes the data model in your application. The state must always be an object. In this example it consists of a single property, `count`, which is initialized to 0.
+The state describes your application data model. The state must be an object. In this example it consists of a single property, `count`, initialized to 0.
 
-```jsx
-state: {
+```js
+const state = {
   count: 0
 }
 ```
@@ -64,33 +63,30 @@ The notion of representing the application state as a single source of truth is 
 
 ### Actions
 
-Actions are used to manipulate the [state](#state). If your application consumes a [view](#view), changes in the state cause a re-render. Actions are called as a result of user events triggered from the view, inside event listeners, etc.
+Actions are used to manipulate the [state](#state). If your application consumes a [view](#view), changes in the state will cause a re-render. Actions are called as a result of user events triggered from the view, inside event listeners, etc.
 
-```jsx
-actions: {
-  down: state => ({ count: state.count - 1 }),
-  up: state => ({ count: state.count + 1 })
+```js
+const actions = {
+  down: value => state => ({ count: state.count - value }),
+  up: value => state => ({ count: state.count + value })
 }
 ```
 
-Actions must never mutate the state directly. Returning a new state from an action updates the current state and schedules a re-render.
-
-You can also pass arguments to actions by returning a function.
-
-```jsx
-actions: {
-  upWithValue: state => value => ({ count: state.count + value })
-}
-```
+Returning a new state from an action updates the current state and schedules a re-render. An action must never mutate the state directly.
 
 ### View
 
-The view describes your user interface as a function of the [state](#state).
-Bind user events and [actions](#actions) together to create interactive applications. The view function is called every time we need to re-render the application due to state changes.
+The view describes your application user interface as a function of the state and actions. This function is called every time we need to re-render because the state has changed.
 
-The `h()` function returns a virtual node, an object that describes a DOM tree. Hyperapp consumes this object to update the DOM.
+```js
+const view = (state, actions) => h("h1", {}, "Hello World!")
+```
 
-Popular alternatives to the built-in `h()` function include [JSX](https://facebook.github.io/jsx/), [lit-html](https://github.com/PolymerLabs/lit-html), [hyperx](https://github.com/choojs/hyperx), [t7](https://github.com/trueadm/t7) and [@hyperapp/html](https://github.com/hyperapp/html).
+The `h()` function returns a [virtual node](vnodes.md), a lightweight object that describes a DOM tree. Hyperapp consumes this object to update the DOM.
+
+We use [JSX](https://facebook.github.io/jsx/) in examples throughout the documentation for familiarity, but you are not required to use it at all!
+
+Alternatives include [hyperx](https://github.com/choojs/hyperx), [t7](https://github.com/trueadm/t7) and [@hyperapp/html](https://github.com/hyperapp/html).
 
 ```html
 <body>
@@ -99,32 +95,28 @@ Popular alternatives to the built-in `h()` function include [JSX](https://facebo
 <script>
 
 const { h, app } = hyperapp
-const { main, h1, button } = html
+const { div, h1, button } = html
 
-app({
-  state: {
-    count: 0
-  },
-  view: (state, actions) => (
-    main([
-      h1(state.count),
-      button({
-        onclick: actions.down,
-        disabled: state.count <= 0
-      }, "–"),
-      button({
-        onclick: actions.up
-      }, "+")
-    ])
-  ),
-  actions: {
-    down: state => ({ count: state.count - 1 }),
-    up: state => ({ count: state.count + 1 })
-  }
-})
+const state = {
+  count: 0
+}
+
+const actions = {
+  down: value => state => ({ count: state.count - value }),
+  up: value => state => ({ count: state.count + value })
+}
+
+const view = (state, actions) =>
+  div([
+    h1(state.count),
+    button({ onclick: () => actions.down(1) }, "–"),
+    button({ onclick: () => actions.up(1) }, "+")
+  ])
+
+const main = app(state, actions, view, document.body)
 
 </script>
 </body>
 ```
 
-Check out [hyperapp/awesome](https://github.com/hyperapp/awesome#apps-and-boilerplates) for templates and boilerplates to help you getting started.
+Check out [hyperapp/awesome](https://github.com/hyperapp/awesome#apps-and-boilerplates) for templates to help you get started.

@@ -1,18 +1,13 @@
 {
   "compilerOptions": {
-  "strict": true,
-  "noEmit": true,
-  "jsx": "react",
-  "jsxFactory": "h",
-  "baseUrl": "../..",
+    "strict": true,
+    "noEmit": true,
+    "jsx": "react",
+    "jsxFactory": "h",
+    "baseUrl": "../..",
     "paths": {
-      "classwrap": ["src", "hyperapp.d.ts"]
+      "hyperapp": ["src", "hyperapp.d.ts"]
     }
   },
-  "include": [
-    "*.ts",
-    "*.tsx",
-    "**/*.ts",
-    "**/*.tsx"
-  ]
+  "include": ["*.ts", "*.tsx", "**/*.ts", "**/*.tsx"]
 }

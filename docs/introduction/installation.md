@@ -1,14 +1,14 @@
-# Installation
+## Installation
 
 Install with npm or Yarn.
 
-```
-npm i hyperapp
-```
+<pre>
+npm i <a href="https://www.npmjs.com/package/hyperapp">hyperapp</a>
+</pre>
 
 Then with a module bundler like [Rollup](https://github.com/rollup/rollup) or [Webpack](https://github.com/webpack/webpack), use as you would anything else.
 
-```js
+```jsx
 import { h, app } from "hyperapp"
 ```
 
@@ -20,7 +20,7 @@ Or download directly from [unpkg](https://unpkg.com/hyperapp), [jsDelivr](https:
 
 Then find it in `window.hyperapp`.
 
-```js
+```jsx
 const { h, app } = hyperapp
 ```
 

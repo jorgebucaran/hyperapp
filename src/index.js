@@ -131,19 +131,21 @@ export function app(state, actions, view, container) {
     if (name === "key") {
     } else if (name === "style") {
       for (var i in copy(oldValue, (value = value || {}))) {
-        element.style[i] = null == value[i] ? "" : value[i]
+        element[name][i] = value[i] != null ? value[i] : ""
       }
     } else {
-      try {
-        element[name] = null == value ? "" : value
-      } catch (_) {}
+      var empty = null == value || false === value
 
-      if (typeof value !== "function") {
-        if (null == value || false === value) {
-          element.removeAttribute(name)
-        } else {
-          element.setAttribute(name, value)
-        }
+      if (name in element) {
+        try {
+          element[name] = null == value ? "" : value
+        } catch (_) {}
+      } else if (!empty && typeof value !== "function") {
+        element.setAttribute(name, value === true ? "" : value)
+      }
+
+      if (empty) {
+        element.removeAttribute(name)
       }
     }
   }
@@ -195,8 +197,8 @@ export function app(state, actions, view, container) {
         removeChildren(element.childNodes[i], node.children[i])
       }
 
-      if (props.onremove) {
-        props.onremove(element)
+      if (props.ondestroy) {
+        props.ondestroy(element)
       }
     }
     return element
@@ -207,12 +209,8 @@ export function app(state, actions, view, container) {
       parent.removeChild(removeChildren(element, node))
     }
 
-    if (
-      node.props &&
-      node.props.onbeforeremove &&
-      typeof (cb = node.props.onbeforeremove(element)) === "function"
-    ) {
-      cb(done)
+    if (node.props && node.props.onremove) {
+      node.props.onremove(element, done)
     } else {
       done()
     }

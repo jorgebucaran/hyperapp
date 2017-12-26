@@ -33,7 +33,7 @@ export function app(state, actions, view, container) {
   var node = vnode(root, [].map)
   var stack = []
 
-  repaint(init([], (state = assign(state)), (actions = assign(actions))))
+  repaint(init([], (state = copy(state)), (actions = copy(actions))))
 
   return actions
 
@@ -69,32 +69,29 @@ export function app(state, actions, view, container) {
     }
   }
 
-  function assign(a, b) {
-    var obj = {}
+  function copy(a, b) {
+    var target = {}
 
-    for (var i in a) obj[i] = a[i]
-    for (var i in b) obj[i] = b[i]
+    for (var i in a) target[i] = a[i]
+    for (var i in b) target[i] = b[i]
 
-    return obj
+    return target
   }
 
-  function set(path, value, obj) {
-    var result = {}
-
+  function set(path, value, source, target) {
     if (path.length) {
-      result[path[0]] =
-        1 < path.length ? set(path.slice(1), value, obj[path[0]]) : value
-      return assign(obj, result)
-    } else {
-      return value
+      target[path[0]] =
+        1 < path.length ? set(path.slice(1), value, source[path[0]], {}) : value
+      return copy(source, target)
     }
+    return value
   }
 
-  function get(path, obj) {
+  function get(path, source) {
     for (var i = 0; i < path.length; i++) {
-      obj = obj[path[i]]
+      source = source[path[i]]
     }
-    return obj
+    return source
   }
 
   function init(path, slice, actions) {
@@ -109,7 +106,7 @@ export function app(state, actions, view, container) {
               }
 
               if (data && data !== slice && !data.then) {
-                repaint((state = set(path, assign(slice, data), state)))
+                repaint((state = set(path, copy(slice, data), state, {})))
               }
 
               return data
@@ -118,7 +115,7 @@ export function app(state, actions, view, container) {
         : init(
             path.concat(key),
             (slice[key] = slice[key] || {}),
-            (actions[key] = assign(actions[key]))
+            (actions[key] = copy(actions[key]))
           )
     }
   }
@@ -130,7 +127,7 @@ export function app(state, actions, view, container) {
   function setElementProp(element, name, value, oldValue) {
     if (name === "key") {
     } else if (name === "style") {
-      for (var i in assign(oldValue, value)) {
+      for (var i in copy(oldValue, value)) {
         element[name][i] = null == value || null == value[i] ? "" : value[i]
       }
     } else {
@@ -176,7 +173,7 @@ export function app(state, actions, view, container) {
   }
 
   function updateElement(element, oldProps, props, oldValue) {
-    for (var name in assign(oldProps, props)) {
+    for (var name in copy(oldProps, props)) {
       if (
         (oldValue =
           "value" === name || "checked" === name

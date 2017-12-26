@@ -649,6 +649,15 @@ testTreeSegue("skip setAttribute for functions", [
   }
 ])
 
+testTreeSegue("setAttribute true", [
+  {
+    tree: h("div", {
+      enabled: true
+    }),
+    html: `<div enabled=""></div>`
+  }
+])
+
 testTreeSegue("update element with dynamic props", [
   {
     tree: h("input", {

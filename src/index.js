@@ -221,7 +221,7 @@ export function app(state, actions, view, container) {
     } else if (null == oldNode) {
       element = parent.insertBefore(createElement(node, isSVG), element)
     } else if (node.name && node.name === oldNode.name) {
-      isSVG = isSVG || node.name === "svg"
+      isSVG = isSVG || "svg" === node.name
 
       updateElement(element, oldNode.props, node.props)
 

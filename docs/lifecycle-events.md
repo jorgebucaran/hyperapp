@@ -38,21 +38,21 @@ function Textbox({ placeholder }) {
 }
 ```
 
-## onbeforeremove
+## onremove
 
-This event is fired before the element is removed from the DOM. Use it to create slide/fade out animations. If a function is returned, the element is removed by calling the `done` inside the function.
+This event is fired before the element is removed from the DOM. Use it to create slide/fade out animations. Call `done` inside the function to remove the element.
 
 This event is not called in its child elements.
 
 ```jsx
 const MessageWithFadeout = ({ title }) => (
-  <div onbeforeremove={element => done => fadeout(element).then(done)}>
+  <div onremove={(element, done) => fadeout(element).then(done)}>
     <h1>{title}</h1>
   </div>
 )
 ```
 
-## onremove
+## ondestroy
 
 This event is fired after the element has been removed from the DOM, either directly or as a result of a parent being removed. Use it for invalidating timers, canceling a network request, removing global events listeners, etc.
 
@@ -66,7 +66,7 @@ const Camera = ({ onerror }) => (
         .then(stream => (element.srcObject = stream))
         .catch(onerror)
     }}
-    onremove={element => element.srcObject.getTracks()[0].stop()}
+    ondestroy={element => element.srcObject.getTracks()[0].stop()}
   />
 )
 ```

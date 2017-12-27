@@ -47,7 +47,7 @@ test("onupdate", done => {
   app(state, actions, view, document.body)
 })
 
-test("onbeforeremove", done => {
+test("onremove", done => {
   const state = {
     value: true
   }
@@ -71,12 +71,10 @@ test("onbeforeremove", done => {
           [
             h("li"),
             h("li", {
-              onbeforeremove(element) {
-                return remove => {
-                  remove()
-                  expect(document.body.innerHTML).toBe("<ul><li></li></ul>")
-                  done()
-                }
+              onremove(element, remove) {
+                remove()
+                expect(document.body.innerHTML).toBe("<ul><li></li></ul>")
+                done()
               }
             })
           ]
@@ -86,7 +84,7 @@ test("onbeforeremove", done => {
   app(state, actions, view, document.body)
 })
 
-test("onremove", done => {
+test("ondestroy", done => {
   let removed = false
 
   const state = {
@@ -108,7 +106,7 @@ test("onremove", done => {
             h("li"),
             h("li", {}, [
               h("span", {
-                onremove() {
+                ondestroy() {
                   expect(removed).toBe(false)
                   done()
                 }
@@ -121,7 +119,7 @@ test("onremove", done => {
   app(state, actions, view, document.body)
 })
 
-test("onbeforeremove/onremove", done => {
+test("onremove/ondestroy", done => {
   let detached = false
 
   const state = {
@@ -144,16 +142,14 @@ test("onbeforeremove/onremove", done => {
           [
             h("li"),
             h("li", {
-              onremove() {
+              ondestroy() {
                 detached = true
               },
-              onbeforeremove(element) {
+              onremove(element, remove) {
                 expect(detached).toBe(false)
-                return remove => {
-                  remove()
-                  expect(detached).toBe(true)
-                  done()
-                }
+                remove()
+                expect(detached).toBe(true)
+                done()
               }
             })
           ]

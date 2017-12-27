@@ -2,23 +2,23 @@ export as namespace Hyperapp
 
 /** @namespace [VDOM] */
 
-/** The VDOM representation of an Element
+/** The VDOM representation of an Element.
  *
  * @memberOf [VDOM]
  */
 export interface VNode<Props> {
-  type: string
+  name: string
   props: Props
   children: VNodeChild<object | null>[]
 }
 
-/** In the VDOM a Child could be either a VNode or a string
+/** In the VDOM a Child can be either a VNode or a string.
  *
  * @memberOf [VDOM]
  */
 export type VNodeChild<Props = object> = VNode<Props> | string
 
-/** A Component is a function that return a custom VNode
+/** A Component is a function that returns a custom VNode.
  *
  * @memberOf [VDOM]
  */
@@ -26,7 +26,7 @@ export interface Component<Props> {
   (props: Props, children: VNodeChild<object | null>[]): VNode<object>
 }
 
-/**The type for the children parameter accepted by h().
+/** The type of the children argument passed to h().
  *
  * @memberOf [VDOM]
  */
@@ -35,15 +35,16 @@ export type VNodeChildren =
   | VNodeChild<object | null>
   | number
 
-/** The soft way to create a VNode
- * @param type      A type name or a Component function
+/** The soft way to create a VNode.
+ * @param name      An element name or a Component function
  * @param props     Any valid HTML atributes, events, styles, and meta data
  * @param children  The children of the VNode
+ * @returns A VNode tree.
  *
  * @memberOf [VDOM]
  */
 export function h<Props>(
-  type: Component<Props> | string,
+  name: Component<Props> | string,
   props?: Props,
   children?: VNodeChildren
 ): VNode<object>
@@ -76,26 +77,28 @@ export type ActionsType<State, Actions> = {
     | ActionsType<any, Actions[P]>
 }
 
-/** The view function.
- *
+/** The view function describes the application UI as a tree of VNodes.
+ * @returns A VNode tree.
  * @memberOf [App]
  */
 export interface View<State, Actions> {
   (state: State, actions: Actions): VNode<object>
 }
 
-/** The app() function, entry point of Hyperapp's API.
+/** The app() call creates and renders a new application.
  *
- * @param State The full state of the module including sub-modules
- * @param Actions The actions of the module including sub-modules
- *
+ * @param state The state object.
+ * @param actions The actions object implementation.
+ * @param view The view function.
+ * @param container The DOM element where the app will be rendered to.
+ * @returns The actions wired to the application.
  * @memberOf [App]
  */
 export function app<State, Actions>(
   state: State,
   actions: ActionsType<State, Actions>,
-  view?: View<State, Actions>,
-  container?: HTMLElement | null
+  view: View<State, Actions>,
+  container: Element | null
 ): Actions
 
 /** @namespace [JSX] */

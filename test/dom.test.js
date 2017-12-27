@@ -5,7 +5,7 @@ function testTreeSegue(name, trees) {
     const state = {
       index: 0
     }
-    
+
     const actions = {
       up: () => state => ({ index: state.index + 1 }),
       next: () => (state, actions) => {
@@ -649,44 +649,73 @@ testTreeSegue("skip setAttribute for functions", [
   }
 ])
 
+testTreeSegue("setAttribute true", [
+  {
+    tree: h("div", {
+      enabled: true
+    }),
+    html: `<div enabled=""></div>`
+  }
+])
+
 testTreeSegue("update element with dynamic props", [
   {
     tree: h("input", {
       type: "text",
+      value: "foo",
       oncreate(element) {
-        element.value = "bar"
-      },
-      value: "foo"
+        expect(element.value).toBe("foo")
+      }
     }),
-    html: `<input type="text" value="foo">`
+    html: `<input type="text">`
   },
   {
     tree: h("input", {
       type: "text",
+      value: "bar",
       onupdate(element) {
-        expect(element.value).toBe("foo")
-      },
-      value: "foo"
+        expect(element.value).toBe("bar")
+      }
     }),
-    html: `<input type="text" value="foo">`
+    html: `<input type="text">`
   }
 ])
 
-testTreeSegue("don't touch textnodes if equal", [
+testTreeSegue("elements with falsy values", [
   {
-    tree: h(
-      "main",
-      {
-        oncreate(element) {
-          element.childNodes[0].textContent = "foobar"
-        }
-      },
-      "foo"
-    ),
-    html: `<main>foobar</main>`
+    tree: h("div", {
+      "data-test": "foo"
+    }),
+    html: `<div data-test="foo"></div>`
   },
   {
-    tree: h("main", {}, "foobar"),
-    html: `<main>foobar</main>`
+    tree: h("div", {
+      "data-test": "0"
+    }),
+    html: `<div data-test="0"></div>`
+  },
+  {
+    tree: h("div", {
+      "data-test": 0
+    }),
+    html: `<div data-test="0"></div>`
+  },
+  {
+    tree: h("div", {
+      "data-test": null
+    }),
+    html: `<div></div>`
+  },
+  {
+    tree: h("div", {
+      "data-test": false
+    }),
+    html: `<div></div>`
+  },
+  {
+    tree: h("div", {
+      "data-test": undefined
+    }),
+    html: `<div></div>`
   }
 ])

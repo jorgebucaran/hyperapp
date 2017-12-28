@@ -1,5 +1,6 @@
 ## Concepts
 
+* [Actions](actions.md)
 * [Virtual Nodes](vnodes.md)
 * [Keys](keys.md)
 * [Components](components.md)

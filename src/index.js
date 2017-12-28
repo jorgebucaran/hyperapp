@@ -28,10 +28,10 @@ export function h(name, props) {
 }
 
 export function app(state, actions, view, container) {
-  var lock
+  var patchLock
+  var lifecycle = []
   var root = container && container.children[0]
   var node = vnode(root, [].map)
-  var stack = []
 
   repaint(init([], (state = copy(state)), (actions = copy(actions))))
 
@@ -52,19 +52,19 @@ export function app(state, actions, view, container) {
   }
 
   function render(next) {
-    lock = !lock
+    patchLock = !patchLock
     next = view(state, actions)
 
-    if (container && !lock) {
+    if (container && !patchLock) {
       root = patch(container, root, node, (node = next))
     }
 
-    while ((next = stack.pop())) next()
+    while ((next = lifecycle.pop())) next()
   }
 
   function repaint() {
-    if (!lock) {
-      lock = !lock
+    if (!patchLock) {
+      patchLock = !patchLock
       setTimeout(render)
     }
   }
@@ -124,23 +124,23 @@ export function app(state, actions, view, container) {
     return node && node.props ? node.props.key : null
   }
 
-  function setElementProp(element, name, value, isSVG, oldValue) {
+  function setElementProp(element, name, value, oldValue) {
     if (name === "key") {
     } else if (name === "style") {
       for (var i in copy(oldValue, value)) {
         element[name][i] = null == value || null == value[i] ? "" : value[i]
       }
     } else {
-      var attributeIsEmpty = null == value || false === value
-
-      if (!isSVG && name in element) {
+      try {
         element[name] = null == value ? "" : value
-      } else if (!attributeIsEmpty && typeof value !== "function") {
-        element.setAttribute(name, true === value ? "" : value)
-      }
+      } catch (_) {}
 
-      if (attributeIsEmpty) {
-        element.removeAttribute(name)
+      if (typeof value !== "function") {
+        if (null == value || false === value) {
+          element.removeAttribute(name)
+        } else {
+          element.setAttribute(name, value)
+        }
       }
     }
   }
@@ -154,7 +154,7 @@ export function app(state, actions, view, container) {
         : document.createElement(node.name)
 
       if (node.props.oncreate) {
-        stack.push(function() {
+        lifecycle.push(function() {
           node.props.oncreate(element)
         })
       }
@@ -164,13 +164,13 @@ export function app(state, actions, view, container) {
       }
 
       for (var name in node.props) {
-        setElementProp(element, name, node.props[name], isSVG)
+        setElementProp(element, name, node.props[name])
       }
     }
     return element
   }
 
-  function updateElement(element, oldProps, props, isSVG) {
+  function updateElement(element, oldProps, props) {
     for (var name in copy(oldProps, props)) {
       if (
         props[name] !==
@@ -178,12 +178,12 @@ export function app(state, actions, view, container) {
           ? element[name]
           : oldProps[name])
       ) {
-        setElementProp(element, name, props[name], isSVG, oldProps[name])
+        setElementProp(element, name, props[name], oldProps[name])
       }
     }
 
     if (props.onupdate) {
-      stack.push(function() {
+      lifecycle.push(function() {
         props.onupdate(element, oldProps)
       })
     }
@@ -219,12 +219,7 @@ export function app(state, actions, view, container) {
     } else if (null == oldNode) {
       element = parent.insertBefore(createElement(node, isSVG), element)
     } else if (node.name && node.name === oldNode.name) {
-      updateElement(
-        element,
-        oldNode.props,
-        node.props,
-        (isSVG = isSVG || "svg" === node.name)
-      )
+      updateElement(element, oldNode.props, node.props)
 
       var oldElements = []
       var oldKeyed = {}

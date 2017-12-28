@@ -654,7 +654,7 @@ testTreeSegue("setAttribute true", [
     tree: h("div", {
       enabled: true
     }),
-    html: `<div enabled=""></div>`
+    html: `<div enabled="true"></div>`
   }
 ])
 
@@ -662,26 +662,45 @@ testTreeSegue("update element with dynamic props", [
   {
     tree: h("input", {
       type: "text",
-      value: "foo",
       oncreate(element) {
-        expect(element.value).toBe("foo")
-      }
+        element.value = "bar"
+      },
+      value: "foo"
     }),
-    html: `<input type="text">`
+    html: `<input type="text" value="foo">`
   },
   {
     tree: h("input", {
       type: "text",
-      value: "bar",
       onupdate(element) {
-        expect(element.value).toBe("bar")
-      }
+        expect(element.value).toBe("foo")
+      },
+      value: "foo"
     }),
-    html: `<input type="text">`
+    html: `<input type="text" value="foo">`
   }
 ])
 
-testTreeSegue("elements with falsy values", [
+testTreeSegue("don't touch textnodes if equal", [
+  {
+    tree: h(
+      "main",
+      {
+        oncreate(element) {
+          element.childNodes[0].textContent = "foobar"
+        }
+      },
+      "foo"
+    ),
+    html: `<main>foobar</main>`
+  },
+  {
+    tree: h("main", {}, "foobar"),
+    html: `<main>foobar</main>`
+  }
+])
+
+testTreeSegue("elements with falsey values", [
   {
     tree: h("div", {
       "data-test": "foo"

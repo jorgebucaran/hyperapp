@@ -1,7 +1,14 @@
 # Components
 
-A component is a pure function that returns a [virtual node](vnodes.md). Unlike a view, they are not pre-wired to your application state or actions. Components are reusable blocks of code that encapsulate markup, styles and behaviors that belong together.
+A component is a pure function that returns a [virtual node](../../concepts/vnodes.md). Unlike a view, they are not pre-wired to your application state or actions. Components are reusable blocks of code that encapsulate markup, styles and behaviors that belong together.
 
+- [Components](#components)
+  - [Component example](#component-example)
+  - [Children Composition](#children-composition)
+
+> To improve performance in lists, you can make the entries 'keyed'. This way the diff-algorithm knows which items can be kept in the DOM: [keyed components](keys.md)
+
+## Component example
 [Try it Online](https://codepen.io/hyperapp/pen/zNxRLy)
 
 ```jsx

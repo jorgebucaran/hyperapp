@@ -124,7 +124,7 @@ export function app(state, actions, view, container) {
     return node && node.props ? node.props.key : null
   }
 
-  function setElementProp(element, name, value, oldValue) {
+  function setElementProp(element, name, value, isSVG, oldValue) {
     if (name === "key") {
     } else if (name === "style") {
       for (var i in copy(oldValue, value)) {
@@ -133,10 +133,8 @@ export function app(state, actions, view, container) {
     } else {
       var attributeIsEmpty = null == value || false === value
 
-      if (name in element) {
-        try {
-          element[name] = null == value ? "" : value
-        } catch (_) {}
+      if (!isSVG && name in element) {
+        element[name] = null == value ? "" : value
       } else if (!attributeIsEmpty && typeof value !== "function") {
         element.setAttribute(name, true === value ? "" : value)
       }
@@ -166,21 +164,21 @@ export function app(state, actions, view, container) {
       }
 
       for (var name in node.props) {
-        setElementProp(element, name, node.props[name])
+        setElementProp(element, name, node.props[name], isSVG)
       }
     }
     return element
   }
 
-  function updateElement(element, oldProps, props, oldValue) {
+  function updateElement(element, oldProps, props, isSVG) {
     for (var name in copy(oldProps, props)) {
       if (
-        (oldValue =
-          "value" === name || "checked" === name
-            ? element[name]
-            : oldProps[name]) !== props[name]
+        props[name] !==
+        ("value" === name || "checked" === name
+          ? element[name]
+          : oldProps[name])
       ) {
-        setElementProp(element, name, props[name], oldValue)
+        setElementProp(element, name, props[name], isSVG, oldProps[name])
       }
     }
 
@@ -221,9 +219,12 @@ export function app(state, actions, view, container) {
     } else if (null == oldNode) {
       element = parent.insertBefore(createElement(node, isSVG), element)
     } else if (node.name && node.name === oldNode.name) {
-      isSVG = isSVG || "svg" === node.name
-
-      updateElement(element, oldNode.props, node.props)
+      updateElement(
+        element,
+        oldNode.props,
+        node.props,
+        (isSVG = isSVG || "svg" === node.name)
+      )
 
       var oldElements = []
       var oldKeyed = {}

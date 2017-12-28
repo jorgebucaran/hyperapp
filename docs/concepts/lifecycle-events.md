@@ -7,15 +7,13 @@ You can be notified when a virtual node is created, updated or removed via lifec
 This event is fired after the element is created and attached to the DOM. Use it to manipulate the DOM node directly, make a network request, create slide/fade in animation, etc.
 
 ```jsx
-function Textbox({ placeholder }) {
-  return (
-    <input
-      type="text"
-      placeholder={placeholder}
-      oncreate={element => element.focus()}
-    />
-  )
-}
+const Textbox = ({ placeholder }) => (
+  <input
+    type="text"
+    placeholder={placeholder}
+    oncreate={element => element.focus()}
+  />
+)
 ```
 
 ## onupdate
@@ -23,19 +21,17 @@ function Textbox({ placeholder }) {
 This event is fired every time we update the element attributes. Use `oldProps` inside the event handler to check if any attributes changed or not.
 
 ```jsx
-function Textbox({ placeholder }) {
-  return (
-    <input
-      type="text"
-      placeholder={placeholder}
-      onupdate={(element, oldProps) => {
-        if (oldProps.placeholder !== placeholder) {
-          // Handle changes here!
-        }
-      }}
-    />
-  )
-}
+const Textbox = ({ placeholder }) => (
+  <input
+    type="text"
+    placeholder={placeholder}
+    onupdate={(element, oldProps) => {
+      if (oldProps.placeholder !== placeholder) {
+        // Handle changes here!
+      }
+    }}
+  />
+)
 ```
 
 ## onremove

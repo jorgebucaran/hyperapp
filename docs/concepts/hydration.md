@@ -18,4 +18,4 @@ Hyperapp works transparently with SSR and pre-rendered HTML, enabling SEO optimi
 </html>
 ```
 
-Then instead of throwing away the server-rendered markdown, we'll turn your DOM nodes into an interactive application.
+Then instead of throwing away the server-rendered markdown, we'll turn your DOM nodes into an interactive application out of the box!

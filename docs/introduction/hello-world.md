@@ -51,7 +51,7 @@ This function initializes and renders the application to the given container and
 
 ### State
 
-The state describes your application data model. The state must be an object. In this example it consists of a single property, `count`, initialized to 0.
+The state is a plain JavaScript object that describes your application.
 
 ```js
 const state = {
@@ -59,11 +59,13 @@ const state = {
 }
 ```
 
-The notion of representing the application state as a single source of truth is known as single state tree and the tree is populated using [actions](#actions).
+Hyperapp uses a single state tree architecture, that means the entire state is kept in a single object, and to update this object we run [actions](#actions).
+
+Like all JavaScript objects, the state may consist of other objects, and it can be deeply nested. We refer to nested objects in the state as substate.
 
 ### Actions
 
-Actions are used to manipulate the [state](#state). If your application consumes a [view](#view), changes in the state will cause a re-render. Actions are called as a result of user events triggered from the view, inside event listeners, etc.
+Actions are used to manipulate the [state](#state) and re-render the [view](#view) automatically. Actions are run as a result of user events triggered from the view, inside event listeners, etc.
 
 ```js
 const actions = {
@@ -72,7 +74,47 @@ const actions = {
 }
 ```
 
-Returning a new state from an action updates the current state and schedules a re-render. An action must never mutate the state directly.
+Returning a new state from an action updates the current state and schedules a re-render. Actions are not required to have a return value at all. You can use them to call other actions, for example after an asynchronous operation has ended.
+
+```js
+const actions = {
+  upLater: value => (state, actions) => {
+    setTimeout(actions.up, 1000, value)
+  },
+  up: value => state => ({ count: state.count + value })
+}
+```
+
+An action may also return a promise, enabling you to use async functions.
+
+```js
+const actions = {
+  upLater: () => async (state, actions) => {
+    await new Promise(done => setTimeout(done, 1000))
+    actions.up(10)
+  },
+  up: value => state => ({ count: state.count + value })
+}
+```
+
+Updating deeply nested state is as easy as declaring actions inside an object in the same path as the part of the state you want to update.
+
+```js
+const state = {
+  counter: {
+    value: 0
+  }
+}
+
+const actions = {
+  counter: {
+    down: value => state => ({ count: state.count - value }),
+    up: value => state => ({ count: state.count + value })
+  }
+}
+```
+
+Every state update is immutable and produces a new object, allowing cheap memoization of the view and components using a strict `===` check.
 
 ### View
 
@@ -82,9 +124,9 @@ The view describes your application user interface as a function of the state an
 const view = (state, actions) => h("h1", {}, "Hello World!")
 ```
 
-The `h()` function returns a [virtual node](vnodes.md), a lightweight object that describes a DOM tree. Hyperapp consumes this object to update the DOM.
+The `h()` function returns a [virtual node](vnodes.md), a plain object that describes a DOM tree. Hyperapp consumes this object to update the DOM.
 
-We use [JSX](https://facebook.github.io/jsx/) in examples throughout the documentation for familiarity, but you are not required to use it at all!
+We use [JSX](https://facebook.github.io/jsx/) in examples throughout the documentation for familiarity, but you are not required to use it at all.
 
 Alternatives include [hyperx](https://github.com/choojs/hyperx), [t7](https://github.com/trueadm/t7) and [@hyperapp/html](https://github.com/hyperapp/html).
 

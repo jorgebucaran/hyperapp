@@ -38,7 +38,7 @@ test("nested container", done => {
       },
       "foo"
     )
-    
+
   app({}, {}, view, document.body.firstChild.lastChild)
 })
 

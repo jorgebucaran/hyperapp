@@ -4,7 +4,7 @@
   * [Hello World](introduction/hello-world.md)
   * [Installation](introduction/installation.md)
 * [Concepts](concepts/README.md)
-  * [Actions](concept/actions.md)
+  * [Actions](concepts/actions.md)
   * [Virtual Nodes](concepts/vnodes.md)
   * [Keys](concepts/keys.md)
   * [Components](concepts/components.md)

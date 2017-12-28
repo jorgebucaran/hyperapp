@@ -102,7 +102,7 @@ Updating deeply nested state is as easy as declaring actions inside an object in
 ```js
 const state = {
   counter: {
-    value: 0
+    count: 0
   }
 }
 

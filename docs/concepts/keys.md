@@ -19,7 +19,7 @@ Don't use an array index as key, if the index also specifies the order of siblin
 const PlayerList = ({ players }) =>
   players
     .slice()
-    .sort((player, nextPlayer) => nextPlayer.score - item.score)
+    .sort((player, nextPlayer) => nextPlayer.score - player.score)
     .map(player => (
       <li key={player.username} class={player.isAlive ? "alive" : "dead"}>
         <PlayerCard {...player} />

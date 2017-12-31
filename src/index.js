@@ -145,11 +145,11 @@ export function app(state, actions, view, container) {
     }
   }
 
-  function createElement(node, isSVG) {
+  function createElement(node, isSVG, element) {
     if (typeof node === "string") {
-      var element = document.createTextNode(node)
+      element = document.createTextNode(node)
     } else {
-      var element = (isSVG = isSVG || "svg" === node.name)
+      element = (isSVG = isSVG || "svg" === node.name)
         ? document.createElementNS("http://www.w3.org/2000/svg", node.name)
         : document.createElement(node.name)
 

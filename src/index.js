@@ -12,7 +12,7 @@ export function h(name, props) {
       for (i = node.length; i--; ) {
         stack.push(node[i])
       }
-    } else if (null == node || true === node || false === node) {
+    } else if (node == null || node === true || node === false) {
     } else {
       children.push(node)
     }
@@ -43,7 +43,7 @@ export function app(state, actions, view, container) {
         name: element.nodeName.toLowerCase(),
         props: {},
         children: map.call(element.childNodes, function(element) {
-          return 3 === element.nodeType
+          return element.nodeType === 3
             ? element.nodeValue
             : vnode(element, map)
         })
@@ -128,15 +128,15 @@ export function app(state, actions, view, container) {
     if (name === "key") {
     } else if (name === "style") {
       for (var i in copy(oldValue, value)) {
-        element[name][i] = null == value || null == value[i] ? "" : value[i]
+        element[name][i] = value == null || value[i] == null ? "" : value[i]
       }
     } else {
       try {
-        element[name] = null == value ? "" : value
+        element[name] = value == null ? "" : value
       } catch (_) {}
 
       if (typeof value !== "function") {
-        if (null == value || false === value) {
+        if (value == null || value === false) {
           element.removeAttribute(name)
         } else {
           element.setAttribute(name, value)
@@ -176,7 +176,7 @@ export function app(state, actions, view, container) {
     for (var name in copy(oldProps, props)) {
       if (
         props[name] !==
-        ("value" === name || "checked" === name
+        (name === "value" || name === "checked"
           ? element[name]
           : oldProps[name])
       ) {
@@ -218,7 +218,7 @@ export function app(state, actions, view, container) {
 
   function patch(parent, element, oldNode, node, isSVG, nextSibling) {
     if (node === oldNode) {
-    } else if (null == oldNode) {
+    } else if (oldNode == null) {
       element = parent.insertBefore(createElement(node, isSVG), element)
     } else if (node.name && node.name === oldNode.name) {
       updateElement(element, oldNode.props, node.props)
@@ -253,8 +253,8 @@ export function app(state, actions, view, container) {
           continue
         }
 
-        if (null == newKey) {
-          if (null == oldKey) {
+        if (newKey == null) {
+          if (oldKey == null) {
             patch(element, oldElements[i], oldChild, newChild, isSVG)
             j++
           }
@@ -284,7 +284,7 @@ export function app(state, actions, view, container) {
 
       while (i < oldNode.children.length) {
         var oldChild = oldNode.children[i]
-        if (null == getKey(oldChild)) {
+        if (getKey(oldChild) == null) {
           removeElement(element, oldElements[i], oldChild)
         }
         i++

@@ -145,14 +145,15 @@ export function app(state, actions, view, container) {
     }
   }
 
-  function createElement(node, isSVG, element) {
-    if (typeof node === "string" || typeof node === "number") {
-      element = document.createTextNode(node)
-    } else {
-      element = (isSVG = isSVG || "svg" === node.name)
-        ? document.createElementNS("http://www.w3.org/2000/svg", node.name)
-        : document.createElement(node.name)
+  function createElement(node, isSVG) {
+    var element =
+      typeof node === "string" || typeof node === "number"
+        ? document.createTextNode(node)
+        : (isSVG = isSVG || node.name === "svg")
+          ? document.createElementNS("http://www.w3.org/2000/svg", node.name)
+          : document.createElement(node.name)
 
+    if (node.props) {
       if (node.props.oncreate) {
         lifecycle.push(function() {
           node.props.oncreate(element)
@@ -167,6 +168,7 @@ export function app(state, actions, view, container) {
         setElementProp(element, name, node.props[name])
       }
     }
+
     return element
   }
 

@@ -14,7 +14,7 @@ export function h(name, props) {
       }
     } else if (null == node || true === node || false === node) {
     } else {
-      children.push(typeof node === "number" ? node + "" : node)
+      children.push(node)
     }
   }
 
@@ -146,7 +146,7 @@ export function app(state, actions, view, container) {
   }
 
   function createElement(node, isSVG, element) {
-    if (typeof node === "string") {
+    if (typeof node === "string" || typeof node === "number") {
       element = document.createTextNode(node)
     } else {
       element = (isSVG = isSVG || "svg" === node.name)

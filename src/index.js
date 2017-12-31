@@ -1,15 +1,14 @@
 export function h(name, props) {
   var node
-  var stack = []
   var children = []
 
-  for (var i = arguments.length; i-- > 2; ) {
+  for (var stack = [], i = arguments.length; i-- > 2; ) {
     stack.push(arguments[i])
   }
 
   while (stack.length) {
     if (Array.isArray((node = stack.pop()))) {
-      for (i = node.length; i--; ) {
+      for (var i = node.length; i--; ) {
         stack.push(node[i])
       }
     } else if (node == null || node === true || node === false) {

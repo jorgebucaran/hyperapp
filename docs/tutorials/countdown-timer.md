@@ -42,7 +42,7 @@ const view = (state, actions) => (
     <h1>{humanizeTime(state.count)}</h1>
 
     <button onclick={actions.toggle}>
-      {state.paused ? "START" : "PAUSED"}
+      {state.paused ? "START" : "PAUSE"}
     </button>
 
     <button onclick={actions.reset}>RESET</button>
@@ -73,7 +73,7 @@ The view displays the seconds inside a `<h1>` element and binds two buttons to `
 
 ```jsx
 <button onclick={actions.toggle}>
-  {state.paused ? "START" : "PAUSED"}
+  {state.paused ? "START" : "PAUSE"}
 </button>
 
 <button onclick={actions.reset}>RESET</button>

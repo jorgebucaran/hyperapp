@@ -29,10 +29,10 @@ test("positional String/Number children", () => {
     children: ["foo", "bar", "baz"]
   })
 
-  expect(h("div", {}, 1, "foo", 2, "baz", 3)).toEqual({
+  expect(h("div", {}, 0, "foo", 1, "baz", 2)).toEqual({
     name: "div",
     props: {},
-    children: ["1", "foo", "2", "baz", "3"]
+    children: ["0", "foo", "1", "baz", "2"]
   })
 
   expect(h("div", {}, "foo", h("div", {}, "bar"), "baz", "quux")).toEqual({

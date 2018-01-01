@@ -74,6 +74,11 @@ export function app(state, actions, view, container) {
     for (var i in a) target[i] = a[i]
     for (var i in b) target[i] = b[i]
 
+    if (Array.isArray(a) || Array.isArray(b)) {
+      target.length = b && b.length || a && a.length
+      return Array.from(target)
+    }
+
     return target
   }
 

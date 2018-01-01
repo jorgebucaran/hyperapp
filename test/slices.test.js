@@ -76,3 +76,64 @@ test("state/actions tree", done => {
 
   main.fizz.buzz.fizzbuzz()
 })
+
+
+test("array slices", done => {
+  const state = {
+    counts: [0, 0]
+  }
+
+  const actions = {
+    counts: {
+      up: (i) => state => ({ [i]: state[i] + 1 }),
+      add: (v) => state => ([...state, v])
+    }
+  }
+
+  const view = state =>
+    h(
+      "div",
+      {
+        oncreate() {
+          expect(document.body.innerHTML).toBe(`<div>0-1-0</div>`)
+          done()
+        }
+      },
+      state.counts.join("-")
+    )
+
+  const main = app(state, actions, view, document.body)
+
+  main.counts.add(0)
+  main.counts.up(1)
+})
+
+test("array slices/actions", done => {
+  const state = {
+    counts: [{
+      count: 0
+    }]
+  }
+
+  const actions = {
+    counts: [{
+      up: () => state => ({ count: state.count + 1 })
+    }]
+  }
+
+  const view = state =>
+    h(
+      "div",
+      {
+        oncreate() {
+          expect(document.body.innerHTML).toBe(`<div>1</div>`)
+          done()
+        }
+      },
+      state.counts[0].count
+    )
+
+  const main = app(state, actions, view, document.body)
+
+  main.counts[0].up()
+})

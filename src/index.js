@@ -80,7 +80,7 @@ export function app(state, actions, view, container) {
   function set(path, value, source, target) {
     if (path.length) {
       target[path[0]] =
-        1 < path.length ? set(path.slice(1), value, source[path[0]], {}) : value
+        path.length > 1 ? set(path.slice(1), value, source[path[0]], {}) : value
       return copy(source, target)
     }
     return value

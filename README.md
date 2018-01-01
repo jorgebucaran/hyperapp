@@ -10,6 +10,46 @@ Hyperapp is a JavaScript library for building frontend applications.
 
 [Read the Docs](/docs/README.md#documentation)
 
+## Installation
+
+```
+yarn add hyperapp
+or 
+npm install --save hyperapp
+```
+## Build process
+Use parcel to handle the build process - (Comes with hot-reloading out of the box). Enables you to have minimal configuration
+
+```c
+yarn add parcel-bundler --dev
+yarn add babel-preset-env --dev // work with es6 features
+yarn add babel-plugin-transform-react-jsx --dev // transpiles jsx
+```
+## Config file
+A simple .babelrc to let parcel pass the config to babel
+```json
+{
+  "presets": ["env"],
+  "plugins": [
+    [
+      "transform-react-jsx",
+      {
+        "pragma": "h"
+      }
+    ]
+  ]
+}
+
+```
+### Package.json
+```
+{
+  "scripts": {
+      "dev": "parcel src/index.html",
+      "build": "parcel build src/index.html"
+    }
+}
+```
 ## Hello World
 
 [Try it Online](https://codepen.io/hyperapp/pen/zNxZLP?editors=0010)

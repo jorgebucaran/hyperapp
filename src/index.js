@@ -26,29 +26,14 @@ export function h(name, props) {
     : name(props || {}, children)
 }
 
-export function app(state, actions, view, container) {
+export function app(state, actions, view, container, node) {
   var patchLock
   var lifecycle = []
   var root = container && container.children[0]
-  var node = vnode(root, [].map)
 
   repaint(init([], (state = copy(state)), (actions = copy(actions))))
 
   return actions
-
-  function vnode(element, map) {
-    return (
-      element && {
-        name: element.nodeName.toLowerCase(),
-        props: {},
-        children: map.call(element.childNodes, function(element) {
-          return element.nodeType === 3
-            ? element.nodeValue
-            : vnode(element, map)
-        })
-      }
-    )
-  }
 
   function render(next) {
     patchLock = !patchLock

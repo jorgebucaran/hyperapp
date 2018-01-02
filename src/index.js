@@ -29,7 +29,7 @@ export function h(name, props) {
 export function app(state, actions, view, container) {
   var patchLock
   var lifecycle = []
-  var root = container && container.children[0]
+  var root = (container && container.children[0]) || null
   var node = vnode(root, [].map)
 
   repaint(init([], (state = copy(state)), (actions = copy(actions))))

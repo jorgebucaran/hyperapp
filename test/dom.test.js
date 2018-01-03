@@ -662,22 +662,22 @@ testTreeSegue("update element with dynamic props", [
   {
     tree: h("input", {
       type: "text",
+      value: "foo",
       oncreate(element) {
-        element.value = "bar"
-      },
-      value: "foo"
+        expect(element.value).toBe("foo")
+      }
     }),
-    html: `<input type="text" value="foo">`
+    html: `<input type="text">`
   },
   {
     tree: h("input", {
       type: "text",
+      value: "bar",
       onupdate(element) {
-        expect(element.value).toBe("foo")
-      },
-      value: "foo"
+        expect(element.value).toBe("bar")
+      }
     }),
-    html: `<input type="text" value="foo">`
+    html: `<input type="text">`
   }
 ])
 

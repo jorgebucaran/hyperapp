@@ -85,6 +85,28 @@ export interface View<State, Actions> {
   (state: State, actions: Actions): VNode<object>
 }
 
+/** The action wired to the app which are in the object 
+ * that's being returned from the app()
+ * @memberOf [App]
+ */
+export type Action<State, Payload = any> = (payload?: Payload) => State;
+
+/** The object that's being returned from app()
+ * 
+ * @memberOf [App]
+ */
+export type Actions<State> = {
+  [key: string]: Action<State> | Actions<State>;
+};
+
+/** The type a state can be
+ * 
+ * @memberOf [App]
+ */
+export type StateType = {
+  [key: string]: string | boolean | number | StateType;
+}
+
 /** The app() call creates and renders a new application.
  *
  * @param state The state object.
@@ -94,12 +116,15 @@ export interface View<State, Actions> {
  * @returns The actions wired to the application.
  * @memberOf [App]
  */
-export function app<State, Actions>(
+export function app<
+  State extends StateType,
+  AppActions extends ActionsType<State, AppActions>
+>(
   state: State,
-  actions: ActionsType<State, Actions>,
-  view: View<State, Actions>,
+  actions: ActionsType<State, AppActions>,
+  view: View<State, AppActions>,
   container: Element | null
-): Actions
+): Actions<State>
 
 /** @namespace [JSX] */
 

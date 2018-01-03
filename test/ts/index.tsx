@@ -1,7 +1,7 @@
-import { h, app, ActionsType, View } from "hyperapp"
+import { h, app, ActionsType, View, StateType } from "hyperapp"
 
 namespace Counter {
-  export interface State {
+  export interface State extends StateType {
     count: number
   }
 

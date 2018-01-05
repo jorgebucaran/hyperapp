@@ -4,12 +4,12 @@ A virtual node is a JavaScript object that represents an element in the DOM tree
 
 ```js
 {
-  tag: "div",
+  name: "div",
   props: {
     id: "app"
   },
   children: [{
-    tag: "h1",
+    name: "h1",
     props: {},
     children: ["Hi."]
   }]

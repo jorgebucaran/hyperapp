@@ -71,7 +71,7 @@ export function app(state, actions, view, container) {
   function updateApp(newState, newActions) {
     actions = copy(actions, newActions)
     repaint(init([], (state = copy(state, newState)), actions))
-    return copy(actions, {})
+    return actions
   }
 
   function copy(a, b) {

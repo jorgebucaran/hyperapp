@@ -34,7 +34,7 @@ export function app(state, actions, view, container) {
 
   repaint(init([], (state = copy(state)), (actions = copy(actions))))
 
-  return actions
+  return { actions, updateApp }
 
   function vnode(element, map) {
     return (
@@ -66,6 +66,12 @@ export function app(state, actions, view, container) {
       patchLock = !patchLock
       setTimeout(render)
     }
+  }
+
+  function updateApp(newState, newActions) {
+    actions = copy(actions, newActions)
+    repaint(init([], (state = copy(state, newState)), actions))
+    return copy(actions, {})
   }
 
   function copy(a, b) {

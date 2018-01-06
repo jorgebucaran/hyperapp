@@ -34,7 +34,7 @@ export function app(state, actions, view, container) {
 
   repaint(init([], (state = copy(state)), (actions = copy(actions))))
 
-  return { actions, updateApp }
+  return copy(actions, { updateApp: updateApp })
 
   function vnode(element, map) {
     return (

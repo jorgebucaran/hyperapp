@@ -63,7 +63,7 @@ export type NestedMap<T> = {
 /**
  * Type to describe anything that's not a function or object
  */
-export type Primitive = string | number | boolean | null | any[]
+export type Primitive = string | number | boolean | null | undefined | any[]
 
 /** The result of an action.
  *
@@ -83,46 +83,7 @@ export interface View<
   TState extends Primitive | NestedMap<Primitive>,
   TActions extends NestedMap<WiredAction<any, TState>>
 > {
-  (state: TState, actions: TActions): VNode<object>
-}
-
-/**
- * The action that's being passed to actions and returned from app()
- */
-type WiredAction<
-  TPayload extends Primitive | NestedMap<Primitive>,
-  TState extends Primitive | NestedMap<Primitive>
-> = (data?: TPayload) => TState
-
-/**
- * The action that's being passed to the actions object in app. 
- * Use this for implementing actions.
- */
-export type ActionType<
-  TState extends Primitive | NestedMap<Primitive> = any,
-  TActions extends
-    | NestedMap<WiredActions<TState, any>>
-    | NestedMap<UnwiredActions<TState, any>> = any,
-  TPayload extends Primitive | NestedMap<Primitive> = any
-> = (
-  data?: TPayload
-) =>
-  | ((state: TState, actions: TActions) => ActionResult<TState>)
-  | ActionResult<TState>
-
-/**
- * The interface for app(). Use this for implementing Higher Order App's
- */
-export interface App {
-  <
-    TState extends Primitive | NestedMap<Primitive>,
-    TActions extends UnwiredActions<TState, TActions>
-  >(
-    state: TState,
-    actions: TActions,
-    view: View<TState, TActions>,
-    container: HTMLElement | null
-  ): { [P in keyof TActions]: TActions[P] }
+  (state: TState, actions: TActions): VNode<any>
 }
 
 /** The app() call creates and renders a new application.
@@ -135,27 +96,71 @@ export interface App {
  */
 export declare const app: App
 
-/** 
- * Convenience type for State
+/**
+ * The interface for app(). Use this for implementing Higher Order App's
  */
-export interface StateType extends NestedMap<Primitive> {}
+export interface App {
+  <TState extends State, TActions extends UnwiredActions<TState, TActions>>(
+    state: TState,
+    actions: TActions,
+    view: View<TState, { [P in keyof TActions]: WiredAction<TState, any> }>,
+    container: HTMLElement | null
+  ): { [P in keyof TActions]: WiredAction<TState, any> }
+}
 
 /**
- * Convenience alias to extend your actions object from, when implementing actions.
+ * The action that's being passed to actions and returned from app()
  */
+type WiredAction<
+  TState extends Primitive | NestedMap<Primitive>,
+  TPayload extends Primitive | NestedMap<Primitive> = any
+> = (data?: TPayload) => TState
+
+/**
+ * The action that's being passed to app(). Use when you implement your actions.
+ */
+export type UnwiredAction<
+  TState extends State,
+  TActions extends UnwiredActions<TState, TActions>,
+  TPayload extends Primitive | NestedMap<Primitive> = any
+> = (
+  data?: TPayload
+) =>
+  | ((
+      state: TState,
+      actions: { [P in keyof TActions]: WiredAction<State, any> }
+    ) => ActionResult<TState>)
+  | ActionResult<TState>
+
+/** 
+ * Convenience type for defining initial State
+ */
+export interface State extends NestedMap<Primitive> {}
+
+/**
+ * Convenience alias from which you extend your actions object.
+ */
+// interface UnwiredActions<
+//   TState extends State,
+//   TActions extends { [P in keyof TActions]: WiredAction<TState> } = any
+// > extends NestedMap<TActions> {}
 interface UnwiredActions<
-  TState extends Primitive | NestedMap<Primitive> = any,
-  TActions extends NestedMap<
-    WiredActions<TState, TActions> | UnwiredActions<TState>
-  > = any
-> extends NestedMap<any> {}
+  TState extends State,
+  TActions extends UnwiredActions<
+    TState,
+    { [P in keyof TActions]: WiredAction<TState> }
+  >
+>
+  extends NestedMap<
+      UnwiredAction<TState, { [P in keyof TActions]: WiredAction<TState> }>
+    > {}
 
 /**
  * Convenience alias for NestedMap<WiredAction>
  */
 interface WiredActions<
-  TState extends Primitive | NestedMap<Primitive>,
-  TActions extends UnwiredActions
+  TState extends State,
+  TActions extends UnwiredActions<TState, TActions>
 > extends NestedMap<WiredAction<any, TState>> {}
 
 /** @namespace [JSX] */

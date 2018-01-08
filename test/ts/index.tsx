@@ -1,4 +1,4 @@
-import { h, app, View, StateType, UnwiredActions, UnwiredAction } from 'hyperapp'
+import { h, app, View, StateType, UnwiredActions, UnwiredAction } from "hyperapp"
 
 namespace Counter {
   export interface State extends StateType {

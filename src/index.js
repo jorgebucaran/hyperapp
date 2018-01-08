@@ -1,3 +1,14 @@
+/**
+ * Creates a VNode. A VNode is a JavaScript object that represents an
+ * element in the DOM tree. This object contains all the information
+ * we need to patch the DOM.
+ *
+ * @param {string} name	An element name: `div`, `a`, `span`, etc.
+ * @param {Object} props Any attributes/props to set on the created element.
+ * @param rest Children to append.
+ *
+ * @public
+ */
 export function h(name, props) {
   var node
   var children = []
@@ -26,6 +37,16 @@ export function h(name, props) {
     : name(props || {}, children)
 }
 
+/**
+ * Creates an application and embeds it into the given container.
+ *
+ * @param {Object} state The state tree that represents the application.
+ * @param {Object} actions The actions tree that 
+ * @param {Function} view ...
+ * @param {Element} container ...
+ *
+ * @public
+ */
 export function app(state, actions, view, container) {
   var patchLock
   var lifecycle = []
@@ -93,6 +114,17 @@ export function app(state, actions, view, container) {
     return source
   }
 
+  /**
+   * Initializes the given module:
+   *  - computes the initial state
+   *  - initalize all actions
+   *  - add module.init() to be called before the first render
+   *  - initialize sub-modules
+   *
+   * @param path the module to initialize
+   * @param slice the initial state (updated by this function)
+   * @param actions the actions object (updated by this function)
+   */
   function init(path, slice, actions) {
     for (var key in actions) {
       typeof actions[key] === "function"

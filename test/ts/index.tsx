@@ -39,11 +39,11 @@ const view: View<Counter.State, Counter.Actions> = (state, actions) => (
   </main>
 )
 
-const appActions = app<Counter.State, Counter.Actions>(
+const main = app<Counter.State, Counter.Actions>(
   Counter.state,
   Counter.actions,
   view,
   document.body
 )
 
-appActions.up()
+main.up()

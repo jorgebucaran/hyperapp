@@ -124,7 +124,7 @@ The view describes your application user interface as a function of the state an
 const view = (state, actions) => h("h1", {}, "Hello World!")
 ```
 
-The `h()` function returns a [virtual node](vnodes.md), a plain object that describes a DOM tree. Hyperapp consumes this object to update the DOM.
+The `h()` function returns a [virtual node](../concepts/vnodes.md), a plain object that describes a DOM tree. Hyperapp consumes this object to update the DOM.
 
 We use [JSX](https://facebook.github.io/jsx/) in examples throughout the documentation for familiarity, but you are not required to use it at all.
 

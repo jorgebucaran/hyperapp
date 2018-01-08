@@ -1,11 +1,12 @@
 /**
- * Creates a VNode. A VNode is a JavaScript object that represents an
- * element in the DOM tree. This object contains all the information
- * we need to patch the DOM.
+ * Creates a VNode. A VNode is a JavaScript object that represents an element
+ * in the DOM tree. Hyperapp consumes this object to update the DOM. A VNode
+ * props may include any valid HTML or SVG attributes, DOM events, lifecycle
+ * events, and keys.
  *
- * @param {string} name	An element name: `div`, `a`, `span`, etc.
+ * @param {string|Function} name An element/tag name or function returning a VNode.
  * @param {Object} props Any attributes/props to set on the created element.
- * @param rest Children to append.
+ * @param rest Children to append to the created element.
  *
  * @public
  */
@@ -41,22 +42,35 @@ export function h(name, props) {
  * Creates an application and embeds it into the given container.
  *
  * @param {Object} state The state tree that represents the application.
- * @param {Object} actions The actions tree that 
- * @param {Function} view ...
- * @param {Element} container ...
+ * @param {Object} actions The actions tree that describes how the state can change.
+ * @param {Function} view A function taking state, actions, and returning a VNode.
+ * @param {Element} container A DOM element to render into.
+ * @returns {Object} The state-wired actions tree.
  *
  * @public
  */
 export function app(state, actions, view, container) {
-  var patchLock
   var lifecycle = []
   var root = container && container.children[0]
   var node = vnode(root, [].map)
+  var lock
 
-  repaint(init([], (state = copy(state)), (actions = copy(actions))))
+  repaint(init([], (state = assign(state)), (actions = assign(actions))))
 
   return actions
 
+  /**
+   * Returns the VNode representation of the given element. The element is usually
+   * server side rendered HTML, and we use this function to start with an existing
+   * node on the first patch. The node is not populated with your state or actions,
+   * but it will be after we patch it with the VNode produced by the view function.
+   *
+   * @param {Element} element A DOM element to traverse.
+   * @param {Function} map A reference to Array.prototype.map.
+   * @returns A VNode that represents the given element.
+   *
+   * @private
+   */
   function vnode(element, map) {
     return (
       element && {
@@ -71,42 +85,64 @@ export function app(state, actions, view, container) {
     )
   }
 
+  /**
+   *
+   *
+   */
   function render(next) {
-    patchLock = !patchLock
+    lock = !lock
     next = view(state, actions)
 
-    if (container && !patchLock) {
+    if (container && !lock) {
       root = patch(container, root, node, (node = next))
     }
 
     while ((next = lifecycle.pop())) next()
   }
 
+  /**
+   * Schedules a new render call if we are not currently locked and toggles the
+   * lock in order to throttle successive repaint attempts, e.g., when calling
+   * several actions in a row.
+   */
   function repaint() {
-    if (!patchLock) {
-      patchLock = !patchLock
+    if (!lock) {
+      lock = !lock
       setTimeout(render)
     }
   }
 
-  function copy(a, b) {
-    var target = {}
+  /**
+   * Copy all properties from source into target without mutation.
+   *
+   * @param {Object} target Object to copy into.
+   * @param {Object} source Object to copy from.
+   * @private
+   */
 
-    for (var i in a) target[i] = a[i]
-    for (var i in b) target[i] = b[i]
+  function assign(target, source) {
+    var obj = {}
 
-    return target
+    for (var i in target) obj[i] = target[i]
+    for (var i in source) obj[i] = source[i]
+
+    return obj
   }
 
-  function set(path, value, source, target) {
+  function set(path, value, target, source) {
     if (path.length) {
       target[path[0]] =
-        path.length > 1 ? set(path.slice(1), value, source[path[0]], {}) : value
-      return copy(source, target)
+        path.length > 1 ? set(path.slice(1), value, {}, source[path[0]]) : value
+      return assign(source, target)
     }
     return value
   }
 
+  /**
+   *
+   * @param {Array} path An array of keys that indicate
+   * @param {*} source
+   */
   function get(path, source) {
     for (var i = 0; i < path.length; i++) {
       source = source[path[i]]
@@ -135,7 +171,7 @@ export function app(state, actions, view, container) {
               }
 
               if (data && data !== (slice = get(path, state)) && !data.then) {
-                repaint((state = set(path, copy(slice, data), state, {})))
+                repaint((state = set(path, assign(slice, data), {}, state)))
               }
 
               return data
@@ -144,7 +180,7 @@ export function app(state, actions, view, container) {
         : init(
             path.concat(key),
             (slice[key] = slice[key] || {}),
-            (actions[key] = copy(actions[key]))
+            (actions[key] = assign(actions[key]))
           )
     }
   }
@@ -156,7 +192,7 @@ export function app(state, actions, view, container) {
   function setElementProp(element, name, value, isSVG, oldValue) {
     if (name === "key") {
     } else if (name === "style") {
-      for (var i in copy(oldValue, value)) {
+      for (var i in assign(oldValue, value)) {
         element[name][i] = value == null || value[i] == null ? "" : value[i]
       }
     } else {
@@ -200,7 +236,7 @@ export function app(state, actions, view, container) {
   }
 
   function updateElement(element, oldProps, props, isSVG) {
-    for (var name in copy(oldProps, props)) {
+    for (var name in assign(oldProps, props)) {
       if (
         props[name] !==
         (name === "value" || name === "checked"

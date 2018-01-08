@@ -1,13 +1,4 @@
-import {
-  h,
-  app,
-  View,
-  State as StateType,
-  UnwiredActions,
-  NestedMap,
-  UnwiredAction,
-  WiredActions,
-} from 'hyperapp'
+import { h, app, View, StateType, UnwiredActions, UnwiredAction } from 'hyperapp'
 
 namespace Counter {
   export interface State extends StateType {
@@ -55,4 +46,4 @@ const appActions = app<Counter.State, Counter.Actions>(
   document.body
 )
 
-appActions.up();
+appActions.up()

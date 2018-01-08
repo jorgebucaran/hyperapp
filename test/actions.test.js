@@ -62,3 +62,41 @@ test("async updates", done => {
 
   main.upAsync(1)
 })
+
+test("call action within action", done => {
+  const state = {
+    value: 1
+  }
+
+  const actions = {
+    upAndFoo: () => (state, actions) => {
+      actions.up()
+      return {
+        foo: true
+      }
+    },
+    up: () => state => ({
+      value: state.value + 1
+    })
+  }
+
+  const view = state =>
+    h(
+      "div",
+      {
+        oncreate() {
+          expect(state).toEqual({
+            value: 2,
+            foo: true
+          })
+          expect(document.body.innerHTML).toBe(`<div>2</div>`)
+          done()
+        }
+      },
+      state.value
+    )
+
+  const main = app(state, actions, view, document.body)
+
+  main.upAndFoo()
+})

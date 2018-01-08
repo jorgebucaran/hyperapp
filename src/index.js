@@ -98,13 +98,11 @@ export function app(state, actions, view, container) {
       typeof actions[key] === "function"
         ? (function(key, action) {
             actions[key] = function(data) {
-              slice = get(path, state)
-
               if (typeof (data = action(data)) === "function") {
-                data = data(slice, actions)
+                data = data(get(path, state), actions)
               }
 
-              if (data && data !== slice && !data.then) {
+              if (data && data !== (slice = get(path, state)) && !data.then) {
                 repaint((state = set(path, copy(slice, data), state, {})))
               }
 

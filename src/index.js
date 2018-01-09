@@ -1,15 +1,16 @@
+/** Create a virtual node. */
 export function h(name, props) {
   var node
   var rest = []
   var children = []
-  var i = arguments.length
+  var length = arguments.length
 
-  while (i-- > 2) rest.push(arguments[i])
+  while (length-- > 2) rest.push(arguments[length])
 
   while (rest.length) {
     if (Array.isArray((node = rest.pop()))) {
-      for (i = node.length; i--; ) {
-        rest.push(node[i])
+      for (length = node.length; length--; ) {
+        rest.push(node[length])
       }
     } else if (node != null && node !== true && node !== false) {
       children.push(node)
@@ -25,49 +26,55 @@ export function h(name, props) {
       }
 }
 
+/**
+ * Start an application.
+ * @param {Object} state The state tree of the application.
+ * @param {Object} actions The actions tree of the application.
+ * @param {Function} view A function that returns a virtual node.
+ * @param container A DOM element to render the application to.
+ */
 export function app(state, actions, view, container) {
-  // The render lock is used to avoid unnecessary view renders when the
-  // state is updated in succession (calling multiple actions in a row).
+  /**
+   * Prevents unnecessary view renders when calling multiple actions in a row.
+   **/
   var renderLock
 
-  // The lifecycle stack is used to defer the invocation of lifecycle
-  // events until after patching the DOM.
+  /** Stores lifecycle event callbacks that will be invoked after patching the DOM. */
   var lifecycleStack = []
-
-  // The container is usually empty or server-side rendered. When there is
-  // existing content, we'll take over its first element child and attempt
-  // to patch it during the view render instead of throwing it away.
+  /**
+   * The first element child of the container.
+   **/
   var root = (container && container.children[0]) || null
+  /**
+   * The last virtual node computed from the view.
+   **/
+  var node = root && elementToVNode(root, [].map)
 
-  // If the root is non-empty, turn the existing HTML into a virtual node.
-  // This means we can avoid creating new elements on the first patch and
-  // rehydrate the existing content, e.g. attach event listeners, etc.
-  var node = root && vnode(root, [].map)
+  // Copy the state and actions tree to avoid mutating non-owned objects.
 
-  // Copy the state and actions tree to avoid mutating non-owned objects
-  // and initialize/wire the actions to the view rendering.
-  repaint(enhance([], (state = copy(state)), (actions = copy(actions))))
+  scheduleRender(
+    wireStateToActions([], (state = copy(state)), (actions = copy(actions)))
+  )
 
   return actions
 
-  /** Create the VNode representation of a DOM element. */
-  function vnode(element, map) {
+  /** Create a virtual node from a DOM tree. */
+  function elementToVNode(element, map) {
     return {
       name: element.nodeName.toLowerCase(),
       props: {},
       children: map.call(element.childNodes, function(element) {
-        return element.nodeType === 3 ? element.nodeValue : vnode(element, map)
+        return element.nodeType === 3
+          ? element.nodeValue
+          : elementToVNode(element, map)
       })
     }
   }
 
-  /** Compute a new vnode tree and patch the application container with it. */
+  /** Compute the next virtual node. */
   function render(next) {
     renderLock = !renderLock
     next = view(state, actions)
-
-    // Check if the lock has been toggled as a result of calling any actions
-    // from the view. This prevents patching the DOM with a stale node.
 
     if (container && !renderLock) {
       root = patch(container, root, node, (node = next))
@@ -76,15 +83,13 @@ export function app(state, actions, view, container) {
     while ((next = lifecycleStack.pop())) next()
   }
 
-  /** Schedules a new render call if we are not currently render locked. */
-  function repaint() {
+  function scheduleRender() {
     if (!renderLock) {
       renderLock = !renderLock
       setTimeout(render)
     }
   }
 
-  /** Copy all properties from source into target immutably. */
   function copy(target, source) {
     var obj = {}
 
@@ -94,7 +99,7 @@ export function app(state, actions, view, container) {
     return obj
   }
 
-  /** Sets the value at path of the source object.  */
+  /** Set the value at path of the source. */
   function set(path, value, target, source) {
     if (path.length) {
       target[path[0]] =
@@ -104,7 +109,7 @@ export function app(state, actions, view, container) {
     return value
   }
 
-  /** Get the property at path of the given object. */
+  /** Get the property at path of the source. */
   function get(path, source) {
     for (var i = 0; i < path.length; i++) {
       source = source[path[i]]
@@ -112,8 +117,8 @@ export function app(state, actions, view, container) {
     return source
   }
 
-  /** Enhance actions to trigger repaints after updating the state. */
-  function enhance(path, substate, subactions) {
+  /** Enhance actions to schedule a view render after updating the state. */
+  function wireStateToActions(path, substate, subactions) {
     for (var key in subactions) {
       typeof subactions[key] === "function"
         ? (function(key, action) {
@@ -125,15 +130,17 @@ export function app(state, actions, view, container) {
               if (
                 data &&
                 data !== (substate = get(path, state)) &&
-                !data.then
+                !data.then // Promise
               ) {
-                repaint((state = set(path, copy(substate, data), {}, state)))
+                scheduleRender(
+                  (state = set(path, copy(substate, data), {}, state))
+                )
               }
 
               return data
             }
           })(key, subactions[key])
-        : enhance(
+        : wireStateToActions(
             path.concat(key),
             (substate[key] = substate[key] || {}),
             (subactions[key] = copy(subactions[key]))
@@ -141,12 +148,10 @@ export function app(state, actions, view, container) {
     }
   }
 
-  /** Get the key from a virtual node properties. */
   function getKey(node) {
     return node && node.props ? node.props.key : null
   }
 
-  /** Set an attribute/property in the element. */
   function setElementProp(element, name, value, isSVG, oldValue) {
     if (name === "key") {
     } else if (name === "style") {
@@ -166,7 +171,6 @@ export function app(state, actions, view, container) {
     }
   }
 
-  /** Create a new element from a virtual node. */
   function createElement(node, isSVG) {
     var element =
       typeof node === "string" || typeof node === "number"
@@ -194,7 +198,6 @@ export function app(state, actions, view, container) {
     return element
   }
 
-  /** Update an element properties. */
   function updateElement(element, oldProps, props, isSVG) {
     for (var name in copy(oldProps, props)) {
       if (
@@ -214,7 +217,6 @@ export function app(state, actions, view, container) {
     }
   }
 
-  /** Remove all element children. */
   function removeChildren(element, node, props) {
     if ((props = node.props)) {
       for (var i = 0; i < node.children.length; i++) {
@@ -228,7 +230,6 @@ export function app(state, actions, view, container) {
     return element
   }
 
-  /** Remove and element from its parent. */
   function removeElement(parent, element, node, cb) {
     function done() {
       parent.removeChild(removeChildren(element, node))
@@ -241,7 +242,6 @@ export function app(state, actions, view, container) {
     }
   }
 
-  /** Patch the DOM. */
   function patch(parent, element, oldNode, node, isSVG, nextSibling) {
     if (node === oldNode) {
     } else if (oldNode == null) {

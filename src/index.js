@@ -1,4 +1,3 @@
-/** Create a virtual node. */
 export function h(name, props) {
   var node
   var rest = []
@@ -26,39 +25,28 @@ export function h(name, props) {
       }
 }
 
-/**
- * Start an application.
- * @param {Object} state The state tree of the application.
- * @param {Object} actions The actions tree of the application.
- * @param {Function} view A function that returns a virtual node.
- * @param container A DOM element to render the application to.
- */
 export function app(state, actions, view, container) {
-  /**
-   * Prevents unnecessary view renders when calling multiple actions in a row.
-   **/
   var renderLock
+  var invokeLaterStack = []
 
-  /** Stores lifecycle event callbacks that will be invoked after patching the DOM. */
-  var lifecycleStack = []
   /**
-   * The first element child of the container.
-   **/
+   * The first element child of the container. If there is pre-rendered content,
+   * we'll try to patch it instead of throwing it away / creating new elements.
+   */
   var root = (container && container.children[0]) || null
+  var lastNode = root && elementToVNode(root, [].map)
+
   /**
-   * The last virtual node computed from the view.
-   **/
-  var node = root && elementToVNode(root, [].map)
+   * A new actions tree where each action has been "wired" to trigger a view
+   * re-render after updating the state.
+   */
+  var wiredActions = copy(actions)
+  var globalState = copy(state)
 
-  // Copy the state and actions tree to avoid mutating non-owned objects.
+  scheduleRender(wireStateToActions([], globalState, wiredActions))
 
-  scheduleRender(
-    wireStateToActions([], (state = copy(state)), (actions = copy(actions)))
-  )
+  return wiredActions
 
-  return actions
-
-  /** Create a virtual node from a DOM tree. */
   function elementToVNode(element, map) {
     return {
       name: element.nodeName.toLowerCase(),
@@ -71,20 +59,20 @@ export function app(state, actions, view, container) {
     }
   }
 
-  /** Compute the next virtual node. */
-  function render(next) {
+  function render() {
     renderLock = !renderLock
-    next = view(state, actions)
 
+    var next = view(globalState, wiredActions)
     if (container && !renderLock) {
-      root = patch(container, root, node, (node = next))
+      root = patch(container, root, lastNode, (lastNode = next))
     }
 
-    while ((next = lifecycleStack.pop())) next()
+    while ((next = invokeLaterStack.pop())) next()
   }
 
   function scheduleRender() {
     if (!renderLock) {
+      // Avoid unnecessary renders if the state is updated in succession.
       renderLock = !renderLock
       setTimeout(render)
     }
@@ -99,17 +87,16 @@ export function app(state, actions, view, container) {
     return obj
   }
 
-  /** Set the value at path of the source. */
-  function set(path, value, target, source) {
+  function set(path, value, source) {
+    var target = {}
     if (path.length) {
       target[path[0]] =
-        path.length > 1 ? set(path.slice(1), value, {}, source[path[0]]) : value
+        path.length > 1 ? set(path.slice(1), value, source[path[0]]) : value
       return copy(source, target)
     }
     return value
   }
 
-  /** Get the property at path of the source. */
   function get(path, source) {
     for (var i = 0; i < path.length; i++) {
       source = source[path[i]]
@@ -117,33 +104,32 @@ export function app(state, actions, view, container) {
     return source
   }
 
-  /** Enhance actions to schedule a view render after updating the state. */
-  function wireStateToActions(path, substate, subactions) {
-    for (var key in subactions) {
-      typeof subactions[key] === "function"
+  function wireStateToActions(path, state, actions) {
+    for (var key in actions) {
+      typeof actions[key] === "function"
         ? (function(key, action) {
-            subactions[key] = function(data) {
+            actions[key] = function(data) {
               if (typeof (data = action(data)) === "function") {
-                data = data(get(path, state), subactions)
+                data = data(get(path, globalState), actions)
               }
 
               if (
                 data &&
-                data !== (substate = get(path, state)) &&
-                !data.then // Promise
+                data !== (state = get(path, globalState)) &&
+                !data.then
               ) {
                 scheduleRender(
-                  (state = set(path, copy(substate, data), {}, state))
+                  (globalState = set(path, copy(state, data), globalState))
                 )
               }
 
               return data
             }
-          })(key, subactions[key])
+          })(key, actions[key])
         : wireStateToActions(
             path.concat(key),
-            (substate[key] = substate[key] || {}),
-            (subactions[key] = copy(subactions[key]))
+            (state[key] = state[key] || {}),
+            (actions[key] = copy(actions[key]))
           )
     }
   }
@@ -181,7 +167,7 @@ export function app(state, actions, view, container) {
 
     if (node.props) {
       if (node.props.oncreate) {
-        lifecycleStack.push(function() {
+        invokeLaterStack.push(function() {
           node.props.oncreate(element)
         })
       }
@@ -211,7 +197,7 @@ export function app(state, actions, view, container) {
     }
 
     if (props.onupdate) {
-      lifecycleStack.push(function() {
+      invokeLaterStack.push(function() {
         props.onupdate(element, oldProps)
       })
     }

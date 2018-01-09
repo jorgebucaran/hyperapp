@@ -1,126 +1,155 @@
 /**
- * Creates a VNode. A VNode is a JavaScript object that represents an element
- * in the DOM tree. Hyperapp consumes this object to update the DOM. A VNode
- * props may include any valid HTML or SVG attributes, DOM events, lifecycle
- * events, and keys.
+ * Create a VNode (virtual node). A virtual node is a JavaScript object that
+ * represents an element in the DOM tree. Hyperapp's patch function consumes
+ * this object to update the DOM. A VNode props include any valid HTML/SVG
+ * attributes, DOM events, lifecycle events, and keys.
  *
- * @param {string|Function} name An element/tag name or function returning a VNode.
+ * @param {string|Function} name An element name or function returning a VNode.
  * @param {Object} props Any attributes/props to set on the created element.
  * @param rest Children to append to the created element.
+ * @returns {VNode}
  *
  * @public
  */
+
 export function h(name, props) {
   var node
+  var rest = []
   var children = []
+  var i = arguments.length
 
-  for (var stack = [], i = arguments.length; i-- > 2; ) {
-    stack.push(arguments[i])
-  }
+  while (i-- > 2) rest.push(arguments[i])
 
-  while (stack.length) {
-    if (Array.isArray((node = stack.pop()))) {
-      for (var i = node.length; i--; ) {
-        stack.push(node[i])
+  // Append the rest of the arguments to the children array, skipping null,
+  // undefined and boolean nodes. If a node is an array, merge it with the
+  // rest and continue processing the list. We do this to avoid creating a
+  // recursive function to handle nested arrays.
+
+  while (rest.length) {
+    if (Array.isArray((node = rest.pop()))) {
+      for (i = node.length; i--; ) {
+        rest.push(node[i])
       }
-    } else if (node == null || node === true || node === false) {
-    } else {
+    } else if (node != null && node !== true && node !== false) {
       children.push(node)
     }
   }
 
-  return typeof name === "string"
-    ? {
+  // If name is a function, invoke it with the props and children. This allows
+  // us to use this function like so: `h(MyComponent, props, children)` which
+  // is what <MyComponent props={props}></MyComponent> compiles in JSX.
+
+  return typeof name === "function"
+    ? name(props || {}, children)
+    : {
         name: name,
         props: props || {},
         children: children
       }
-    : name(props || {}, children)
 }
 
 /**
- * Creates an application and embeds it into the given container.
+ * Create an application and embed it to the given container. Returns a copy of
+ * the actions tree, enhanced to trigger a repaint after updating the state.
  *
  * @param {Object} state The state tree that represents the application.
- * @param {Object} actions The actions tree that describes how the state can change.
- * @param {Function} view A function taking state, actions, and returning a VNode.
+ * @param {Object} actions The actions tree that describes how to update the state.
+ * @param {Function} view A function that returns a VNode.
  * @param {Element} container A DOM element to render into.
- * @returns {Object} The state-wired actions tree.
+ * @returns {Object} The enhanced actions tree.
  *
  * @public
  */
 export function app(state, actions, view, container) {
-  var lifecycle = []
-  var root = container && container.children[0]
-  var node = vnode(root, [].map)
-  var lock
+  // The render lock is used to avoid unnecessary view renders when the
+  // state is updated in succession (calling multiple actions in a row).
 
-  repaint(init([], (state = assign(state)), (actions = assign(actions))))
+  var renderLock
+
+  // The lifecycle stack is used to defer the invocation of lifecycle
+  // events until after patching the DOM.
+
+  var lifecycleStack = []
+
+  // The container is usually empty or server-side rendered. When there is
+  // existing content, we'll take over its first element child and attempt
+  // to patch it during the view render, instead of throwing it all away.
+
+  var root = (container && container.children[0]) || null
+
+  // If the root is non-empty, turn the existing HTML into a virtual node.
+  // This means we can avoid creating new elements on the first patch and
+  // rehydrate (update props, add event listeners, etc.) the existing DOM.
+
+  var node = root && vnode(root, [].map)
+
+  // Copy the state and actions tree to avoid mutating non-owned objects
+  // and call initialize to wire the and actions to the view rendering.
+
+  repaint(init([], (state = copy(state)), (actions = copy(actions))))
 
   return actions
 
   /**
-   * Returns the VNode representation of the given element. The element is usually
-   * server side rendered HTML, and we use this function to start with an existing
-   * node on the first patch. The node is not populated with your state or actions,
-   * but it will be after we patch it with the VNode produced by the view function.
+   * Create the VNode representation of a DOM element.
    *
-   * @param {Element} element A DOM element to traverse.
-   * @param {Function} map A reference to Array.prototype.map.
-   * @returns A VNode that represents the given element.
-   *
+   * @param {Element}
+   * @returns {VNode}
    * @private
    */
   function vnode(element, map) {
-    return (
-      element && {
-        name: element.nodeName.toLowerCase(),
-        props: {},
-        children: map.call(element.childNodes, function(element) {
-          return element.nodeType === 3
-            ? element.nodeValue
-            : vnode(element, map)
-        })
-      }
-    )
+    return {
+      name: element.nodeName.toLowerCase(),
+      props: {},
+      children: map.call(element.childNodes, function(element) {
+        return element.nodeType === 3 ? element.nodeValue : vnode(element, map)
+      })
+    }
   }
 
   /**
-   *
-   *
+   * Compute a new vnode tree and patch the application container with it.
+   * @private
    */
   function render(next) {
-    lock = !lock
+    renderLock = !renderLock
     next = view(state, actions)
 
-    if (container && !lock) {
+    // Check if the lock has been toggled as a result of calling any actions
+    // from the view. This prevents patching the DOM with a stale node.
+
+    if (container && !renderLock) {
       root = patch(container, root, node, (node = next))
     }
 
-    while ((next = lifecycle.pop())) next()
+    // Flush the lifecycle stack and notify subscribers of created/updated nodes.
+
+    while ((next = lifecycleStack.pop())) next()
   }
 
   /**
    * Schedules a new render call if we are not currently locked and toggles the
    * lock in order to throttle successive repaint attempts, e.g., when calling
    * several actions in a row.
+   * @private
    */
   function repaint() {
-    if (!lock) {
-      lock = !lock
+    if (!renderLock) {
+      renderLock = !renderLock
       setTimeout(render)
     }
   }
 
   /**
-   * Copy all properties from source into target without mutation.
+   * Copy all properties from source into target immutably.
    *
    * @param {Object} target Object to copy into.
    * @param {Object} source Object to copy from.
+   * @returns {Object}
    * @private
    */
 
-  function assign(target, source) {
+  function copy(target, source) {
     var obj = {}
 
     for (var i in target) obj[i] = target[i]
@@ -133,15 +162,18 @@ export function app(state, actions, view, container) {
     if (path.length) {
       target[path[0]] =
         path.length > 1 ? set(path.slice(1), value, {}, source[path[0]]) : value
-      return assign(source, target)
+      return copy(source, target)
     }
     return value
   }
 
   /**
+   * Get the property at path of the given object.
    *
-   * @param {Array} path An array of keys that indicate
-   * @param {*} source
+   * @param {Array} path The path of the property to get.
+   * @param {Object} source The object to query.
+   * @returns The value
+   * @private
    */
   function get(path, source) {
     for (var i = 0; i < path.length; i++) {
@@ -171,7 +203,7 @@ export function app(state, actions, view, container) {
               }
 
               if (data && data !== (slice = get(path, state)) && !data.then) {
-                repaint((state = set(path, assign(slice, data), {}, state)))
+                repaint((state = set(path, copy(slice, data), {}, state)))
               }
 
               return data
@@ -180,7 +212,7 @@ export function app(state, actions, view, container) {
         : init(
             path.concat(key),
             (slice[key] = slice[key] || {}),
-            (actions[key] = assign(actions[key]))
+            (actions[key] = copy(actions[key]))
           )
     }
   }
@@ -192,7 +224,7 @@ export function app(state, actions, view, container) {
   function setElementProp(element, name, value, isSVG, oldValue) {
     if (name === "key") {
     } else if (name === "style") {
-      for (var i in assign(oldValue, value)) {
+      for (var i in copy(oldValue, value)) {
         element[name][i] = value == null || value[i] == null ? "" : value[i]
       }
     } else {
@@ -218,7 +250,7 @@ export function app(state, actions, view, container) {
 
     if (node.props) {
       if (node.props.oncreate) {
-        lifecycle.push(function() {
+        lifecycleStack.push(function() {
           node.props.oncreate(element)
         })
       }
@@ -236,7 +268,7 @@ export function app(state, actions, view, container) {
   }
 
   function updateElement(element, oldProps, props, isSVG) {
-    for (var name in assign(oldProps, props)) {
+    for (var name in copy(oldProps, props)) {
       if (
         props[name] !==
         (name === "value" || name === "checked"
@@ -248,7 +280,7 @@ export function app(state, actions, view, container) {
     }
 
     if (props.onupdate) {
-      lifecycle.push(function() {
+      lifecycleStack.push(function() {
         props.onupdate(element, oldProps)
       })
     }

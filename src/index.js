@@ -11,7 +11,6 @@
  *
  * @public
  */
-
 export function h(name, props) {
   var node
   var rest = []
@@ -73,20 +72,20 @@ export function app(state, actions, view, container) {
 
   // The container is usually empty or server-side rendered. When there is
   // existing content, we'll take over its first element child and attempt
-  // to patch it during the view render, instead of throwing it all away.
+  // to patch it during the view render instead of throwing it away.
 
   var root = (container && container.children[0]) || null
 
   // If the root is non-empty, turn the existing HTML into a virtual node.
   // This means we can avoid creating new elements on the first patch and
-  // rehydrate (update props, add event listeners, etc.) the existing DOM.
+  // rehydrate the existing content, e.g. attach event listeners, etc.
 
   var node = root && vnode(root, [].map)
 
   // Copy the state and actions tree to avoid mutating non-owned objects
-  // and call initialize to wire the and actions to the view rendering.
+  // and initialize/wire the actions to the view rendering.
 
-  repaint(init([], (state = copy(state)), (actions = copy(actions))))
+  repaint(enhance([], (state = copy(state)), (actions = copy(actions))))
 
   return actions
 
@@ -95,6 +94,7 @@ export function app(state, actions, view, container) {
    *
    * @param {Element}
    * @returns {VNode}
+   *
    * @private
    */
   function vnode(element, map) {
@@ -109,6 +109,7 @@ export function app(state, actions, view, container) {
 
   /**
    * Compute a new vnode tree and patch the application container with it.
+   *
    * @private
    */
   function render(next) {
@@ -131,6 +132,7 @@ export function app(state, actions, view, container) {
    * Schedules a new render call if we are not currently locked and toggles the
    * lock in order to throttle successive repaint attempts, e.g., when calling
    * several actions in a row.
+   *
    * @private
    */
   function repaint() {
@@ -148,7 +150,6 @@ export function app(state, actions, view, container) {
    * @returns {Object}
    * @private
    */
-
   function copy(target, source) {
     var obj = {}
 
@@ -158,6 +159,11 @@ export function app(state, actions, view, container) {
     return obj
   }
 
+  /**
+   * Sets the value at path of the source object.
+   *
+   * @private
+   */
   function set(path, value, target, source) {
     if (path.length) {
       target[path[0]] =
@@ -172,7 +178,7 @@ export function app(state, actions, view, container) {
    *
    * @param {Array} path The path of the property to get.
    * @param {Object} source The object to query.
-   * @returns The value
+   *
    * @private
    */
   function get(path, source) {
@@ -183,44 +189,64 @@ export function app(state, actions, view, container) {
   }
 
   /**
-   * Initializes the given module:
-   *  - computes the initial state
-   *  - initalize all actions
-   *  - add module.init() to be called before the first render
-   *  - initialize sub-modules
+   * Enhance the state (add missing leaves from the actions tree) and actions
+   * to trigger repaints after updating the state.
    *
-   * @param path the module to initialize
-   * @param slice the initial state (updated by this function)
-   * @param actions the actions object (updated by this function)
+   * @param {Array} path
+   * @param {Object} substate
+   * @param {Object} subactions
+   *
+   * @private
    */
-  function init(path, slice, actions) {
-    for (var key in actions) {
-      typeof actions[key] === "function"
+  function enhance(path, substate, subactions) {
+    for (var key in subactions) {
+      typeof subactions[key] === "function"
         ? (function(key, action) {
-            actions[key] = function(data) {
+            subactions[key] = function(data) {
               if (typeof (data = action(data)) === "function") {
-                data = data(get(path, state), actions)
+                data = data(get(path, state), subactions)
               }
 
-              if (data && data !== (slice = get(path, state)) && !data.then) {
-                repaint((state = set(path, copy(slice, data), {}, state)))
+              if (
+                data &&
+                data !== (substate = get(path, state)) &&
+                !data.then
+              ) {
+                repaint((state = set(path, copy(substate, data), {}, state)))
               }
 
               return data
             }
-          })(key, actions[key])
-        : init(
+          })(key, subactions[key])
+        : enhance(
             path.concat(key),
-            (slice[key] = slice[key] || {}),
-            (actions[key] = copy(actions[key]))
+            (substate[key] = substate[key] || {}),
+            (subactions[key] = copy(subactions[key]))
           )
     }
   }
 
+  /**
+   * Get the key from a virtual node properties.
+   *
+   * @param {VNode} node
+   *
+   * @private
+   */
   function getKey(node) {
     return node && node.props ? node.props.key : null
   }
 
+  /**
+   *
+   * @param {*} element
+   * @param {*} name
+   * @param {*} value
+   * @param {*} isSVG
+   * @param {*} oldValue
+   *
+   * @private
+   */
   function setElementProp(element, name, value, isSVG, oldValue) {
     if (name === "key") {
     } else if (name === "style") {
@@ -240,6 +266,13 @@ export function app(state, actions, view, container) {
     }
   }
 
+  /**
+   *
+   * @param {*} node
+   * @param {*} isSVG
+   *
+   * @private
+   */
   function createElement(node, isSVG) {
     var element =
       typeof node === "string" || typeof node === "number"
@@ -267,6 +300,15 @@ export function app(state, actions, view, container) {
     return element
   }
 
+  /**
+   *
+   * @param {*} element
+   * @param {*} oldProps
+   * @param {*} props
+   * @param {*} isSVG
+   *
+   * @private
+   */
   function updateElement(element, oldProps, props, isSVG) {
     for (var name in copy(oldProps, props)) {
       if (
@@ -286,6 +328,13 @@ export function app(state, actions, view, container) {
     }
   }
 
+  /**
+   *
+   * @param {*} element
+   * @param {*} node
+   *
+   * @private
+   */
   function removeChildren(element, node, props) {
     if ((props = node.props)) {
       for (var i = 0; i < node.children.length; i++) {
@@ -299,6 +348,14 @@ export function app(state, actions, view, container) {
     return element
   }
 
+  /**
+   *
+   * @param {*} parent
+   * @param {*} element
+   * @param {*} node
+   *
+   * @private
+   */
   function removeElement(parent, element, node, cb) {
     function done() {
       parent.removeChild(removeChildren(element, node))
@@ -311,6 +368,17 @@ export function app(state, actions, view, container) {
     }
   }
 
+  /**
+   * Patch the DOM.
+   * @param {*} parent
+   * @param {*} element
+   * @param {*} oldNode
+   * @param {*} node
+   * @param {*} isSVG
+   * @returns {Element} The patched element.
+   *
+   * @private
+   */
   function patch(parent, element, oldNode, node, isSVG, nextSibling) {
     if (node === oldNode) {
     } else if (oldNode == null) {
@@ -407,3 +475,5 @@ export function app(state, actions, view, container) {
     return element
   }
 }
+
+// To render your app, we run your view function to produce a vnode tree and consume this object to literally "patch" the DOM, so every time your state changes, we need to calculate a new vnode tree to update the page.

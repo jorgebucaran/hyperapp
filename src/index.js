@@ -28,18 +28,8 @@ export function h(name, props) {
 export function app(state, actions, view, container) {
   var renderLock
   var invokeLaterStack = []
-
-  /**
-   * The first element child of the container. If there is pre-rendered content,
-   * we'll try to patch it instead of throwing it away / creating new elements.
-   */
-  var root = (container && container.children[0]) || null
-  var lastNode = root && elementToVNode(root, [].map)
-
-  /**
-   * A new actions tree where each action has been "wired" to trigger a view
-   * re-render after updating the state.
-   */
+  var rootElement = (container && container.children[0]) || null
+  var lastNode = rootElement && toVnode(rootElement, [].map) // re-hydration
   var wiredActions = copy(actions)
   var globalState = copy(state)
 
@@ -47,14 +37,14 @@ export function app(state, actions, view, container) {
 
   return wiredActions
 
-  function elementToVNode(element, map) {
+  function toVnode(element, map) {
     return {
       name: element.nodeName.toLowerCase(),
       props: {},
       children: map.call(element.childNodes, function(element) {
         return element.nodeType === 3
           ? element.nodeValue
-          : elementToVNode(element, map)
+          : toVnode(element, map)
       })
     }
   }
@@ -64,7 +54,7 @@ export function app(state, actions, view, container) {
 
     var next = view(globalState, wiredActions)
     if (container && !renderLock) {
-      root = patch(container, root, lastNode, (lastNode = next))
+      rootElement = patch(container, rootElement, lastNode, (lastNode = next))
     }
 
     while ((next = invokeLaterStack.pop())) next()
@@ -72,7 +62,6 @@ export function app(state, actions, view, container) {
 
   function scheduleRender() {
     if (!renderLock) {
-      // Avoid unnecessary renders if the state is updated in succession.
       renderLock = !renderLock
       setTimeout(render)
     }
@@ -116,7 +105,7 @@ export function app(state, actions, view, container) {
               if (
                 data &&
                 data !== (state = get(path, globalState)) &&
-                !data.then
+                !data.then // promise
               ) {
                 scheduleRender(
                   (globalState = set(path, copy(state, data), globalState))

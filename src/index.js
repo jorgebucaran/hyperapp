@@ -1,86 +1,86 @@
 export function h(name, props) {
   var node
+  var rest = []
   var children = []
+  var length = arguments.length
 
-  for (var stack = [], i = arguments.length; i-- > 2; ) {
-    stack.push(arguments[i])
-  }
+  while (length-- > 2) rest.push(arguments[length])
 
-  while (stack.length) {
-    if (Array.isArray((node = stack.pop()))) {
-      for (var i = node.length; i--; ) {
-        stack.push(node[i])
+  while (rest.length) {
+    if (Array.isArray((node = rest.pop()))) {
+      for (length = node.length; length--; ) {
+        rest.push(node[length])
       }
-    } else if (node == null || node === true || node === false) {
-    } else {
+    } else if (node != null && node !== true && node !== false) {
       children.push(node)
     }
   }
 
-  return typeof name === "string"
-    ? {
+  return typeof name === "function"
+    ? name(props || {}, children)
+    : {
         name: name,
         props: props || {},
         children: children
       }
-    : name(props || {}, children)
 }
 
 export function app(state, actions, view, container) {
-  var patchLock
-  var lifecycle = []
-  var root = container && container.children[0]
-  var node = vnode(root, [].map)
+  var renderLock
+  var invokeLaterStack = []
+  var rootElement = (container && container.children[0]) || null
+  var lastNode = rootElement && toVnode(rootElement, [].map)
+  var wiredActions = copy(actions)
+  var globalState = copy(state)
 
-  repaint(init([], (state = copy(state)), (actions = copy(actions))))
+  scheduleRender(wireStateToActions([], globalState, wiredActions))
 
-  return actions
+  return wiredActions
 
-  function vnode(element, map) {
-    return (
-      element && {
-        name: element.nodeName.toLowerCase(),
-        props: {},
-        children: map.call(element.childNodes, function(element) {
-          return element.nodeType === 3
-            ? element.nodeValue
-            : vnode(element, map)
-        })
-      }
-    )
+  function toVnode(element, map) {
+    return {
+      name: element.nodeName.toLowerCase(),
+      props: {},
+      children: map.call(element.childNodes, function(element) {
+        return element.nodeType === 3
+          ? element.nodeValue
+          : toVnode(element, map)
+      })
+    }
   }
 
-  function render(next) {
-    patchLock = !patchLock
-    next = view(state, actions)
+  function render() {
+    renderLock = !renderLock
 
-    if (container && !patchLock) {
-      root = patch(container, root, node, (node = next))
+    var next = view(globalState, wiredActions)
+    if (container && !renderLock) {
+      rootElement = patch(container, rootElement, lastNode, (lastNode = next))
     }
 
-    while ((next = lifecycle.pop())) next()
+    while ((next = invokeLaterStack.pop())) next()
   }
 
-  function repaint() {
-    if (!patchLock) {
-      patchLock = !patchLock
+  function scheduleRender() {
+    if (!renderLock) {
+      renderLock = !renderLock
       setTimeout(render)
     }
   }
 
-  function copy(a, b) {
-    var target = {}
+  function copy(target, source) {
+    var obj = {}
 
-    for (var i in a) target[i] = a[i]
-    for (var i in b) target[i] = b[i]
+    for (var i in target) obj[i] = target[i]
+    for (var i in source) obj[i] = source[i]
 
-    return target
+    return obj
   }
 
-  function set(path, value, source, target) {
+  function set(path, value, source) {
+    var target = {}
     if (path.length) {
       target[path[0]] =
-        path.length > 1 ? set(path.slice(1), value, source[path[0]], {}) : value
+        path.length > 1 ? set(path.slice(1), value, source[path[0]]) : value
       return copy(source, target)
     }
     return value
@@ -93,25 +93,31 @@ export function app(state, actions, view, container) {
     return source
   }
 
-  function init(path, slice, actions) {
+  function wireStateToActions(path, state, actions) {
     for (var key in actions) {
       typeof actions[key] === "function"
         ? (function(key, action) {
             actions[key] = function(data) {
               if (typeof (data = action(data)) === "function") {
-                data = data(get(path, state), actions)
+                data = data(get(path, globalState), actions)
               }
 
-              if (data && data !== (slice = get(path, state)) && !data.then) {
-                repaint((state = set(path, copy(slice, data), state, {})))
+              if (
+                data &&
+                data !== (state = get(path, globalState)) &&
+                !data.then // Promise
+              ) {
+                scheduleRender(
+                  (globalState = set(path, copy(state, data), globalState))
+                )
               }
 
               return data
             }
           })(key, actions[key])
-        : init(
+        : wireStateToActions(
             path.concat(key),
-            (slice[key] = slice[key] || {}),
+            (state[key] = state[key] || {}),
             (actions[key] = copy(actions[key]))
           )
     }
@@ -150,7 +156,7 @@ export function app(state, actions, view, container) {
 
     if (node.props) {
       if (node.props.oncreate) {
-        lifecycle.push(function() {
+        invokeLaterStack.push(function() {
           node.props.oncreate(element)
         })
       }
@@ -180,7 +186,7 @@ export function app(state, actions, view, container) {
     }
 
     if (props.onupdate) {
-      lifecycle.push(function() {
+      invokeLaterStack.push(function() {
         props.onupdate(element, oldProps)
       })
     }

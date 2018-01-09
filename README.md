@@ -1,18 +1,14 @@
-# [Hyperapp](https://codepen.io/hyperapp)
+# Hyperapp
 
 [![Travis CI](https://img.shields.io/travis/hyperapp/hyperapp/master.svg)](https://travis-ci.org/hyperapp/hyperapp) [![Codecov](https://img.shields.io/codecov/c/github/hyperapp/hyperapp/master.svg)](https://codecov.io/gh/hyperapp/hyperapp) [![npm](https://img.shields.io/npm/v/hyperapp.svg)](https://www.npmjs.org/package/hyperapp) [![Slack](https://hyperappjs.herokuapp.com/badge.svg)](https://hyperappjs.herokuapp.com "Join us")
 
-Hyperapp is a JavaScript library for building frontend applications.
+Hyperapp is a JavaScript library for building web applications.
 
 * **Minimal**: Hyperapp was born out of the attempt to do more with less. We have aggressively minimized the concepts you need to understand while remaining on par with what other frameworks can do.
 * **Functional**: Hyperapp's design is inspired by [The Elm Architecture](https://guide.elm-lang.org/architecture). Create scalable browser-based applications using a functional paradigm. The twist is you don't have to learn a new language.
 * **Batteries-included**: Out of the box, Hyperapp combines state management with a VDOM engine that supports keyed updates & lifecycle events — all with no dependencies.
 
-[Read the Docs](/docs/README.md#documentation)
-
-## Hello World
-
-[Try it Online](https://codepen.io/hyperapp/pen/zNxZLP?editors=0010)
+Read the [documentation](/docs/README.md#documentation) to get started or [try it online](https://codepen.io/hyperapp/pen/zNxZLP?editors=0010).
 
 ```jsx
 import { h, app } from "hyperapp"
@@ -34,8 +30,40 @@ const view = (state, actions) => (
   </main>
 )
 
-export const main = app(state, actions, view, document.body)
+const main = app(state, actions, view, document.body)
 ```
+
+## Installation
+
+Install with npm or Yarn.
+
+<pre>
+npm i <a href="https://www.npmjs.com/package/hyperapp">hyperapp</a>
+</pre>
+
+Then with a module bundler like [Rollup](https://github.com/rollup/rollup) or [Webpack](https://github.com/webpack/webpack), use as you would anything else.
+
+```jsx
+import { h, app } from "hyperapp"
+```
+
+If you prefer not to use a build system, you can load Hyperapp from [unpkg](https://unpkg.com/hyperapp) or [jsDelivr](https://cdn.jsdelivr.net/npm/hyperapp@latest/dist/hyperapp.js) and it will be globally available through the `window.hyperapp` object.
+
+```html
+<!doctype html>
+<html>
+<body>
+  <script src="https://unpkg.com/hyperapp"></script>
+  <script>
+
+  const { h, app } = hyperapp
+
+  </script>
+</body>
+</html>
+```
+
+We support all ES5-compliant browsers, including Internet Explorer 10 and above.
 
 ## Community
 

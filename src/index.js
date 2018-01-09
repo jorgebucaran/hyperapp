@@ -29,7 +29,7 @@ export function app(state, actions, view, container) {
   var renderLock
   var invokeLaterStack = []
   var rootElement = (container && container.children[0]) || null
-  var lastNode = rootElement && toVnode(rootElement, [].map) // re-hydration
+  var lastNode = rootElement && toVnode(rootElement, [].map)
   var wiredActions = copy(actions)
   var globalState = copy(state)
 
@@ -105,7 +105,7 @@ export function app(state, actions, view, container) {
               if (
                 data &&
                 data !== (state = get(path, globalState)) &&
-                !data.then // promise
+                !data.then // Promise
               ) {
                 scheduleRender(
                   (globalState = set(path, copy(state, data), globalState))

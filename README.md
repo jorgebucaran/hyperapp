@@ -1,6 +1,6 @@
 # Hyperapp
 
-[![Travis CI](https://img.shields.io/travis/hyperapp/hyperapp/master.svg)](https://travis-ci.org/hyperapp/hyperapp) [![Codecov](https://img.shields.io/codecov/c/github/hyperapp/hyperapp/master.svg)](https://codecov.io/gh/hyperapp/hyperapp) [![npm](https://img.shields.io/npm/v/hyperapp.svg)](https://www.npmjs.org/package/hyperapp)
+[![Travis CI](https://img.shields.io/travis/hyperapp/hyperapp/master.svg)](https://travis-ci.org/hyperapp/hyperapp) [![Codecov](https://img.shields.io/codecov/c/github/hyperapp/hyperapp/master.svg)](https://codecov.io/gh/hyperapp/hyperapp) [![npm](https://img.shields.io/npm/v/hyperapp.svg)](https://www.npmjs.org/package/hyperapp) [![Slack](https://hyperappjs.herokuapp.com/badge.svg)](https://hyperappjs.herokuapp.com "Join us")
 
 Hyperapp is a JavaScript library for building web applications.
 
@@ -8,7 +8,7 @@ Hyperapp is a JavaScript library for building web applications.
 * **Functional**: Hyperapp's design is inspired by [The Elm Architecture](https://guide.elm-lang.org/architecture). Create scalable browser-based applications using a functional paradigm. The twist is you don't have to learn a new language.
 * **Batteries-included**: Out of the box, Hyperapp combines state management with a VDOM engine that supports keyed updates & lifecycle events — all with no dependencies.
 
-Read the [documentation](/docs/README.md#documentation) and [try it online](https://codepen.io/hyperapp/pen/zNxZLP?editors=0010).
+Read the [documentation](/docs/README.md#documentation) to get started or [try it online](https://codepen.io/hyperapp/pen/zNxZLP?editors=0010).
 
 ```jsx
 import { h, app } from "hyperapp"
@@ -30,10 +30,8 @@ const view = (state, actions) => (
   </main>
 )
 
-export const main = app(state, actions, view, document.body)
+const main = app(state, actions, view, document.body)
 ```
-
-
 
 ## Installation
 

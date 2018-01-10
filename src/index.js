@@ -29,22 +29,22 @@ export function app(state, actions, view, container) {
   var renderLock
   var invokeLaterStack = []
   var rootElement = (container && container.children[0]) || null
-  var lastNode = rootElement && toVnode(rootElement, [].map)
-  var wiredActions = copy(actions)
+  var lastNode = rootElement && toVNode(rootElement, [].map)
   var globalState = copy(state)
+  var wiredActions = copy(actions)
 
   scheduleRender(wireStateToActions([], globalState, wiredActions))
 
   return wiredActions
 
-  function toVnode(element, map) {
+  function toVNode(element, map) {
     return {
       name: element.nodeName.toLowerCase(),
       props: {},
       children: map.call(element.childNodes, function(element) {
         return element.nodeType === 3
           ? element.nodeValue
-          : toVnode(element, map)
+          : toVNode(element, map)
       })
     }
   }

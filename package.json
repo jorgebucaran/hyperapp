@@ -5,6 +5,7 @@
   "main": "dist/hyperapp.js",
   "jsnext:main": "src/index.js",
   "module": "src/index.js",
+  "unpkg": "dist/hyperapp.js",
   "typings": "hyperapp.d.ts",
   "license": "MIT",
   "repository": "hyperapp/hyperapp",

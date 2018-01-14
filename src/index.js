@@ -102,19 +102,18 @@ export function app(state, actions, view, container) {
                 data = data(get(path, globalState), actions)
               }
 
-              if (
-                data &&
-                data !== (state = get(path, globalState))
-              ) {
-								if (data.then) {
-									data.then(data => scheduleRender(
-										(globalState = set(path, copy(state, data), globalState))
-									))
-								} else {
-								  scheduleRender(
-									(globalState = set(path, copy(state, data), globalState))
-								  )
-								}
+              if (data && data !== (state = get(path, globalState))) {
+                if (data.then) {
+                  data.then(function(data) {
+                    return scheduleRender(
+                      (globalState = set(path, copy(state, data), globalState))
+                    )
+                  })
+                } else {
+                  scheduleRender(
+                    (globalState = set(path, copy(state, data), globalState))
+                  )
+                }
               }
 
               return data

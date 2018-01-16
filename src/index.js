@@ -220,7 +220,7 @@ export function app(state, actions, view, container) {
   function patch(parent, element, oldNode, node, isSVG, nextSibling) {
     if (node === oldNode) {
     } else if (oldNode == null) {
-      element = parent.insertBefore(createElement(node, isSVG), element)
+      element = parent.insertBefore(createElement(node, isSVG), element || null)
     } else if (node.name && node.name === oldNode.name) {
       updateElement(
         element,

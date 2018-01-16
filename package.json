@@ -1,33 +1,41 @@
 {
-    "name": "hyperapp",
-    "description": "HyperApp is a 1kb functional JavaScript library for building modern UI applications",
-    "version": "0.0.9",
-    "main": "index.js",
-    "author": "Jorge Bucaran",
-    "license": "MIT",
-    "repository": "hyperapp/hyperapp",
-    "keywords": [
-        "hyperx",
-        "hypertext",
-        "functional",
-        "virtual-dom",
-        "vdom",
-        "template string",
-        "hyperscript",
-        "vanilla"
-    ],
-    "scripts": {
-        "build": "browserify app.js -s app -g uglifyify -p bundle-collapser/plugin | uglifyjs > dist/app.min.js && browserify html.js -s html -g uglifyify -p bundle-collapser/plugin | uglifyjs > dist/html.min.js && browserify h.js -s h -g uglifyify -p bundle-collapser/plugin | uglifyjs > dist/h.min.js",
-        "gzip": "gzip -c dist/app.min.js > dist/app.min.js.gz",
-        "zopfli": "zopfli dist/app.min.js -c --i2000 > dist/app.min.js.gz"
-    },
-    "dependencies": {
-        "hyperx": "^2.0.5"
-    },
-    "devDependencies": {
-        "browserify": "^13.1.1",
-        "bundle-collapser": "^1.2.1",
-        "uglifyify": "^3.0.4",
-        "uglifyjs": "^2.4.10"
-    }
+  "name": "hyperapp",
+  "description": "1 KB JavaScript library for building frontend applications.",
+  "version": "1.0.2",
+  "main": "dist/hyperapp.js",
+  "jsnext:main": "src/index.js",
+  "module": "src/index.js",
+  "typings": "hyperapp.d.ts",
+  "license": "MIT",
+  "repository": "hyperapp/hyperapp",
+  "files": [
+    "src",
+    "dist",
+    "hyperapp.d.ts"
+  ],
+  "author": "Jorge Bucaran",
+  "keywords": [
+    "hyperapp",
+    "vdom"
+  ],
+  "scripts": {
+    "test": "jest --coverage --no-cache && tsc -p test/ts",
+    "build": "npm run bundle && npm run minify",
+    "bundle": "rollup -i src/index.js -o dist/hyperapp.js -m -f umd -n hyperapp",
+    "minify": "uglifyjs dist/hyperapp.js -o dist/hyperapp.js -mc pure_funcs=Object.defineProperty --source-map includeSources,url=hyperapp.js.map",
+    "prepare": "npm run build",
+    "format": "prettier --semi false --write {src,test}/**/*.js {,test/ts/}*.{ts,tsx}",
+    "release": "npm run build && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
+  },
+  "babel": {
+    "presets": "env"
+  },
+  "devDependencies": {
+    "babel-preset-env": "^1.6.1",
+    "jest": "^22.0.4",
+    "prettier": "^1.9.2",
+    "rollup": "^0.53.0",
+    "typescript": "^2.6.2",
+    "uglify-js": "3.2.2"
+  }
 }

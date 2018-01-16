@@ -1,0 +1,21 @@
+language: node_js
+node_js:
+  - "6"
+  - "8"
+  - "9"
+
+env:
+  - NODE_ENV=development
+
+before_install:
+  - npm i -g codecov
+
+install:
+  - npm install
+
+script:
+  - npm test
+  - codecov
+
+notifications:
+  email: false

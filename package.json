@@ -3,7 +3,6 @@
   "description": "1 KB JavaScript library for building frontend applications.",
   "version": "1.0.2",
   "main": "dist/hyperapp.js",
-  "jsnext:main": "src/index.js",
   "module": "src/index.js",
   "typings": "hyperapp.d.ts",
   "license": "MIT",

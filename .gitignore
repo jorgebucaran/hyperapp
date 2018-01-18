@@ -9,7 +9,7 @@ package-lock.json
 
 # Misc
 examples
-notes.md
+notes/
 node_modules
 coverage
 *.xml

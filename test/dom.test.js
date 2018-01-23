@@ -738,3 +738,21 @@ testTreeSegue("elements with falsey values", [
     html: `<div></div>`
   }
 ])
+
+test('does not remove other tags', done => {
+  const actions = {
+    next: () => () => {
+      expect(document.body.innerHTML).toBe(
+        `<div></div><script></script>`
+      )
+      return done()
+    }
+  }
+
+  const view = (state, actions) => h("div", {
+    oncreate: actions.next
+  })
+
+  document.body.innerHTML = `<script></script>`
+  const main = app({}, actions, view, document.body)
+})

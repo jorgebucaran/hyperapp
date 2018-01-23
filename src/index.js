@@ -37,11 +37,6 @@ export function app(state, actions, view, container) {
 
   return wiredActions
 
-  function insert (element, newNode, referenceNode) {
-    if (newNode === referenceNode) element.prepend(newNode)
-    else element.insertBefore(newNode, referenceNode)
-  }
-
   function toVNode(element, map) {
     return {
       name: element.nodeName.toLowerCase(),

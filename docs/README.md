@@ -5,4 +5,3 @@ The documentation is not perfect and may be incomplete. Documenting everything t
 * [Hello World](hello-world.md)
 * [Advanced Concepts](advanced.md)
 * [Tutorials](tutorials)
-* [Contribution Guidelines](CONTRIBUTING.md)

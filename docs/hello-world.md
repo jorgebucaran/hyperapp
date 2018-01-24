@@ -1,6 +1,6 @@
 # Hello World
 
-Let's walk together through a small example. Paste the following code into a new HTML file and open it in your browser. Click on the + and - buttons to increment and decrement the counter.
+Let's walk through a small example. Paste the following code into a new HTML file and open it in your browser. Click on the + and - buttons to increment and decrement the counter.
 
 [Live Example](https://codepen.io/hyperapp/pen/zNxZLP)
 
@@ -39,7 +39,9 @@ Now open the developer console and type:
 main.up(1000)
 ```
 
-You should see the counter update accordingly. The app returns the actions wired to the state so that changes trigger a re-render of the view. Exposing this object to the outside world is useful because it allows you to manipulate your application from another program or framework.
+You should see the counter update accordingly.
+
+The app returns the actions wired to the state so that changes trigger a re-render of the view. Exposing this object to the outside world is useful because it allows you to manipulate your application from another program or framework.
 
 ## State
 

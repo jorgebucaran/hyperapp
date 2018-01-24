@@ -1,8 +1,8 @@
-# gif Search
+# Gif Search
 
-In this example we'll implement a gif search using the [Giphy API](https://api.giphy.com/) and learn how to update the state asynchronously.
+In this example, we'll learn how to update the state asynchronously using the [Giphy API](https://api.giphy.com) to build a Gif search box.
 
-[Try it Online](https://codepen.io/hyperapp/pen/ZeByKv?editors=0010)
+[Live Example](https://codepen.io/hyperapp/pen/ZeByKv?editors=0010)
 
 ```jsx
 import { h, app } from "hyperapp"

@@ -1,4 +1,4 @@
-## Hello World
+# Hello World
 
 Let's walk together through a small example. Paste the following code into a new HTML file and open it in your browser. Click on the + and - buttons to increment and decrement the counter.
 
@@ -41,7 +41,7 @@ main.up(1000)
 
 You should see the counter update accordingly. The app returns the actions wired to the state so that changes trigger a re-render of the view. Exposing this object to the outside world is useful because it allows you to manipulate your application from another program or framework.
 
-### State
+## State
 
 The state is a plain JavaScript object that describes your entire program. The state is kept in a single immutable object. To change it we define [actions](#actions) and call them.
 
@@ -53,7 +53,7 @@ const state = {
 
 Like any JavaScript object, the state may consist of other objects, and it can be deeply nested. We refer to nested objects in the state as substate.
 
-### Actions
+## Actions
 
 Actions update the [state](#state) and re-render the [view](#view) automatically. Actions run as a result of user events triggered from the view, inside event listeners, etc.
 
@@ -89,7 +89,7 @@ const actions = {
 }
 ```
 
-### View
+## View
 
 Every time your application state changes, the view function is called so that you can specify how you want the DOM to look based on the new state. The view returns your specification in the form of a [virtual DOM](../concepts/vdom.md) and Hyperapp takes care of updating the actual DOM to match it.
 
@@ -104,7 +104,7 @@ const view = (state, actions) =>
 
 The `h` function call creates virtual nodes, which are plain JavaScript objects that made up the virtual DOM tree. Unlike actual DOM elements, virtual nodes are cheap to create and work with.
 
-#### JSX
+### JSX
 
 Another way to create virtual nodes is with [JSX](https://facebook.github.io/jsx). JSX is a JavaScript language extension that allows you to write HTML interspersed with JavaScript. JSX is neither a dependency or required to use Hyperapp, but we use it throughout the documentation and examples for familiarity.
 

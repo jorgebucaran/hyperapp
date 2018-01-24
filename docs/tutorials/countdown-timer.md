@@ -2,7 +2,7 @@
 
 In this example we'll learn how to trigger state updates from external events.
 
-[Try it Online](https://codepen.io/hyperapp/pen/evOZLv?editors=0010)
+[Live Example](https://codepen.io/hyperapp/pen/evOZLv?editors=0010)
 
 ```jsx
 import { h, app } from "hyperapp"

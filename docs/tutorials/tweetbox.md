@@ -1,8 +1,8 @@
 # TweetBox
 
-In this example we'll create a TweetBox.
+In this example, we'll build a simple TweetBox to learn how custom components help us organize and reuse our user interface markup better.
 
-[Try it Online](https://codepen.io/hyperapp/pen/bgWBdV?editors=0010)
+[Live Example](https://codepen.io/hyperapp/pen/bgWBdV?editors=0010)
 
 ```jsx
 import { h, app } from "hyperapp"

@@ -1,5 +1,5 @@
 # Tutorials
 
-* [TweetBox](tutorials/tweetbox.md)
-* [Gif Search](tutorials/gif-search.md)
-* [Countdown Timer](tutorials/countdown-timer.md)
+* [TweetBox](tweetbox.md)
+* [Gif Search](gif-search.md)
+* [Countdown Timer](countdown-timer.md)

@@ -1,4 +1,4 @@
-### Tutorials
+# Tutorials
 
 * [TweetBox](tutorials/tweetbox.md)
 * [Gif Search](tutorials/gif-search.md)

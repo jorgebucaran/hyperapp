@@ -93,7 +93,7 @@ const actions = {
 
 ## View
 
-Every time your application state changes, the view function is called so that you can specify how you want the DOM to look based on the new state. The view returns your specification in the form of a [virtual DOM](../concepts/vdom.md) and Hyperapp takes care of updating the actual DOM to match it.
+Every time your application state changes, the view function is called so that you can specify how you want the DOM to look based on the new state. The view returns your specification in the form of a [virtual DOM](advanced.md#virtual-dom) and Hyperapp takes care of updating the actual DOM to match it.
 
 ```js
 const view = (state, actions) =>

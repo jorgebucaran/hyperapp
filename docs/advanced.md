@@ -52,7 +52,7 @@ const node = h(
 )
 ```
 
-A virtual node props may include any valid [HTML](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes) or [SVG](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute) attributes, [DOM events](https://developer.mozilla.org/en-US/docs/Web/Events), [lifecycle events](lifecycle-events.md), and [keys](#keys).
+A virtual node props may include any valid [HTML](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes) or [SVG](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute) attributes, [DOM events](https://developer.mozilla.org/en-US/docs/Web/Events), [lifecycle events](#lifecycle-events), and [keys](#keys).
 
 ```jsx
 const button = (
@@ -75,7 +75,7 @@ A function that returns a virtual node is also known as a [component](#component
 
 ## Components
 
-A component is a pure function that returns a [virtual node](vdom.md). Unlike a view, they are not pre-wired to your application state or actions. Components are reusable blocks of code that encapsulate markup, styles and behaviors that belong together.
+A component is a pure function that returns a [virtual node](#Virtual-dom). Unlike a view, they are not pre-wired to your application state or actions. Components are reusable blocks of code that encapsulate markup, styles and behaviors that belong together.
 
 [Live Example](https://codepen.io/hyperapp/pen/zNxRLy)
 

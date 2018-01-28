@@ -116,8 +116,8 @@ import { h } from "hyperapp"
 const view = (state, actions) => (
   <main>
     <h1>{state.count}</h1>
-    <button onclick={actions.down}>-</button>
-    <button onclick={actions.up}>+</button>
+    <button onclick={()=>actions.down(1)}>-</button>
+    <button onclick={()=>actions.up(1)}>+</button>
   </main>
 )
 ```

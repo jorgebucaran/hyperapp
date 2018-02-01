@@ -253,7 +253,7 @@ const view = (state, actions) =>
 
 ### Attributes
 
-Supported attributes include [HTML attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes), [SVG attributes](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute), [DOM events](https://developer.mozilla.org/en-US/docs/Web/Events), [lifecycle events](#lifecycle-events), and [keys](#keys). Note that non-standard HTML attribute names are not supported, <samp>onclick</samp> and <samp>class</samp> are valid, but <samp>onClick</samp> or <samp>className</samp> are not.
+Supported attributes include [HTML attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes), [SVG attributes](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute), [DOM events](https://developer.mozilla.org/en-US/docs/Web/Events), [Lifecycle Events](#lifecycle-events), and [Keys](#keys). Note that non-standard HTML attribute names are not supported, <samp>onclick</samp> and <samp>class</samp> are valid, but <samp>onClick</samp> or <samp>className</samp> are not.
 
 ### Styles
 
@@ -294,7 +294,7 @@ const ItemContent = ({ item: { url, summary } }) => (
 
 ## Components
 
-A component is a pure function that returns a [Virtual Node](#virtual-dom). Unlike the view function, components are not wired to your application state or actions. Components are dumb, reusable blocks of code that encapsulate markup, styles and behaviors that belong together. Note that when using JSX, components [must be capitalized](https://facebook.github.io/react/docs/jsx-in-depth.html#user-defined-components-must-be-capitalized) or contain a <samp>.</samp> in the name.
+A component is a pure function that returns a [Virtual Node](#virtual-dom). Unlike the view function, components are not wired to your application state or actions. Components are dumb, reusable blocks of code that encapsulate markup, styles and behaviors that belong together. Note that when using JSX, components [must be capitalized](https://facebook.github.io/react/docs/jsx-in-depth.html#user-defined-components-must-be-capitalized) or contain a period in the name.
 
 [Live Example](https://codepen.io/hyperapp/pen/zNxRLy)
 
@@ -331,7 +331,20 @@ If you don't know all the properties that you want to place in a component ahead
 
 ```jsx
 import { h } from "hyperapp"
-import { TodoItem } from "./TodoItem"
+
+const TodoItem = ({ id, value, done, toggle }) => (
+  <li
+    class={done && "done"}
+    onclick={e =>
+      toggle({
+        value: done,
+        id: id
+      })
+    }
+  >
+    {value}
+  </li>
+)
 
 const TodoList = ({ todos, toggle }) =>
   todos.map(todo => <TodoItem {...todo} toggle={toggle} />)
@@ -368,7 +381,7 @@ const HelloBox = ({ name }) => (
 
 ## Lifecycle Events
 
-You can be notified when a Virtual Node is created, updated or removed via lifecycle events. Use them for animation, data fetching and cleaning up resources.
+You can be notified when elements managed by the Virtual DOM are created, updated or removed via lifecycle events. Use them for animation, data fetching, wrapping third party libraries, cleaning up resources, etc.
 
 ### oncreate
 

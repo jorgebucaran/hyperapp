@@ -18,11 +18,15 @@ export function h(name, props) {
 
   return typeof name === "function"
     ? name(props || {}, children)
-    : {
+    : h.vNodeMap({
         name: name,
         props: props || {},
         children: children
-      }
+      })
+}
+
+h.vNodeMap = function(node) {
+  return node
 }
 
 export function app(state, actions, view, container) {
@@ -38,7 +42,7 @@ export function app(state, actions, view, container) {
   return wiredActions
 
   function toVNode(element, map) {
-    return {
+    return h.vNodeMap({
       name: element.nodeName.toLowerCase(),
       props: {},
       children: map.call(element.childNodes, function(element) {
@@ -46,7 +50,7 @@ export function app(state, actions, view, container) {
           ? element.nodeValue
           : toVNode(element, map)
       })
-    }
+    })
   }
 
   function render() {

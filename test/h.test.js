@@ -111,3 +111,25 @@ test("component with no props adds default props", () => {
     children: ["Hello world"]
   })
 })
+
+test("vnode with extended properties", () => {
+  const mapper = h.vNodeMap
+
+  h.vNodeMap = ({ name, props, children }) => ({
+    name,
+    props,
+    children,
+    nodeName: name,
+    attributes: props
+  })
+
+  expect(h("div", {}, ["foo"])).toEqual({
+    name: "div",
+    props: {},
+    children: ["foo"],
+    nodeName: "div",
+    attributes: {}
+  })
+
+  h.vNodeMap = mapper
+})

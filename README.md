@@ -130,7 +130,7 @@ Immutability enables time-travel debugging, helps prevent introducing hard-to-tr
 
 #### Asynchronous Actions
 
-Actions used for side effects (writing to databases, sending a request to a server, etc.) don't need to have a return value. You may call an action from within another action or callback. Actions which return a Promise, <samp>undefined</samp> or <samp>null</samp> will not trigger redraws or update the state.
+Actions used for side effects (writing to databases, sending a request to a server, etc.) don't need to have a return value. You may call an action from within another action or callback function. Actions which return a Promise, <samp>undefined</samp> or <samp>null</samp> will not trigger redraws or update the state.
 
 ```js
 const actions = {

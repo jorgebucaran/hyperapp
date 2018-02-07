@@ -1,4 +1,4 @@
-export function h(name, props) {
+export function h(name, props /*, ...rest*/) {
   var node
   var rest = []
   var children = []

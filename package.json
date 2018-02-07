@@ -1,7 +1,7 @@
 {
   "name": "hyperapp",
-  "description": "1 KB JavaScript library for building frontend applications.",
-  "version": "1.0.2",
+  "description": "1 KB JavaScript library for building web applications.",
+  "version": "1.1.0",
   "main": "dist/hyperapp.js",
   "module": "src/index.js",
   "typings": "hyperapp.d.ts",

@@ -35,6 +35,6 @@
     "prettier": "^1.10.2",
     "rollup": "^0.55.3",
     "typescript": "2.7.1",
-    "uglify-js": "3.2.2"
+    "uglify-js": "3.3.9"
   }
 }

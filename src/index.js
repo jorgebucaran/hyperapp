@@ -21,7 +21,8 @@ export function h(name, attributes /*, ...rest*/) {
     : {
         nodeName: name,
         attributes: attributes || {},
-        children: children
+        children: children,
+        key: attributes && attributes.key
       }
 }
 
@@ -124,7 +125,7 @@ export function app(state, actions, view, container) {
   }
 
   function getKey(node) {
-    return node && node.attributes ? node.attributes.key : null
+    return node && node.key
   }
 
   function setElementProp(element, name, value, isSVG, oldValue) {
@@ -300,7 +301,7 @@ export function app(state, actions, view, container) {
       }
 
       for (var i in oldKeyed) {
-        if (!newKeyed[oldKeyed[i][1].attributes.key]) {
+        if (!newKeyed[oldKeyed[i][1].key]) {
           removeElement(element, oldKeyed[i][0], oldKeyed[i][1])
         }
       }

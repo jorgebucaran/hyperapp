@@ -42,7 +42,7 @@ export function app(state, actions, view, container) {
       name: element.nodeName.toLowerCase(),
       props: {},
       children: map.call(element.childNodes, function(element) {
-        return element.nodeType === 3
+        return element.nodeType === 3 // Node.TEXT_NODE
           ? element.nodeValue
           : toVNode(element, map)
       })

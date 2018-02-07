@@ -29,7 +29,7 @@ export function app(state, actions, view, container) {
   var renderLock
   var invokeLaterStack = []
   var rootElement = (container && container.children[0]) || null
-  var lastNode = rootElement && toVNode(rootElement, [].map)
+  var oldNode = rootElement && toVNode(rootElement, [].map)
   var globalState = copy(state)
   var wiredActions = copy(actions)
 
@@ -54,7 +54,7 @@ export function app(state, actions, view, container) {
 
     var next = view(globalState, wiredActions)
     if (container && !renderLock) {
-      rootElement = patch(container, rootElement, lastNode, (lastNode = next))
+      rootElement = patch(container, rootElement, oldNode, (oldNode = next))
     }
 
     while ((next = invokeLaterStack.pop())) next()

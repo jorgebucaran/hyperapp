@@ -278,7 +278,7 @@ export const HelloDiv = (
 
 ### Sanitation
 
-If for any reason you don't use the Virtual DOM mechanism and decide to set the <samp>innerHTML</samp> in an element, you run the risk of cross-site scripting ([XSS](https://en.wikipedia.org/wiki/Cross-site_scripting)) vunerabilities. Specifically you must sanitize any user provided data before writing it out to the DOM. We suggest creating your own replacement function to explicitly state the intent of performing an "unsafe" operation
+If for any reason you don't use the Virtual DOM mechanism and decide to set the <samp>innerHTML</samp> in an element, you run the risk of cross-site scripting ([XSS](https://en.wikipedia.org/wiki/Cross-site_scripting)) vulnerabilities. Specifically you must sanitize any user provided data before writing it out to the DOM. We suggest creating your own replacement function to explicitly state the intent of performing an "unsafe" operation
 
 ```jsx
 const dangerouslySetInnerHTML = html => element => {

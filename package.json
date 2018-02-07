@@ -31,10 +31,10 @@
   },
   "devDependencies": {
     "babel-preset-env": "^1.6.1",
-    "jest": "^22.0.4",
-    "prettier": "^1.9.2",
-    "rollup": "^0.53.0",
-    "typescript": "^2.6.2",
+    "jest": "^22.2.0",
+    "prettier": "^1.10.2",
+    "rollup": "^0.55.3",
+    "typescript": "2.7.1",
     "uglify-js": "3.2.2"
   }
 }

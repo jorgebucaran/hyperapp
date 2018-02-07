@@ -7,7 +7,7 @@ export function h(name, attributes /*, ...rest*/) {
   while (length-- > 2) rest.push(arguments[length])
 
   while (rest.length) {
-    if (Array.isArray((node = rest.pop()))) {
+    if ((node = rest.pop()) && node.pop) { // Array?
       for (length = node.length; length--; ) {
         rest.push(node[length])
       }

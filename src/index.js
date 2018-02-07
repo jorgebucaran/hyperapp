@@ -7,7 +7,7 @@ export function h(name, attributes /*, ...rest*/) {
   while (length-- > 2) rest.push(arguments[length])
 
   while (rest.length) {
-    if ((node = rest.pop()) && node.pop) { // Array?
+    if ((node = rest.pop()) && node.pop /* Array? */) {
       for (length = node.length; length--; ) {
         rest.push(node[length])
       }
@@ -31,8 +31,8 @@ export function app(state, actions, view, container) {
   var invokeLaterStack = []
   var rootElement = (container && container.children[0]) || null
   var oldNode = rootElement && toVNode(rootElement, [].map)
-  var globalState = copy(state)
-  var wiredActions = copy(actions)
+  var globalState = clone(state)
+  var wiredActions = clone(actions)
 
   scheduleRender(wireStateToActions([], globalState, wiredActions))
 
@@ -68,7 +68,7 @@ export function app(state, actions, view, container) {
     }
   }
 
-  function copy(target, source) {
+  function clone(target, source) {
     var obj = {}
 
     for (var i in target) obj[i] = target[i]
@@ -82,7 +82,7 @@ export function app(state, actions, view, container) {
     if (path.length) {
       target[path[0]] =
         path.length > 1 ? set(path.slice(1), value, source[path[0]]) : value
-      return copy(source, target)
+      return clone(source, target)
     }
     return value
   }
@@ -109,7 +109,7 @@ export function app(state, actions, view, container) {
                 !data.then // Promise
               ) {
                 scheduleRender(
-                  (globalState = set(path, copy(state, data), globalState))
+                  (globalState = set(path, clone(state, data), globalState))
                 )
               }
 
@@ -119,7 +119,7 @@ export function app(state, actions, view, container) {
         : wireStateToActions(
             path.concat(key),
             (state[key] = state[key] || {}),
-            (actions[key] = copy(actions[key]))
+            (actions[key] = clone(actions[key]))
           )
     }
   }
@@ -131,7 +131,7 @@ export function app(state, actions, view, container) {
   function setElementProp(element, name, value, isSVG, oldValue) {
     if (name === "key") {
     } else if (name === "style") {
-      for (var i in copy(oldValue, value)) {
+      for (var i in clone(oldValue, value)) {
         element[name][i] = value == null || value[i] == null ? "" : value[i]
       }
     } else {
@@ -178,7 +178,7 @@ export function app(state, actions, view, container) {
   }
 
   function updateElement(element, oldProps, attributes, isSVG) {
-    for (var name in copy(oldProps, attributes)) {
+    for (var name in clone(oldProps, attributes)) {
       if (
         attributes[name] !==
         (name === "value" || name === "checked"

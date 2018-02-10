@@ -257,7 +257,7 @@ Supported attributes include [HTML attributes](https://developer.mozilla.org/en-
 
 ### Styles
 
-Hyperapp does not support inline styles as strings, but as an object with style declarations. Each declaration consists of a style written in camelCase and a value.
+Hyperapp does not handle inline styles as strings, but as an object with style declarations. Each declaration consists of a style name property written in <samp>camelCase</samp> and a value.
 
 ```jsx
 import { h } from "hyperapp"

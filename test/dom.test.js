@@ -700,6 +700,26 @@ testTreeSegue("don't touch textnodes if equal", [
   }
 ])
 
+testTreeSegue("a list with empty text nodes", [
+  {
+    tree: h("ul", {}, [h("li", {}, ""), h("div", {}, "foo")]),
+    html: `<ul><li></li><div>foo</div></ul>`
+  },
+  {
+    tree: h("ul", {}, [h("li", {}, ""), h("li", {}, ""), h("div", {}, "foo")]),
+    html: `<ul><li></li><li></li><div>foo</div></ul>`
+  },
+  {
+    tree: h("ul", {}, [
+      h("li", {}, ""),
+      h("li", {}, ""),
+      h("li", {}, ""),
+      h("div", {}, "foo")
+    ]),
+    html: `<ul><li></li><li></li><li></li><div>foo</div></ul>`
+  }
+])
+
 testTreeSegue("elements with falsey values", [
   {
     tree: h("div", {

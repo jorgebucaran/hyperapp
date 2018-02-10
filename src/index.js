@@ -125,7 +125,7 @@ export function app(state, actions, view, container) {
   }
 
   function getKey(node) {
-    return node && node.key
+    return node ? node.key : null
   }
 
   function setElementProp(element, name, value, isSVG, oldValue) {

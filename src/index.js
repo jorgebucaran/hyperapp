@@ -26,11 +26,12 @@ export function h(name, attributes /*, ...rest*/) {
       }
 }
 
-export function app(state, actions, view, container) {
+export function app(state, actions, view, element) {
   var renderLock
   var invokeLaterStack = []
-  var rootElement = (container && container.children[0]) || null
-  var oldNode = rootElement && toVNode(rootElement, [].map)
+  var container = element ? element.parentNode : document.body
+
+  var oldNode = element && toVNode(element, [].map)
   var globalState = clone(state)
   var wiredActions = clone(actions)
 
@@ -46,7 +47,8 @@ export function app(state, actions, view, container) {
         return element.nodeType === 3 // Node.TEXT_NODE
           ? element.nodeValue
           : toVNode(element, map)
-      })
+      }),
+      recycled: true
     }
   }
 
@@ -54,8 +56,8 @@ export function app(state, actions, view, container) {
     renderLock = !renderLock
 
     var next = view(globalState, wiredActions)
-    if (container && !renderLock) {
-      rootElement = patch(container, rootElement, oldNode, (oldNode = next))
+    if (!renderLock) {
+      element = patch(container, element, oldNode, (oldNode = next))
     }
 
     while ((next = invokeLaterStack.pop())) next()
@@ -128,7 +130,7 @@ export function app(state, actions, view, container) {
     return node ? node.key : null
   }
 
-  function setElementProp(element, name, value, isSVG, oldValue) {
+  function updateAttribute(element, name, value, isSVG, oldValue) {
     if (name === "key") {
     } else if (name === "style") {
       for (var i in clone(oldValue, value)) {
@@ -170,28 +172,38 @@ export function app(state, actions, view, container) {
       }
 
       for (var name in node.attributes) {
-        setElementProp(element, name, node.attributes[name], isSVG)
+        updateAttribute(element, name, node.attributes[name], isSVG)
       }
     }
 
     return element
   }
 
-  function updateElement(element, oldProps, attributes, isSVG) {
-    for (var name in clone(oldProps, attributes)) {
+  function updateElement(element, oldAttributes, attributes, isSVG, recycled) {
+    for (var name in clone(oldAttributes, attributes)) {
       if (
         attributes[name] !==
         (name === "value" || name === "checked"
           ? element[name]
-          : oldProps[name])
+          : oldAttributes[name])
       ) {
-        setElementProp(element, name, attributes[name], isSVG, oldProps[name])
+        updateAttribute(
+          element,
+          name,
+          attributes[name],
+          isSVG,
+          oldAttributes[name]
+        )
       }
     }
 
-    if (attributes.onupdate) {
+    if (attributes.oncreate && recycled) {
       invokeLaterStack.push(function() {
-        attributes.onupdate(element, oldProps)
+        attributes.oncreate(element)
+      })
+    } else if (attributes.onupdate) {
+      invokeLaterStack.push(function() {
+        attributes.onupdate(element, oldAttributes)
       })
     }
   }
@@ -230,7 +242,8 @@ export function app(state, actions, view, container) {
         element,
         oldNode.attributes,
         node.attributes,
-        (isSVG = isSVG || node.nodeName === "svg")
+        (isSVG = isSVG || node.nodeName === "svg"),
+        oldNode.recycled
       )
 
       var oldElements = []

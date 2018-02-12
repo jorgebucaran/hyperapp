@@ -26,11 +26,10 @@ export function h(name, attributes /*, ...rest*/) {
       }
 }
 
-export function app(state, actions, view, container) {
+export function app(state, actions, view, container, element) {
   var renderLock
   var invokeLaterStack = []
-  var rootElement = (container && container.children[0]) || null
-  var oldNode = rootElement && toVNode(rootElement, [].map)
+  var oldNode = element && toVNode(element, [].map)
   var globalState = clone(state)
   var wiredActions = clone(actions)
 
@@ -55,7 +54,7 @@ export function app(state, actions, view, container) {
 
     var next = view(globalState, wiredActions)
     if (container && !renderLock) {
-      rootElement = patch(container, rootElement, oldNode, (oldNode = next))
+      element = patch(container, element, oldNode, (oldNode = next))
     }
 
     while ((next = invokeLaterStack.pop())) next()

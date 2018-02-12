@@ -149,6 +149,8 @@ const actions = {
 
 #### Nested Actions
 
+> **Work In Progress**: This section is not perfect and may be incomplete. Please help.
+
 Actions can be nested inside namespaces. Updating deeply nested state is as easy as declaring actions inside an object in the same path as the part of the state you want to update.
 
 ```jsx
@@ -195,6 +197,43 @@ const view = (state, actions) =>
 ```
 
 It is important to understand that the result of the view is a new Virtual DOM. It may seem wasteful to throw away the old Virtual DOM and re-create it entirely on every update — not to mention the fact that at any one time, Hyperapp is keeping two Virtual DOM trees in memory, but as it turns out, browsers can create hundreds of thousands of objects very quickly. On the other hand, modifying the DOM is several orders of magnitude more expensive.
+
+## Mounting
+
+> **Work In Progress**: This section is not perfect and may be incomplete. Please help.
+
+Hyperapp will mount your rendered view into the given <samp>container</samp> Element. The default behavior is non-destructive. We will not take over any existing elements inside the container.
+
+```js
+app(state, actions, view, container)
+```
+
+### SSR
+
+Hyperapp works transparently with SSR and pre-rendered HTML, enabling SEO optimization and improving your sites time-to-interactive. The process consists of serving a fully pre-rendered page together with your application and providing a <samp>recycleElement</samp> DOM element to the <samp>app</samp> function.
+
+```js
+app(state, actions, view, container, recycleElement)
+```
+
+```html
+<html>
+<head>
+  <meta charset="utf-8">
+  <script defer src="bundle.js"></script>
+</head>
+
+<body>
+  <div>
+    <h1>0</h1>
+    <button>-</button>
+    <button>+</button>
+  </div>
+</body>
+</html>
+```
+
+Then instead of throwing away the pre-rendered markdown, we'll turn your DOM element into an interactive application out of the box.
 
 ## Virtual DOM
 
@@ -468,29 +507,6 @@ const PlayerList = ({ players }) =>
       </li>
     ))
 ```
-
-## Hydration
-
-Hyperapp works transparently with SSR and pre-rendered HTML, enabling SEO optimization and improving your sites time-to-interactive. The process consists of serving a fully pre-rendered page together with your application.
-
-```html
-<html>
-<head>
-  <meta charset="utf-8">
-  <script defer src="bundle.js"></script>
-</head>
-
-<body>
-  <div>
-    <h1>0</h1>
-    <button>-</button>
-    <button>+</button>
-  </div>
-</body>
-</html>
-```
-
-Then instead of throwing away the server-rendered markdown, we'll turn your DOM nodes into an interactive application out of the box.
 
 ## Community
 

@@ -73,13 +73,7 @@ import { h, app } from "hyperapp"
 If you don't want to set up a build environment, you can download Hyperapp from a CDN like [unpkg.com](https://unpkg.com/hyperapp) and it will be globally available through the <samp>window.hyperapp</samp> object. We support all ES5-compliant browsers, including Internet Explorer 10 and above.
 
 ```html
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <script src="https://unpkg.com/hyperapp"></script>
-</head>
-</html>
+<script src="https://unpkg.com/hyperapp"></script>
 ```
 
 ## Overview

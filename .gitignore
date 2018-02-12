@@ -8,7 +8,7 @@ yarn.lock
 package-lock.json
 
 # Misc
-examples
+example*
 notes/
 node_modules
 coverage

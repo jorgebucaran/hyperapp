@@ -128,7 +128,7 @@ export function app(state, actions, view, container) {
     return node ? node.key : null
   }
 
-  function setElementProp(element, name, value, isSVG, oldValue) {
+  function updateAttribute(element, name, value, isSVG, oldValue) {
     if (name === "key") {
     } else if (name === "style") {
       for (var i in clone(oldValue, value)) {
@@ -170,28 +170,34 @@ export function app(state, actions, view, container) {
       }
 
       for (var name in node.attributes) {
-        setElementProp(element, name, node.attributes[name], isSVG)
+        updateAttribute(element, name, node.attributes[name], isSVG)
       }
     }
 
     return element
   }
 
-  function updateElement(element, oldProps, attributes, isSVG) {
-    for (var name in clone(oldProps, attributes)) {
+  function updateElement(element, oldAttributes, attributes, isSVG) {
+    for (var name in clone(oldAttributes, attributes)) {
       if (
         attributes[name] !==
         (name === "value" || name === "checked"
           ? element[name]
-          : oldProps[name])
+          : oldAttributes[name])
       ) {
-        setElementProp(element, name, attributes[name], isSVG, oldProps[name])
+        updateAttribute(
+          element,
+          name,
+          attributes[name],
+          isSVG,
+          oldAttributes[name]
+        )
       }
     }
 
     if (attributes.onupdate) {
       invokeLaterStack.push(function() {
-        attributes.onupdate(element, oldProps)
+        attributes.onupdate(element, oldAttributes)
       })
     }
   }

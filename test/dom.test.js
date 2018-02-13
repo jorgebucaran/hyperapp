@@ -749,7 +749,7 @@ testTreeSegue("elements with falsey values", [
     tree: h("div", {
       "data-test": false
     }),
-    html: `<div></div>`
+    html: `<div data-test="false"></div>`
   },
   {
     tree: h("div", {

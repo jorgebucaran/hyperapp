@@ -137,11 +137,11 @@ export function app(state, actions, view, container) {
     } else {
       if (typeof value === "function" || (name in element && !isSVG)) {
         element[name] = value == null ? "" : value
-      } else if (value != null && value !== false) {
+      } else if (value != null) {
         element.setAttribute(name, value)
       }
 
-      if (value == null || value === false) {
+      if (value == null) {
         element.removeAttribute(name)
       }
     }

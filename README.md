@@ -393,15 +393,15 @@ const Textbox = ({ placeholder }) => (
 
 ### onupdate
 
-This event is fired every time we update the element attributes. Use <samp>oldProps</samp> inside the event handler to check if any attributes changed or not.
+This event is fired every time we update the element attributes. Use <samp>oldAttributes</samp> inside the event handler to check if any attributes changed or not.
 
 ```jsx
 const Textbox = ({ placeholder }) => (
   <input
     type="text"
     placeholder={placeholder}
-    onupdate={(element, oldProps) => {
-      if (oldProps.placeholder !== placeholder) {
+    onupdate={(element, oldAttributes) => {
+      if (oldAttributes.placeholder !== placeholder) {
         // Handle changes here!
       }
     }}

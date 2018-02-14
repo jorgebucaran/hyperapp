@@ -9,7 +9,7 @@ test("hydration", done => {
     h(
       "main",
       {
-        onupdate() {
+        oncreate() {
           expect(document.body.innerHTML).toBe(SSR_BODY)
           done()
         }

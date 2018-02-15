@@ -129,7 +129,8 @@ Actions used for side effects (writing to databases, sending a request to a serv
 ```js
 const actions = {
   upLater: value => (state, actions) => {
-    setTimeout(actions.up, 1000, value)
+    setTimeout(actions.up, 1000, value) // returns timeoutId
+    return // undefined
   },
   up: value => state => ({ count: state.count + value })
 }

@@ -27,9 +27,9 @@ export function h(name, attributes /*, ...rest*/) {
 }
 
 export function app(state, actions, view, container) {
-  var init = true
   var renderLock
-  var invokeLaterStack = []
+  var firstRender = true
+  var lifecycleStack = []
   var rootElement = (container && container.children[0]) || null
   var oldNode = rootElement && toVNode(rootElement, [].map)
   var globalState = clone(state)
@@ -57,10 +57,10 @@ export function app(state, actions, view, container) {
     var next = view(globalState, wiredActions)
     if (container && !renderLock) {
       rootElement = patch(container, rootElement, oldNode, (oldNode = next))
-      init = false
+      firstRender = false
     }
 
-    while ((next = invokeLaterStack.pop())) next()
+    while ((next = lifecycleStack.pop())) next()
   }
 
   function scheduleRender() {
@@ -162,7 +162,7 @@ export function app(state, actions, view, container) {
 
     if (node.attributes) {
       if (node.attributes.oncreate) {
-        invokeLaterStack.push(function() {
+        lifecycleStack.push(function() {
           node.attributes.oncreate(element)
         })
       }
@@ -197,10 +197,10 @@ export function app(state, actions, view, container) {
       }
     }
 
-    var event = init ? attributes.oncreate : attributes.onupdate
-    if (event) {
-      invokeLaterStack.push(function() {
-        event(element, oldAttributes)
+    var cb = firstRender ? attributes.oncreate : attributes.onupdate
+    if (cb) {
+      lifecycleStack.push(function() {
+        cb(element, oldAttributes)
       })
     }
   }

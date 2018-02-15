@@ -27,6 +27,7 @@ export function h(name, attributes /*, ...rest*/) {
 }
 
 export function app(state, actions, view, container) {
+  var init = true
   var renderLock
   var invokeLaterStack = []
   var rootElement = (container && container.children[0]) || null
@@ -56,6 +57,7 @@ export function app(state, actions, view, container) {
     var next = view(globalState, wiredActions)
     if (container && !renderLock) {
       rootElement = patch(container, rootElement, oldNode, (oldNode = next))
+      init = false
     }
 
     while ((next = invokeLaterStack.pop())) next()
@@ -195,9 +197,10 @@ export function app(state, actions, view, container) {
       }
     }
 
-    if (attributes.onupdate) {
+    var event = init ? attributes.oncreate : attributes.onupdate
+    if (event) {
       invokeLaterStack.push(function() {
-        attributes.onupdate(element, oldAttributes)
+        event(element, oldAttributes)
       })
     }
   }

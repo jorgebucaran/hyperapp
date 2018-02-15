@@ -111,3 +111,14 @@ test("component with no props adds default props", () => {
     children: ["Hello world"]
   })
 })
+
+test("fragments", () => {
+  const Fragment = (_, children) => children
+
+  expect(h(Fragment, {}, ["A", "B", h(Fragment, {}, ["C", "D"])])).toEqual([
+    "A",
+    "B",
+    "C",
+    "D"
+  ])
+})

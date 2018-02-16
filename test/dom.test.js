@@ -758,3 +758,24 @@ testTreeSegue("elements with falsey values", [
     html: `<div></div>`
   }
 ])
+
+test("an array as a root node", done => {
+  const view = () => [
+    h("div", {}, "A"),
+    h("div", {}, "B"),
+    h(
+      "div",
+      {
+        oncreate() {
+          expect(document.body.innerHTML).toBe(
+            `<div>A</div><div>B</div><div>C</div>`
+          )
+          done()
+        }
+      },
+      "C"
+    )
+  ]
+
+  app({}, {}, view, document.body)
+})

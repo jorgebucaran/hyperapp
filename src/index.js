@@ -30,8 +30,7 @@ export function app(state, actions, view, container) {
   var renderLock
   var firstRender = true
   var lifecycleStack = []
-  var rootElement = (container && container.children[0]) || null
-  var oldNode = rootElement && toVNode(rootElement, [].map)
+  var oldNode = container && toVNode(container, [].map)
   var globalState = clone(state)
   var wiredActions = clone(actions)
 
@@ -56,7 +55,8 @@ export function app(state, actions, view, container) {
 
     var next = view(globalState, wiredActions)
     if (container && !renderLock) {
-      rootElement = patch(container, rootElement, oldNode, (oldNode = next))
+      next = h(container.nodeName.toLowerCase(), {}, next)
+      container = patch(container, container, oldNode, (oldNode = next))
       firstRender = false
     }
 

@@ -51,10 +51,21 @@ export function app(state, actions, view, container) {
     }
   }
 
+  function inflate(node) {
+    if (node) {
+      var c = node.children || []
+      for (var i in c) {
+        typeof c[i] === "function" &&
+          (c[i] = inflate(c[i](globalState, wiredActions)))
+      }
+    }
+    return node
+  }
+
   function render() {
     renderLock = !renderLock
 
-    var next = view(globalState, wiredActions)
+    var next = inflate(view(globalState, wiredActions))
     if (container && !renderLock) {
       rootElement = patch(container, rootElement, oldNode, (oldNode = next))
       firstRender = false

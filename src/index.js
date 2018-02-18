@@ -150,8 +150,8 @@ export function app(state, actions, view, container) {
   }
 
   function connect(children, i) {
-    typeof children[i] === "function" &&
-      (children[i] = children[i](globalState, wiredActions))
+    if (typeof children[i] === "function")
+      children[i] = children[i](globalState, wiredActions)
   }
 
   function createElement(node, isSVG) {

@@ -51,21 +51,17 @@ export function app(state, actions, view, container) {
     }
   }
 
-  function inflate(node) {
-    if (node) {
-      var c = node.children || []
-      for (var i in c) {
-        typeof c[i] === "function" &&
-          (c[i] = inflate(c[i](globalState, wiredActions)))
-      }
+  function inflate(children) {
+    for (let i in children) {
+      typeof children[i] === "function" && (children[i] = children[i](globalState, wiredActions));
     }
-    return node
+    return children;
   }
 
   function render() {
     renderLock = !renderLock
 
-    var next = inflate(view(globalState, wiredActions))
+    var next = view(globalState, wiredActions)
     if (container && !renderLock) {
       rootElement = patch(container, rootElement, oldNode, (oldNode = next))
       firstRender = false
@@ -178,8 +174,9 @@ export function app(state, actions, view, container) {
         })
       }
 
-      for (var i = 0; i < node.children.length; i++) {
-        element.appendChild(createElement(node.children[i], isSVG))
+      var c = inflate(node.children);
+      for (var i = 0; i < c.length; i++) {
+        element.appendChild(createElement(c[i], isSVG))
       }
 
       for (var name in node.attributes) {
@@ -271,7 +268,8 @@ export function app(state, actions, view, container) {
       var i = 0
       var j = 0
 
-      while (j < node.children.length) {
+      var c = inflate(node.children);
+      while (j < c.length) {
         var oldChild = oldNode.children[i]
         var newChild = node.children[j]
 

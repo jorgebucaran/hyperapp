@@ -16,14 +16,12 @@ export function h(name, attributes /*, ...rest*/) {
     }
   }
 
-  return typeof name === "function"
-    ? name(attributes || {}, children)
-    : {
-        nodeName: name,
-        attributes: attributes || {},
-        children: children,
-        key: attributes && attributes.key
-      }
+  return {
+    nodeName: name,
+    attributes: attributes || {},
+    children: children,
+    key: attributes && attributes.key
+  }
 }
 
 export function app(state, actions, view, container) {
@@ -51,12 +49,23 @@ export function app(state, actions, view, container) {
     }
   }
 
+  function getVNode(node) {
+    return typeof node.nodeName === "function"
+      ? getVNode(node.nodeName(node.attributes, node.children))
+      : node
+  }
+
   function render() {
     renderLock = !renderLock
 
     var next = view(globalState, wiredActions)
     if (container && !renderLock) {
-      rootElement = patch(container, rootElement, oldNode, (oldNode = next))
+      rootElement = patch(
+        container,
+        rootElement,
+        oldNode,
+        (oldNode = getVNode(next))
+      )
       firstRender = false
     }
 
@@ -168,7 +177,9 @@ export function app(state, actions, view, container) {
       }
 
       for (var i = 0; i < node.children.length; i++) {
-        element.appendChild(createElement(node.children[i], isSVG))
+        element.appendChild(
+          createElement((node.children[i] = getVNode(node.children[i])), isSVG)
+        )
       }
 
       for (var name in node.attributes) {
@@ -262,7 +273,7 @@ export function app(state, actions, view, container) {
 
       while (j < node.children.length) {
         var oldChild = oldNode.children[i]
-        var newChild = node.children[j]
+        var newChild = (node.children[j] = getVNode(node.children[j]))
 
         var oldKey = getKey(oldChild)
         var newKey = getKey(newChild)

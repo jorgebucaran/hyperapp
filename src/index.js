@@ -90,7 +90,7 @@ export function app(state, actions, view, container) {
   }
 
   function get(path, source) {
-    for (var i in path) {
+    for (var i = 0; i < path.length; i++) {
       source = source[path[i]]
     }
     return source
@@ -214,9 +214,8 @@ export function app(state, actions, view, container) {
 
   function removeChildren(element, node, attributes) {
     if ((attributes = node.attributes)) {
-      var c = node.children
-      for (var i in c) {
-        removeChildren(element.childNodes[i], c[i])
+      for (var i = 0; i < node.children.length; i++) {
+        removeChildren(element.childNodes[i], node.children[i])
       }
 
       if (attributes.ondestroy) {
@@ -254,7 +253,7 @@ export function app(state, actions, view, container) {
       var oldKeyed = {}
       var newKeyed = {}
 
-      for (var i in oldNode.children) {
+      for (var i = 0; i < oldNode.children.length; i++) {
         oldElements[i] = element.childNodes[i]
 
         var oldChild = oldNode.children[i]
@@ -320,8 +319,9 @@ export function app(state, actions, view, container) {
       }
 
       for (var i in oldKeyed) {
-        if (!newKeyed[oldKeyed[i][1].key])
+        if (!newKeyed[oldKeyed[i][1].key]) {
           removeElement(element, oldKeyed[i][0], oldKeyed[i][1])
+        }
       }
     } else if (node.nodeName === oldNode.nodeName) {
       element.nodeValue = node

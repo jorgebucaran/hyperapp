@@ -172,10 +172,9 @@ export function app(state, actions, view, container) {
         })
       }
 
-      var c = node.children
-      for (var i in c) {
-        connect(c, i)
-        element.appendChild(createElement(c[i], isSVG))
+      for (var i = 0; i < node.children.length; i++) {
+        connect(node.children, i)
+        element.appendChild(createElement(node.children[i], isSVG))
       }
 
       for (var name in node.attributes) {
@@ -267,9 +266,8 @@ export function app(state, actions, view, container) {
       var i = 0
       var j = 0
 
-      var c = node.children
-      while (j < c.length) {
-        connect(c, i)
+      while (j < node.children.length) {
+        connect(node.children, i)
         var oldChild = oldNode.children[i]
         var newChild = node.children[j]
 

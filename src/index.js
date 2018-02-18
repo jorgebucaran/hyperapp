@@ -52,7 +52,7 @@ export function app(state, actions, view, container) {
   }
 
   function inflate(children) {
-    for (let i in children) {
+    for (var i in children) {
       typeof children[i] === "function" && (children[i] = children[i](globalState, wiredActions));
     }
     return children;

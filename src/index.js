@@ -53,8 +53,8 @@ export function app(state, actions, view, container) {
 
   function inflate(children) {
     for (var i in children) {
-      typeof children[i] === "function" &&
-        (children[i] = children[i](globalState, wiredActions))
+      if (typeof children[i] === "function")
+        children[i] = children[i](globalState, wiredActions)
     }
     return children
   }
@@ -98,7 +98,7 @@ export function app(state, actions, view, container) {
   }
 
   function get(path, source) {
-    for (var i = 0; i < path.length; i++) {
+    for (var i in path) {
       source = source[path[i]]
     }
     return source
@@ -176,7 +176,7 @@ export function app(state, actions, view, container) {
       }
 
       var c = inflate(node.children)
-      for (var i = 0; i < c.length; i++) {
+      for (var i in c) {
         element.appendChild(createElement(c[i], isSVG))
       }
 
@@ -216,8 +216,9 @@ export function app(state, actions, view, container) {
 
   function removeChildren(element, node, attributes) {
     if ((attributes = node.attributes)) {
-      for (var i = 0; i < node.children.length; i++) {
-        removeChildren(element.childNodes[i], node.children[i])
+      var c = node.children
+      for (var i in c) {
+        removeChildren(element.childNodes[i], c[i])
       }
 
       if (attributes.ondestroy) {
@@ -255,7 +256,7 @@ export function app(state, actions, view, container) {
       var oldKeyed = {}
       var newKeyed = {}
 
-      for (var i = 0; i < oldNode.children.length; i++) {
+      for (var i in oldNode.children) {
         oldElements[i] = element.childNodes[i]
 
         var oldChild = oldNode.children[i]
@@ -320,9 +321,8 @@ export function app(state, actions, view, container) {
       }
 
       for (var i in oldKeyed) {
-        if (!newKeyed[oldKeyed[i][1].key]) {
+        if (!newKeyed[oldKeyed[i][1].key])
           removeElement(element, oldKeyed[i][0], oldKeyed[i][1])
-        }
       }
     } else if (node.nodeName === oldNode.nodeName) {
       element.nodeValue = node

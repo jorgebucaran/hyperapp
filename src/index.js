@@ -1,4 +1,5 @@
 export function h(name, attributes /*, ...rest*/) {
+  attributes = attributes || {}
   var node
   var rest = []
   var children = []
@@ -17,12 +18,12 @@ export function h(name, attributes /*, ...rest*/) {
   }
 
   return typeof name === "function"
-    ? name(attributes || {}, children)
+    ? name(attributes, children)
     : {
         nodeName: name,
-        attributes: attributes || {},
+        attributes: attributes,
         children: children,
-        key: attributes && attributes.key
+        key: attributes.key
       }
 }
 

@@ -51,7 +51,7 @@ export function app(state, actions, view, container) {
     }
   }
 
-  function inflate(children) {
+  function connect(children) {
     for (var i in children) {
       if (typeof children[i] === "function")
         children[i] = children[i](globalState, wiredActions)
@@ -175,7 +175,7 @@ export function app(state, actions, view, container) {
         })
       }
 
-      var c = inflate(node.children)
+      var c = connect(node.children)
       for (var i in c) {
         element.appendChild(createElement(c[i], isSVG))
       }
@@ -270,7 +270,7 @@ export function app(state, actions, view, container) {
       var i = 0
       var j = 0
 
-      var c = inflate(node.children)
+      var c = connect(node.children)
       while (j < c.length) {
         var oldChild = oldNode.children[i]
         var newChild = node.children[j]

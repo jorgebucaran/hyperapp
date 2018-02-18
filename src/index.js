@@ -51,14 +51,6 @@ export function app(state, actions, view, container) {
     }
   }
 
-  function connect(children) {
-    for (var i in children) {
-      if (typeof children[i] === "function")
-        children[i] = children[i](globalState, wiredActions)
-    }
-    return children
-  }
-
   function render() {
     renderLock = !renderLock
 
@@ -157,6 +149,11 @@ export function app(state, actions, view, container) {
     }
   }
 
+  function connect(children, i) {
+    typeof children[i] === "function" &&
+      (children[i] = children[i](globalState, wiredActions))
+  }
+
   function createElement(node, isSVG) {
     var element =
       typeof node === "string" || typeof node === "number"
@@ -175,8 +172,9 @@ export function app(state, actions, view, container) {
         })
       }
 
-      var c = connect(node.children)
+      var c = node.children
       for (var i in c) {
+        connect(c, i)
         element.appendChild(createElement(c[i], isSVG))
       }
 
@@ -270,8 +268,9 @@ export function app(state, actions, view, container) {
       var i = 0
       var j = 0
 
-      var c = connect(node.children)
+      var c = node.children
       while (j < c.length) {
+        connect(c, i)
         var oldChild = oldNode.children[i]
         var newChild = node.children[j]
 

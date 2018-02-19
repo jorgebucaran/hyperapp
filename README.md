@@ -10,7 +10,7 @@ Hyperapp is a JavaScript library for building web applications.
 
 ## Getting Started
 
-Our first example is a counter that can be incremented or decremented. Go ahead and try it online [here](https://codepen.io/hyperapp/pen/zNxZLP).
+Our first example is a counter that can be incremented or decremented. Go ahead and try it online [here](https://codepen.io/hyperapp/pen/zNxZLP/left/?editors=0010).
 
 ```js
 import { h, app } from "hyperapp"

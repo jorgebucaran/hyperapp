@@ -134,7 +134,7 @@ export function app(state, actions, view, container) {
     if (name === "key") {
     } else if (name === "style") {
       for (var i in clone(oldValue, value)) {
-        element[name][i] = value == null || value[i] == null ? "" : value[i]
+        element.style[i] = value == null || value[i] == null ? "" : value[i]
       }
     } else {
       if (typeof value === "function" || (name in element && !isSVG)) {

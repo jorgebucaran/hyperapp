@@ -52,10 +52,16 @@ test("slices", done => {
 })
 
 test("state/actions tree", done => {
+  const state = {
+    foo: {}
+  }
+
   const actions = {
-    fizz: {
-      buzz: {
-        fizzbuzz: () => ({ value: "fizzbuzz" })
+    foo: {
+      bar: {
+        baz: {
+          foobarbaz: () => ({ value: "foobarbaz" })
+        }
       }
     }
   }
@@ -65,14 +71,15 @@ test("state/actions tree", done => {
       "div",
       {
         oncreate() {
-          expect(document.body.innerHTML).toBe(`<div>fizzbuzz</div>`)
+          expect(document.body.innerHTML).toBe(`<div>foobarbaz</div>`)
           done()
         }
       },
-      state.fizz.buzz.value
+      state.foo.bar.baz.value
     )
 
-  const main = app({}, actions, view, document.body)
+  const main = app(state, actions, view, document.body)
 
-  main.fizz.buzz.fizzbuzz()
+  main.foo.bar.baz.foobarbaz()
+  expect(state).toEqual({ foo: {} })
 })

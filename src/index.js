@@ -120,7 +120,7 @@ export function app(state, actions, view, container) {
           })(key, actions[key])
         : wireStateToActions(
             path.concat(key),
-            (state[key] = state[key] || {}),
+            (state[key] = clone(state[key])),
             (actions[key] = clone(actions[key]))
           )
     }

@@ -83,3 +83,29 @@ test("state/actions tree", done => {
   main.foo.bar.baz.foobarbaz()
   expect(state).toEqual({ foo: {} })
 })
+
+test("non-object slices", () => {
+  const state = {
+    number: 1,
+    string: "foo",
+    array: ["a"]
+  }
+
+  const actions = {
+    number: { add: value => state => state + value },
+    string: { add: value => state => state + value },
+    array: { add: value => state => state.concat(value) },
+    getState: () => state => state
+  }
+
+  const main = app(state, actions, () => {})
+
+  expect(main.number.add(-1)).toBe(0)
+  expect(main.string.add("bar")).toBe("foobar")
+  expect(main.array.add("b")).toEqual(["a", "b"])
+  expect(main.getState()).toEqual({
+    number: 0,
+    string: "foobar",
+    array: ["a", "b"]
+  })
+})

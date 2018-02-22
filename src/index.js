@@ -33,21 +33,25 @@ function clone(target, source) {
   return obj
 }
 
-export var app = hyper(
-  // (node , parent, globalState, wiredActions) => node
-  function getVNode(node) {
-    if (node == null || typeof node === "boolean") {
-      return ""
-    }
-    if (typeof node.nodeName === "function") {
-      return getVNode(node.nodeName(node.attributes, node.children))
-    }
-    return node
+function getVNode(node) {
+  if (node == null || typeof node === "boolean") {
+    return ""
   }
-)
+  if (typeof node.nodeName === "function") {
+    return getVNode(node.nodeName(node.attributes, node.children))
+  }
+  return node
+}
 
-export function hyper(parseNode) {
-  return function app(state, actions, view, container) {
+export function app(state, actions, view, container) {
+  var parseNode = getVNode
+  if (typeof state === "function") {
+    parseNode = state
+    return createApp
+  }
+  return createApp(state, actions, view, container)
+
+  function createApp(state, actions, view, container) {
     var renderLock
     var firstRender = true
     var lifecycleStack = []

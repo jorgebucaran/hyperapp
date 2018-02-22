@@ -373,6 +373,20 @@ const HelloBox = ({ name }) => (
 )
 ```
 
+### Connected Components
+
+Normal components are dumb (not wired to your application state or actions), since they only receive their props and children from the parent component.  To create a connected component simply change the component signature.
+
+```jsx
+const DumbComponent = (props, children) => (
+  <div>Hello</div>
+);
+
+const ConnectedComponent = (props, children) => (state, actions) => (
+  <div>Hello, {state.name}!</div>
+);
+```
+
 ## Lifecycle Events
 
 You can be notified when elements managed by the Virtual DOM are created, updated or removed via lifecycle events. Use them for animation, data fetching, wrapping third party libraries, cleaning up resources, etc.

@@ -149,6 +149,11 @@ export function app(state, actions, view, container) {
     }
   }
 
+  function connect(children, i) {
+    if (typeof children[i] === "function")
+      children[i] = children[i](globalState, wiredActions)
+  }
+
   function createElement(node, isSVG) {
     var element =
       typeof node === "string" || typeof node === "number"
@@ -168,6 +173,7 @@ export function app(state, actions, view, container) {
       }
 
       for (var i = 0; i < node.children.length; i++) {
+        connect(node.children, i)
         element.appendChild(createElement(node.children[i], isSVG))
       }
 
@@ -261,6 +267,7 @@ export function app(state, actions, view, container) {
       var j = 0
 
       while (j < node.children.length) {
+        connect(node.children, i)
         var oldChild = oldNode.children[i]
         var newChild = node.children[j]
 

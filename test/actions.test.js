@@ -100,3 +100,31 @@ test("call action within action", done => {
 
   main.upAndFoo()
 })
+
+test("action with multiple arguments", done => {
+  const state = {
+    value: 0
+  }
+
+  const actions = {
+    up: (a, b, c) => state => ({
+      value: state.value + a + b + c
+    })
+  }
+
+  const view = state =>
+    h(
+      "div",
+      {
+        oncreate() {
+          expect(document.body.innerHTML).toBe(`<div>6</div>`)
+          done()
+        }
+      },
+      state.value
+    )
+
+  const main = app(state, actions, view, document.body)
+
+  main.up(1, 2, 3)
+})

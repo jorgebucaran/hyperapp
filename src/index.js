@@ -101,7 +101,7 @@ export function app(state, actions, view, container) {
       typeof actions[key] === "function"
         ? (function(key, action) {
             actions[key] = function(data) {
-              if (typeof (data = action(data)) === "function") {
+              if (typeof (data = action.apply(null, arguments)) === "function") {
                 data = data(get(path, globalState), actions)
               }
 

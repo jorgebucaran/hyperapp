@@ -96,6 +96,10 @@ export function app(state, actions, view, container) {
     return source
   }
 
+  function isObject(val) {
+    return Object.prototype.toString.call(val) === "[object Object]"
+  }
+
   function wireStateToActions(path, state, actions) {
     for (var key in actions) {
       typeof actions[key] === "function"
@@ -106,12 +110,16 @@ export function app(state, actions, view, container) {
               }
 
               if (
-                data &&
+                data != null &&
                 data !== (state = get(path, globalState)) &&
                 !data.then // Promise
               ) {
                 scheduleRender(
-                  (globalState = set(path, clone(state, data), globalState))
+                  (globalState = set(
+                    path,
+                    isObject(data) ? clone(state, data) : data,
+                    globalState
+                  ))
                 )
               }
 
@@ -120,7 +128,9 @@ export function app(state, actions, view, container) {
           })(key, actions[key])
         : wireStateToActions(
             path.concat(key),
-            (state[key] = clone(state[key])),
+            state[key] == null || isObject(state[key])
+              ? (state[key] = clone(state[key]))
+              : state[key],
             (actions[key] = clone(actions[key]))
           )
     }

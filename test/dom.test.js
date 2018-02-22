@@ -613,6 +613,12 @@ testTreeSegue("styles", [
     html: `<div style="color: blue; float: left;"></div>`
   },
   {
+    tree: h("div", {
+      style: "color: blue; background-color: red; overflow-x: scroll;"
+    }),
+    html: `<div style="color: blue; background-color: red; overflow-x: scroll;"></div>`
+  },
+  {
     tree: h("div"),
     html: `<div style=""></div>`
   }

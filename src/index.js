@@ -131,8 +131,36 @@ export function app(state, actions, view, container) {
   }
 
   function updateAttribute(element, name, value, isSVG, oldValue) {
+    function toCamelCase(str) {
+      return str
+        .split("-")
+        .map(function(w, i) {
+          return i ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase() : w.toLowerCase()
+        })
+        .join("")
+    }
+
+    function getStyles(str) {
+      return str.split(/;\s*/).reduce((styles, seg) => {
+        var pair = seg.split(/:\s*/)
+        if (pair.length === 2) {
+          styles[toCamelCase(pair[0].trim())] =
+            pair[1] == null ? "" : pair[1].trim()
+        }
+        return styles
+      }, {})
+    }
+
     if (name === "key") {
     } else if (name === "style") {
+      if (typeof value === "string") {
+        value = getStyles(value)
+      }
+
+      if (typeof oldValue === "string") {
+        oldValue = getStyles(oldValue)
+      }
+
       for (var i in clone(oldValue, value)) {
         element[name][i] = value == null || value[i] == null ? "" : value[i]
       }

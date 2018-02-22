@@ -321,7 +321,9 @@ export function app(state, actions, view, container) {
         createElement(node, isSVG),
         (nextSibling = element)
       )
-      removeElement(parent, nextSibling, oldNode)
+      if (nextSibling !== rootElement) {
+        removeElement(parent, nextSibling, oldNode)
+      }
     }
     return element
   }

@@ -71,6 +71,17 @@ export function app(state, actions, view, container) {
   }
 
   function clone(target, source) {
+    if (Array.isArray(target)) {
+      if (!source) {
+        return target.concat();
+      }
+
+      return target.map(function(a, i) {
+        return source[i] || a;
+      })
+      .concat(source.slice(target.length));
+    }
+
     var obj = {}
 
     for (var i in target) obj[i] = target[i]

@@ -16,7 +16,7 @@ export function h(name, attributes /*, ...rest*/) {
     }
   }
 
-  return typeof name === "function"
+  return name.constructor === Function
     ? name(attributes || {}, children)
     : {
         nodeName: name,
@@ -98,10 +98,10 @@ export function app(state, actions, view, container) {
 
   function wireStateToActions(path, state, actions) {
     for (var key in actions) {
-      typeof actions[key] === "function"
+      actions[key].constructor === Function
         ? (function(key, action) {
             actions[key] = function(data) {
-              if (typeof (data = action(data)) === "function") {
+              if ((data = action(data)).constructor === Function) {
                 data = data(get(path, globalState), actions)
               }
 
@@ -137,7 +137,7 @@ export function app(state, actions, view, container) {
         element[name][i] = value == null || value[i] == null ? "" : value[i]
       }
     } else {
-      if (typeof value === "function" || (name in element && !isSVG)) {
+      if (value.constructor === Function || (name in element && !isSVG)) {
         element[name] = value == null ? "" : value
       } else if (value != null && value !== false) {
         element.setAttribute(name, value)
@@ -151,7 +151,7 @@ export function app(state, actions, view, container) {
 
   function createElement(node, isSVG) {
     var element =
-      typeof node === "string" || typeof node === "number"
+      node.constructor === String || node.constructor === Number
         ? document.createTextNode(node)
         : (isSVG = isSVG || node.nodeName === "svg")
           ? document.createElementNS(

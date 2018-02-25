@@ -758,3 +758,13 @@ testTreeSegue("elements with falsey values", [
     html: `<div></div>`
   }
 ])
+
+testTreeSegue("input list attribute", [
+  {
+    tree: h("input", {
+      "list": "foobar"
+    }),
+    html: `<input list="foobar">`
+  }
+])
+            

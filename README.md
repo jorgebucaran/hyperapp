@@ -8,6 +8,31 @@ Hyperapp is a JavaScript library for building web applications.
 * **Functional** — Hyperapp's design is inspired by [The Elm Architecture](https://guide.elm-lang.org/architecture). Create scalable browser-based applications using a functional paradigm. The twist is you don't have to learn a new language.
 * **Batteries-included** — Out of the box, Hyperapp combines state management with a Virtual DOM engine that supports keyed updates & lifecycle events — all with no dependencies.
 
+## Table of contents
+* [Getting Started](#getting-started)
+* [Installation](#installation)
+* [Overview](#overview)
+  * [State](#state)
+  * [Actions](#actions)
+    * [Asynchronous Actions](#asynchronous-actions)
+    * [Nested Actions](#nested-actions)
+    * [Interoperability](#interoperability)
+  * [View](#view)
+* [Virtual DOM](#virtual-dom)
+  * [Virtual Node Builder](#virtual-node-builder)
+  * [Attributes](#attributes)
+  * [Styles](#styles)
+  * [Sanitization](#sanitization)
+* [Components](#components)
+  * [Children Composition](#children-composition)
+* [Lifecycle Events](#lifecycle-events)
+  * [oncreate](#oncreate)
+  * [onupdate](#onupdate)
+  * [onremove](#onremove)
+  * [ondestroy](#ondestroy)
+* [Keys](#keys)
+* [Hydration](#hydration)
+
 ## Getting Started
 
 Our first example is a counter that can be incremented or decremented. Go ahead and try it online [here](https://codepen.io/hyperapp/pen/zNxZLP/left/?editors=0010).

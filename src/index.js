@@ -26,27 +26,27 @@ export function h(name, attributes /*, ...rest*/) {
       }
 }
 
-export function app(state, actions, view, container) {
+export function app(state, actions, view, element) {
+  var map = [].map
+  var oldNode
   var renderLock
   var firstRender = true
-  var lifecycleStack = []
-  var rootElement = (container && container.children[0]) || null
-  var oldNode = rootElement && toVNode(rootElement, [].map)
   var globalState = clone(state)
   var wiredActions = clone(actions)
+  var lifecycleStack = []
 
   scheduleRender(wireStateToActions([], globalState, wiredActions))
 
   return wiredActions
 
-  function toVNode(element, map) {
+  function elementToVNode(element) {
     return {
       nodeName: element.nodeName.toLowerCase(),
       attributes: {},
       children: map.call(element.childNodes, function(element) {
         return element.nodeType === 3 // Node.TEXT_NODE
           ? element.nodeValue
-          : toVNode(element, map)
+          : elementToVNode(element)
       })
     }
   }
@@ -55,8 +55,13 @@ export function app(state, actions, view, container) {
     renderLock = !renderLock
 
     var next = view(globalState, wiredActions)
-    if (container && !renderLock) {
-      rootElement = patch(container, rootElement, oldNode, (oldNode = next))
+    if (element && !renderLock) {
+      element = patch(
+        element.parentNode,
+        element,
+        oldNode || elementToVNode(element),
+        (oldNode = next)
+      )
       firstRender = false
     }
 

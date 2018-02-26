@@ -137,7 +137,7 @@ export function app(state, actions, view, container) {
         element[name][i] = value == null || value[i] == null ? "" : value[i]
       }
     } else {
-      if (typeof value === "function" || (name in element && !isSVG)) {
+      if (typeof value === "function" || (name in element && name !== "list" && !isSVG)) {
         element[name] = value == null ? "" : value
       } else if (value != null && value !== false) {
         element.setAttribute(name, value)

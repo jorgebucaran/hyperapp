@@ -50,9 +50,13 @@ export function app(state, actions, view, container) {
   }
 
   function getVNode(node) {
-    return typeof node.nodeName === "function"
-      ? getVNode(node.nodeName(node.attributes, node.children))
-      : node
+    if (typeof node === "function") {
+      return getVNode(node(globalState, wiredActions))
+    }
+    if (typeof node.nodeName === "function") {
+      return getVNode(node.nodeName(node.attributes, node.children))
+    }
+    return node
   }
 
   function render() {

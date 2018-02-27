@@ -58,3 +58,36 @@ test("component with no props adds default props", done => {
 
   app({}, {}, view, document.body)
 })
+
+test("state and actions in subview", done => {
+  const Component = (attributes, children) => h("b", attributes, children)
+
+  const state = { value: 1 }
+
+  const actions = {
+    up: value => ({ value })
+  }
+
+  const view = () =>
+    h(
+      "div",
+      {
+        oncreate() {
+          expect(document.body.innerHTML).toBe("<div><b>1</b><b>1</b></div>")
+          done()
+        }
+      },
+      [
+        (state, actions) => {
+          expect(actions.up).toBeInstanceOf(Function)
+          return h(Component, {}, state.value)
+        },
+        h(Component, {}, (state, actions) => {
+          expect(actions.up).toBeInstanceOf(Function)
+          return state.value
+        })
+      ]
+    )
+
+  app(state, actions, view, document.body)
+})

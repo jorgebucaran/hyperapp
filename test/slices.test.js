@@ -34,7 +34,7 @@ test("slices", done => {
     getState: () => state => state
   }
 
-  const main = app(state, actions, () => {})
+  const main = app(state, actions, () => "", document.body)
 
   expect(main.getState()).toEqual({
     foo: {

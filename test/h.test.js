@@ -79,12 +79,24 @@ test("skip null and Boolean children", () => {
   expect(h("div", {}, null)).toEqual(expected)
 })
 
-test("component", () => {
-  const Component = () => h("div", {}, ["baz"])
+test("nodeName as a function (JSX components)", () => {
+  const Component = (props, children) => h("div", props, children)
 
   expect(h(Component, { id: "foo" }, "bar")).toEqual({
-    nodeName: Component,
+    nodeName: "div",
     attributes: { id: "foo" },
     children: ["bar"]
+  })
+
+  expect(h(Component, { id: "foo" }, [h(Component, { id: "bar" })])).toEqual({
+    nodeName: "div",
+    attributes: { id: "foo" },
+    children: [
+      {
+        nodeName: "div",
+        attributes: { id: "bar" },
+        children: []
+      }
+    ]
   })
 })

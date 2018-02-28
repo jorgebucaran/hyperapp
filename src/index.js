@@ -1,4 +1,4 @@
-export function h(name, attributes) {
+export function h(name, attributes /*...rest*/) {
   var rest = []
   var children = []
   var length = arguments.length
@@ -9,7 +9,7 @@ export function h(name, attributes) {
     var node = rest.pop()
     if (
       node &&
-      node.pop // Array.isArray(node)
+      node.pop // isArray
     ) {
       for (length = node.length; length--; ) {
         rest.push(node[length])
@@ -34,9 +34,8 @@ export function app(state, actions, view, container) {
   var events = []
   var element = (container && container.children[0]) || null
   var oldNode = element && recycleNode(element)
-  var isFirstRender = true
   var skipRender
-
+  var isFirstRender = true
   var globalState = clone(state)
   var wiredActions = clone(actions)
 
@@ -68,6 +67,7 @@ export function app(state, actions, view, container) {
     if (container) {
       element = patch(container, element, oldNode, (oldNode = node))
     }
+
     skipRender = isFirstRender = false
 
     while (events.length) events.pop()()
@@ -111,21 +111,23 @@ export function app(state, actions, view, container) {
       typeof actions[key] === "function"
         ? (function(key, action) {
             actions[key] = function(data) {
-              if (typeof (data = action(data)) === "function") {
-                data = data(get(path, globalState), actions)
+              var result = action(data)
+
+              if (typeof result === "function") {
+                result = result(get(path, globalState), actions)
               }
 
               if (
-                data &&
-                data !== (state = get(path, globalState)) &&
-                !data.then // Promise
+                result &&
+                result !== (state = get(path, globalState)) &&
+                !result.then // !isPromise
               ) {
                 scheduleRender(
-                  (globalState = set(path, clone(state, data), globalState))
+                  (globalState = set(path, clone(state, result), globalState))
                 )
               }
 
-              return data
+              return result
             }
           })(key, actions[key])
         : wireStateToActions(
@@ -291,10 +293,8 @@ export function app(state, actions, view, container) {
       var k = 0
 
       while (k < children.length) {
-        children[k] = resolveNode(children[k])
-
         var oldKey = getKey(oldChildren[i])
-        var newKey = getKey(children[k])
+        var newKey = getKey((children[k] = resolveNode(children[k])))
 
         if (newKeyed[oldKey]) {
           i++

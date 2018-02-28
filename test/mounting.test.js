@@ -4,6 +4,22 @@ beforeEach(() => {
   document.body.innerHTML = ""
 })
 
+test("default container", done => {
+  const view = state =>
+    h(
+      "div",
+      {
+        oncreate() {
+          expect(document.body.innerHTML).toBe("<div>foo</div>")
+          done()
+        }
+      },
+      "foo"
+    )
+
+  app({}, {}, view)
+})
+
 test("container", done => {
   document.body.innerHTML = "<main></main>"
 

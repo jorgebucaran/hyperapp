@@ -10,7 +10,7 @@ Hyperapp is a JavaScript library for building web applications.
 
 ## Getting Started
 
-Our first example is a counter that can be incremented or decremented. Go ahead and try it online [here](https://codepen.io/hyperapp/pen/zNxZLP/left/?editors=0010).
+Our first example is a counter that can be incremented or decremented. Go ahead and [try it online here](https://codepen.io/hyperapp/pen/zNxZLP/left/?editors=0010).
 
 ```js
 import { h, app } from "hyperapp"
@@ -198,15 +198,15 @@ It is important to understand that the result of the view is a new Virtual DOM. 
 
 ## Mounting
 
-Your application will be mounted into the provided DOM container element.
+To mount your application in a page, we need a DOM element. This element is referred to as the application container. Applications built with Hyperapp always have a single container.
 
 ```jsx
 app(state, actions, view, container)
 ```
 
-Hyperapp will try to reuse existing elements inside the container enabling SEO optimization and improving your sites time-to-interactive. The process consists of serving a fully rendered page together with your application. Then instead of throwing away the server-rendered content, we'll turn your DOM nodes into an interactive application out of the box.
+Hyperapp will also attempt to reuse existing elements inside the container enabling SEO optimization and improving your sites time-to-interactive. The process consists of serving a fully rendered page together with your application. Then instead of throwing away the existing content, we'll turn your DOM nodes into an interactive application out of the box.
 
-This is how we can recycle server-rendered content in the counter example from before. See [Getting Started](#getting-started) for the application code.
+This is how we can recycle server-rendered content out the counter example from before. See [Getting Started](#getting-started) for the application code.
 
 ```html
 <!doctype html>

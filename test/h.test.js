@@ -79,35 +79,12 @@ test("skip null and Boolean children", () => {
   expect(h("div", {}, null)).toEqual(expected)
 })
 
-test("components", () => {
-  const Component = (props, children) => h("div", props, children)
+test("component", () => {
+  const Component = () => h("div", {}, ["baz"])
 
   expect(h(Component, { id: "foo" }, "bar")).toEqual({
-    nodeName: "div",
+    nodeName: Component,
     attributes: { id: "foo" },
     children: ["bar"]
-  })
-
-  expect(h(Component, { id: "foo" }, [h(Component, { id: "bar" })])).toEqual({
-    nodeName: "div",
-    attributes: { id: "foo" },
-    children: [
-      {
-        nodeName: "div",
-        attributes: { id: "bar" },
-        children: []
-      }
-    ]
-  })
-})
-
-test("component with no props adds default props", () => {
-  const Component = ({ name = "world" }, children) =>
-    h("div", {}, "Hello " + name)
-
-  expect(h(Component)).toEqual({
-    nodeName: "div",
-    attributes: {},
-    children: ["Hello world"]
   })
 })

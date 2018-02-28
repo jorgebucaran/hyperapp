@@ -32,14 +32,10 @@ export function h(name, attributes) {
 export function app(state, actions, view, container) {
   var map = [].map
   var events = []
-  var rootElement =
-    ((container =
-      container === null ? container : container || document.body) &&
-      container.children[0]) ||
-    null
-  var node = rootElement && recycleNode(rootElement)
+  var element = (container && container.children[0]) || null
+  var oldNode = element && recycleNode(element)
   var isFirstRender = true
-  var renderLock
+  var skipRender
 
   var globalState = clone(state)
   var wiredActions = clone(actions)
@@ -67,19 +63,19 @@ export function app(state, actions, view, container) {
   }
 
   function render() {
-    var nextNode = resolveNode(view)
+    var node = resolveNode(view)
+
     if (container) {
-      rootElement = patch(container, rootElement, node, (node = nextNode))
+      element = patch(container, element, oldNode, (oldNode = node))
     }
-    isFirstRender = false
-    renderLock = !renderLock
+    skipRender = isFirstRender = false
 
     while (events.length) events.pop()()
   }
 
   function scheduleRender() {
-    if (!renderLock) {
-      renderLock = !renderLock
+    if (!skipRender) {
+      skipRender = true
       setTimeout(render)
     }
   }

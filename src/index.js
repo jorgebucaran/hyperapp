@@ -329,7 +329,7 @@ export function app(state, actions, view, container) {
       }
 
       for (var i in oldKeyed) {
-        if (!newKeyed[oldKeyed[i][1].key]) {
+        if (!newKeyed[i]) {
           removeElement(element, oldKeyed[i][0], oldKeyed[i][1])
         }
       }

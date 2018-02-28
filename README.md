@@ -196,6 +196,36 @@ const view = (state, actions) =>
 
 It is important to understand that the result of the view is a new Virtual DOM. It may seem wasteful to throw away the old Virtual DOM and re-create it entirely on every update — not to mention the fact that at any one time, Hyperapp is keeping two Virtual DOM trees in memory, but as it turns out, browsers can create hundreds of thousands of objects very quickly. On the other hand, modifying the DOM is several orders of magnitude more expensive.
 
+## Mounting
+
+Your application will be mounted into the provided DOM container element.
+
+```jsx
+app(state, actions, view, container)
+```
+
+Hyperapp will try to reuse existing elements inside the container enabling SEO optimization and improving your sites time-to-interactive. The process consists of serving a fully rendered page together with your application. Then instead of throwing away the server-rendered content, we'll turn your DOM nodes into an interactive application out of the box.
+
+This is how we can recycle server-rendered content in the counter example from before. See [Getting Started](#getting-started) for the application code.
+
+```html
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script defer src="bundle.js"></script>
+</head>
+
+<body>
+  <div>
+    <h1>0</h1>
+    <button>-</button>
+    <button>+</button>
+  </div>
+</body>
+</html>
+```
+
 ## Virtual DOM
 
 A Virtual DOM is a description of what a DOM should look like using a tree of nested JavaScript objects known as Virtual Nodes. The Virtual DOM is a lightweight representation of the DOM.
@@ -468,29 +498,6 @@ const PlayerList = ({ players }) =>
       </li>
     ))
 ```
-
-## Recycling Existing DOM
-
-Hyperapp works transparently with SSR and pre-rendered HTML, enabling SEO optimization and improving your sites time-to-interactive. The process consists of serving a fully pre-rendered page together with your application.
-
-```html
-<html>
-<head>
-  <meta charset="utf-8">
-  <script defer src="bundle.js"></script>
-</head>
-
-<body>
-  <div>
-    <h1>0</h1>
-    <button>-</button>
-    <button>+</button>
-  </div>
-</body>
-</html>
-```
-
-Then instead of throwing away the server-rendered markdown, we'll turn your DOM nodes into an interactive application out of the box.
 
 ## Community
 

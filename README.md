@@ -469,7 +469,7 @@ const PlayerList = ({ players }) =>
     ))
 ```
 
-## Hydration
+## Recycling Existing DOM
 
 Hyperapp works transparently with SSR and pre-rendered HTML, enabling SEO optimization and improving your sites time-to-interactive. The process consists of serving a fully pre-rendered page together with your application.
 
@@ -495,9 +495,9 @@ Then instead of throwing away the server-rendered markdown, we'll turn your DOM 
 ## Community
 
 * [Slack](https://hyperappjs.herokuapp.com)
-* [Twitter](https://twitter.com/hyperappjs)
+* [Twitter](https://twitter.com/hyperappJS)
 * [CodePen](https://codepen.io/hyperapp)
-* [/r/Hyperapp](https://www.reddit.com/r/hyperapp)
+* [/r/hyperapp](https://www.reddit.com/r/hyperapp)
 
 ## License
 

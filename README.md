@@ -2,7 +2,7 @@
 
 [![Travis CI](https://img.shields.io/travis/hyperapp/hyperapp/master.svg)](https://travis-ci.org/hyperapp/hyperapp) [![npm](https://img.shields.io/npm/v/hyperapp.svg)](https://www.npmjs.org/package/hyperapp) [![Slack](https://hyperappjs.herokuapp.com/badge.svg)](https://hyperappjs.herokuapp.com "Join us")
 
-Hyperapp is a JavaScript library for building web applications.
+Hyperapp is a JavaScript micro-framework for building web applications.
 
 * **Minimal** — We have aggressively minimized the concepts you need to understand while remaining on par with what other frameworks can do.
 * **Pragmatic** — Hyperapp holds firm on the functional programming front when managing your state, but takes a pragmatic approach to allowing for side effects, asynchronous actions, and DOM manipulations.
@@ -375,7 +375,9 @@ You can be notified when elements managed by the virtual DOM are created, update
 This event is fired after the element is created and attached to the DOM. Use it to manipulate the DOM node directly, make a network request, create a slide/fade in animation, etc.
 
 ```jsx
-const Textbox = ({ placeholder }) => (
+import { h } from "hyperapp"
+
+export const Textbox = ({ placeholder }) => (
   <input
     type="text"
     placeholder={placeholder}
@@ -389,7 +391,9 @@ const Textbox = ({ placeholder }) => (
 This event is fired every time we update the element attributes. Use <samp>oldAttributes</samp> inside the event handler to check if any attributes changed or not.
 
 ```jsx
-const Textbox = ({ placeholder }) => (
+import { h } from "hyperapp"
+
+export const Textbox = ({ placeholder }) => (
   <input
     type="text"
     placeholder={placeholder}
@@ -407,7 +411,9 @@ const Textbox = ({ placeholder }) => (
 This event is fired before the element is removed from the DOM. Use it to create slide/fade out animations. Call <samp>done</samp> inside the function to remove the element. This event is not called in its child elements.
 
 ```jsx
-const MessageWithFadeout = ({ title }) => (
+import { h } from "hyperapp"
+
+export const MessageWithFadeout = ({ title }) => (
   <div onremove={(element, done) => fadeout(element).then(done)}>
     <h1>{title}</h1>
   </div>
@@ -419,7 +425,9 @@ const MessageWithFadeout = ({ title }) => (
 This event is fired after the element has been removed from the DOM, either directly or as a result of a parent being removed. Use it for invalidating timers, canceling a network request, removing global events listeners, etc.
 
 ```jsx
-const Camera = ({ onerror }) => (
+import { h } from "hyperapp"
+
+export const Camera = ({ onerror }) => (
   <video
     poster="loading.png"
     oncreate={element => {
@@ -438,7 +446,9 @@ const Camera = ({ onerror }) => (
 Keys help identify which nodes were added, changed or removed from a list when a view is rendered. A key must be unique among sibling-nodes.
 
 ```jsx
-const ImageGallery = ({ images }) =>
+import { h } from "hyperapp"
+
+export const ImageGallery = ({ images }) =>
   images.map(({ hash, url, description }) => (
     <li key={hash}>
       <img src={url} alt={description} />
@@ -451,13 +461,15 @@ By setting the <samp>key</samp> property on a virtual node, you declare that the
 Don't use an array index as key, if the index also specifies the order of siblings. If the position and number of items in a list is fixed, it will make no difference, but if the list is dynamic, the key will change every time the tree is rebuilt.
 
 ```jsx
-const PlayerList = ({ players }) =>
+import { h } from "hyperapp"
+
+export const PlayerList = ({ players }) =>
   players
     .slice()
     .sort((player, nextPlayer) => nextPlayer.score - player.score)
     .map(player => (
       <li key={player.username} class={player.isAlive ? "alive" : "dead"}>
-        <PlayerCard {...player} />
+        <PlayerProfile {...player} />
       </li>
     ))
 ```

@@ -1,4 +1,4 @@
-export function h(name, attributes /*, ...rest*/) {
+export function createNode(name, attributes /*, ...rest*/) {
   var node
   var rest = []
   var children = []
@@ -25,6 +25,8 @@ export function h(name, attributes /*, ...rest*/) {
         key: attributes && attributes.key
       }
 }
+
+export var h = createNode;
 
 export function app(state, actions, view, container) {
   var renderLock

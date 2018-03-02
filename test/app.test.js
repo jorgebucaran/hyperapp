@@ -1,4 +1,4 @@
-import { h, app } from "../src"
+import { createNode as h, app } from "../src"
 
 beforeEach(() => {
   document.body.innerHTML = ""

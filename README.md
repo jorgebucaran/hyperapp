@@ -13,7 +13,7 @@ Hyperapp is a JavaScript library for building web applications.
 Our first example is a counter that can be incremented or decremented. Go ahead and try it online [here](https://codepen.io/hyperapp/pen/zNxZLP/left/?editors=0010).
 
 ```js
-import { h, app } from "hyperapp"
+import { createNode, app } from "hyperapp"
 
 const state = {
   count: 0
@@ -47,10 +47,10 @@ JSX is a language syntax extension that lets you write HTML tags interspersed wi
 
 ```jsx
 const view = (state, actions) =>
-  h("div", {}, [
-    h("h1", {}, state.count),
-    h("button", { onclick: () => actions.down(1) }, "-"),
-    h("button", { onclick: () => actions.up(1) }, "+")
+  createNode("div", {}, [
+    createNode("h1", {}, state.count),
+    createNode("button", { onclick: () => actions.down(1) }, "-"),
+    createNode("button", { onclick: () => actions.up(1) }, "+")
   ])
 ```
 
@@ -67,7 +67,7 @@ npm i <a href=https://www.npmjs.com/package/hyperapp>hyperapp</a>
 Then with a module bundler like [Rollup](https://rollupjs.org) or [Webpack](https://webpack.js.org), use as you would anything else.
 
 ```js
-import { h, app } from "hyperapp"
+import { createNode, app } from "hyperapp"
 ```
 
 If you don't want to set up a build environment, you can download Hyperapp from a CDN like [unpkg.com](https://unpkg.com/hyperapp) and it will be globally available through the <samp>window.hyperapp</samp> object. We support all ES5-compliant browsers, including Internet Explorer 10 and above.
@@ -187,10 +187,10 @@ This operation doesn't replace the entire DOM tree, but only update the parts of
 
 ```js
 const view = (state, actions) =>
-  h("div", {}, [
-    h("h1", {}, state.count),
-    h("button", { onclick: () => actions.down(1) }, "-"),
-    h("button", { onclick: () => actions.up(1) }, "+")
+  createNode("div", {}, [
+    createNode("h1", {}, state.count),
+    createNode("button", { onclick: () => actions.down(1) }, "-"),
+    createNode("button", { onclick: () => actions.up(1) }, "+")
   ])
 ```
 
@@ -235,13 +235,13 @@ The Virtual DOM allows us to write code as if the entire document is redrawn on 
 To help you create Virtual Nodes in a more compact way, Hyperapp provides a hyperscript-style <samp>h</samp> function. The <samp>h</samp> function takes an element's name or a function that returns a Virtual Node (see [Components](#components)), optional attributes and optional array of children elements.
 
 ```js
-import { h } from "hyperapp"
+import { createNode } from "hyperapp"
 
 const view = (state, actions) =>
-  h("div", {}, [
-    h("h1", {}, state.count),
-    h("button", { onclick: () => actions.down(1) }, "-"),
-    h("button", { onclick: () => actions.up(1) }, "+")
+  createNode("div", {}, [
+    createNode("h1", {}, state.count),
+    createNode("button", { onclick: () => actions.down(1) }, "-"),
+    createNode("button", { onclick: () => actions.up(1) }, "+")
   ])
 ```
 
@@ -254,7 +254,7 @@ Supported attributes include [HTML attributes](https://developer.mozilla.org/en-
 Hyperapp does not handle inline styles as strings, but as an object with style declarations. Each declaration consists of a style name property written in <samp>camelCase</samp> and a value.
 
 ```jsx
-import { h } from "hyperapp"
+import { createNode } from "hyperapp"
 
 export const HelloDiv = (
   <div
@@ -293,7 +293,7 @@ A component is a pure function that returns a [Virtual Node](#virtual-dom). Unli
 [Live Example](https://codepen.io/hyperapp/pen/zNxRLy)
 
 ```jsx
-import { h } from "hyperapp"
+import { createNode } from "hyperapp"
 
 const TodoItem = ({ id, value, done, toggle }) => (
   <li
@@ -324,7 +324,7 @@ export const view = (state, actions) => (
 If you don't know all the attributes that you want to place in a component ahead of time, you can use the [spread syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_operator). Note that Hyperapp components can return multiple elements as in the following example. This technique lets you group a list of children without adding extra nodes to the DOM.
 
 ```jsx
-import { h } from "hyperapp"
+import { createNode } from "hyperapp"
 
 const TodoItem = ({ id, value, done, toggle }) => (
   <li

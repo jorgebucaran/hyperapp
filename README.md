@@ -279,50 +279,7 @@ const view = (state, actions) =>
 
 A component is a pure function that returns a virtual node. Unlike the view function, components are not wired to your application state or actions. Components are dumb, reusable blocks of code that encapsulate markup, styles and behaviors that belong together. Note that in JSX, components [must be capitalized](https://facebook.github.io/react/docs/jsx-in-depth.html#user-defined-components-must-be-capitalized) or contain a period in the name.
 
-<<<<<<< HEAD
-Hyperapp does not handle inline styles as strings, but as an object with style declarations. Each declaration consists of a style name property written in <samp>camelCase</samp> and a value.
-
-```jsx
-import { createNode } from "hyperapp"
-
-export const HelloDiv = (
-  <div
-    style={{
-      color: "white",
-      margin: "20px",
-      textAlign: center,
-      backgroundImage: `url(${imgUrl})`
-    }}
-  >
-    Hello World
-  </div>
-)
-```
-
-### Sanitization
-
-If for any reason you don't use the Virtual DOM mechanism and decide to set the <samp>innerHTML</samp> in an element, you run the risk of cross-site scripting ([XSS](https://en.wikipedia.org/wiki/Cross-site_scripting)) vulnerabilities. Specifically you must sanitize any user provided data before writing it out to the DOM. We suggest creating your own replacement function to explicitly state the intent of performing an "unsafe" operation
-
-```jsx
-const dangerouslySetInnerHTML = html => element => {
-  element.innerHTML = html
-}
-
-const ItemContent = ({ item: { url, summary } }) => (
-  <div class="content">
-    <a href={url} oncreate={dangerouslySetInnerHTML(summary)} />
-  </div>
-)
-```
-
-## Components
-
-A component is a pure function that returns a [Virtual Node](#virtual-dom). Unlike the view function, components are not wired to your application state or actions. Components are dumb, reusable blocks of code that encapsulate markup, styles and behaviors that belong together. Note that when using JSX, components [must be capitalized](https://facebook.github.io/react/docs/jsx-in-depth.html#user-defined-components-must-be-capitalized) or contain a period in the name.
-
-[Live Example](https://codepen.io/hyperapp/pen/zNxRLy)
-=======
 [Try this example online](https://codepen.io/hyperapp/pen/zNxRLy).
->>>>>>> 4ad0fb9815ec535c10e1e4f4146bf03f791d9922
 
 ```jsx
 import { createNode } from "hyperapp"
@@ -356,25 +313,6 @@ export const view = (state, actions) => (
 If you don't know all the attributes that you want to place in a component ahead of time, you can use the [spread syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_operator). Note that Hyperapp components can return multiple elements as in the following example. This technique lets you group a list of children without adding extra nodes to the DOM.
 
 ```jsx
-<<<<<<< HEAD
-import { createNode } from "hyperapp"
-
-const TodoItem = ({ id, value, done, toggle }) => (
-  <li
-    class={done && "done"}
-    onclick={e =>
-      toggle({
-        value: done,
-        id: id
-      })
-    }
-  >
-    {value}
-  </li>
-)
-
-=======
->>>>>>> 4ad0fb9815ec535c10e1e4f4146bf03f791d9922
 const TodoList = ({ todos, toggle }) =>
   todos.map(todo => <TodoItem {...todo} toggle={toggle} />)
 ```
@@ -411,7 +349,7 @@ Each declaration consists of a style name property written in <samp>camelCase</s
 Individual style properties will be diffed and mapped against <samp>[HTMLElement.style](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style)</samp> property members of the DOM element - you should therefore use the JavaScript style object [property names](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Properties_Reference), e.g. <samp>backgroundColor</samp> rather than <samp>background-color</samp>.
 
 ```jsx
-import { h } from "hyperapp"
+import { createNode } from "hyperapp"
 
 export const Jumbotron = ({ text }) => (
   <div

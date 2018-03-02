@@ -4,6 +4,10 @@ beforeEach(() => {
   document.body.innerHTML = ""
 })
 
+test("headless", done => {
+  app({}, {}, () => done())
+})
+
 test("container", done => {
   document.body.innerHTML = "<main></main>"
 

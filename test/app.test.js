@@ -36,27 +36,30 @@ test("debouncing", done => {
   main.fire()
 })
 
-test("actions in the view", done => {
-  const state = {
-    value: 0
-  }
 
+test("lazy components", done => {
+  const state = { value: "foo" }
   const actions = {
-    up: () => state => ({ value: state.value + 1 })
+    update: () => ({ value: "bar" })
   }
 
-  const view = (state, actions) => {
-    if (state.value < 1) {
-      return actions.up()
-    }
+  const Component = () => (state, actions) =>
+    h(
+      "div",
+      {
+        oncreate() {
+          expect(document.body.innerHTML).toBe("<div>foo</div>")
+          actions.update()
+        },
+        onupdate() {
+          expect(document.body.innerHTML).toBe("<div>bar</div>")
+          done()
+        }
+      },
+      state.value
+    )
 
-    setTimeout(() => {
-      expect(document.body.innerHTML).toBe("<div>1</div>")
-      done()
-    })
-
-    return h("div", {}, state.value)
-  }
+  const view = () => h(Component)
 
   app(state, actions, view, document.body)
 })

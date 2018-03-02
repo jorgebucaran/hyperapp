@@ -1,7 +1,7 @@
-import { h } from "../src"
+import { createNode } from "../src"
 
 test("empty vnode", () => {
-  expect(h("div")).toEqual({
+  expect(createNode("div")).toEqual({
     nodeName: "div",
     attributes: {},
     children: []
@@ -9,13 +9,13 @@ test("empty vnode", () => {
 })
 
 test("vnode with a single child", () => {
-  expect(h("div", {}, ["foo"])).toEqual({
+  expect(createNode("div", {}, ["foo"])).toEqual({
     nodeName: "div",
     attributes: {},
     children: ["foo"]
   })
 
-  expect(h("div", {}, "foo")).toEqual({
+  expect(createNode("div", {}, "foo")).toEqual({
     nodeName: "div",
     attributes: {},
     children: ["foo"]
@@ -23,19 +23,19 @@ test("vnode with a single child", () => {
 })
 
 test("positional String/Number children", () => {
-  expect(h("div", {}, "foo", "bar", "baz")).toEqual({
+  expect(createNode("div", {}, "foo", "bar", "baz")).toEqual({
     nodeName: "div",
     attributes: {},
     children: ["foo", "bar", "baz"]
   })
 
-  expect(h("div", {}, 0, "foo", 1, "baz", 2)).toEqual({
+  expect(createNode("div", {}, 0, "foo", 1, "baz", 2)).toEqual({
     nodeName: "div",
     attributes: {},
     children: [0, "foo", 1, "baz", 2]
   })
 
-  expect(h("div", {}, "foo", h("div", {}, "bar"), "baz", "quux")).toEqual({
+  expect(createNode("div", {}, "foo", createNode("div", {}, "bar"), "baz", "quux")).toEqual({
     nodeName: "div",
     attributes: {},
     children: [
@@ -60,7 +60,7 @@ test("vnode with attributes", () => {
     }
   }
 
-  expect(h("div", attributes, "baz")).toEqual({
+  expect(createNode("div", attributes, "baz")).toEqual({
     nodeName: "div",
     attributes,
     children: ["baz"]
@@ -74,21 +74,21 @@ test("skip null and Boolean children", () => {
     children: []
   }
 
-  expect(h("div", {}, true)).toEqual(expected)
-  expect(h("div", {}, false)).toEqual(expected)
-  expect(h("div", {}, null)).toEqual(expected)
+  expect(createNode("div", {}, true)).toEqual(expected)
+  expect(createNode("div", {}, false)).toEqual(expected)
+  expect(createNode("div", {}, null)).toEqual(expected)
 })
 
 test("nodeName as a function (JSX components)", () => {
-  const Component = (props, children) => h("div", props, children)
+  const Component = (props, children) => createNode("div", props, children)
 
-  expect(h(Component, { id: "foo" }, "bar")).toEqual({
+  expect(createNode(Component, { id: "foo" }, "bar")).toEqual({
     nodeName: "div",
     attributes: { id: "foo" },
     children: ["bar"]
   })
 
-  expect(h(Component, { id: "foo" }, [h(Component, { id: "bar" })])).toEqual({
+  expect(createNode(Component, { id: "foo" }, [createNode(Component, { id: "bar" })])).toEqual({
     nodeName: "div",
     attributes: { id: "foo" },
     children: [

@@ -1,4 +1,4 @@
-import { h, app } from "../src"
+import { createNode, app } from "../src"
 
 const SVG_NS = "http://www.w3.org/2000/svg"
 
@@ -10,7 +10,7 @@ const deepExpectNS = (element, ns) =>
 
 test("svg", done => {
   const view = () =>
-    h(
+    createNode(
       "div",
       {
         oncreate() {
@@ -28,20 +28,20 @@ test("svg", done => {
         }
       },
       [
-        h("p", { id: "foo" }, "foo"),
-        h("svg", { id: "bar", viewBox: "0 0 10 10" }, [
-          h("quux", {}, [
-            h("beep", {}, [h("ping", {}), h("pong", {})]),
-            h("bop", {}),
-            h("boop", {}, [h("ping", {}), h("pong", {})])
+        createNode("p", { id: "foo" }, "foo"),
+        createNode("svg", { id: "bar", viewBox: "0 0 10 10" }, [
+          createNode("quux", {}, [
+            createNode("beep", {}, [createNode("ping", {}), createNode("pong", {})]),
+            createNode("bop", {}),
+            createNode("boop", {}, [createNode("ping", {}), createNode("pong", {})])
           ]),
-          h("xuuq", {}, [
-            h("beep", {}),
-            h("bop", {}, [h("ping", {}), h("pong", {})]),
-            h("boop", {})
+          createNode("xuuq", {}, [
+            createNode("beep", {}),
+            createNode("bop", {}, [createNode("ping", {}), createNode("pong", {})]),
+            createNode("boop", {})
           ])
         ]),
-        h("p", { id: "baz" }, "baz")
+        createNode("p", { id: "baz" }, "baz")
       ]
     )
 

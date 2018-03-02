@@ -21,7 +21,7 @@ export function createNode(name, attributes /*, ...rest*/) {
   }
 
   return typeof name === "function"
-    ? name(attributes || {}, children) // h(Component)
+    ? name(attributes || {}, children) // createNode(Component)
     : {
         nodeName: name,
         attributes: attributes || {},

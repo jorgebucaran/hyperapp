@@ -1,4 +1,4 @@
-import { h, app } from "../src"
+import { createNode, app } from "../src"
 
 test("recycle markup", done => {
   const SSR_BODY = `<div id="app"><main><p id="foo">foo</p></main></div>`
@@ -6,8 +6,8 @@ test("recycle markup", done => {
   document.body.innerHTML = SSR_BODY
 
   const view = state =>
-    h("main", {}, [
-      h(
+    createNode("main", {}, [
+      createNode(
         "p",
         {
           oncreate(element) {
@@ -29,8 +29,8 @@ test("recycle markup against keyed vdom", done => {
   document.body.innerHTML = SSR_BODY
 
   const view = state =>
-    h("main", {}, [
-      h(
+    createNode("main", {}, [
+      createNode(
         "p",
         {
           key: "key",

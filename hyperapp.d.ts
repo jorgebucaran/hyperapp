@@ -26,7 +26,7 @@ export interface Component<Props> {
   (props: Props, children: VNodeChild<object | null>[]): VNode<object>
 }
 
-/** The type of the children argument passed to h().
+/** The type of the children argument passed to createNode().
  *
  * @memberOf [VDOM]
  */
@@ -43,6 +43,12 @@ export type VNodeChildren =
  *
  * @memberOf [VDOM]
  */
+export function createNode<Props>(
+  name: Component<Props> | string,
+  props?: Props,
+  children?: VNodeChildren
+): VNode<object>
+
 export function h<Props>(
   name: Component<Props> | string,
   props?: Props,

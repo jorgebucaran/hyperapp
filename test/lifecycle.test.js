@@ -1,4 +1,4 @@
-import { h, app } from "../src"
+import { createNode, app } from "../src"
 
 beforeEach(() => {
   document.body.innerHTML = ""
@@ -6,7 +6,7 @@ beforeEach(() => {
 
 test("oncreate", done => {
   const view = () =>
-    h(
+    createNode(
       "div",
       {
         oncreate(element) {
@@ -28,7 +28,7 @@ test("onupdate", done => {
   }
 
   const view = (state, actions) =>
-    h(
+    createNode(
       "div",
       {
         class: state.value,
@@ -58,7 +58,7 @@ test("onremove", done => {
 
   const view = (state, actions) =>
     state.value
-      ? h(
+      ? createNode(
           "ul",
           {
             oncreate() {
@@ -69,8 +69,8 @@ test("onremove", done => {
             }
           },
           [
-            h("li"),
-            h("li", {
+            createNode("li"),
+            createNode("li", {
               onremove(element, remove) {
                 remove()
                 expect(document.body.innerHTML).toBe("<ul><li></li></ul>")
@@ -79,7 +79,7 @@ test("onremove", done => {
             })
           ]
         )
-      : h("ul", {}, [h("li")])
+      : createNode("ul", {}, [createNode("li")])
 
   app(state, actions, view, document.body)
 })
@@ -97,15 +97,15 @@ test("ondestroy", done => {
 
   const view = (state, actions) =>
     state.value
-      ? h(
+      ? createNode(
           "ul",
           {
             oncreate: () => actions.toggle()
           },
           [
-            h("li"),
-            h("li", {}, [
-              h("span", {
+            createNode("li"),
+            createNode("li", {}, [
+              createNode("span", {
                 ondestroy() {
                   expect(removed).toBe(false)
                   done()
@@ -114,7 +114,7 @@ test("ondestroy", done => {
             ])
           ]
         )
-      : h("ul", {}, [h("li")])
+      : createNode("ul", {}, [createNode("li")])
 
   app(state, actions, view, document.body)
 })
@@ -132,7 +132,7 @@ test("onremove/ondestroy", done => {
 
   const view = (state, actions) =>
     state.value
-      ? h(
+      ? createNode(
           "ul",
           {
             oncreate() {
@@ -140,8 +140,8 @@ test("onremove/ondestroy", done => {
             }
           },
           [
-            h("li"),
-            h("li", {
+            createNode("li"),
+            createNode("li", {
               ondestroy() {
                 detached = true
               },
@@ -154,7 +154,7 @@ test("onremove/ondestroy", done => {
             })
           ]
         )
-      : h("ul", {}, [h("li")])
+      : createNode("ul", {}, [createNode("li")])
 
   app(state, actions, view, document.body)
 })
@@ -171,7 +171,7 @@ test("event bubbling", done => {
   }
 
   const view = (state, actions) =>
-    h(
+    createNode(
       "main",
       {
         oncreate() {
@@ -184,7 +184,7 @@ test("event bubbling", done => {
         }
       },
       [
-        h("p", {
+        createNode("p", {
           oncreate() {
             expect(count++).toBe(2)
           },
@@ -192,7 +192,7 @@ test("event bubbling", done => {
             expect(count++).toBe(6)
           }
         }),
-        h("p", {
+        createNode("p", {
           oncreate() {
             expect(count++).toBe(1)
           },
@@ -200,7 +200,7 @@ test("event bubbling", done => {
             expect(count++).toBe(5)
           }
         }),
-        h("p", {
+        createNode("p", {
           oncreate() {
             expect(count++).toBe(0)
           },

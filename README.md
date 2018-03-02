@@ -1,16 +1,16 @@
-# <img height=24 src=https://cdn.rawgit.com/JorgeBucaran/f53d2c00bafcf36e84ffd862f0dc2950/raw/882f20c970ff7d61aa04d44b92fc3530fa758bc0/Hyperapp.svg> Hyperapp
+# <img height=24 src=https://cdn.rawgit.com/jorgebucaran/f53d2c00bafcf36e84ffd862f0dc2950/raw/882f20c970ff7d61aa04d44b92fc3530fa758bc0/Hyperapp.svg> Hyperapp
 
 [![Travis CI](https://img.shields.io/travis/hyperapp/hyperapp/master.svg)](https://travis-ci.org/hyperapp/hyperapp) [![npm](https://img.shields.io/npm/v/hyperapp.svg)](https://www.npmjs.org/package/hyperapp) [![Slack](https://hyperappjs.herokuapp.com/badge.svg)](https://hyperappjs.herokuapp.com "Join us")
 
 Hyperapp is a JavaScript library for building web applications.
 
-* **Minimal** — Hyperapp was born out of the attempt to do more with less. We have aggressively minimized the concepts you need to understand while remaining on par with what other frameworks can do.
-* **Functional** — Hyperapp's design is inspired by [The Elm Architecture](https://guide.elm-lang.org/architecture). Create scalable browser-based applications using a functional paradigm. The twist is you don't have to learn a new language.
-* **Batteries-included** — Out of the box, Hyperapp combines state management with a Virtual DOM engine that supports keyed updates & lifecycle events — all with no dependencies.
+* **Minimal** — We have aggressively minimized the concepts you need to understand while remaining on par with what other frameworks can do.
+* **Pragmatic** — Hyperapp holds firm on the functional programming front when managing your state, but takes a pragmatic approach to allowing for side effects, asynchronous actions, and DOM manipulations.
+* **Standalone** — Do more with less. Hyperapp combines state management with a virtual DOM engine that supports keyed updates & lifecycle events — all with no dependencies.
 
 ## Getting Started
 
-Our first example is a counter that can be incremented or decremented. Go ahead and [try it online here](https://codepen.io/hyperapp/pen/zNxZLP/left/?editors=0010).
+Our first example is a counter that can be incremented or decremented. Go ahead and [try it online](https://codepen.io/hyperapp/pen/zNxZLP/left/?editors=0010).
 
 ```js
 import { h, app } from "hyperapp"
@@ -35,7 +35,7 @@ const view = (state, actions) => (
 app(state, actions, view, document.body)
 ```
 
-This example assumes you are using a JavaScript compiler like [Babel](https://babeljs.io) or [TypeScript](https://www.typescriptlang.org) and a module bundler like [Parcel](https://parceljs.org), [Rollup](https://rollupjs.org), [Webpack](https://webpack.js.org), etc. Usually, all you need to do is install the JSX [transform plugin](https://babeljs.io/docs/plugins/transform-react-jsx) and add the pragma option to your <samp>.babelrc</samp> file.
+This example assumes you are using a JavaScript compiler like [Babel](https://babeljs.io) or [TypeScript](https://www.typescriptlang.org) and a module bundler like [Parcel](https://parceljs.org), [Webpack](https://webpack.js.org), etc. Usually, all you need to do is install the JSX [transform plugin](https://babeljs.io/docs/plugins/transform-react-jsx) and add the pragma option to your <samp>.babelrc</samp> file.
 
 ```json
 {
@@ -43,7 +43,7 @@ This example assumes you are using a JavaScript compiler like [Babel](https://ba
 }
 ```
 
-JSX is a language syntax extension that lets you write HTML tags interspersed with JavaScript. Because browsers don't understand JSX, we use a compiler to transform it into <samp>hyperapp.h</samp> function calls (hyperscript).
+JSX is a language syntax extension that lets you write HTML tags interspersed with JavaScript. Because browsers don't understand JSX, we use a compiler to transform it into <samp>hyperapp.h</samp> function calls, our virtual DOM builder function.
 
 ```jsx
 const view = (state, actions) =>
@@ -78,9 +78,9 @@ If you don't want to set up a build environment, you can download Hyperapp from 
 
 ## Overview
 
-Hyperapp applications consist of three interconnected parts: the [State](#state), [View](#view), and [Actions](#actions).
+Hyperapp applications consist of three interconnected parts: the [state](#state), [view](#view), and [actions](#actions).
 
-Once initialized, your application executes in a continuous loop, taking in actions from users or from external events, updating the state, and representing changes in the view through a [Virtual DOM](#virtual-dom). Think of an action as a signal that notifies Hyperapp to update the state and schedule the next view redraw. After processing an action, the new state is presented back to the user.
+Once initialized, your application executes in a continuous loop, taking in actions from users or from external events, updating the state, and representing changes in the view through a [virtual DOM](#virtual-dom). Think of an action as a signal that notifies Hyperapp to update the state and schedule the next view redraw. After processing an action, the new state is presented back to the user.
 
 ### State
 
@@ -181,9 +181,9 @@ setInterval(main.down, 500, 1)
 
 ### View
 
-Every time your application state changes, the view function is called so that you can specify how you want the DOM to look based on the new state. The view returns your specification in the form of a [Virtual DOM](#virtual-dom) and Hyperapp takes care of updating the actual DOM to match it.
+Every time your application state changes, the view function is called so that you can specify how you want the DOM to look based on the new state. The view returns your specification in the form of a [virtual DOM](#virtual-dom) and Hyperapp takes care of updating the actual DOM to match it.
 
-This operation doesn't replace the entire DOM tree, but only update the parts of the DOM that changed. Incremental updates are calculated by diffing the old and the new Virtual DOM, then patching the DOM to reflect the new version.
+This operation doesn't replace the entire DOM tree, but only update the parts of the DOM that changed. Incremental updates are calculated by diffing the old and the new virtual DOM, then patching the DOM to reflect the new version.
 
 ```js
 const view = (state, actions) =>
@@ -194,9 +194,9 @@ const view = (state, actions) =>
   ])
 ```
 
-It is important to understand that the result of the view is a new Virtual DOM. It may seem wasteful to throw away the old Virtual DOM and re-create it entirely on every update — not to mention the fact that at any one time, Hyperapp is keeping two Virtual DOM trees in memory, but as it turns out, browsers can create hundreds of thousands of objects very quickly. On the other hand, modifying the DOM is several orders of magnitude more expensive.
+It is important to understand that the result of the view is a new virtual DOM. It may seem wasteful to throw away the old virtual DOM and re-create it entirely on every update — not to mention the fact that at any one time, Hyperapp is keeping two virtual DOM trees in memory, but as it turns out, browsers can create hundreds of thousands of objects very quickly. On the other hand, modifying the DOM is several orders of magnitude more expensive.
 
-## Mounting
+### Mounting
 
 To mount your application in a page, we need a DOM element. This element is referred to as the application container. Applications built with Hyperapp always have a single container.
 
@@ -228,7 +228,7 @@ This is how we can recycle server-rendered content out the counter example from 
 
 ## Virtual DOM
 
-A Virtual DOM is a description of what a DOM should look like using a tree of nested JavaScript objects known as Virtual Nodes. The Virtual DOM is a lightweight representation of the DOM.
+A virtual DOM is a description of what a DOM should look like using a tree of nested JavaScript objects known as virtual nodes. The virtual DOM is a lightweight representation of the DOM.
 
 ```jsx
 {
@@ -258,11 +258,11 @@ A Virtual DOM is a description of what a DOM should look like using a tree of ne
 }
 ```
 
-The Virtual DOM allows us to write code as if the entire document is redrawn on each change, while we only update the parts of the DOM that actually changed. We try to do this in the least number of steps possible, by comparing the new Virtual DOM against the previous one. This leads to high efficiency, since typically only a small percentage of nodes need to change, and changing real DOM nodes is costly compared to recalculating the Virtual DOM.
+The virtual DOM allows us to write code as if the entire document is redrawn on each change, while we only update the parts of the DOM that actually changed. We try to do this in the least number of steps possible, by comparing the new virtual DOM against the previous one. This leads to high efficiency, since typically only a small percentage of nodes need to change, and changing real DOM nodes is costly compared to recalculating the virtual DOM.
 
-### Virtual Node Builder
+### Virtual Nodes
 
-To help you create Virtual Nodes in a more compact way, Hyperapp provides a hyperscript-style <samp>h</samp> function. The <samp>h</samp> function takes an element's name or a function that returns a Virtual Node (see [Components](#components)), optional attributes and optional array of children elements.
+Hyperapp provides <samp>hyperapp.h</samp> to create virtual nodes. The <samp>h</samp> function takes an element's name or a function that returns a virtual node (see [Components](#components)), optional attributes and optional array of children elements.
 
 ```js
 import { h } from "hyperapp"
@@ -275,52 +275,11 @@ const view = (state, actions) =>
   ])
 ```
 
-### Attributes
+### Components
 
-Supported attributes include [HTML attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes), [SVG attributes](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute), [DOM events](https://developer.mozilla.org/en-US/docs/Web/Events), [Lifecycle Events](#lifecycle-events), and [Keys](#keys). Note that non-standard HTML attribute names are not supported, <samp>onclick</samp> and <samp>class</samp> are valid, but <samp>onClick</samp> or <samp>className</samp> are not.
+A component is a pure function that returns a virtual node. Unlike the view function, components are not wired to your application state or actions. Components are dumb, reusable blocks of code that encapsulate markup, styles and behaviors that belong together. Note that in JSX, components [must be capitalized](https://facebook.github.io/react/docs/jsx-in-depth.html#user-defined-components-must-be-capitalized) or contain a period in the name.
 
-### Styles
-
-Hyperapp does not handle inline styles as strings, but as an object with style declarations. Each declaration consists of a style name property written in <samp>camelCase</samp> and a value.
-
-```jsx
-import { h } from "hyperapp"
-
-export const HelloDiv = (
-  <div
-    style={{
-      color: "white",
-      margin: "20px",
-      textAlign: center,
-      backgroundImage: `url(${imgUrl})`
-    }}
-  >
-    Hello World
-  </div>
-)
-```
-
-### Sanitization
-
-If for any reason you don't use the Virtual DOM mechanism and decide to set the <samp>innerHTML</samp> in an element, you run the risk of cross-site scripting ([XSS](https://en.wikipedia.org/wiki/Cross-site_scripting)) vulnerabilities. Specifically you must sanitize any user provided data before writing it out to the DOM. We suggest creating your own replacement function to explicitly state the intent of performing an "unsafe" operation
-
-```jsx
-const dangerouslySetInnerHTML = html => element => {
-  element.innerHTML = html
-}
-
-const ItemContent = ({ item: { url, summary } }) => (
-  <div class="content">
-    <a href={url} oncreate={dangerouslySetInnerHTML(summary)} />
-  </div>
-)
-```
-
-## Components
-
-A component is a pure function that returns a [Virtual Node](#virtual-dom). Unlike the view function, components are not wired to your application state or actions. Components are dumb, reusable blocks of code that encapsulate markup, styles and behaviors that belong together. Note that when using JSX, components [must be capitalized](https://facebook.github.io/react/docs/jsx-in-depth.html#user-defined-components-must-be-capitalized) or contain a period in the name.
-
-[Live Example](https://codepen.io/hyperapp/pen/zNxRLy)
+[Try this example online](https://codepen.io/hyperapp/pen/zNxRLy).
 
 ```jsx
 import { h } from "hyperapp"
@@ -354,33 +313,8 @@ export const view = (state, actions) => (
 If you don't know all the attributes that you want to place in a component ahead of time, you can use the [spread syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_operator). Note that Hyperapp components can return multiple elements as in the following example. This technique lets you group a list of children without adding extra nodes to the DOM.
 
 ```jsx
-import { h } from "hyperapp"
-
-const TodoItem = ({ id, value, done, toggle }) => (
-  <li
-    class={done && "done"}
-    onclick={e =>
-      toggle({
-        value: done,
-        id: id
-      })
-    }
-  >
-    {value}
-  </li>
-)
-
 const TodoList = ({ todos, toggle }) =>
   todos.map(todo => <TodoItem {...todo} toggle={toggle} />)
-
-export const view = (state, actions) => (
-  <div>
-    <h1>Todo</h1>
-    <ul>
-      <TodoList todos={state.todos} toggle={actions.toggle} />
-    </ul>
-  </div>
-)
 ```
 
 ### Children Composition
@@ -403,11 +337,40 @@ const HelloBox = ({ name }) => (
 )
 ```
 
-## Lifecycle Events
+## Supported Attributes
 
-You can be notified when elements managed by the Virtual DOM are created, updated or removed via lifecycle events. Use them for animation, data fetching, wrapping third party libraries, cleaning up resources, etc.
+Supported attributes include [HTML attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes), [SVG attributes](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute), [DOM events](https://developer.mozilla.org/en-US/docs/Web/Events), [Lifecycle Events](#lifecycle-events), and [Keys](#keys). Note that non-standard HTML attribute names are not supported, <samp>onclick</samp> and <samp>class</samp> are valid, but <samp>onClick</samp> or <samp>className</samp> are not.
 
-### oncreate
+### Style
+
+The <samp>style</samp> attribute expects a plain object rather than a string as in HTML.
+Each declaration consists of a style name property written in <samp>camelCase</samp> and a value. CSS variables are currently not supported. See [#612](https://github.com/hyperapp/hyperapp/pull/612) for options.
+
+Individual style properties will be diffed and mapped against <samp>[HTMLElement.style](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style)</samp> property members of the DOM element - you should therefore use the JavaScript style object [property names](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Properties_Reference), e.g. <samp>backgroundColor</samp> rather than <samp>background-color</samp>.
+
+```jsx
+import { h } from "hyperapp"
+
+export const Jumbotron = ({ text }) => (
+  <div
+    style={{
+      color: "white",
+      margin: "20px",
+      textAlign: center,
+      fontSize: "32px",
+      backgroundImage: `url(${imgUrl})`
+    }}
+  >
+    {text}
+  </div>
+)
+```
+
+### Lifecycle Events
+
+You can be notified when elements managed by the virtual DOM are created, updated or removed via lifecycle events. Use them for animation, data fetching, wrapping third party libraries, cleaning up resources, etc.
+
+#### oncreate
 
 This event is fired after the element is created and attached to the DOM. Use it to manipulate the DOM node directly, make a network request, create a slide/fade in animation, etc.
 
@@ -421,7 +384,7 @@ const Textbox = ({ placeholder }) => (
 )
 ```
 
-### onupdate
+#### onupdate
 
 This event is fired every time we update the element attributes. Use <samp>oldAttributes</samp> inside the event handler to check if any attributes changed or not.
 
@@ -439,7 +402,7 @@ const Textbox = ({ placeholder }) => (
 )
 ```
 
-### onremove
+#### onremove
 
 This event is fired before the element is removed from the DOM. Use it to create slide/fade out animations. Call <samp>done</samp> inside the function to remove the element. This event is not called in its child elements.
 
@@ -451,7 +414,7 @@ const MessageWithFadeout = ({ title }) => (
 )
 ```
 
-### ondestroy
+#### ondestroy
 
 This event is fired after the element has been removed from the DOM, either directly or as a result of a parent being removed. Use it for invalidating timers, canceling a network request, removing global events listeners, etc.
 
@@ -470,7 +433,7 @@ const Camera = ({ onerror }) => (
 )
 ```
 
-## Keys
+### Keys
 
 Keys help identify which nodes were added, changed or removed from a list when a view is rendered. A key must be unique among sibling-nodes.
 

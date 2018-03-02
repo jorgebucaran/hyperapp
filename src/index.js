@@ -7,7 +7,11 @@ export function createNode(name, attributes /*, ...rest*/) {
   while (length-- > 2) rest.push(arguments[length])
 
   while (rest.length) {
-    if ((node = rest.pop()) && node.pop /* Array? */) {
+    var node = rest.pop()
+    if (
+      node &&
+      node.pop // isArray
+    ) {
       for (length = node.length; length--; ) {
         rest.push(node[length])
       }
@@ -17,7 +21,7 @@ export function createNode(name, attributes /*, ...rest*/) {
   }
 
   return typeof name === "function"
-    ? name(attributes || {}, children)
+    ? name(attributes || {}, children) // h(Component)
     : {
         nodeName: name,
         attributes: attributes || {},
@@ -29,11 +33,12 @@ export function createNode(name, attributes /*, ...rest*/) {
 export var h = createNode;
 
 export function app(state, actions, view, container) {
-  var renderLock
-  var firstRender = true
-  var lifecycleStack = []
-  var rootElement = (container && container.children[0]) || null
-  var oldNode = rootElement && toVNode(rootElement, [].map)
+  var map = [].map
+  var events = []
+  var element = (container && container.children[0]) || null
+  var oldNode = element && recycleNode(element)
+  var skipRender
+  var isFirstRender = true
   var globalState = clone(state)
   var wiredActions = clone(actions)
 
@@ -41,44 +46,50 @@ export function app(state, actions, view, container) {
 
   return wiredActions
 
-  function toVNode(element, map) {
+  function recycleNode(element) {
     return {
       nodeName: element.nodeName.toLowerCase(),
       attributes: {},
       children: map.call(element.childNodes, function(element) {
         return element.nodeType === 3 // Node.TEXT_NODE
           ? element.nodeValue
-          : toVNode(element, map)
+          : recycleNode(element)
       })
     }
   }
 
-  function render() {
-    renderLock = !renderLock
+  function resolveNode(node) {
+    return typeof node === "function"
+      ? resolveNode(node(globalState, wiredActions))
+      : node
+  }
 
-    var next = view(globalState, wiredActions)
-    if (container && !renderLock) {
-      rootElement = patch(container, rootElement, oldNode, (oldNode = next))
-      firstRender = false
+  function render() {
+    var node = resolveNode(view)
+
+    if (container) {
+      element = patch(container, element, oldNode, (oldNode = node))
     }
 
-    while ((next = lifecycleStack.pop())) next()
+    skipRender = isFirstRender = false
+
+    while (events.length) events.pop()()
   }
 
   function scheduleRender() {
-    if (!renderLock) {
-      renderLock = !renderLock
+    if (!skipRender) {
+      skipRender = true
       setTimeout(render)
     }
   }
 
   function clone(target, source) {
-    var obj = {}
+    var out = {}
 
-    for (var i in target) obj[i] = target[i]
-    for (var i in source) obj[i] = source[i]
+    for (var i in target) out[i] = target[i]
+    for (var i in source) out[i] = source[i]
 
-    return obj
+    return out
   }
 
   function set(path, value, source) {
@@ -103,21 +114,23 @@ export function app(state, actions, view, container) {
       typeof actions[key] === "function"
         ? (function(key, action) {
             actions[key] = function(data) {
-              if (typeof (data = action(data)) === "function") {
-                data = data(get(path, globalState), actions)
+              var result = action(data)
+
+              if (typeof result === "function") {
+                result = result(get(path, globalState), actions)
               }
 
               if (
-                data &&
-                data !== (state = get(path, globalState)) &&
-                !data.then // Promise
+                result &&
+                result !== (state = get(path, globalState)) &&
+                !result.then // !isPromise
               ) {
                 scheduleRender(
-                  (globalState = set(path, clone(state, data), globalState))
+                  (globalState = set(path, clone(state, result), globalState))
                 )
               }
 
-              return data
+              return result
             }
           })(key, actions[key])
         : wireStateToActions(
@@ -132,14 +145,17 @@ export function app(state, actions, view, container) {
     return node ? node.key : null
   }
 
-  function updateAttribute(element, name, value, isSVG, oldValue) {
+  function updateAttribute(element, name, value, oldValue, isSVG) {
     if (name === "key") {
     } else if (name === "style") {
       for (var i in clone(oldValue, value)) {
         element[name][i] = value == null || value[i] == null ? "" : value[i]
       }
     } else {
-      if (typeof value === "function" || (name in element && !isSVG)) {
+      if (
+        typeof value === "function" ||
+        (name in element && name !== "list" && !isSVG)
+      ) {
         element[name] = value == null ? "" : value
       } else if (value != null && value !== false) {
         element.setAttribute(name, value)
@@ -162,19 +178,25 @@ export function app(state, actions, view, container) {
             )
           : document.createElement(node.nodeName)
 
-    if (node.attributes) {
-      if (node.attributes.oncreate) {
-        lifecycleStack.push(function() {
-          node.attributes.oncreate(element)
+    var attributes = node.attributes
+    if (attributes) {
+      if (attributes.oncreate) {
+        events.push(function() {
+          attributes.oncreate(element)
         })
       }
 
       for (var i = 0; i < node.children.length; i++) {
-        element.appendChild(createElement(node.children[i], isSVG))
+        element.appendChild(
+          createElement(
+            (node.children[i] = resolveNode(node.children[i])),
+            isSVG
+          )
+        )
       }
 
-      for (var name in node.attributes) {
-        updateAttribute(element, name, node.attributes[name], isSVG)
+      for (var name in attributes) {
+        updateAttribute(element, name, attributes[name], null, isSVG)
       }
     }
 
@@ -193,22 +215,23 @@ export function app(state, actions, view, container) {
           element,
           name,
           attributes[name],
-          isSVG,
-          oldAttributes[name]
+          oldAttributes[name],
+          isSVG
         )
       }
     }
 
-    var cb = firstRender ? attributes.oncreate : attributes.onupdate
+    var cb = isFirstRender ? attributes.oncreate : attributes.onupdate
     if (cb) {
-      lifecycleStack.push(function() {
+      events.push(function() {
         cb(element, oldAttributes)
       })
     }
   }
 
-  function removeChildren(element, node, attributes) {
-    if ((attributes = node.attributes)) {
+  function removeChildren(element, node) {
+    var attributes = node.attributes
+    if (attributes) {
       for (var i = 0; i < node.children.length; i++) {
         removeChildren(element.childNodes[i], node.children[i])
       }
@@ -220,23 +243,33 @@ export function app(state, actions, view, container) {
     return element
   }
 
-  function removeElement(parent, element, node, cb) {
+  function removeElement(parent, element, node) {
     function done() {
       parent.removeChild(removeChildren(element, node))
     }
 
-    if (node.attributes && (cb = node.attributes.onremove)) {
+    var cb = node.attributes && node.attributes.onremove
+    if (cb) {
       cb(element, done)
     } else {
       done()
     }
   }
 
-  function patch(parent, element, oldNode, node, isSVG, nextSibling) {
+  function patch(parent, element, oldNode, node, isSVG) {
     if (node === oldNode) {
-    } else if (oldNode == null) {
-      element = parent.insertBefore(createElement(node, isSVG), element)
-    } else if (node.nodeName && node.nodeName === oldNode.nodeName) {
+    } else if (oldNode == null || oldNode.nodeName !== node.nodeName) {
+      var newElement = createElement(node, isSVG)
+      parent.insertBefore(newElement, element)
+
+      if (oldNode != null) {
+        removeElement(parent, element, oldNode)
+      }
+
+      element = newElement
+    } else if (oldNode.nodeName == null) {
+      element.nodeValue = node
+    } else {
       updateElement(
         element,
         oldNode.attributes,
@@ -244,86 +277,74 @@ export function app(state, actions, view, container) {
         (isSVG = isSVG || node.nodeName === "svg")
       )
 
-      var oldElements = []
       var oldKeyed = {}
       var newKeyed = {}
+      var oldElements = []
+      var oldChildren = oldNode.children
+      var children = node.children
 
-      for (var i = 0; i < oldNode.children.length; i++) {
+      for (var i = 0; i < oldChildren.length; i++) {
         oldElements[i] = element.childNodes[i]
 
-        var oldChild = oldNode.children[i]
-        var oldKey = getKey(oldChild)
-
-        if (null != oldKey) {
-          oldKeyed[oldKey] = [oldElements[i], oldChild]
+        var oldKey = getKey(oldChildren[i])
+        if (oldKey != null) {
+          oldKeyed[oldKey] = [oldElements[i], oldChildren[i]]
         }
       }
 
       var i = 0
-      var j = 0
+      var k = 0
 
-      while (j < node.children.length) {
-        var oldChild = oldNode.children[i]
-        var newChild = node.children[j]
-
-        var oldKey = getKey(oldChild)
-        var newKey = getKey(newChild)
+      while (k < children.length) {
+        var oldKey = getKey(oldChildren[i])
+        var newKey = getKey((children[k] = resolveNode(children[k])))
 
         if (newKeyed[oldKey]) {
           i++
           continue
         }
 
-        if (newKey == null) {
+        if (newKey == null || isFirstRender) {
           if (oldKey == null) {
-            patch(element, oldElements[i], oldChild, newChild, isSVG)
-            j++
+            patch(element, oldElements[i], oldChildren[i], children[k], isSVG)
+            k++
           }
           i++
         } else {
-          var recyledNode = oldKeyed[newKey] || []
+          var keyedNode = oldKeyed[newKey] || []
 
           if (oldKey === newKey) {
-            patch(element, recyledNode[0], recyledNode[1], newChild, isSVG)
+            patch(element, keyedNode[0], keyedNode[1], children[k], isSVG)
             i++
-          } else if (recyledNode[0]) {
+          } else if (keyedNode[0]) {
             patch(
               element,
-              element.insertBefore(recyledNode[0], oldElements[i]),
-              recyledNode[1],
-              newChild,
+              element.insertBefore(keyedNode[0], oldElements[i]),
+              keyedNode[1],
+              children[k],
               isSVG
             )
           } else {
-            patch(element, oldElements[i], null, newChild, isSVG)
+            patch(element, oldElements[i], null, children[k], isSVG)
           }
 
-          j++
-          newKeyed[newKey] = newChild
+          newKeyed[newKey] = children[k]
+          k++
         }
       }
 
-      while (i < oldNode.children.length) {
-        var oldChild = oldNode.children[i]
-        if (getKey(oldChild) == null) {
-          removeElement(element, oldElements[i], oldChild)
+      while (i < oldChildren.length) {
+        if (getKey(oldChildren[i]) == null) {
+          removeElement(element, oldElements[i], oldChildren[i])
         }
         i++
       }
 
       for (var i in oldKeyed) {
-        if (!newKeyed[oldKeyed[i][1].key]) {
+        if (!newKeyed[i]) {
           removeElement(element, oldKeyed[i][0], oldKeyed[i][1])
         }
       }
-    } else if (node.nodeName === oldNode.nodeName) {
-      element.nodeValue = node
-    } else {
-      element = parent.insertBefore(
-        createElement(node, isSVG),
-        (nextSibling = element)
-      )
-      removeElement(parent, nextSibling, oldNode)
     }
     return element
   }

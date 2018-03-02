@@ -1,12 +1,14 @@
 # Contributing to Hyperapp
 
-Thank you for taking the time to read our contribution guidelines. You can start contributing in many ways like filing bug reports, improving the documentation, and helping others.
+Thank you for taking the time to read our contribution guidelines. You can start contributing in many ways like filing bug reports, improving the documentation, or helping others.
+
+Our open source community strives to be nice, welcoming and professional. Instances of abusive, harassing, or otherwise unacceptable behavior will not be tolerated.
 
 ## Style
 
 * Hyperapp is written in ES3. Please don't create an issue asking us to rewrite it in ES6 or TypeScript.
-* We use [Prettier](https://github.com/prettier/prettier) to format the code. If you don't have Prettier installed in your code editor or IDE, you can use `npm run format` before creating a commit.
-* We prefer keeping all the moving parts inside as few files as possible. We don't have plans to break up the library into smaller modules. If you are looking for a Virtual DOM implementation without Hyperapp's built-in state management check out [Picodom](https://github.com/picodom/picodom).
+* We use [Prettier](https://github.com/prettier/prettier) to format the code. If you don't have Prettier installed in your code editor or IDE, you can use `npm run format` before adding a commit.
+* We prefer keeping all the moving parts inside as few files as possible. There are no plans to break up the library into smaller modules.
 
 ## Bugs
 
@@ -18,10 +20,6 @@ Thank you for taking the time to read our contribution guidelines. You can start
 
 ## Tests
 
-* We use [Babel](https://babeljs.io) and [Jest](http://facebook.github.io/jest) for testing.
+* We use [Babel](https://babeljs.io) and [Jest](http://facebook.github.io/jest) to run tests.
 * Feel free to create a new `test/*.test.js` file if none of the existing test files suits your test case.
-* Tests usually consist of an application demonstrating a feature, then check if <samp>document.body.innerHTML</samp> matches some string. Because the <samp>app</samp> call is asynchronous we often use [<samp>oncreate</samp>](README.md#oncreate) and [<samp>onupdate</samp>](README.md#onupdate) events to detect when an element has been  rendered on the DOM.
-
-## Humans
-
-Our open source community strives to be nice, welcoming and professional. Instances of abusive, harassing, or otherwise unacceptable behavior can be reported by contacting us at [hyperappjs@gmail.com](hyperappjs@gmail.com).
+* Tests usually consist of an application demonstrating a feature, then check if <samp>document.body.innerHTML</samp> matches some string.

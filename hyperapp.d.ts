@@ -1,4 +1,4 @@
-export as namespace Hyperapp
+export as namespace hyperapp
 
 /** @namespace [VDOM] */
 
@@ -67,7 +67,7 @@ export type ActionType<State, Actions> = (
   | ((state: State, actions: Actions) => ActionResult<State>)
   | ActionResult<State>
 
-/** The interface for actions implementations.
+/** The interface for the actions tree implementation.
  *
  * @memberOf [App]
  */

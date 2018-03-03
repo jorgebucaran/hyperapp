@@ -181,11 +181,11 @@ setInterval(main.down, 500, 1)
 
 ### View
 
-Every time your application state changes, the view function is called so that you can specify how you want the DOM to look based on the new state. The view returns your specification in the form of a [virtual DOM](#virtual-dom) and Hyperapp takes care of updating the actual DOM to match it.
-
-This operation doesn't replace the entire DOM tree, but only update the parts of the DOM that changed. Incremental updates are calculated by diffing the old and the new virtual DOM, then patching the DOM to reflect the new version.
+Every time your application state changes, the view function is called so that you can specify how you want the DOM to look based on the new state.
 
 ```js
+import { h } from "hyperapp"
+
 const view = (state, actions) =>
   h("div", {}, [
     h("h1", {}, state.count),
@@ -194,7 +194,41 @@ const view = (state, actions) =>
   ])
 ```
 
-It is important to understand that the result of the view is a new virtual DOM. It may seem wasteful to throw away the old virtual DOM and re-create it entirely on every update — not to mention the fact that at any one time, Hyperapp is keeping two virtual DOM trees in memory, but as it turns out, browsers can create hundreds of thousands of objects very quickly. On the other hand, modifying the DOM is several orders of magnitude more expensive.
+The view returns your specification in the form of a plain JavaScript object known as a [virtual DOM](#virtual-dom) and Hyperapp takes care of updating the actual DOM to match it.
+
+This operation doesn't replace the entire DOM tree, but only update the parts that changed. Incremental updates are calculated by diffing the old and the new virtual DOM, then patching the DOM to reflect the new version.
+
+#### Virtual DOM
+
+A virtual DOM is a description of what a DOM should look like using a tree of nested JavaScript objects known as virtual nodes. Think of a virtual DOM as a lightweight representation of the DOM. In the previous example, the view function returns and object like this.
+
+```jsx
+{
+  nodeName: "div",
+  attributes: {},
+  children: [
+    {
+      nodeName: "h1",
+      attributes: {},
+      children: 0
+    },
+    {
+      nodeName: "button",
+      attributes: { ... },
+      children: "-"
+    },
+    {
+      nodeName:   "button",
+      attributes: { ... },
+      children: "+"
+    }
+  ]
+}
+```
+
+The virtual DOM allows us to write code as if the entire document is thrown away and rebuilt on each change, while we only update what actually changed. We try to do this in the least number of steps possible, by comparing the new virtual DOM against the previous one. This leads to high efficiency, since typically only a small percentage of nodes need to change, and changing real DOM nodes is costly compared to recalculating the virtual DOM.
+
+It may seem wasteful to throw away the old virtual DOM and re-create it entirely on every update — not to mention the fact that at any one time, Hyperapp is keeping two virtual DOM trees in memory, but as it turns out, browsers can create hundreds of thousands of objects very quickly. On the other hand, modifying the DOM is several orders of magnitude more expensive.
 
 ### Mounting
 
@@ -224,55 +258,6 @@ This is how we can recycle server-rendered content out the counter example from 
   </div>
 </body>
 </html>
-```
-
-## Virtual DOM
-
-A virtual DOM is a description of what a DOM should look like using a tree of nested JavaScript objects known as virtual nodes. The virtual DOM is a lightweight representation of the DOM.
-
-```jsx
-{
-  nodeName: "div",
-  attributes: {},
-  children: [
-    {
-      nodeName: "h1",
-      attributes: {},
-      children: 0
-    },
-    {
-      nodeName: "button",
-      attributes: {
-        onclick: function() {/*...*/}
-      },
-      children: "-"
-    },
-    {
-      nodeName: "button",
-      attributes: {
-        onclick: function() {/*...*/}
-      },
-      children: "+"
-    }
-  ]
-}
-```
-
-The virtual DOM allows us to write code as if the entire document is redrawn on each change, while we only update the parts of the DOM that actually changed. We try to do this in the least number of steps possible, by comparing the new virtual DOM against the previous one. This leads to high efficiency, since typically only a small percentage of nodes need to change, and changing real DOM nodes is costly compared to recalculating the virtual DOM.
-
-### Virtual Nodes
-
-Hyperapp provides <samp>hyperapp.h</samp> to create virtual nodes. The <samp>h</samp> function takes an element's name or a function that returns a virtual node (see [Components](#components)), optional attributes and optional array of children elements.
-
-```js
-import { h } from "hyperapp"
-
-const view = (state, actions) =>
-  h("div", {}, [
-    h("h1", {}, state.count),
-    h("button", { onclick: () => actions.down(1) }, "-"),
-    h("button", { onclick: () => actions.up(1) }, "+")
-  ])
 ```
 
 ### Components
@@ -317,7 +302,7 @@ const TodoList = ({ todos, toggle }) =>
   todos.map(todo => <TodoItem {...todo} toggle={toggle} />)
 ```
 
-### Children Composition
+#### Children Composition
 
 Components receive their children elements via the second argument.
 
@@ -341,7 +326,7 @@ const HelloBox = ({ name }) => (
 
 Supported attributes include [HTML attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes), [SVG attributes](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute), [DOM events](https://developer.mozilla.org/en-US/docs/Web/Events), [Lifecycle Events](#lifecycle-events), and [Keys](#keys). Note that non-standard HTML attribute names are not supported, <samp>onclick</samp> and <samp>class</samp> are valid, but <samp>onClick</samp> or <samp>className</samp> are not.
 
-### Style
+### Styles
 
 The <samp>style</samp> attribute expects a plain object rather than a string as in HTML.
 Each declaration consists of a style name property written in <samp>camelCase</samp> and a value. CSS variables are currently not supported. See [#612](https://github.com/hyperapp/hyperapp/pull/612) for options.

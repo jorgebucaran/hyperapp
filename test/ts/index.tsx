@@ -1,4 +1,4 @@
-import { h, app, ActionsType, View } from "hyperapp"
+import { createNode, app, ActionsType, View } from "hyperapp"
 
 namespace Counter {
   export interface State {

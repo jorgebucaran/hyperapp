@@ -1,4 +1,4 @@
-import { h, app } from "../src"
+import { createNode, app } from "../src"
 
 beforeEach(() => {
   document.body.innerHTML = ""
@@ -12,7 +12,7 @@ test("container", done => {
   document.body.innerHTML = "<main></main>"
 
   const view = state =>
-    h(
+    createNode(
       "div",
       {
         oncreate() {
@@ -30,7 +30,7 @@ test("nested container", done => {
   document.body.innerHTML = "<main><section></section><div></div></main>"
 
   const view = state =>
-    h(
+    createNode(
       "p",
       {
         oncreate() {
@@ -61,7 +61,7 @@ test("container with mutated host", done => {
   }
 
   const view = (state, actions) =>
-    h(
+    createNode(
       "p",
       {
         oncreate() {

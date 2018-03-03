@@ -13,7 +13,7 @@ Hyperapp is a JavaScript micro-framework for building web applications.
 Our first example is a counter that can be incremented or decremented. Go ahead and [try it online](https://codepen.io/hyperapp/pen/zNxZLP/left/?editors=0010).
 
 ```js
-import { h, app } from "hyperapp"
+import { createNode, app } from "hyperapp"
 
 const state = {
   count: 0
@@ -43,14 +43,14 @@ This example assumes you are using a JavaScript compiler like [Babel](https://ba
 }
 ```
 
-JSX is a language syntax extension that lets you write HTML tags interspersed with JavaScript. Because browsers don't understand JSX, we use a compiler to transform it into <samp>hyperapp.h</samp> function calls, our virtual DOM builder function.
+JSX is a language syntax extension that lets you write HTML tags interspersed with JavaScript. Because browsers don't understand JSX, we use a compiler to transform it into <samp>hyperapp.createNode</samp> function calls, our virtual DOM builder function.
 
 ```jsx
 const view = (state, actions) =>
-  h("div", {}, [
-    h("h1", {}, state.count),
-    h("button", { onclick: () => actions.down(1) }, "-"),
-    h("button", { onclick: () => actions.up(1) }, "+")
+  createNode("div", {}, [
+    createNode("h1", {}, state.count),
+    createNode("button", { onclick: () => actions.down(1) }, "-"),
+    createNode("button", { onclick: () => actions.up(1) }, "+")
   ])
 ```
 
@@ -67,7 +67,7 @@ npm i <a href=https://www.npmjs.com/package/hyperapp>hyperapp</a>
 Then with a module bundler like [Rollup](https://rollupjs.org) or [Webpack](https://webpack.js.org), use as you would anything else.
 
 ```js
-import { h, app } from "hyperapp"
+import { createNode, app } from "hyperapp"
 ```
 
 If you don't want to set up a build environment, you can download Hyperapp from a CDN like [unpkg.com](https://unpkg.com/hyperapp) and it will be globally available through the <samp>window.hyperapp</samp> object. We support all ES5-compliant browsers, including Internet Explorer 10 and above.
@@ -187,10 +187,10 @@ This operation doesn't replace the entire DOM tree, but only update the parts of
 
 ```js
 const view = (state, actions) =>
-  h("div", {}, [
-    h("h1", {}, state.count),
-    h("button", { onclick: () => actions.down(1) }, "-"),
-    h("button", { onclick: () => actions.up(1) }, "+")
+  createNode("div", {}, [
+    createNode("h1", {}, state.count),
+    createNode("button", { onclick: () => actions.down(1) }, "-"),
+    createNode("button", { onclick: () => actions.up(1) }, "+")
   ])
 ```
 
@@ -262,16 +262,16 @@ The virtual DOM allows us to write code as if the entire document is redrawn on 
 
 ### Virtual Nodes
 
-Hyperapp provides <samp>hyperapp.h</samp> to create virtual nodes. The <samp>h</samp> function takes an element's name or a function that returns a virtual node (see [Components](#components)), optional attributes and optional array of children elements.
+Hyperapp provides <samp>hyperapp.createNode</samp> to create virtual nodes. The <samp>createNode</samp> function takes an element's name or a function that returns a virtual node (see [Components](#components)), optional attributes and optional array of children elements.
 
 ```js
-import { h } from "hyperapp"
+import { createNode } from "hyperapp"
 
 const view = (state, actions) =>
-  h("div", {}, [
-    h("h1", {}, state.count),
-    h("button", { onclick: () => actions.down(1) }, "-"),
-    h("button", { onclick: () => actions.up(1) }, "+")
+  createNode("div", {}, [
+    createNode("h1", {}, state.count),
+    createNode("button", { onclick: () => actions.down(1) }, "-"),
+    createNode("button", { onclick: () => actions.up(1) }, "+")
   ])
 ```
 
@@ -282,7 +282,7 @@ A component is a pure function that returns a virtual node. Unlike the view func
 [Try this example online](https://codepen.io/hyperapp/pen/zNxRLy).
 
 ```jsx
-import { h } from "hyperapp"
+import { createNode } from "hyperapp"
 
 const TodoItem = ({ id, value, done, toggle }) => (
   <li
@@ -349,7 +349,7 @@ Each declaration consists of a style name property written in <samp>camelCase</s
 Individual style properties will be diffed and mapped against <samp>[HTMLElement.style](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style)</samp> property members of the DOM element - you should therefore use the JavaScript style object [property names](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Properties_Reference), e.g. <samp>backgroundColor</samp> rather than <samp>background-color</samp>.
 
 ```jsx
-import { h } from "hyperapp"
+import { createNode } from "hyperapp"
 
 export const Jumbotron = ({ text }) => (
   <div

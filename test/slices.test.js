@@ -1,4 +1,4 @@
-import { h, app } from "../src"
+import { createNode, app } from "../src"
 
 beforeEach(() => {
   document.body.innerHTML = ""
@@ -67,7 +67,7 @@ test("state/actions tree", done => {
   }
 
   const view = state =>
-    h(
+    createNode(
       "div",
       {
         oncreate() {

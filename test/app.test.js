@@ -1,4 +1,4 @@
-import { h, app } from "../src"
+import { createNode, app } from "../src"
 
 beforeEach(() => {
   document.body.innerHTML = ""
@@ -20,7 +20,7 @@ test("debouncing", done => {
   }
 
   const view = state =>
-    h(
+    createNode(
       "div",
       {
         oncreate() {
@@ -36,7 +36,6 @@ test("debouncing", done => {
   main.fire()
 })
 
-
 test("lazy components", done => {
   const state = { value: "foo" }
   const actions = {
@@ -44,7 +43,7 @@ test("lazy components", done => {
   }
 
   const Component = () => (state, actions) =>
-    h(
+    createNode(
       "div",
       {
         oncreate() {
@@ -59,7 +58,7 @@ test("lazy components", done => {
       state.value
     )
 
-  const view = () => h(Component)
+  const view = () => createNode(Component)
 
   app(state, actions, view, document.body)
 })

@@ -3,7 +3,7 @@
     "strict": true,
     "noEmit": true,
     "jsx": "react",
-    "jsxFactory": "h",
+    "jsxFactory": "createNode",
     "baseUrl": "../..",
     "paths": {
       "hyperapp": ["src", "hyperapp.d.ts"]

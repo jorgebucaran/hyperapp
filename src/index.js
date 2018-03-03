@@ -1,4 +1,5 @@
-export function h(name, attributes /*...rest*/) {
+export function createNode(name, attributes /*, ...rest*/) {
+  var node
   var rest = []
   var children = []
   var length = arguments.length
@@ -20,7 +21,7 @@ export function h(name, attributes /*...rest*/) {
   }
 
   return typeof name === "function"
-    ? name(attributes || {}, children) // h(Component)
+    ? name(attributes || {}, children) // createNode(Component)
     : {
         nodeName: name,
         attributes: attributes || {},
@@ -28,6 +29,8 @@ export function h(name, attributes /*...rest*/) {
         key: attributes && attributes.key
       }
 }
+
+export var h = createNode
 
 export function app(state, actions, view, container) {
   var map = [].map

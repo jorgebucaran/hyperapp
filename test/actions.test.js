@@ -1,4 +1,4 @@
-import { h, app } from "../src"
+import { createNode, app } from "../src"
 
 const mockDelay = () => new Promise(resolve => setTimeout(resolve, 50))
 
@@ -16,7 +16,7 @@ test("sync updates", done => {
   }
 
   const view = state =>
-    h(
+    createNode(
       "div",
       {
         oncreate() {
@@ -44,7 +44,7 @@ test("async updates", done => {
   }
 
   const view = state =>
-    h(
+    createNode(
       "div",
       {
         oncreate() {
@@ -81,7 +81,7 @@ test("call action within action", done => {
   }
 
   const view = state =>
-    h(
+    createNode(
       "div",
       {
         oncreate() {

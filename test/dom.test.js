@@ -1,4 +1,4 @@
-import { h, app } from "../src"
+import { createNode, app } from "../src"
 
 function testTreeSegue(name, trees) {
   test(name, done => {
@@ -22,7 +22,7 @@ function testTreeSegue(name, trees) {
     }
 
     const view = (state, actions) =>
-      h(
+      createNode(
         "main",
         {
           oncreate: actions.next,
@@ -41,18 +41,18 @@ beforeEach(() => {
 
 testTreeSegue("replace element", [
   {
-    tree: h("main", {}),
+    tree: createNode("main", {}),
     html: `<main></main>`
   },
   {
-    tree: h("div", {}),
+    tree: createNode("div", {}),
     html: `<div></div>`
   }
 ])
 
 testTreeSegue("replace child", [
   {
-    tree: h("main", {}, [h("div", {}, "foo")]),
+    tree: createNode("main", {}, [createNode("div", {}, "foo")]),
     html: `
         <main>
           <div>foo</div>
@@ -60,7 +60,7 @@ testTreeSegue("replace child", [
       `
   },
   {
-    tree: h("main", {}, [h("main", {}, "bar")]),
+    tree: createNode("main", {}, [createNode("main", {}, "bar")]),
     html: `
         <main>
           <main>bar</main>
@@ -71,8 +71,8 @@ testTreeSegue("replace child", [
 
 testTreeSegue("insert children on top", [
   {
-    tree: h("main", {}, [
-      h(
+    tree: createNode("main", {}, [
+      createNode(
         "div",
         {
           key: "a",
@@ -90,8 +90,8 @@ testTreeSegue("insert children on top", [
       `
   },
   {
-    tree: h("main", {}, [
-      h(
+    tree: createNode("main", {}, [
+      createNode(
         "div",
         {
           key: "b",
@@ -101,7 +101,7 @@ testTreeSegue("insert children on top", [
         },
         "B"
       ),
-      h("div", { key: "a" }, "A")
+      createNode("div", { key: "a" }, "A")
     ]),
     html: `
         <main>
@@ -111,8 +111,8 @@ testTreeSegue("insert children on top", [
       `
   },
   {
-    tree: h("main", {}, [
-      h(
+    tree: createNode("main", {}, [
+      createNode(
         "div",
         {
           key: "c",
@@ -122,8 +122,8 @@ testTreeSegue("insert children on top", [
         },
         "C"
       ),
-      h("div", { key: "b" }, "B"),
-      h("div", { key: "a" }, "A")
+      createNode("div", { key: "b" }, "B"),
+      createNode("div", { key: "a" }, "A")
     ]),
     html: `
         <main>
@@ -134,8 +134,8 @@ testTreeSegue("insert children on top", [
       `
   },
   {
-    tree: h("main", {}, [
-      h(
+    tree: createNode("main", {}, [
+      createNode(
         "div",
         {
           key: "d",
@@ -145,9 +145,9 @@ testTreeSegue("insert children on top", [
         },
         "D"
       ),
-      h("div", { key: "c" }, "C"),
-      h("div", { key: "b" }, "B"),
-      h("div", { key: "a" }, "A")
+      createNode("div", { key: "c" }, "C"),
+      createNode("div", { key: "b" }, "B"),
+      createNode("div", { key: "a" }, "A")
     ]),
     html: `
         <main>
@@ -162,7 +162,7 @@ testTreeSegue("insert children on top", [
 
 testTreeSegue("remove text node", [
   {
-    tree: h("main", {}, [h("div", {}, ["foo"]), "bar"]),
+    tree: createNode("main", {}, [createNode("div", {}, ["foo"]), "bar"]),
     html: `
         <main>
           <div>foo</div>
@@ -171,7 +171,7 @@ testTreeSegue("remove text node", [
       `
   },
   {
-    tree: h("main", {}, [h("div", {}, ["foo"])]),
+    tree: createNode("main", {}, [createNode("div", {}, ["foo"])]),
     html: `
         <main>
           <div>foo</div>
@@ -182,8 +182,8 @@ testTreeSegue("remove text node", [
 
 testTreeSegue("replace keyed", [
   {
-    tree: h("main", {}, [
-      h(
+    tree: createNode("main", {}, [
+      createNode(
         "div",
         {
           key: "a",
@@ -201,8 +201,8 @@ testTreeSegue("replace keyed", [
       `
   },
   {
-    tree: h("main", {}, [
-      h(
+    tree: createNode("main", {}, [
+      createNode(
         "div",
         {
           key: "b",
@@ -223,8 +223,8 @@ testTreeSegue("replace keyed", [
 
 testTreeSegue("reorder keyed", [
   {
-    tree: h("main", {}, [
-      h(
+    tree: createNode("main", {}, [
+      createNode(
         "div",
         {
           key: "a",
@@ -234,7 +234,7 @@ testTreeSegue("reorder keyed", [
         },
         "A"
       ),
-      h(
+      createNode(
         "div",
         {
           key: "b",
@@ -244,7 +244,7 @@ testTreeSegue("reorder keyed", [
         },
         "B"
       ),
-      h(
+      createNode(
         "div",
         {
           key: "c",
@@ -254,7 +254,7 @@ testTreeSegue("reorder keyed", [
         },
         "C"
       ),
-      h(
+      createNode(
         "div",
         {
           key: "d",
@@ -264,7 +264,7 @@ testTreeSegue("reorder keyed", [
         },
         "D"
       ),
-      h(
+      createNode(
         "div",
         {
           key: "e",
@@ -286,12 +286,12 @@ testTreeSegue("reorder keyed", [
       `
   },
   {
-    tree: h("main", {}, [
-      h("div", { key: "e" }, "E"),
-      h("div", { key: "a" }, "A"),
-      h("div", { key: "b" }, "B"),
-      h("div", { key: "c" }, "C"),
-      h("div", { key: "d" }, "D")
+    tree: createNode("main", {}, [
+      createNode("div", { key: "e" }, "E"),
+      createNode("div", { key: "a" }, "A"),
+      createNode("div", { key: "b" }, "B"),
+      createNode("div", { key: "c" }, "C"),
+      createNode("div", { key: "d" }, "D")
     ]),
     html: `
         <main>
@@ -304,12 +304,12 @@ testTreeSegue("reorder keyed", [
       `
   },
   {
-    tree: h("main", {}, [
-      h("div", { key: "e" }, "E"),
-      h("div", { key: "d" }, "D"),
-      h("div", { key: "a" }, "A"),
-      h("div", { key: "c" }, "C"),
-      h("div", { key: "b" }, "B")
+    tree: createNode("main", {}, [
+      createNode("div", { key: "e" }, "E"),
+      createNode("div", { key: "d" }, "D"),
+      createNode("div", { key: "a" }, "A"),
+      createNode("div", { key: "c" }, "C"),
+      createNode("div", { key: "b" }, "B")
     ]),
     html: `
         <main>
@@ -322,12 +322,12 @@ testTreeSegue("reorder keyed", [
       `
   },
   {
-    tree: h("main", {}, [
-      h("div", { key: "c" }, "C"),
-      h("div", { key: "e" }, "E"),
-      h("div", { key: "b" }, "B"),
-      h("div", { key: "a" }, "A"),
-      h("div", { key: "d" }, "D")
+    tree: createNode("main", {}, [
+      createNode("div", { key: "c" }, "C"),
+      createNode("div", { key: "e" }, "E"),
+      createNode("div", { key: "b" }, "B"),
+      createNode("div", { key: "a" }, "A"),
+      createNode("div", { key: "d" }, "D")
     ]),
     html: `
         <main>
@@ -343,8 +343,8 @@ testTreeSegue("reorder keyed", [
 
 testTreeSegue("grow/shrink keyed", [
   {
-    tree: h("main", {}, [
-      h(
+    tree: createNode("main", {}, [
+      createNode(
         "div",
         {
           key: "a",
@@ -354,7 +354,7 @@ testTreeSegue("grow/shrink keyed", [
         },
         "A"
       ),
-      h(
+      createNode(
         "div",
         {
           key: "b",
@@ -364,7 +364,7 @@ testTreeSegue("grow/shrink keyed", [
         },
         "B"
       ),
-      h(
+      createNode(
         "div",
         {
           key: "c",
@@ -374,7 +374,7 @@ testTreeSegue("grow/shrink keyed", [
         },
         "C"
       ),
-      h(
+      createNode(
         "div",
         {
           key: "d",
@@ -384,7 +384,7 @@ testTreeSegue("grow/shrink keyed", [
         },
         "D"
       ),
-      h(
+      createNode(
         "div",
         {
           key: "e",
@@ -406,10 +406,10 @@ testTreeSegue("grow/shrink keyed", [
       `
   },
   {
-    tree: h("main", {}, [
-      h("div", { key: "a" }, "A"),
-      h("div", { key: "c" }, "C"),
-      h("div", { key: "d" }, "D")
+    tree: createNode("main", {}, [
+      createNode("div", { key: "a" }, "A"),
+      createNode("div", { key: "c" }, "C"),
+      createNode("div", { key: "d" }, "D")
     ]),
     html: `
         <main>
@@ -420,7 +420,7 @@ testTreeSegue("grow/shrink keyed", [
       `
   },
   {
-    tree: h("main", {}, [h("div", { key: "d" }, "D")]),
+    tree: createNode("main", {}, [createNode("div", { key: "d" }, "D")]),
     html: `
         <main>
           <div id="d">D</div>
@@ -428,8 +428,8 @@ testTreeSegue("grow/shrink keyed", [
       `
   },
   {
-    tree: h("main", {}, [
-      h(
+    tree: createNode("main", {}, [
+      createNode(
         "div",
         {
           key: "a",
@@ -439,7 +439,7 @@ testTreeSegue("grow/shrink keyed", [
         },
         "A"
       ),
-      h(
+      createNode(
         "div",
         {
           key: "b",
@@ -449,7 +449,7 @@ testTreeSegue("grow/shrink keyed", [
         },
         "B"
       ),
-      h(
+      createNode(
         "div",
         {
           key: "c",
@@ -459,8 +459,8 @@ testTreeSegue("grow/shrink keyed", [
         },
         "C"
       ),
-      h("div", { key: "d" }, "D"),
-      h(
+      createNode("div", { key: "d" }, "D"),
+      createNode(
         "div",
         {
           key: "e",
@@ -482,11 +482,11 @@ testTreeSegue("grow/shrink keyed", [
       `
   },
   {
-    tree: h("main", {}, [
-      h("div", { key: "d" }, "D"),
-      h("div", { key: "c" }, "C"),
-      h("div", { key: "b" }, "B"),
-      h("div", { key: "a" }, "A")
+    tree: createNode("main", {}, [
+      createNode("div", { key: "d" }, "D"),
+      createNode("div", { key: "c" }, "C"),
+      createNode("div", { key: "b" }, "B"),
+      createNode("div", { key: "a" }, "A")
     ]),
     html: `
         <main>
@@ -501,8 +501,8 @@ testTreeSegue("grow/shrink keyed", [
 
 testTreeSegue("mixed keyed/non-keyed", [
   {
-    tree: h("main", {}, [
-      h(
+    tree: createNode("main", {}, [
+      createNode(
         "div",
         {
           key: "a",
@@ -512,9 +512,9 @@ testTreeSegue("mixed keyed/non-keyed", [
         },
         "A"
       ),
-      h("div", {}, "B"),
-      h("div", {}, "C"),
-      h(
+      createNode("div", {}, "B"),
+      createNode("div", {}, "C"),
+      createNode(
         "div",
         {
           key: "d",
@@ -524,7 +524,7 @@ testTreeSegue("mixed keyed/non-keyed", [
         },
         "D"
       ),
-      h(
+      createNode(
         "div",
         {
           key: "e",
@@ -546,12 +546,12 @@ testTreeSegue("mixed keyed/non-keyed", [
       `
   },
   {
-    tree: h("main", {}, [
-      h("div", { key: "e" }, "E"),
-      h("div", {}, "C"),
-      h("div", {}, "B"),
-      h("div", { key: "d" }, "D"),
-      h("div", { key: "a" }, "A")
+    tree: createNode("main", {}, [
+      createNode("div", { key: "e" }, "E"),
+      createNode("div", {}, "C"),
+      createNode("div", {}, "B"),
+      createNode("div", { key: "d" }, "D"),
+      createNode("div", { key: "a" }, "A")
     ]),
     html: `
         <main>
@@ -564,12 +564,12 @@ testTreeSegue("mixed keyed/non-keyed", [
       `
   },
   {
-    tree: h("main", {}, [
-      h("div", {}, "C"),
-      h("div", { key: "d" }, "D"),
-      h("div", { key: "a" }, "A"),
-      h("div", { key: "e" }, "E"),
-      h("div", {}, "B")
+    tree: createNode("main", {}, [
+      createNode("div", {}, "C"),
+      createNode("div", { key: "d" }, "D"),
+      createNode("div", { key: "a" }, "A"),
+      createNode("div", { key: "e" }, "E"),
+      createNode("div", {}, "B")
     ]),
     html: `
         <main>
@@ -582,11 +582,11 @@ testTreeSegue("mixed keyed/non-keyed", [
       `
   },
   {
-    tree: h("main", {}, [
-      h("div", { key: "e" }, "E"),
-      h("div", { key: "d" }, "D"),
-      h("div", {}, "B"),
-      h("div", {}, "C")
+    tree: createNode("main", {}, [
+      createNode("div", { key: "e" }, "E"),
+      createNode("div", { key: "d" }, "D"),
+      createNode("div", {}, "B"),
+      createNode("div", {}, "C")
     ]),
     html: `
         <main>
@@ -601,48 +601,48 @@ testTreeSegue("mixed keyed/non-keyed", [
 
 testTreeSegue("styles", [
   {
-    tree: h("div"),
+    tree: createNode("div"),
     html: `<div></div>`
   },
   {
-    tree: h("div", { style: { color: "red", fontSize: "1em" } }),
+    tree: createNode("div", { style: { color: "red", fontSize: "1em" } }),
     html: `<div style="color: red; font-size: 1em;"></div>`
   },
   {
-    tree: h("div", { style: { color: "blue", float: "left" } }),
+    tree: createNode("div", { style: { color: "blue", float: "left" } }),
     html: `<div style="color: blue; float: left;"></div>`
   },
   {
-    tree: h("div"),
+    tree: createNode("div"),
     html: `<div style=""></div>`
   }
 ])
 
 testTreeSegue("update element data", [
   {
-    tree: h("div", { id: "foo", class: "bar" }),
+    tree: createNode("div", { id: "foo", class: "bar" }),
     html: `<div id="foo" class="bar"></div>`
   },
   {
-    tree: h("div", { id: "foo", class: "baz" }),
+    tree: createNode("div", { id: "foo", class: "baz" }),
     html: `<div id="foo" class="baz"></div>`
   }
 ])
 
 testTreeSegue("removeAttribute", [
   {
-    tree: h("div", { id: "foo", class: "bar" }),
+    tree: createNode("div", { id: "foo", class: "bar" }),
     html: `<div id="foo" class="bar"></div>`
   },
   {
-    tree: h("div"),
+    tree: createNode("div"),
     html: `<div></div>`
   }
 ])
 
 testTreeSegue("skip setAttribute for functions", [
   {
-    tree: h("div", {
+    tree: createNode("div", {
       onclick() {}
     }),
     html: `<div></div>`
@@ -651,7 +651,7 @@ testTreeSegue("skip setAttribute for functions", [
 
 testTreeSegue("setAttribute true", [
   {
-    tree: h("div", {
+    tree: createNode("div", {
       enabled: true
     }),
     html: `<div enabled="true"></div>`
@@ -660,7 +660,7 @@ testTreeSegue("setAttribute true", [
 
 testTreeSegue("update element with dynamic props", [
   {
-    tree: h("input", {
+    tree: createNode("input", {
       type: "text",
       value: "foo",
       oncreate(element) {
@@ -670,7 +670,7 @@ testTreeSegue("update element with dynamic props", [
     html: `<input type="text">`
   },
   {
-    tree: h("input", {
+    tree: createNode("input", {
       type: "text",
       value: "bar",
       onupdate(element) {
@@ -683,7 +683,7 @@ testTreeSegue("update element with dynamic props", [
 
 testTreeSegue("don't touch textnodes if equal", [
   {
-    tree: h(
+    tree: createNode(
       "main",
       {
         oncreate(element) {
@@ -695,26 +695,33 @@ testTreeSegue("don't touch textnodes if equal", [
     html: `<main>foobar</main>`
   },
   {
-    tree: h("main", {}, "foobar"),
+    tree: createNode("main", {}, "foobar"),
     html: `<main>foobar</main>`
   }
 ])
 
 testTreeSegue("a list with empty text nodes", [
   {
-    tree: h("ul", {}, [h("li", {}, ""), h("div", {}, "foo")]),
+    tree: createNode("ul", {}, [
+      createNode("li", {}, ""),
+      createNode("div", {}, "foo")
+    ]),
     html: `<ul><li></li><div>foo</div></ul>`
   },
   {
-    tree: h("ul", {}, [h("li", {}, ""), h("li", {}, ""), h("div", {}, "foo")]),
+    tree: createNode("ul", {}, [
+      createNode("li", {}, ""),
+      createNode("li", {}, ""),
+      createNode("div", {}, "foo")
+    ]),
     html: `<ul><li></li><li></li><div>foo</div></ul>`
   },
   {
-    tree: h("ul", {}, [
-      h("li", {}, ""),
-      h("li", {}, ""),
-      h("li", {}, ""),
-      h("div", {}, "foo")
+    tree: createNode("ul", {}, [
+      createNode("li", {}, ""),
+      createNode("li", {}, ""),
+      createNode("li", {}, ""),
+      createNode("div", {}, "foo")
     ]),
     html: `<ul><li></li><li></li><li></li><div>foo</div></ul>`
   }
@@ -722,37 +729,37 @@ testTreeSegue("a list with empty text nodes", [
 
 testTreeSegue("elements with falsey values", [
   {
-    tree: h("div", {
+    tree: createNode("div", {
       "data-test": "foo"
     }),
     html: `<div data-test="foo"></div>`
   },
   {
-    tree: h("div", {
+    tree: createNode("div", {
       "data-test": "0"
     }),
     html: `<div data-test="0"></div>`
   },
   {
-    tree: h("div", {
+    tree: createNode("div", {
       "data-test": 0
     }),
     html: `<div data-test="0"></div>`
   },
   {
-    tree: h("div", {
+    tree: createNode("div", {
       "data-test": null
     }),
     html: `<div></div>`
   },
   {
-    tree: h("div", {
+    tree: createNode("div", {
       "data-test": false
     }),
     html: `<div></div>`
   },
   {
-    tree: h("div", {
+    tree: createNode("div", {
       "data-test": undefined
     }),
     html: `<div></div>`
@@ -761,7 +768,7 @@ testTreeSegue("elements with falsey values", [
 
 testTreeSegue("input list attribute", [
   {
-    tree: h("input", {
+    tree: createNode("input", {
       list: "foobar"
     }),
     html: `<input list="foobar">`

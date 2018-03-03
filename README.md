@@ -43,7 +43,7 @@ This example assumes you are using a JavaScript compiler like [Babel](https://ba
 }
 ```
 
-JSX is a language syntax extension that lets you write HTML tags interspersed with JavaScript. Because browsers don't understand JSX, we use a compiler to transform it into <samp>hyperapp.h</samp> function calls, our virtual DOM builder function.
+JSX is a language syntax extension that lets you write HTML tags interspersed with JavaScript. Because browsers don't understand JSX, we use a compiler to transform it into <samp>hyperapp.createNode</samp> function calls, our virtual DOM builder function.
 
 ```jsx
 const view = (state, actions) =>
@@ -262,7 +262,7 @@ The virtual DOM allows us to write code as if the entire document is redrawn on 
 
 ### Virtual Nodes
 
-Hyperapp provides <samp>hyperapp.h</samp> to create virtual nodes. The <samp>h</samp> function takes an element's name or a function that returns a virtual node (see [Components](#components)), optional attributes and optional array of children elements.
+Hyperapp provides <samp>hyperapp.createNode</samp> to create virtual nodes. The <samp>createNode</samp> function takes an element's name or a function that returns a virtual node (see [Components](#components)), optional attributes and optional array of children elements.
 
 ```js
 import { createNode } from "hyperapp"

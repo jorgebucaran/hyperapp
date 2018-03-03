@@ -30,7 +30,7 @@ export function createNode(name, attributes /*, ...rest*/) {
       }
 }
 
-export var h = createNode;
+export var h = createNode
 
 export function app(state, actions, view, container) {
   var map = [].map

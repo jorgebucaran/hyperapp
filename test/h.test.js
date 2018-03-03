@@ -35,7 +35,9 @@ test("positional String/Number children", () => {
     children: [0, "foo", 1, "baz", 2]
   })
 
-  expect(createNode("div", {}, "foo", createNode("div", {}, "bar"), "baz", "quux")).toEqual({
+  expect(
+    createNode("div", {}, "foo", createNode("div", {}, "bar"), "baz", "quux")
+  ).toEqual({
     nodeName: "div",
     attributes: {},
     children: [
@@ -88,7 +90,9 @@ test("nodeName as a function (JSX components)", () => {
     children: ["bar"]
   })
 
-  expect(createNode(Component, { id: "foo" }, [createNode(Component, { id: "bar" })])).toEqual({
+  expect(
+    createNode(Component, { id: "foo" }, [createNode(Component, { id: "bar" })])
+  ).toEqual({
     nodeName: "div",
     attributes: { id: "foo" },
     children: [

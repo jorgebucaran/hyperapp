@@ -31,13 +31,22 @@ test("svg", done => {
         createNode("p", { id: "foo" }, "foo"),
         createNode("svg", { id: "bar", viewBox: "0 0 10 10" }, [
           createNode("quux", {}, [
-            createNode("beep", {}, [createNode("ping", {}), createNode("pong", {})]),
+            createNode("beep", {}, [
+              createNode("ping", {}),
+              createNode("pong", {})
+            ]),
             createNode("bop", {}),
-            createNode("boop", {}, [createNode("ping", {}), createNode("pong", {})])
+            createNode("boop", {}, [
+              createNode("ping", {}),
+              createNode("pong", {})
+            ])
           ]),
           createNode("xuuq", {}, [
             createNode("beep", {}),
-            createNode("bop", {}, [createNode("ping", {}), createNode("pong", {})]),
+            createNode("bop", {}, [
+              createNode("ping", {}),
+              createNode("pong", {})
+            ]),
             createNode("boop", {})
           ])
         ]),

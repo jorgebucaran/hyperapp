@@ -36,7 +36,6 @@ test("debouncing", done => {
   main.fire()
 })
 
-
 test("lazy components", done => {
   const state = { value: "foo" }
   const actions = {

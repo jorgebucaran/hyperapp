@@ -702,11 +702,18 @@ testTreeSegue("don't touch textnodes if equal", [
 
 testTreeSegue("a list with empty text nodes", [
   {
-    tree: createNode("ul", {}, [createNode("li", {}, ""), createNode("div", {}, "foo")]),
+    tree: createNode("ul", {}, [
+      createNode("li", {}, ""),
+      createNode("div", {}, "foo")
+    ]),
     html: `<ul><li></li><div>foo</div></ul>`
   },
   {
-    tree: createNode("ul", {}, [createNode("li", {}, ""), createNode("li", {}, ""), createNode("div", {}, "foo")]),
+    tree: createNode("ul", {}, [
+      createNode("li", {}, ""),
+      createNode("li", {}, ""),
+      createNode("div", {}, "foo")
+    ]),
     html: `<ul><li></li><li></li><div>foo</div></ul>`
   },
   {

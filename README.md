@@ -351,7 +351,6 @@ export const Jumbotron = ({ text }) => (
 )
 ```
 
-### Action Handlers
 An action handler will be passed an DOM <code>event</code> object that can be used to get the current state of the HTML element.
 
 ```jsx

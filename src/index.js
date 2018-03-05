@@ -56,9 +56,11 @@ export function app(state, actions, view, container) {
   }
 
   function resolveNode(node) {
-    return typeof node === "function"
-      ? resolveNode(node(globalState, wiredActions)) || h(node, null)
-      : node
+    return node === null
+      ? h(node, null)
+      : typeof node === "function"
+        ? resolveNode(node(globalState, wiredActions)) || h(node, null)
+        : node
   }
 
   function render() {

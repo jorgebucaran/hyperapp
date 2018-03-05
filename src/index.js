@@ -59,7 +59,7 @@ export function app(state, actions, view, container) {
     return node === null
       ? h(node, null)
       : typeof node === "function"
-        ? resolveNode(node(globalState, wiredActions)) || h(node, null)
+        ? resolveNode(node(globalState, wiredActions))
         : node
   }
 

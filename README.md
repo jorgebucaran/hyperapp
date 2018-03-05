@@ -351,20 +351,6 @@ export const Jumbotron = ({ text }) => (
 )
 ```
 
-An action handler will be passed an DOM <code>event</code> object that can be used to get the current state of the HTML element.
-
-```jsx
-const view = (state, actions) => (
-  <div class="container">
-    <input 
-      type="search"
-      placeholder="Search..."
-      oninput={event => actions.search(event.target.value)}
-    />
-  </div>
-);
-```
-
 ### Lifecycle Events
 
 You can be notified when elements managed by the virtual DOM are created, updated or removed via lifecycle events. Use them for animation, data fetching, wrapping third party libraries, cleaning up resources, etc.
@@ -471,6 +457,22 @@ export const PlayerList = ({ players }) =>
         <PlayerProfile {...player} />
       </li>
     ))
+```
+
+### Events
+
+An action handler will be passed an DOM <code>event</code> object that can be used to get the current state of the HTML element.
+
+```jsx
+const view = (state, actions) => (
+  <div class="container">
+    <input 
+      type="search"
+      placeholder="Search..."
+      oninput={event => actions.search(event.target.value)}
+    />
+  </div>
+);
 ```
 
 ## Community

@@ -15,6 +15,7 @@ install:
 
 script:
   - npm test
+  - npm run size
   - codecov
 
 notifications:

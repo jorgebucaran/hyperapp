@@ -181,17 +181,16 @@ setInterval(main.down, 500, 1)
 
 ### View
 
-Every time your application state changes, the view function is called so that you can specify how you want the DOM to look based on the new state.
+Every time your application state changes, the view function is called with the state and actions so that you can specify how you want the DOM to look based on the new state.
 
 ```js
-import { h } from "hyperapp"
-
-const view = (state, actions) =>
-  h("div", {}, [
-    h("h1", {}, state.count),
-    h("button", { onclick: () => actions.down(1) }, "-"),
-    h("button", { onclick: () => actions.up(1) }, "+")
-  ])
+const view = (state, actions) => (
+  <div>
+    <h1>{state.count}</h1>
+    <button onclick={() => actions.down(1)}>-</button>
+    <button onclick={() => actions.up(1)}>+</button>
+  </div>
+)
 ```
 
 The view returns your specification in the form of a plain JavaScript object known as a [virtual DOM](#virtual-dom) and Hyperapp takes care of updating the actual DOM to match it.
@@ -229,6 +228,24 @@ A virtual DOM is a description of what a DOM should look like using a tree of ne
 The virtual DOM allows us to write code as if the entire document is thrown away and rebuilt on each change, while we only update what actually changed. We try to do this in the least number of steps possible, by comparing the new virtual DOM against the previous one. This leads to high efficiency, since typically only a small percentage of nodes need to change, and changing real DOM nodes is costly compared to recalculating the virtual DOM.
 
 It may seem wasteful to throw away the old virtual DOM and re-create it entirely on every update — not to mention the fact that at any one time, Hyperapp is keeping two virtual DOM trees in memory, but as it turns out, browsers can create hundreds of thousands of objects very quickly. On the other hand, modifying the DOM is several orders of magnitude more expensive.
+
+#### Subiews
+
+A subview is a regular view function nested within the virtual DOM tree. Similarly to the top-level view function, subviews are passed your application global state and actions.
+
+```jsx
+const Counter = ({ maxCount }) => (state, actions) => (
+  <div>
+    <h1>{state.count}</h1>
+    <button onclick={() => actions.down(1)}>-</button>
+    <button disabled={state.count === maxCount} onclick={() => actions.up(1)}>
+      +
+    </button>
+  </div>
+)
+
+const view = () => <Counter maxCount={10} />
+```
 
 ### Mounting
 

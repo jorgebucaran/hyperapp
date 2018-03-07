@@ -21,6 +21,11 @@ export interface Component<Attributes = {}> {
   (attributes: Attributes, children: Array<VNode | string>): VNode<Attributes>
 }
 
+/**
+ * Possibles children types
+ */
+export type Children = VNode | string | number | null;
+
 /** The soft way to create a VNode.
  * @param name      An element name or a Component function
  * @param attributes     Any valid HTML atributes, events, styles, and meta data
@@ -32,7 +37,7 @@ export interface Component<Attributes = {}> {
 export function h<Attributes>(
   nodeName: Component<Attributes> | string,
   attributes?: Attributes,
-  ...children: Array<VNode | string | number | null>
+  ...children: Array<Children | Children[]>,
 ): VNode<Attributes>
 
 /** @namespace [App] */

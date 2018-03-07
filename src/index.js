@@ -1,4 +1,4 @@
-export function h(name, attributes /*...rest*/) {
+export function h(name, attributes) {
   var rest = []
   var children = []
   var length = arguments.length
@@ -7,10 +7,7 @@ export function h(name, attributes /*...rest*/) {
 
   while (rest.length) {
     var node = rest.pop()
-    if (
-      node &&
-      node.pop // isArray
-    ) {
+    if (node && node.pop) {
       for (length = node.length; length--; ) {
         rest.push(node[length])
       }
@@ -20,7 +17,7 @@ export function h(name, attributes /*...rest*/) {
   }
 
   return typeof name === "function"
-    ? name(attributes || {}, children) // h(Component)
+    ? name(attributes || {}, children)
     : {
         nodeName: name,
         attributes: attributes || {},
@@ -31,11 +28,11 @@ export function h(name, attributes /*...rest*/) {
 
 export function app(state, actions, view, container) {
   var map = [].map
-  var events = []
   var element = (container && container.children[0]) || null
-  var oldNode = element && recycleNode(element)
+  var oldNode = element && recycleElement(element)
+  var lifecycle = []
   var skipRender
-  var isFirstRender = true
+  var isRecycling = true
   var globalState = clone(state)
   var wiredActions = clone(actions)
 
@@ -43,14 +40,14 @@ export function app(state, actions, view, container) {
 
   return wiredActions
 
-  function recycleNode(element) {
+  function recycleElement(element) {
     return {
       nodeName: element.nodeName.toLowerCase(),
       attributes: {},
       children: map.call(element.childNodes, function(element) {
         return element.nodeType === 3 // Node.TEXT_NODE
           ? element.nodeValue
-          : recycleNode(element)
+          : recycleElement(element)
       })
     }
   }
@@ -68,9 +65,9 @@ export function app(state, actions, view, container) {
       element = patch(container, element, oldNode, (oldNode = node))
     }
 
-    skipRender = isFirstRender = false
+    skipRender = isRecycling = false
 
-    while (events.length) events.pop()()
+    while (lifecycle.length) lifecycle.pop()()
   }
 
   function scheduleRender() {
@@ -142,6 +139,10 @@ export function app(state, actions, view, container) {
     return node ? node.key : null
   }
 
+  function eventListener(event) {
+    return event.currentTarget.events[event.type](event)
+  }
+
   function updateAttribute(element, name, value, oldValue, isSVG) {
     if (name === "key") {
     } else if (name === "style") {
@@ -149,10 +150,19 @@ export function app(state, actions, view, container) {
         element[name][i] = value == null || value[i] == null ? "" : value[i]
       }
     } else {
-      if (
-        typeof value === "function" ||
-        (name in element && name !== "list" && !isSVG)
-      ) {
+      if (name[0] === "o" && name[1] === "n") {
+        if (!element.events) {
+          element.events = {}
+        }
+        element.events[(name = name.slice(2))] = value
+        if (value) {
+          if (!oldValue) {
+            element.addEventListener(name, eventListener)
+          }
+        } else {
+          element.removeEventListener(name, eventListener)
+        }
+      } else if (name in element && name !== "list" && !isSVG) {
         element[name] = value == null ? "" : value
       } else if (value != null && value !== false) {
         element.setAttribute(name, value)
@@ -178,7 +188,7 @@ export function app(state, actions, view, container) {
     var attributes = node.attributes
     if (attributes) {
       if (attributes.oncreate) {
-        events.push(function() {
+        lifecycle.push(function() {
           attributes.oncreate(element)
         })
       }
@@ -218,9 +228,9 @@ export function app(state, actions, view, container) {
       }
     }
 
-    var cb = isFirstRender ? attributes.oncreate : attributes.onupdate
+    var cb = isRecycling ? attributes.oncreate : attributes.onupdate
     if (cb) {
-      events.push(function() {
+      lifecycle.push(function() {
         cb(element, oldAttributes)
       })
     }
@@ -301,7 +311,7 @@ export function app(state, actions, view, container) {
           continue
         }
 
-        if (newKey == null || isFirstRender) {
+        if (newKey == null || isRecycling) {
           if (oldKey == null) {
             patch(element, oldElements[i], oldChildren[i], children[k], isSVG)
             k++

@@ -1,4 +1,4 @@
-export function h(name, attributes) {
+export function h(name, attributes /*...rest*/) {
   var rest = []
   var children = []
   var length = arguments.length
@@ -7,7 +7,10 @@ export function h(name, attributes) {
 
   while (rest.length) {
     var node = rest.pop()
-    if (node && node.pop) {
+    if (
+      node &&
+      node.pop // isArray
+    ) {
       for (length = node.length; length--; ) {
         rest.push(node[length])
       }
@@ -16,9 +19,7 @@ export function h(name, attributes) {
     }
   }
 
-  return name === null
-    ? null
-    : typeof name === "function"
+  return typeof name === "function"
     ? name(attributes || {}, children) // h(Component)
     : {
         nodeName: name,
@@ -30,11 +31,11 @@ export function h(name, attributes) {
 
 export function app(state, actions, view, container) {
   var map = [].map
+  var events = []
   var element = (container && container.children[0]) || null
-  var oldNode = element && recycleElement(element)
-  var lifecycle = []
+  var oldNode = element && recycleNode(element)
   var skipRender
-  var isRecycling = true
+  var isFirstRender = true
   var globalState = clone(state)
   var wiredActions = clone(actions)
 
@@ -42,24 +43,22 @@ export function app(state, actions, view, container) {
 
   return wiredActions
 
-  function recycleElement(element) {
+  function recycleNode(element) {
     return {
       nodeName: element.nodeName.toLowerCase(),
       attributes: {},
       children: map.call(element.childNodes, function(element) {
         return element.nodeType === 3 // Node.TEXT_NODE
           ? element.nodeValue
-          : recycleElement(element)
+          : recycleNode(element)
       })
     }
   }
 
   function resolveNode(node) {
-    return node === null
-        ? h(node, null)
-        : typeof node === "function"
-          ? resolveNode(node(globalState, wiredActions))
-          : node
+    return typeof node === "function"
+      ? resolveNode(node(globalState, wiredActions))
+      : node || ''
   }
 
   function render() {
@@ -69,9 +68,9 @@ export function app(state, actions, view, container) {
       element = patch(container, element, oldNode, (oldNode = node))
     }
 
-    skipRender = isRecycling = false
+    skipRender = isFirstRender = false
 
-    while (lifecycle.length) lifecycle.pop()()
+    while (events.length) events.pop()()
   }
 
   function scheduleRender() {
@@ -143,10 +142,6 @@ export function app(state, actions, view, container) {
     return node ? node.key : null
   }
 
-  function eventListener(event) {
-    return event.currentTarget.events[event.type](event)
-  }
-
   function updateAttribute(element, name, value, oldValue, isSVG) {
     if (name === "key") {
     } else if (name === "style") {
@@ -154,19 +149,10 @@ export function app(state, actions, view, container) {
         element[name][i] = value == null || value[i] == null ? "" : value[i]
       }
     } else {
-      if (name[0] === "o" && name[1] === "n") {
-        if (!element.events) {
-          element.events = {}
-        }
-        element.events[(name = name.slice(2))] = value
-        if (value) {
-          if (!oldValue) {
-            element.addEventListener(name, eventListener)
-          }
-        } else {
-          element.removeEventListener(name, eventListener)
-        }
-      } else if (name in element && name !== "list" && !isSVG) {
+      if (
+        typeof value === "function" ||
+        (name in element && name !== "list" && !isSVG)
+      ) {
         element[name] = value == null ? "" : value
       } else if (value != null && value !== false) {
         element.setAttribute(name, value)
@@ -179,8 +165,6 @@ export function app(state, actions, view, container) {
   }
 
   function createElement(node, isSVG) {
-    if(!node) return document.createDocumentFragment();
-
     var element =
       typeof node === "string" || typeof node === "number"
         ? document.createTextNode(node)
@@ -194,7 +178,7 @@ export function app(state, actions, view, container) {
     var attributes = node.attributes
     if (attributes) {
       if (attributes.oncreate) {
-        lifecycle.push(function() {
+        events.push(function() {
           attributes.oncreate(element)
         })
       }
@@ -234,9 +218,9 @@ export function app(state, actions, view, container) {
       }
     }
 
-    var cb = isRecycling ? attributes.oncreate : attributes.onupdate
+    var cb = isFirstRender ? attributes.oncreate : attributes.onupdate
     if (cb) {
-      lifecycle.push(function() {
+      events.push(function() {
         cb(element, oldAttributes)
       })
     }
@@ -270,7 +254,7 @@ export function app(state, actions, view, container) {
   }
 
   function patch(parent, element, oldNode, node, isSVG) {
-    if (node === oldNode || !node || !node && !element) {
+    if (node === oldNode) {
     } else if (oldNode == null || oldNode.nodeName !== node.nodeName) {
       var newElement = createElement(node, isSVG)
       parent.insertBefore(newElement, element)
@@ -317,7 +301,7 @@ export function app(state, actions, view, container) {
           continue
         }
 
-        if (newKey == null || isRecycling) {
+        if (newKey == null || isFirstRender) {
           if (oldKey == null) {
             patch(element, oldElements[i], oldChildren[i], children[k], isSVG)
             k++

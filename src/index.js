@@ -19,7 +19,9 @@ export function h(name, attributes /*...rest*/) {
     }
   }
 
-  return typeof name === "function"
+  return name === null
+    ? null
+    : typeof name === "function"
     ? name(attributes || {}, children) // h(Component)
     : {
         nodeName: name,
@@ -57,10 +59,10 @@ export function app(state, actions, view, container) {
 
   function resolveNode(node) {
     return node === null
-      ? h(node, null)
-      : typeof node === "function"
-        ? resolveNode(node(globalState, wiredActions))
-        : node
+        ? h(node, null)
+        : typeof node === "function"
+          ? resolveNode(node(globalState, wiredActions))
+          : node
   }
 
   function render() {
@@ -167,6 +169,8 @@ export function app(state, actions, view, container) {
   }
 
   function createElement(node, isSVG) {
+    if(!node) return document.createDocumentFragment();
+
     var element =
       typeof node === "string" || typeof node === "number"
         ? document.createTextNode(node)
@@ -256,7 +260,7 @@ export function app(state, actions, view, container) {
   }
 
   function patch(parent, element, oldNode, node, isSVG) {
-    if (node === oldNode) {
+    if (node === oldNode || !node || !node && !element) {
     } else if (oldNode == null || oldNode.nodeName !== node.nodeName) {
       var newElement = createElement(node, isSVG)
       parent.insertBefore(newElement, element)

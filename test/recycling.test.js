@@ -1,48 +1,52 @@
 import { h, app } from "../src"
 
 test("recycle markup", done => {
-  const SSR_BODY = `<div id="app"><main><p id="foo">foo</p></main></div>`
+  const SSR_HTML = `<div id="app"><main><p id="foo">foo</p></main></div>`
 
-  document.body.innerHTML = SSR_BODY
+  document.body.innerHTML = SSR_HTML
 
-  const view = state =>
-    h("main", {}, [
-      h(
-        "p",
-        {
-          oncreate(element) {
+  app(
+    null,
+    null,
+    state => (
+      <main>
+        <p
+          oncreate={element => {
             expect(element.id).toBe("foo")
-            expect(document.body.innerHTML).toBe(SSR_BODY)
+            expect(document.body.innerHTML).toBe(SSR_HTML)
             done()
-          }
-        },
-        "foo"
-      )
-    ])
-
-  app({}, {}, view, document.getElementById("app"))
+          }}
+        >
+          foo
+        </p>
+      </main>
+    ),
+    document.getElementById("app")
+  )
 })
 
 test("recycle markup against keyed vdom", done => {
-  const SSR_BODY = `<div id="app"><main><p id="foo">foo</p></main></div>`
+  const SSR_HTML = `<div id="app"><main><p id="foo">foo</p></main></div>`
 
-  document.body.innerHTML = SSR_BODY
+  document.body.innerHTML = SSR_HTML
 
-  const view = state =>
-    h("main", {}, [
-      h(
-        "p",
-        {
-          key: "key",
-          oncreate(element) {
+  app(
+    null,
+    null,
+    state => (
+      <main>
+        <p
+          key="someKey"
+          oncreate={element => {
             expect(element.id).toBe("foo")
-            expect(document.body.innerHTML).toBe(SSR_BODY)
+            expect(document.body.innerHTML).toBe(SSR_HTML)
             done()
-          }
-        },
-        "foo"
-      )
-    ])
-
-  app({}, {}, view, document.getElementById("app"))
+          }}
+        >
+          foo
+        </p>
+      </main>
+    ),
+    document.getElementById("app")
+  )
 })

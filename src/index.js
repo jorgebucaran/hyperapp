@@ -94,9 +94,8 @@ export function app(state, actions, view, container) {
   }
 
   function get(path, source) {
-    for (var i = 0; i < path.length; i++) {
-      source = source[path[i]]
-    }
+    var i = 0
+    while (i < path.length) source = source[path[i++]]
     return source
   }
 

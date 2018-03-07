@@ -28,8 +28,8 @@ export function h(name, attributes) {
 
 export function app(state, actions, view, container) {
   var map = [].map
-  var element = (container && container.children[0]) || null
-  var oldNode = element && recycleElement(element)
+  var rootElement = (container && container.children[0]) || null
+  var oldNode = rootElement && recycleElement(rootElement)
   var lifecycle = []
   var skipRender
   var isRecycling = true
@@ -62,7 +62,7 @@ export function app(state, actions, view, container) {
     var node = resolveNode(view)
 
     if (container) {
-      element = patch(container, element, oldNode, (oldNode = node))
+      rootElement = patch(container, rootElement, oldNode, (oldNode = node))
     }
 
     skipRender = isRecycling = false

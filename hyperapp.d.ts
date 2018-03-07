@@ -32,7 +32,7 @@ export interface Component<Attributes = {}> {
 export function h<Attributes>(
   nodeName: Component<Attributes> | string,
   attributes?: Attributes,
-  ...children: Array<VNode | string | number | null>
+  ...children: any[],
 ): VNode<Attributes>
 
 /** @namespace [App] */

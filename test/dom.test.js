@@ -767,3 +767,20 @@ testTreeSegue("input list attribute", [
     html: `<input list="foobar">`
   }
 ])
+
+test("event handlers", done => {
+  app(
+    {},
+    {},
+    () =>
+      h("button", {
+        oncreate(element) {
+          element.dispatchEvent(new Event("click"))
+        },
+        onclick(event) {
+          done()
+        }
+      }),
+    document.body
+  )
+})

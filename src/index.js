@@ -34,9 +34,9 @@ export function app(state, actions, view, container) {
   var skipRender
   var isRecycling = true
   var globalState = clone(state)
-  var wiredActions = clone(actions)
+  var wiredActions = wireStateToActions([], globalState, clone(actions))
 
-  scheduleRender(wireStateToActions([], globalState, wiredActions))
+  scheduleRender()
 
   return wiredActions
 
@@ -133,6 +133,8 @@ export function app(state, actions, view, container) {
             (actions[key] = clone(actions[key]))
           )
     }
+
+    return actions
   }
 
   function getKey(node) {

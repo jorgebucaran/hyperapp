@@ -71,10 +71,7 @@ export function app(state, actions, view, container) {
   }
 
   function scheduleRender() {
-    if (!skipRender) {
-      skipRender = true
-      setTimeout(render)
-    }
+    if (!skipRender && (skipRender = true)) setTimeout(render)
   }
 
   function clone(target, source) {

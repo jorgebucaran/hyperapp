@@ -24,6 +24,7 @@
     "bundle": "rollup -i src/index.js -o dist/hyperapp.js -m -f umd -n hyperapp",
     "minify": "uglifyjs dist/hyperapp.js -o dist/hyperapp.js -mc pure_funcs=['Object.defineProperty'] --source-map includeSources,url=hyperapp.js.map",
     "prepare": "npm run build",
+    "size": "npm run build && size-limit",
     "format": "prettier --semi false --write {src,test}/**/*.js {,test/ts/}*.{ts,tsx}",
     "release": "npm run build && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
   },
@@ -38,12 +39,19 @@
       ]
     ]
   },
+  "size-limit": [
+    {
+      "path": "dist/hyperapp.js",
+      "limit": "1.3 KB"
+    }
+  ],
   "devDependencies": {
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.6.1",
     "jest": "^22.2.0",
     "prettier": "^1.10.2",
     "rollup": "^0.55.3",
+    "size-limit": "^0.16.1",
     "typescript": "2.7.1",
     "uglify-js": "3.3.9"
   }

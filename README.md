@@ -8,6 +8,37 @@ Hyperapp is a JavaScript micro-framework for building web applications.
 * **Pragmatic** — Hyperapp holds firm on the functional programming front when managing your state, but takes a pragmatic approach to allowing for side effects, asynchronous actions, and DOM manipulations.
 * **Standalone** — Do more with less. Hyperapp combines state management with a virtual DOM engine that supports keyed updates & lifecycle events — all with no dependencies.
 
+<h2> Table of Contents</h2>
+<!-- TOC -->
+
+* [Getting Started](#getting-started)
+* [Installation](#installation)
+* [Overview](#overview)
+  * [State](#state)
+  * [Actions](#actions)
+    * [Asynchronous Actions](#asynchronous-actions)
+    * [Nested Actions](#nested-actions)
+    * [Interoperability](#interoperability)
+  * [View](#view)
+* [Virtual DOM](#virtual-dom)
+  * [Virtual Node Builder](#virtual-node-builder)
+  * [Attributes](#attributes)
+  * [Styles](#styles)
+  * [Sanitation](#sanitation)
+* [Components](#components)
+  * [Children Composition](#children-composition)
+* [Lifecycle Events](#lifecycle-events)
+  * [oncreate](#oncreate)
+  * [onupdate](#onupdate)
+  * [onremove](#onremove)
+  * [ondestroy](#ondestroy)
+* [Keys](#keys)
+* [Hydration](#hydration)
+* [Community](#community)
+* [License](#license)
+
+<!-- /TOC -->
+
 ## Getting Started
 
 Our first example is a counter that can be incremented or decremented. Go ahead and [try it online](https://codepen.io/hyperapp/pen/zNxZLP/left/?editors=0010).

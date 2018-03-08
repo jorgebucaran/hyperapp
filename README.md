@@ -258,7 +258,7 @@ This is how we can recycle server-rendered content out the counter example from 
 
 ### Components
 
-A component is a pure function that returns a virtual node. Unlike the view function, components are not wired to your application state or actions. Components are dumb, reusable blocks of code that encapsulate markup, styles and behaviors that belong together. Note that in JSX, components [must be capitalized](https://facebook.github.io/react/docs/jsx-in-depth.html#user-defined-components-must-be-capitalized) or contain a period in the name.
+A component is a pure function that returns a virtual node. Unlike the view function, components are not wired to your application state or actions. Components are dumb, reusable blocks of code that encapsulate markup, styles and behaviors that belong together.
 
 Here's a taste of how to use components in your application. The application is a typical To-Do manager. Go ahead and [try it online here](https://codepen.io/hyperapp/pen/zNxRLy).
 
@@ -296,6 +296,29 @@ If you don't know all the attributes that you want to place in a component ahead
 ```jsx
 const TodoList = ({ todos, toggle }) =>
   todos.map(todo => <TodoItem {...todo} toggle={toggle} />)
+```
+
+#### Lazy Components
+
+Components can only receive attributes and children from their parent component. Similarly to the top-level view function, lazy components are passed your application global state and actions. To create a lazy component, return a view function from a regular component.
+
+```jsx
+import { h } from "hyperapp"
+
+export const Counter = ({ by }) => (state, actions) => (
+  <div>
+    <button onclick={() => actions.down(by)}>- {by}</button>
+    <button onclick={() => actions.up(by)}>+ {by}</button>
+  </div>
+)
+
+export const view = (state, actions) => (
+  <main>
+    <h1>{state.count}</h1>
+    <Counter by={2} />
+    <Counter by={5} />
+  </main>
+)
 ```
 
 #### Children Composition

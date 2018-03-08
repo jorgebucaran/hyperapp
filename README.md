@@ -260,7 +260,7 @@ This is how we can recycle server-rendered content out the counter example from 
 
 A component is a pure function that returns a virtual node. Unlike the view function, components are not wired to your application state or actions. Components are dumb, reusable blocks of code that encapsulate markup, styles and behaviors that belong together. Note that in JSX, components [must be capitalized](https://facebook.github.io/react/docs/jsx-in-depth.html#user-defined-components-must-be-capitalized) or contain a period in the name.
 
-[Try this example online](https://codepen.io/hyperapp/pen/zNxRLy).
+Here's a taste of how to use components in your application. The application is a typical To-Do manager. Go ahead and [try it online here](https://codepen.io/hyperapp/pen/zNxRLy).
 
 ```jsx
 import { h } from "hyperapp"
@@ -268,7 +268,7 @@ import { h } from "hyperapp"
 const TodoItem = ({ id, value, done, toggle }) => (
   <li
     class={done && "done"}
-    onclick={e =>
+    onclick={() =>
       toggle({
         value: done,
         id: id
@@ -300,17 +300,13 @@ const TodoList = ({ todos, toggle }) =>
 
 #### Children Composition
 
-Components receive their children elements via the second argument.
+Components receive their children elements via the second argument allowing you and other components pass arbitrary children down to them.
 
 ```jsx
 const Box = ({ color }, children) => (
   <div class={`box box-${color}`}>{children}</div>
 )
-```
 
-This lets you and other components pass arbitrary children down to them.
-
-```jsx
 const HelloBox = ({ name }) => (
   <Box color="green">
     <h1 class="title">Hello, {name}!</h1>
@@ -336,9 +332,8 @@ export const Jumbotron = ({ text }) => (
   <div
     style={{
       color: "white",
-      margin: "20px",
-      textAlign: center,
       fontSize: "32px",
+      textAlign: center,
       backgroundImage: `url(${imgUrl})`
     }}
   >
@@ -424,7 +419,7 @@ export const Camera = ({ onerror }) => (
 
 ### Keys
 
-Keys help identify which nodes were added, changed or removed from a list when a view is rendered. A key must be unique among sibling-nodes.
+Keys helps identify nodes every time we update the DOM. By setting the <samp>key</samp> property on a virtual node, you declare that the node should correspond to a particular DOM element. This allow us to re-order the element into its new position, if the position changed, rather than risk destroying it.
 
 ```jsx
 import { h } from "hyperapp"
@@ -437,9 +432,7 @@ export const ImageGallery = ({ images }) =>
   ))
 ```
 
-By setting the <samp>key</samp> property on a virtual node, you declare that the node should correspond to a particular DOM element. This allow us to re-order the element into its new position, if the position changed, rather than risk destroying it.
-
-Don't use an array index as key, if the index also specifies the order of siblings. If the position and number of items in a list is fixed, it will make no difference, but if the list is dynamic, the key will change every time the tree is rebuilt.
+Keys must be unique among sibling-nodes. Don't use an array index as key, if the index also specifies the order of siblings. If the position and number of items in a list is fixed, it will make no difference, but if the list is dynamic, the key will change every time the tree is rebuilt.
 
 ```jsx
 import { h } from "hyperapp"

@@ -305,18 +305,24 @@ Components can only receive attributes and children from their parent component.
 ```jsx
 import { h } from "hyperapp"
 
-export const Counter = ({ by }) => (state, actions) => (
-  <div>
-    <button onclick={() => actions.down(by)}>- {by}</button>
-    <button onclick={() => actions.up(by)}>+ {by}</button>
-  </div>
+export const Up = ({ by }) => (state, actions) => (
+  <button onclick={() => actions.up(by)}>+ {by}</button>
+)
+
+export const Down = ({ by }) => (state, actions) => (
+  <button onclick={() => actions.down(by)}>- {by}</button>
+)
+
+export const Double = () => (state, actions) => (
+  <button onclick={() => actions.up(state.count)}>+ {state.count}</button>
 )
 
 export const view = (state, actions) => (
   <main>
     <h1>{state.count}</h1>
-    <Counter by={2} />
-    <Counter by={5} />
+    <Up by={2} />
+    <Down by={1} />
+    <Double />
   </main>
 )
 ```

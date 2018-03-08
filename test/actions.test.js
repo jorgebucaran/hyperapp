@@ -15,21 +15,18 @@ test("sync updates", done => {
     up: () => state => ({ value: state.value + 1 })
   }
 
-  const view = state =>
-    h(
-      "div",
-      {
-        oncreate() {
-          expect(document.body.innerHTML).toBe(`<div>2</div>`)
-          done()
-        }
-      },
-      state.value
-    )
+  const view = state => (
+    <div
+      oncreate={() => {
+        expect(document.body.innerHTML).toBe(`<div>2</div>`)
+        done()
+      }}
+    >
+      {state.value}
+    </div>
+  )
 
-  const main = app(state, actions, view, document.body)
-
-  main.up()
+  app(state, actions, view, document.body).up()
 })
 
 test("async updates", done => {
@@ -43,24 +40,21 @@ test("async updates", done => {
       mockDelay().then(() => actions.up(data))
   }
 
-  const view = state =>
-    h(
-      "div",
-      {
-        oncreate() {
-          expect(document.body.innerHTML).toBe(`<div>2</div>`)
-        },
-        onupdate() {
-          expect(document.body.innerHTML).toBe(`<div>3</div>`)
-          done()
-        }
-      },
-      state.value
-    )
+  const view = state => (
+    <div
+      oncreate={() => {
+        expect(document.body.innerHTML).toBe(`<div>2</div>`)
+      }}
+      onupdate={() => {
+        expect(document.body.innerHTML).toBe(`<div>3</div>`)
+        done()
+      }}
+    >
+      {state.value}
+    </div>
+  )
 
-  const main = app(state, actions, view, document.body)
-
-  main.upAsync(1)
+  app(state, actions, view, document.body).upAsync(1)
 })
 
 test("call action within action", done => {
@@ -80,23 +74,20 @@ test("call action within action", done => {
     })
   }
 
-  const view = state =>
-    h(
-      "div",
-      {
-        oncreate() {
-          expect(state).toEqual({
-            value: 2,
-            foo: true
-          })
-          expect(document.body.innerHTML).toBe(`<div>2</div>`)
-          done()
-        }
-      },
-      state.value
-    )
+  const view = state => (
+    <div
+      oncreate={() => {
+        expect(state).toEqual({
+          value: 2,
+          foo: true
+        })
+        expect(document.body.innerHTML).toBe(`<div>2</div>`)
+        done()
+      }}
+    >
+      {state.value}
+    </div>
+  )
 
-  const main = app(state, actions, view, document.body)
-
-  main.upAndFoo()
+  app(state, actions, view, document.body).upAndFoo()
 })

@@ -25,9 +25,7 @@ test("slices", done => {
     }
   }
 
-  const state = {
-    foo: foo.state
-  }
+  const state = { foo: foo.state }
 
   const actions = {
     foo: foo.actions,
@@ -52,34 +50,30 @@ test("slices", done => {
 })
 
 test("state/actions tree", done => {
-  const state = {
-    foo: {}
-  }
+  const state = { foo: {} }
 
   const actions = {
     foo: {
       bar: {
         baz: {
-          foobarbaz: () => ({ value: "foobarbaz" })
+          fooBarBaz: () => ({ value: "foobarbaz" })
         }
       }
     }
   }
 
-  const view = state =>
-    h(
-      "div",
-      {
-        oncreate() {
-          expect(document.body.innerHTML).toBe(`<div>foobarbaz</div>`)
-          done()
-        }
-      },
-      state.foo.bar.baz.value
-    )
+  const view = state => (
+    <div
+      oncreate={() => {
+        expect(document.body.innerHTML).toBe(`<div>foobarbaz</div>`)
+        done()
+      }}
+    >
+      {state.foo.bar.baz.value}
+    </div>
+  )
 
-  const main = app(state, actions, view, document.body)
+  app(state, actions, view, document.body).foo.bar.baz.fooBarBaz()
 
-  main.foo.bar.baz.foobarbaz()
   expect(state).toEqual({ foo: {} })
 })

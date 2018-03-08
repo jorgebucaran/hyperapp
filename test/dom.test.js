@@ -481,11 +481,11 @@ testVdomToHtml("styles", [
     html: `<div></div>`
   },
   {
-    vdom: <div style={{ color: "red", fontSize: "1em" }} />,
+    vdom: <div style={{ color: "red", fontSize: "1em", "--foo": "red" }} />,
     html: `<div style="color: red; font-size: 1em;"></div>`
   },
   {
-    vdom: <div style={{ color: "blue", float: "left" }} />,
+    vdom: <div style={{ color: "blue", float: "left", "--foo": "blue" }} />,
     html: `<div style="color: blue; float: left;"></div>`
   },
   {

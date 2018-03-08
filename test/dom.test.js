@@ -1,10 +1,8 @@
 import { h, app } from "../src"
 
-function testTreeSegue(name, trees) {
+const testVdomToHtml = (name, trees) => {
   test(name, done => {
-    const state = {
-      index: 0
-    }
+    const state = { index: 0 }
 
     const actions = {
       up: () => state => ({ index: state.index + 1 }),
@@ -21,38 +19,42 @@ function testTreeSegue(name, trees) {
       }
     }
 
-    const view = (state, actions) =>
-      h(
-        "main",
-        {
-          oncreate: actions.next,
-          onupdate: actions.next
-        },
-        [trees[state.index].tree]
-      )
+    const view = (state, actions) => (
+      <main oncreate={actions.next} onupdate={actions.next}>
+        {trees[state.index].vdom}
+      </main>
+    )
 
     app(state, actions, view, document.body)
   })
+}
+
+const setIdToKey = key => element => {
+  element.id = key
 }
 
 beforeEach(() => {
   document.body.innerHTML = ""
 })
 
-testTreeSegue("replace element", [
+testVdomToHtml("replace element", [
   {
-    tree: h("main", {}),
+    vdom: <main />,
     html: `<main></main>`
   },
   {
-    tree: h("div", {}),
+    vdom: <div />,
     html: `<div></div>`
   }
 ])
 
-testTreeSegue("replace child", [
+testVdomToHtml("replace child", [
   {
-    tree: h("main", {}, [h("div", {}, "foo")]),
+    vdom: (
+      <main>
+        <div>foo</div>
+      </main>
+    ),
     html: `
         <main>
           <div>foo</div>
@@ -60,7 +62,11 @@ testTreeSegue("replace child", [
       `
   },
   {
-    tree: h("main", {}, [h("main", {}, "bar")]),
+    vdom: (
+      <main>
+        <main>bar</main>
+      </main>
+    ),
     html: `
         <main>
           <main>bar</main>
@@ -69,20 +75,15 @@ testTreeSegue("replace child", [
   }
 ])
 
-testTreeSegue("insert children on top", [
+testVdomToHtml("insert children on top", [
   {
-    tree: h("main", {}, [
-      h(
-        "div",
-        {
-          key: "a",
-          oncreate(e) {
-            e.id = "a"
-          }
-        },
-        "A"
-      )
-    ]),
+    vdom: (
+      <main>
+        <div key="a" oncreate={setIdToKey("a")}>
+          A
+        </div>
+      </main>
+    ),
     html: `
         <main>
           <div id="a">A</div>
@@ -90,19 +91,14 @@ testTreeSegue("insert children on top", [
       `
   },
   {
-    tree: h("main", {}, [
-      h(
-        "div",
-        {
-          key: "b",
-          oncreate(e) {
-            e.id = "b"
-          }
-        },
-        "B"
-      ),
-      h("div", { key: "a" }, "A")
-    ]),
+    vdom: (
+      <main>
+        <div key="b" oncreate={setIdToKey("b")}>
+          B
+        </div>
+        <div key="a">A</div>
+      </main>
+    ),
     html: `
         <main>
           <div id="b">B</div>
@@ -111,47 +107,17 @@ testTreeSegue("insert children on top", [
       `
   },
   {
-    tree: h("main", {}, [
-      h(
-        "div",
-        {
-          key: "c",
-          oncreate(e) {
-            e.id = "c"
-          }
-        },
-        "C"
-      ),
-      h("div", { key: "b" }, "B"),
-      h("div", { key: "a" }, "A")
-    ]),
+    vdom: (
+      <main>
+        <div key="c" oncreate={setIdToKey("c")}>
+          C
+        </div>
+        <div key="b">B</div>
+        <div key="a">A</div>
+      </main>
+    ),
     html: `
         <main>
-          <div id="c">C</div>
-          <div id="b">B</div>
-          <div id="a">A</div>
-        </main>
-      `
-  },
-  {
-    tree: h("main", {}, [
-      h(
-        "div",
-        {
-          key: "d",
-          oncreate(e) {
-            e.id = "d"
-          }
-        },
-        "D"
-      ),
-      h("div", { key: "c" }, "C"),
-      h("div", { key: "b" }, "B"),
-      h("div", { key: "a" }, "A")
-    ]),
-    html: `
-        <main>
-          <div id="d">D</div>
           <div id="c">C</div>
           <div id="b">B</div>
           <div id="a">A</div>
@@ -160,9 +126,14 @@ testTreeSegue("insert children on top", [
   }
 ])
 
-testTreeSegue("remove text node", [
+testVdomToHtml("remove text node", [
   {
-    tree: h("main", {}, [h("div", {}, ["foo"]), "bar"]),
+    vdom: (
+      <main>
+        <div>foo</div>
+        bar
+      </main>
+    ),
     html: `
         <main>
           <div>foo</div>
@@ -171,7 +142,11 @@ testTreeSegue("remove text node", [
       `
   },
   {
-    tree: h("main", {}, [h("div", {}, ["foo"])]),
+    vdom: (
+      <main>
+        <div>foo</div>
+      </main>
+    ),
     html: `
         <main>
           <div>foo</div>
@@ -180,20 +155,15 @@ testTreeSegue("remove text node", [
   }
 ])
 
-testTreeSegue("replace keyed", [
+testVdomToHtml("replace keyed", [
   {
-    tree: h("main", {}, [
-      h(
-        "div",
-        {
-          key: "a",
-          oncreate(e) {
-            e.id = "a"
-          }
-        },
-        "A"
-      )
-    ]),
+    vdom: (
+      <main>
+        <div key="a" oncreate={setIdToKey("a")}>
+          A
+        </div>
+      </main>
+    ),
     html: `
         <main>
           <div id="a">A</div>
@@ -201,18 +171,13 @@ testTreeSegue("replace keyed", [
       `
   },
   {
-    tree: h("main", {}, [
-      h(
-        "div",
-        {
-          key: "b",
-          oncreate(e) {
-            e.id = "b"
-          }
-        },
-        "B"
-      )
-    ]),
+    vdom: (
+      <main>
+        <div key="b" oncreate={setIdToKey("b")}>
+          B
+        </div>
+      </main>
+    ),
     html: `
         <main>
           <div id="b">B</div>
@@ -221,60 +186,27 @@ testTreeSegue("replace keyed", [
   }
 ])
 
-testTreeSegue("reorder keyed", [
+testVdomToHtml("reorder keyed", [
   {
-    tree: h("main", {}, [
-      h(
-        "div",
-        {
-          key: "a",
-          oncreate(e) {
-            e.id = "a"
-          }
-        },
-        "A"
-      ),
-      h(
-        "div",
-        {
-          key: "b",
-          oncreate(e) {
-            e.id = "b"
-          }
-        },
-        "B"
-      ),
-      h(
-        "div",
-        {
-          key: "c",
-          oncreate(e) {
-            e.id = "c"
-          }
-        },
-        "C"
-      ),
-      h(
-        "div",
-        {
-          key: "d",
-          oncreate(e) {
-            e.id = "d"
-          }
-        },
-        "D"
-      ),
-      h(
-        "div",
-        {
-          key: "e",
-          oncreate(e) {
-            e.id = "e"
-          }
-        },
-        "E"
-      )
-    ]),
+    vdom: (
+      <main>
+        <div key="a" oncreate={setIdToKey("a")}>
+          A
+        </div>
+        <div key="b" oncreate={setIdToKey("b")}>
+          B
+        </div>
+        <div key="c" oncreate={setIdToKey("c")}>
+          C
+        </div>
+        <div key="d" oncreate={setIdToKey("d")}>
+          D
+        </div>
+        <div key="e" oncreate={setIdToKey("e")}>
+          E
+        </div>
+      </main>
+    ),
     html: `
         <main>
           <div id="a">A</div>
@@ -286,13 +218,15 @@ testTreeSegue("reorder keyed", [
       `
   },
   {
-    tree: h("main", {}, [
-      h("div", { key: "e" }, "E"),
-      h("div", { key: "a" }, "A"),
-      h("div", { key: "b" }, "B"),
-      h("div", { key: "c" }, "C"),
-      h("div", { key: "d" }, "D")
-    ]),
+    vdom: (
+      <main>
+        <div key="e">E</div>
+        <div key="a">A</div>
+        <div key="b">B</div>
+        <div key="c">C</div>
+        <div key="d">D</div>
+      </main>
+    ),
     html: `
         <main>
           <div id="e">E</div>
@@ -304,13 +238,15 @@ testTreeSegue("reorder keyed", [
       `
   },
   {
-    tree: h("main", {}, [
-      h("div", { key: "e" }, "E"),
-      h("div", { key: "d" }, "D"),
-      h("div", { key: "a" }, "A"),
-      h("div", { key: "c" }, "C"),
-      h("div", { key: "b" }, "B")
-    ]),
+    vdom: (
+      <main>
+        <div key="e">E</div>
+        <div key="d">D</div>
+        <div key="a">A</div>
+        <div key="c">C</div>
+        <div key="b">B</div>
+      </main>
+    ),
     html: `
         <main>
           <div id="e">E</div>
@@ -322,13 +258,15 @@ testTreeSegue("reorder keyed", [
       `
   },
   {
-    tree: h("main", {}, [
-      h("div", { key: "c" }, "C"),
-      h("div", { key: "e" }, "E"),
-      h("div", { key: "b" }, "B"),
-      h("div", { key: "a" }, "A"),
-      h("div", { key: "d" }, "D")
-    ]),
+    vdom: (
+      <main>
+        <div key="c">C</div>
+        <div key="e">E</div>
+        <div key="b">B</div>
+        <div key="a">A</div>
+        <div key="d">D</div>
+      </main>
+    ),
     html: `
         <main>
           <div id="c">C</div>
@@ -341,60 +279,27 @@ testTreeSegue("reorder keyed", [
   }
 ])
 
-testTreeSegue("grow/shrink keyed", [
+testVdomToHtml("grow/shrink keyed", [
   {
-    tree: h("main", {}, [
-      h(
-        "div",
-        {
-          key: "a",
-          oncreate(e) {
-            e.id = "a"
-          }
-        },
-        "A"
-      ),
-      h(
-        "div",
-        {
-          key: "b",
-          oncreate(e) {
-            e.id = "b"
-          }
-        },
-        "B"
-      ),
-      h(
-        "div",
-        {
-          key: "c",
-          oncreate(e) {
-            e.id = "c"
-          }
-        },
-        "C"
-      ),
-      h(
-        "div",
-        {
-          key: "d",
-          oncreate(e) {
-            e.id = "d"
-          }
-        },
-        "D"
-      ),
-      h(
-        "div",
-        {
-          key: "e",
-          oncreate(e) {
-            e.id = "e"
-          }
-        },
-        "E"
-      )
-    ]),
+    vdom: (
+      <main>
+        <div key="a" oncreate={setIdToKey("a")}>
+          A
+        </div>
+        <div key="b" oncreate={setIdToKey("b")}>
+          B
+        </div>
+        <div key="c" oncreate={setIdToKey("c")}>
+          C
+        </div>
+        <div key="d" oncreate={setIdToKey("d")}>
+          D
+        </div>
+        <div key="e" oncreate={setIdToKey("e")}>
+          E
+        </div>
+      </main>
+    ),
     html: `
         <main>
           <div id="a">A</div>
@@ -406,11 +311,13 @@ testTreeSegue("grow/shrink keyed", [
       `
   },
   {
-    tree: h("main", {}, [
-      h("div", { key: "a" }, "A"),
-      h("div", { key: "c" }, "C"),
-      h("div", { key: "d" }, "D")
-    ]),
+    vdom: (
+      <main>
+        <div key="a">A</div>
+        <div key="c">C</div>
+        <div key="d">D</div>
+      </main>
+    ),
     html: `
         <main>
           <div id="a">A</div>
@@ -420,7 +327,11 @@ testTreeSegue("grow/shrink keyed", [
       `
   },
   {
-    tree: h("main", {}, [h("div", { key: "d" }, "D")]),
+    vdom: (
+      <main>
+        <div key="d">D</div>
+      </main>
+    ),
     html: `
         <main>
           <div id="d">D</div>
@@ -428,49 +339,25 @@ testTreeSegue("grow/shrink keyed", [
       `
   },
   {
-    tree: h("main", {}, [
-      h(
-        "div",
-        {
-          key: "a",
-          oncreate(e) {
-            e.id = "a"
-          }
-        },
-        "A"
-      ),
-      h(
-        "div",
-        {
-          key: "b",
-          oncreate(e) {
-            e.id = "b"
-          }
-        },
-        "B"
-      ),
-      h(
-        "div",
-        {
-          key: "c",
-          oncreate(e) {
-            e.id = "c"
-          }
-        },
-        "C"
-      ),
-      h("div", { key: "d" }, "D"),
-      h(
-        "div",
-        {
-          key: "e",
-          oncreate(e) {
-            e.id = "e"
-          }
-        },
-        "E"
-      )
-    ]),
+    vdom: (
+      <main>
+        <div key="a" oncreate={setIdToKey("a")}>
+          A
+        </div>
+        <div key="b" oncreate={setIdToKey("b")}>
+          B
+        </div>
+        <div key="c" oncreate={setIdToKey("c")}>
+          C
+        </div>
+        <div key="d" oncreate={setIdToKey("d")}>
+          D
+        </div>
+        <div key="e" oncreate={setIdToKey("e")}>
+          E
+        </div>
+      </main>
+    ),
     html: `
         <main>
           <div id="a">A</div>
@@ -482,12 +369,14 @@ testTreeSegue("grow/shrink keyed", [
       `
   },
   {
-    tree: h("main", {}, [
-      h("div", { key: "d" }, "D"),
-      h("div", { key: "c" }, "C"),
-      h("div", { key: "b" }, "B"),
-      h("div", { key: "a" }, "A")
-    ]),
+    vdom: (
+      <main>
+        <div key="d">D</div>
+        <div key="c">C</div>
+        <div key="b">B</div>
+        <div key="a">A</div>
+      </main>
+    ),
     html: `
         <main>
           <div id="d">D</div>
@@ -499,42 +388,23 @@ testTreeSegue("grow/shrink keyed", [
   }
 ])
 
-testTreeSegue("mixed keyed/non-keyed", [
+testVdomToHtml("mixed keyed/non-keyed", [
   {
-    tree: h("main", {}, [
-      h(
-        "div",
-        {
-          key: "a",
-          oncreate(e) {
-            e.id = "a"
-          }
-        },
-        "A"
-      ),
-      h("div", {}, "B"),
-      h("div", {}, "C"),
-      h(
-        "div",
-        {
-          key: "d",
-          oncreate(e) {
-            e.id = "d"
-          }
-        },
-        "D"
-      ),
-      h(
-        "div",
-        {
-          key: "e",
-          oncreate(e) {
-            e.id = "e"
-          }
-        },
-        "E"
-      )
-    ]),
+    vdom: (
+      <main>
+        <div key="a" oncreate={setIdToKey("a")}>
+          A
+        </div>
+        <div>B</div>
+        <div>C</div>
+        <div key="d" oncreate={setIdToKey("d")}>
+          D
+        </div>
+        <div key="e" oncreate={setIdToKey("e")}>
+          E
+        </div>
+      </main>
+    ),
     html: `
         <main>
           <div id="a">A</div>
@@ -546,13 +416,15 @@ testTreeSegue("mixed keyed/non-keyed", [
       `
   },
   {
-    tree: h("main", {}, [
-      h("div", { key: "e" }, "E"),
-      h("div", {}, "C"),
-      h("div", {}, "B"),
-      h("div", { key: "d" }, "D"),
-      h("div", { key: "a" }, "A")
-    ]),
+    vdom: (
+      <main>
+        <div key="e">E</div>
+        <div>C</div>
+        <div>B</div>
+        <div key="d">D</div>
+        <div key="a">A</div>
+      </main>
+    ),
     html: `
         <main>
           <div id="e">E</div>
@@ -564,13 +436,15 @@ testTreeSegue("mixed keyed/non-keyed", [
       `
   },
   {
-    tree: h("main", {}, [
-      h("div", {}, "C"),
-      h("div", { key: "d" }, "D"),
-      h("div", { key: "a" }, "A"),
-      h("div", { key: "e" }, "E"),
-      h("div", {}, "B")
-    ]),
+    vdom: (
+      <main>
+        <div>C</div>
+        <div key="d">D</div>
+        <div key="a">A</div>
+        <div key="e">E</div>
+        <div>B</div>
+      </main>
+    ),
     html: `
         <main>
           <div>C</div>
@@ -582,12 +456,14 @@ testTreeSegue("mixed keyed/non-keyed", [
       `
   },
   {
-    tree: h("main", {}, [
-      h("div", { key: "e" }, "E"),
-      h("div", { key: "d" }, "D"),
-      h("div", {}, "B"),
-      h("div", {}, "C")
-    ]),
+    vdom: (
+      <main>
+        <div key="e">E</div>
+        <div key="d">D</div>
+        <div>B</div>
+        <div>C</div>
+      </main>
+    ),
     html: `
         <main>
           <div id="e">E</div>
@@ -599,171 +475,180 @@ testTreeSegue("mixed keyed/non-keyed", [
   }
 ])
 
-testTreeSegue("styles", [
+testVdomToHtml("styles", [
   {
-    tree: h("div"),
+    vdom: <div />,
     html: `<div></div>`
   },
   {
-    tree: h("div", { style: { color: "red", fontSize: "1em" } }),
+    vdom: <div style={{ color: "red", fontSize: "1em" }} />,
     html: `<div style="color: red; font-size: 1em;"></div>`
   },
   {
-    tree: h("div", { style: { color: "blue", float: "left" } }),
+    vdom: <div style={{ color: "blue", float: "left" }} />,
     html: `<div style="color: blue; float: left;"></div>`
   },
   {
-    tree: h("div"),
+    vdom: <div style="" />,
     html: `<div style=""></div>`
   }
 ])
 
-testTreeSegue("update element data", [
+testVdomToHtml("update element data", [
   {
-    tree: h("div", { id: "foo", class: "bar" }),
+    vdom: <div id="foo" class="bar" />,
     html: `<div id="foo" class="bar"></div>`
   },
   {
-    tree: h("div", { id: "foo", class: "baz" }),
+    vdom: <div id="foo" class="baz" />,
     html: `<div id="foo" class="baz"></div>`
   }
 ])
 
-testTreeSegue("removeAttribute", [
+testVdomToHtml("removeAttribute", [
   {
-    tree: h("div", { id: "foo", class: "bar" }),
+    vdom: <div id="foo" class="bar" />,
     html: `<div id="foo" class="bar"></div>`
   },
   {
-    tree: h("div"),
+    vdom: <div />,
     html: `<div></div>`
   }
 ])
 
-testTreeSegue("skip setAttribute for functions", [
+testVdomToHtml("skip setAttribute for functions", [
   {
-    tree: h("div", {
-      onclick() {}
-    }),
+    vdom: <div oncreate={() => {}} />,
     html: `<div></div>`
   }
 ])
 
-testTreeSegue("setAttribute true", [
+testVdomToHtml("setAttribute true", [
   {
-    tree: h("div", {
-      enabled: true
-    }),
+    vdom: <div enabled="true" />,
     html: `<div enabled="true"></div>`
   }
 ])
 
-testTreeSegue("update element with dynamic props", [
+testVdomToHtml("a list with empty text nodes", [
   {
-    tree: h("input", {
-      type: "text",
-      value: "foo",
-      oncreate(element) {
-        expect(element.value).toBe("foo")
-      }
-    }),
-    html: `<input type="text">`
-  },
-  {
-    tree: h("input", {
-      type: "text",
-      value: "bar",
-      onupdate(element) {
-        expect(element.value).toBe("bar")
-      }
-    }),
-    html: `<input type="text">`
-  }
-])
-
-testTreeSegue("don't touch textnodes if equal", [
-  {
-    tree: h(
-      "main",
-      {
-        oncreate(element) {
-          element.childNodes[0].textContent = "foobar"
-        }
-      },
-      "foo"
+    vdom: (
+      <ul>
+        <li />
+        <div>foo</div>
+      </ul>
     ),
-    html: `<main>foobar</main>`
-  },
-  {
-    tree: h("main", {}, "foobar"),
-    html: `<main>foobar</main>`
-  }
-])
-
-testTreeSegue("a list with empty text nodes", [
-  {
-    tree: h("ul", {}, [h("li", {}, ""), h("div", {}, "foo")]),
     html: `<ul><li></li><div>foo</div></ul>`
   },
   {
-    tree: h("ul", {}, [h("li", {}, ""), h("li", {}, ""), h("div", {}, "foo")]),
+    vdom: (
+      <ul>
+        <li />
+        <li />
+        <div>foo</div>
+      </ul>
+    ),
     html: `<ul><li></li><li></li><div>foo</div></ul>`
   },
   {
-    tree: h("ul", {}, [
-      h("li", {}, ""),
-      h("li", {}, ""),
-      h("li", {}, ""),
-      h("div", {}, "foo")
-    ]),
+    vdom: (
+      <ul>
+        <li />
+        <li />
+        <li />
+        <div>foo</div>
+      </ul>
+    ),
     html: `<ul><li></li><li></li><li></li><div>foo</div></ul>`
   }
 ])
 
-testTreeSegue("elements with falsey values", [
+testVdomToHtml("elements with falsey values", [
   {
-    tree: h("div", {
-      "data-test": "foo"
-    }),
-    html: `<div data-test="foo"></div>`
-  },
-  {
-    tree: h("div", {
-      "data-test": "0"
-    }),
+    vdom: <div data-test={"0"} />,
     html: `<div data-test="0"></div>`
   },
   {
-    tree: h("div", {
-      "data-test": 0
-    }),
+    vdom: <div data-test={0} />,
     html: `<div data-test="0"></div>`
   },
   {
-    tree: h("div", {
-      "data-test": null
-    }),
+    vdom: <div data-test={null} />,
     html: `<div></div>`
   },
   {
-    tree: h("div", {
-      "data-test": false
-    }),
+    vdom: <div data-test={false} />,
     html: `<div></div>`
   },
   {
-    tree: h("div", {
-      "data-test": undefined
-    }),
+    vdom: <div data-test={undefined} />,
     html: `<div></div>`
   }
 ])
 
-testTreeSegue("input list attribute", [
+testVdomToHtml("update element with dynamic props", [
   {
-    tree: h("input", {
-      list: "foobar"
-    }),
+    vdom: (
+      <input
+        type="text"
+        value="foo"
+        onupdate={element => {
+          expect(element.value).toBe("foo")
+        }}
+      />
+    ),
+    html: `<input type="text">`
+  },
+  {
+    vdom: (
+      <input
+        type="text"
+        value="bar"
+        onupdate={element => {
+          expect(element.value).toBe("bar")
+        }}
+      />
+    ),
+    html: `<input type="text">`
+  }
+])
+
+testVdomToHtml("don't touch textnodes if equal", [
+  {
+    vdom: (
+      <main
+        oncreate={e => {
+          e.childNodes[0].textContent = "foobar"
+        }}
+      >
+        foobar
+      </main>
+    ),
+    html: `<main>foobar</main>`
+  },
+  {
+    vdom: <main>foobar</main>,
+    html: `<main>foobar</main>`
+  }
+])
+
+testVdomToHtml("input list attribute", [
+  {
+    vdom: <input list="foobar" />,
     html: `<input list="foobar">`
+  }
+])
+
+testVdomToHtml("events", [
+  {
+    vdom: (
+      <button
+        oncreate={element => element.dispatchEvent(new Event("click"))}
+        onclick={event => {
+          event.currentTarget.id = "clicked"
+        }}
+      />
+    ),
+    html: `<button id="clicked"></button>`
   }
 ])

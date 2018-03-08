@@ -1,4 +1,4 @@
-export function h(name, attributes /*...rest*/) {
+export function h(name, attributes) {
   var rest = []
   var children = []
   var length = arguments.length
@@ -7,10 +7,7 @@ export function h(name, attributes /*...rest*/) {
 
   while (rest.length) {
     var node = rest.pop()
-    if (
-      node &&
-      node.pop // isArray
-    ) {
+    if (node && node.pop) {
       for (length = node.length; length--; ) {
         rest.push(node[length])
       }
@@ -20,7 +17,7 @@ export function h(name, attributes /*...rest*/) {
   }
 
   return typeof name === "function"
-    ? name(attributes || {}, children) // h(Component)
+    ? name(attributes || {}, children)
     : {
         nodeName: name,
         attributes: attributes || {},
@@ -31,26 +28,26 @@ export function h(name, attributes /*...rest*/) {
 
 export function app(state, actions, view, container) {
   var map = [].map
-  var events = []
-  var element = (container && container.children[0]) || null
-  var oldNode = element && recycleNode(element)
+  var rootElement = (container && container.children[0]) || null
+  var oldNode = rootElement && recycleElement(rootElement)
+  var lifecycle = []
   var skipRender
-  var isFirstRender = true
+  var isRecycling = true
   var globalState = clone(state)
-  var wiredActions = clone(actions)
+  var wiredActions = wireStateToActions([], globalState, clone(actions))
 
-  scheduleRender(wireStateToActions([], globalState, wiredActions))
+  scheduleRender()
 
   return wiredActions
 
-  function recycleNode(element) {
+  function recycleElement(element) {
     return {
       nodeName: element.nodeName.toLowerCase(),
       attributes: {},
       children: map.call(element.childNodes, function(element) {
         return element.nodeType === 3 // Node.TEXT_NODE
           ? element.nodeValue
-          : recycleNode(element)
+          : recycleElement(element)
       })
     }
   }
@@ -65,19 +62,16 @@ export function app(state, actions, view, container) {
     var node = resolveNode(view)
 
     if (container) {
-      element = patch(container, element, oldNode, (oldNode = node))
+      rootElement = patch(container, rootElement, oldNode, (oldNode = node))
     }
 
-    skipRender = isFirstRender = false
+    skipRender = isRecycling = false
 
-    while (events.length) events.pop()()
+    while (lifecycle.length) lifecycle.pop()()
   }
 
   function scheduleRender() {
-    if (!skipRender) {
-      skipRender = true
-      setTimeout(render)
-    }
+    if (!skipRender && (skipRender = true)) setTimeout(render)
   }
 
   function clone(target, source) {
@@ -100,9 +94,8 @@ export function app(state, actions, view, container) {
   }
 
   function get(path, source) {
-    for (var i = 0; i < path.length; i++) {
-      source = source[path[i]]
-    }
+    var i = 0
+    while (i < path.length) source = source[path[i++]]
     return source
   }
 
@@ -136,23 +129,38 @@ export function app(state, actions, view, container) {
             (actions[key] = clone(actions[key]))
           )
     }
+
+    return actions
   }
 
   function getKey(node) {
     return node ? node.key : null
   }
 
-  function updateAttribute(element, name, value, oldValue, isSVG) {
+  function eventListener(event) {
+    return event.currentTarget.events[event.type](event)
+  }
+
+  function updateAttribute(element, name, value, oldValue, isSvg) {
     if (name === "key") {
     } else if (name === "style") {
       for (var i in clone(oldValue, value)) {
         element[name][i] = value == null || value[i] == null ? "" : value[i]
       }
     } else {
-      if (
-        typeof value === "function" ||
-        (name in element && name !== "list" && !isSVG)
-      ) {
+      if (name[0] === "o" && name[1] === "n") {
+        if (!element.events) {
+          element.events = {}
+        }
+        element.events[(name = name.slice(2))] = value
+        if (value) {
+          if (!oldValue) {
+            element.addEventListener(name, eventListener)
+          }
+        } else {
+          element.removeEventListener(name, eventListener)
+        }
+      } else if (name in element && name !== "list" && !isSvg) {
         element[name] = value == null ? "" : value
       } else if (value != null && value !== false) {
         element.setAttribute(name, value)
@@ -164,11 +172,11 @@ export function app(state, actions, view, container) {
     }
   }
 
-  function createElement(node, isSVG) {
+  function createElement(node, isSvg) {
     var element =
       typeof node === "string" || typeof node === "number"
         ? document.createTextNode(node)
-        : (isSVG = isSVG || node.nodeName === "svg")
+        : (isSvg = isSvg || node.nodeName === "svg")
           ? document.createElementNS(
               "http://www.w3.org/2000/svg",
               node.nodeName
@@ -178,7 +186,7 @@ export function app(state, actions, view, container) {
     var attributes = node.attributes
     if (attributes) {
       if (attributes.oncreate) {
-        events.push(function() {
+        lifecycle.push(function() {
           attributes.oncreate(element)
         })
       }
@@ -187,20 +195,20 @@ export function app(state, actions, view, container) {
         element.appendChild(
           createElement(
             (node.children[i] = resolveNode(node.children[i])),
-            isSVG
+            isSvg
           )
         )
       }
 
       for (var name in attributes) {
-        updateAttribute(element, name, attributes[name], null, isSVG)
+        updateAttribute(element, name, attributes[name], null, isSvg)
       }
     }
 
     return element
   }
 
-  function updateElement(element, oldAttributes, attributes, isSVG) {
+  function updateElement(element, oldAttributes, attributes, isSvg) {
     for (var name in clone(oldAttributes, attributes)) {
       if (
         attributes[name] !==
@@ -213,14 +221,14 @@ export function app(state, actions, view, container) {
           name,
           attributes[name],
           oldAttributes[name],
-          isSVG
+          isSvg
         )
       }
     }
 
-    var cb = isFirstRender ? attributes.oncreate : attributes.onupdate
+    var cb = isRecycling ? attributes.oncreate : attributes.onupdate
     if (cb) {
-      events.push(function() {
+      lifecycle.push(function() {
         cb(element, oldAttributes)
       })
     }
@@ -253,10 +261,10 @@ export function app(state, actions, view, container) {
     }
   }
 
-  function patch(parent, element, oldNode, node, isSVG) {
+  function patch(parent, element, oldNode, node, isSvg) {
     if (node === oldNode) {
     } else if (oldNode == null || oldNode.nodeName !== node.nodeName) {
-      var newElement = createElement(node, isSVG)
+      var newElement = createElement(node, isSvg)
       parent.insertBefore(newElement, element)
 
       if (oldNode != null) {
@@ -271,7 +279,7 @@ export function app(state, actions, view, container) {
         element,
         oldNode.attributes,
         node.attributes,
-        (isSVG = isSVG || node.nodeName === "svg")
+        (isSvg = isSvg || node.nodeName === "svg")
       )
 
       var oldKeyed = {}
@@ -301,9 +309,9 @@ export function app(state, actions, view, container) {
           continue
         }
 
-        if (newKey == null || isFirstRender) {
+        if (newKey == null || isRecycling) {
           if (oldKey == null) {
-            patch(element, oldElements[i], oldChildren[i], children[k], isSVG)
+            patch(element, oldElements[i], oldChildren[i], children[k], isSvg)
             k++
           }
           i++
@@ -311,7 +319,7 @@ export function app(state, actions, view, container) {
           var keyedNode = oldKeyed[newKey] || []
 
           if (oldKey === newKey) {
-            patch(element, keyedNode[0], keyedNode[1], children[k], isSVG)
+            patch(element, keyedNode[0], keyedNode[1], children[k], isSvg)
             i++
           } else if (keyedNode[0]) {
             patch(
@@ -319,10 +327,10 @@ export function app(state, actions, view, container) {
               element.insertBefore(keyedNode[0], oldElements[i]),
               keyedNode[1],
               children[k],
-              isSVG
+              isSvg
             )
           } else {
-            patch(element, oldElements[i], null, children[k], isSVG)
+            patch(element, oldElements[i], null, children[k], isSvg)
           }
 
           newKeyed[newKey] = children[k]

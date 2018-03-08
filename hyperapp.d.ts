@@ -6,48 +6,39 @@ export as namespace hyperapp
  *
  * @memberOf [VDOM]
  */
-export interface VNode<Props> {
-  name: string
-  props: Props
-  children: VNodeChild<object | null>[]
+export interface VNode<Attributes = {}> {
+  nodeName: string
+  attributes?: Attributes
+  children: Array<VNode | string>
+  key: string
 }
-
-/** In the VDOM a Child can be either a VNode or a string.
- *
- * @memberOf [VDOM]
- */
-export type VNodeChild<Props = object> = VNode<Props> | string
 
 /** A Component is a function that returns a custom VNode.
  *
  * @memberOf [VDOM]
  */
-export interface Component<Props> {
-  (props: Props, children: VNodeChild<object | null>[]): VNode<object>
+export interface Component<Attributes = {}> {
+  (attributes: Attributes, children: Array<VNode | string>): VNode<Attributes>
 }
 
-/** The type of the children argument passed to h().
- *
- * @memberOf [VDOM]
+/**
+ * Possibles children types
  */
-export type VNodeChildren =
-  | Array<VNodeChild<object | null> | number>
-  | VNodeChild<object | null>
-  | number
+export type Children = VNode | string | number | null;
 
 /** The soft way to create a VNode.
  * @param name      An element name or a Component function
- * @param props     Any valid HTML atributes, events, styles, and meta data
+ * @param attributes     Any valid HTML atributes, events, styles, and meta data
  * @param children  The children of the VNode
  * @returns A VNode tree.
  *
  * @memberOf [VDOM]
  */
-export function h<Props>(
-  name: Component<Props> | string,
-  props?: Props,
-  children?: VNodeChildren
-): VNode<object>
+export function h<Attributes>(
+  nodeName: Component<Attributes> | string,
+  attributes?: Attributes,
+  ...children: Array<Children | Children[]>,
+): VNode<Attributes>
 
 /** @namespace [App] */
 

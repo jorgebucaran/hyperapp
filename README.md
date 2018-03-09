@@ -1,3 +1,4 @@
+
 # <img height=24 src=https://cdn.rawgit.com/jorgebucaran/f53d2c00bafcf36e84ffd862f0dc2950/raw/882f20c970ff7d61aa04d44b92fc3530fa758bc0/Hyperapp.svg> Hyperapp
 
 [![Travis CI](https://img.shields.io/travis/hyperapp/hyperapp/master.svg)](https://travis-ci.org/hyperapp/hyperapp) [![npm](https://img.shields.io/npm/v/hyperapp.svg)](https://www.npmjs.org/package/hyperapp) [![Slack](https://hyperappjs.herokuapp.com/badge.svg)](https://hyperappjs.herokuapp.com "Join us")
@@ -56,7 +57,7 @@ const view = (state, actions) =>
   ])
 ```
 
-Note that JSX is not required for building applications with Hyperapp. You can use <samp>hyperapp.h</samp> directly and without a compilation step as shown above. Other alternatives to JSX include [@hyperapp/html](https://github.com/hyperapp/html), [hyperx](https://github.com/substack/hyperx) and [t7](https://github.com/trueadm/t7).
+Note that JSX is not required for building applications with Hyperapp. You can use <samp>hyperapp.h</samp> directly and without a compilation step as shown above. Other alternatives to JSX include [@hyperapp/html](https://github.com/hyperapp/html), [hyperx](https://github.com/substack/hyperx), [t7](https://github.com/trueadm/t7) and [ijk](https://github.com/lukejacksonn/ijk).
 
 ## Installation
 

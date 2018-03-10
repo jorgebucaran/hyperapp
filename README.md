@@ -123,8 +123,6 @@ const actions = {
 
 Each state argument is a separate and distinct clone of the current state. Therefore state updates are always immutable. Immutability enables time-travel debugging, helps prevent introducing hard-to-track-down bugs by making state changes more predictable, and allows cheap memoization of components using shallow equality === checks.
 
-Immutability enables time-travel debugging, helps prevent introducing hard-to-track-down bugs by making state changes more predictable, and allows cheap memoization of components using shallow equality <samp>===</samp> checks.
-
 Do not mutate the state object argument within an action and return it: the results are not what you expect. 
 
 #### Asynchronous Actions

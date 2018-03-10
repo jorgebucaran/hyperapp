@@ -109,7 +109,7 @@ const state = {
 
 ### Actions
 
-The only way to change the state is via actions. An action is a function that takes a payload as its only argument. The payload can be anything you want to pass into the action. To update the state, an action must return a partial state object. The new state will be the result of a shallow merge between this object and the current state.
+The only way to change the state is via actions. An action is a function that takes a payload as its only argument. The payload can be anything you want to pass into the action. To update the state, an action must return a partial state object. The new state will be the result of a shallow merge between this object and the current state. Under the hood, Hyperapp wires every function from your actions to schedule a view redraw whenever the state changes.
 
 Instead of returning a partial state object directly, an action can return a function that takes the current state and actions as arguments and returns a partial state object.
 

@@ -109,20 +109,23 @@ const state = {
 
 ### Actions
 
-The way to change the state is via actions. An action is a unary function (accepts a single argument) expecting a payload. The payload can be anything you want to pass into the action.
+The only way to change the state is via actions. An action is a function that takes a payload as its only argument. The payload can be anything you want to pass into the action. To update the state, an action must return a partial state object. The new state will be the result of a shallow merge between this object and the current state.
 
-To update the state, an action must return a partial state object. An action can also return a function that takes the current state and actions and returns a partial state object. Under the hood, Hyperapp wires every function from your actions to schedule a view redraw whenever the state changes.
+Instead of returning a partial state object directly, an action can return a function that takes the current state and actions as arguments and returns a partial state object.
 
 ```js
 const actions = {
+  set: value => ({count: value}),
   down: value => state => ({ count: state.count - value }),
   up: value => state => ({ count: state.count + value })
 }
 ```
 
-If you mutate the state within an action and return it, the view will not be redrawn as you expect. This is because state updates are always immutable. When you return a partial state object from an action, the new state will be the result of a shallow merge between this object and the current state.
+Each state argument is a separate and distinct clone of the current state. Therefore state updates are always immutable. Immutability enables time-travel debugging, helps prevent introducing hard-to-track-down bugs by making state changes more predictable, and allows cheap memoization of components using shallow equality === checks.
 
 Immutability enables time-travel debugging, helps prevent introducing hard-to-track-down bugs by making state changes more predictable, and allows cheap memoization of components using shallow equality <samp>===</samp> checks.
+
+Do not mutate the state object argument within an action and return it: the results are not what you expect. 
 
 #### Asynchronous Actions
 
@@ -180,6 +183,15 @@ const main = app(state, actions, view, document.body)
 setInterval(main.up, 250, 1)
 setInterval(main.down, 500, 1)
 ```
+
+Including an action returning the state argument can be useful, and does not schedule a redraw:
+
+```jsx
+const actions = {
+  getState: () => state => state
+}
+```
+
 
 ### View
 

@@ -56,7 +56,7 @@ const view = (state, actions) =>
   ])
 ```
 
-Note that JSX is not required for building applications with Hyperapp. You can use <samp>hyperapp.h</samp> directly and without a compilation step as shown above. Other alternatives to JSX include [@hyperapp/html](https://github.com/hyperapp/html), [hyperx](https://github.com/substack/hyperx) and [t7](https://github.com/trueadm/t7).
+Note that JSX is not required for building applications with Hyperapp. You can use <samp>hyperapp.h</samp> directly and without a compilation step as shown above. Other alternatives to JSX include [@hyperapp/html](https://github.com/hyperapp/html), [hyperx](https://github.com/substack/hyperx), [t7](https://github.com/trueadm/t7) and [ijk](https://github.com/lukejacksonn/ijk).
 
 ## Installation
 

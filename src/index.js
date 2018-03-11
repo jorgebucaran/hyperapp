@@ -11,7 +11,7 @@ export function h(name, attributes) {
       for (length = node.length; length--; ) {
         rest.push(node[length])
       }
-    } else if (node != null && node !== true && node !== false && node !== '') {
+    } else if (node != null && node !== true && node !== false) {
       children.push(node)
     }
   }

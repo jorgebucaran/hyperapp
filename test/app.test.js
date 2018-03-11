@@ -63,3 +63,45 @@ test("lazy components", done => {
 
   app(state, actions, view, document.body)
 })
+
+
+test("returning null on a component", done => {
+  const nullComponent = () => () => null
+
+  const Component = () => () =>
+    h(
+      "div",
+      {
+        oncreate() {
+          expect(document.body.innerHTML).toBe("<div></div>")
+          done()
+        }
+      },
+      [nullComponent]
+    )
+
+  const view = () => h(Component)
+
+  app(null, null, view, document.body)
+})
+
+
+test("returning null on a lazy component", done => {
+  const nullComponent = () => null
+
+  const Component = () => 
+    h(
+      "div",
+      {
+        oncreate() {
+          expect(document.body.innerHTML).toBe("<div></div>")
+          done()
+        }
+      },
+      [nullComponent]
+    )
+
+  const view = () => h(Component)
+
+  app(null, null, view, document.body)
+})

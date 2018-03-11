@@ -36,7 +36,6 @@ test("debouncing", done => {
   main.fire()
 })
 
-
 test("lazy components", done => {
   const state = { value: "foo" }
   const actions = {
@@ -64,11 +63,10 @@ test("lazy components", done => {
   app(state, actions, view, document.body)
 })
 
-
 test("returning null on a component", done => {
   const nullComponent = () => null
 
-  const Component = () => 
+  const Component = () =>
     h(
       "div",
       {
@@ -84,7 +82,6 @@ test("returning null on a component", done => {
 
   app(null, null, view, document.body)
 })
-
 
 test("returning null on a lazy component", done => {
   const nullComponent = () => () => null

@@ -66,9 +66,9 @@ test("lazy components", done => {
 
 
 test("returning null on a component", done => {
-  const nullComponent = () => () => null
+  const nullComponent = () => null
 
-  const Component = () => () =>
+  const Component = () => 
     h(
       "div",
       {
@@ -87,9 +87,9 @@ test("returning null on a component", done => {
 
 
 test("returning null on a lazy component", done => {
-  const nullComponent = () => null
+  const nullComponent = () => () => null
 
-  const Component = () => 
+  const Component = () => () =>
     h(
       "div",
       {

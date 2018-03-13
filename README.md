@@ -12,7 +12,7 @@ Hyperapp is a JavaScript micro-framework for building web applications.
 
 Our first example is a counter that can be incremented or decremented. Go ahead and [try it online](https://codepen.io/hyperapp/pen/zNxZLP/left/?editors=0010).
 
-```js
+```jsx
 import { h, app } from "hyperapp"
 
 const state = {

@@ -307,7 +307,7 @@ export const view = (state, actions) => (
 )
 ```
 
-If you don't know all the attributes that you want to place in a component ahead of time, you can use the [spread syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_operator). Note that Hyperapp components can return an Array of elements as in the following example. This technique lets you group a list of children without adding extra nodes to the DOM.
+If you don't know all the attributes that you want to place in a component ahead of time, you can use the [spread syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_operator). Note that Hyperapp components can return an array of elements as in the following example. This technique lets you group a list of children without adding extra nodes to the DOM.
 
 ```jsx
 const TodoList = ({ todos, toggle }) =>

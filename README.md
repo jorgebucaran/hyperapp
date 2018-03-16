@@ -222,17 +222,17 @@ A virtual DOM is a description of what a DOM should look like using a tree of ne
     {
       nodeName: "h1",
       attributes: {},
-      children: 0
+      children: [0]
     },
     {
       nodeName: "button",
       attributes: { ... },
-      children: "-"
+      children: ["-"]
     },
     {
       nodeName:   "button",
       attributes: { ... },
-      children: "+"
+      children: ["+"]
     }
   ]
 }
@@ -307,7 +307,7 @@ export const view = (state, actions) => (
 )
 ```
 
-If you don't know all the attributes that you want to place in a component ahead of time, you can use the [spread syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_operator). Note that Hyperapp components can return multiple elements as in the following example. This technique lets you group a list of children without adding extra nodes to the DOM.
+If you don't know all the attributes that you want to place in a component ahead of time, you can use the [spread syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_operator). Note that Hyperapp components can return an array of elements as in the following example. This technique lets you group a list of children without adding extra nodes to the DOM.
 
 ```jsx
 const TodoList = ({ todos, toggle }) =>
@@ -345,7 +345,7 @@ export const view = (state, actions) => (
 
 #### Children Composition
 
-Components receive their children elements via the second argument allowing you and other components pass arbitrary children down to them.
+Components receive their children elements via the second argument, allowing you and other components to pass arbitrary children down to them.
 
 ```jsx
 const Box = ({ color }, children) => (

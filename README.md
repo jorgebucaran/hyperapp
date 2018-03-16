@@ -318,7 +318,7 @@ const TodoList = ({ todos, toggle }) =>
 
 Components can only receive attributes and children from their parent component. Similarly to the top-level view function, lazy components are passed your application global state and actions. To create a lazy component, return a view function from a regular component.
 
-_Available from version 1.2_
+Available from version 1.2
 
 ```jsx
 import { h } from "hyperapp"

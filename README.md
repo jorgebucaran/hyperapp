@@ -366,7 +366,7 @@ Supported attributes include [HTML attributes](https://developer.mozilla.org/en-
 ### Styles
 
 The <samp>style</samp> attribute expects a plain object rather than a string as in HTML.
-Each declaration consists of a style name property written in <samp>camelCase</samp> and a value. CSS variables are currently not supported. See [#612](https://github.com/hyperapp/hyperapp/pull/612) for options.
+Each declaration consists of a style name property written in <samp>camelCase</samp> and a value. CSS variables are supported too.
 
 Individual style properties will be diffed and mapped against <samp>[HTMLElement.style](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style)</samp> property members of the DOM element - you should therefore use the JavaScript style object [property names](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Properties_Reference), e.g. <samp>backgroundColor</samp> rather than <samp>background-color</samp>.
 

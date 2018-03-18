@@ -7,7 +7,7 @@ Our open source community strives to be nice, welcoming and professional. Instan
 ## Style
 
 * Hyperapp is written in ES3. Please don't create an issue asking us to rewrite it in ES6 or TypeScript.
-* We use [Prettier](https://github.com/prettier/prettier) to format the code. If you don't have Prettier installed in your code editor or IDE, you can use `npm run format` before adding a commit.
+* We use [Prettier](https://github.com/prettier/prettier) to format the code. If you don't have Prettier installed in your code editor or IDE, you can use `npm run format` before submitting a pull request.
 * We prefer keeping all the moving parts inside as few files as possible. There are no plans to break up the library into smaller modules.
 
 ## Bugs

@@ -33,6 +33,7 @@ test("debouncing", done => {
 
 test("subviews / lazy components", done => {
   const state = { value: "foo" }
+
   const actions = {
     update: () => ({ value: "bar" })
   }
@@ -53,4 +54,27 @@ test("subviews / lazy components", done => {
   )
 
   app(state, actions, <Component />, document.body)
+})
+
+test("actions in the view", done => {
+  const state = { value: 0 }
+
+  const actions = {
+    up: () => state => ({ value: state.value + 1 })
+  }
+
+  const view = (state, actions) => {
+    if (state.value < 1) {
+      return actions.up()
+    }
+
+    setTimeout(() => {
+      expect(document.body.innerHTML).toBe("<div>1</div>")
+      done()
+    })
+
+    return <div>{state.value}</div>
+  }
+
+  app(state, actions, view, document.body)
 })

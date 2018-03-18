@@ -59,19 +59,24 @@ export function app(state, actions, view, container) {
   }
 
   function render() {
+    skipRender = !skipRender
+
     var node = resolveNode(view)
 
-    if (container) {
+    if (container && !skipRender) {
       rootElement = patch(container, rootElement, oldNode, (oldNode = node))
     }
 
-    skipRender = isRecycling = false
+    isRecycling = false
 
     while (lifecycle.length) lifecycle.pop()()
   }
 
   function scheduleRender() {
-    if (!skipRender && (skipRender = true)) setTimeout(render)
+    if (!skipRender) {
+      skipRender = true
+      setTimeout(render)
+    }
   }
 
   function clone(target, source) {
@@ -95,7 +100,9 @@ export function app(state, actions, view, container) {
 
   function get(path, source) {
     var i = 0
-    while (i < path.length) source = source[path[i++]]
+    while (i < path.length) {
+      source = source[path[i++]]
+    }
     return source
   }
 

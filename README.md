@@ -222,17 +222,17 @@ A virtual DOM is a description of what a DOM should look like using a tree of ne
     {
       nodeName: "h1",
       attributes: {},
-      children: 0
+      children: [0]
     },
     {
       nodeName: "button",
       attributes: { ... },
-      children: "-"
+      children: ["-"]
     },
     {
       nodeName:   "button",
       attributes: { ... },
-      children: "+"
+      children: ["+"]
     }
   ]
 }
@@ -307,7 +307,7 @@ export const view = (state, actions) => (
 )
 ```
 
-If you don't know all the attributes that you want to place in a component ahead of time, you can use the [spread syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_operator). Note that Hyperapp components can return multiple elements as in the following example. This technique lets you group a list of children without adding extra nodes to the DOM.
+If you don't know all the attributes that you want to place in a component ahead of time, you can use the [spread syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_operator). Note that Hyperapp components can return an array of elements as in the following example. This technique lets you group a list of children without adding extra nodes to the DOM.
 
 ```jsx
 const TodoList = ({ todos, toggle }) =>
@@ -317,6 +317,8 @@ const TodoList = ({ todos, toggle }) =>
 #### Lazy Components
 
 Components can only receive attributes and children from their parent component. Similarly to the top-level view function, lazy components are passed your application global state and actions. To create a lazy component, return a view function from a regular component.
+
+Available from version 1.2
 
 ```jsx
 import { h } from "hyperapp"
@@ -345,7 +347,7 @@ export const view = (state, actions) => (
 
 #### Children Composition
 
-Components receive their children elements via the second argument allowing you and other components pass arbitrary children down to them.
+Components receive their children elements via the second argument, allowing you and other components to pass arbitrary children down to them.
 
 ```jsx
 const Box = ({ color }, children) => (
@@ -366,7 +368,7 @@ Supported attributes include [HTML attributes](https://developer.mozilla.org/en-
 ### Styles
 
 The <samp>style</samp> attribute expects a plain object rather than a string as in HTML.
-Each declaration consists of a style name property written in <samp>camelCase</samp> and a value. CSS variables are currently not supported. See [#612](https://github.com/hyperapp/hyperapp/pull/612) for options.
+Each declaration consists of a style name property written in <samp>camelCase</samp> and a value. CSS variables are supported too.
 
 Individual style properties will be diffed and mapped against <samp>[HTMLElement.style](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style)</samp> property members of the DOM element - you should therefore use the JavaScript style object [property names](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Properties_Reference), e.g. <samp>backgroundColor</samp> rather than <samp>background-color</samp>.
 

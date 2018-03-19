@@ -5,9 +5,7 @@ beforeEach(() => {
 })
 
 test("debouncing", done => {
-  const state = {
-    value: 1
-  }
+  const state = { value: 1 }
 
   const actions = {
     up: () => state => ({ value: state.value + 1 }),
@@ -19,86 +17,96 @@ test("debouncing", done => {
     }
   }
 
-  const view = state =>
-    h(
-      "div",
-      {
-        oncreate() {
-          expect(document.body.innerHTML).toBe("<div>5</div>")
-          done()
-        }
-      },
-      state.value
-    )
+  const view = state => (
+    <div
+      oncreate={() => {
+        expect(document.body.innerHTML).toBe("<div>5</div>")
+        done()
+      }}
+    >
+      {state.value}
+    </div>
+  )
 
-  const main = app(state, actions, view, document.body)
-
-  main.fire()
+  app(state, actions, view, document.body).fire()
 })
 
-test("lazy components", done => {
+test("subviews / lazy components", done => {
   const state = { value: "foo" }
+
   const actions = {
     update: () => ({ value: "bar" })
   }
 
-  const Component = () => (state, actions) =>
-    h(
-      "div",
-      {
-        oncreate() {
-          expect(document.body.innerHTML).toBe("<div>foo</div>")
-          actions.update()
-        },
-        onupdate() {
-          expect(document.body.innerHTML).toBe("<div>bar</div>")
-          done()
-        }
-      },
-      state.value
-    )
+  const Component = () => (state, actions) => (
+    <div
+      oncreate={() => {
+        expect(document.body.innerHTML).toBe("<div>foo</div>")
+        actions.update()
+      }}
+      onupdate={() => {
+        expect(document.body.innerHTML).toBe("<div>bar</div>")
+        done()
+      }}
+    >
+      {state.value}
+    </div>
+  )
 
-  const view = () => h(Component)
+  app(state, actions, <Component />, document.body)
+})
+
+test("actions in the view", done => {
+  const state = { value: 0 }
+
+  const actions = {
+    up: () => state => ({ value: state.value + 1 })
+  }
+
+  const view = (state, actions) => {
+    if (state.value < 1) {
+      return actions.up()
+    }
+
+    setTimeout(() => {
+      expect(document.body.innerHTML).toBe("<div>1</div>")
+      done()
+    })
+
+    return <div>{state.value}</div>
+  }
 
   app(state, actions, view, document.body)
 })
 
 test("returning null on a component", done => {
-  const nullComponent = () => null
+  const oncreate = () => {
+    expect(document.body.innerHTML).toBe("<div></div>")
+    done()
+  }
 
-  const Component = () =>
-    h(
-      "div",
-      {
-        oncreate() {
-          expect(document.body.innerHTML).toBe("<div></div>")
-          done()
-        }
-      },
-      [nullComponent]
-    )
-
-  const view = () => h(Component)
+  const NullComponent = () => null;
+  const view = () => (
+    <div oncreate={oncreate}>
+      <NullComponent />
+    </div>
+  )
 
   app(null, null, view, document.body)
 })
 
 test("returning null on a lazy component", done => {
-  const nullComponent = () => () => null
+  const oncreate = () => {
+    expect(document.body.innerHTML).toBe("<div></div>")
+    done()
+  }
 
-  const Component = () => () =>
-    h(
-      "div",
-      {
-        oncreate() {
-          expect(document.body.innerHTML).toBe("<div></div>")
-          done()
-        }
-      },
-      [nullComponent]
-    )
-
-  const view = () => h(Component)
+  const NullComponent = () => () => null;
+  const view = () => (
+    <div oncreate={oncreate}>
+      <NullComponent />
+    </div>
+  )
 
   app(null, null, view, document.body)
 })

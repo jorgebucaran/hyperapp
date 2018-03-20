@@ -393,6 +393,8 @@ export const Jumbotron = ({ text }) => (
 
 You can be notified when elements managed by the virtual DOM are created, updated or removed via lifecycle events. Use them for animation, data fetching, wrapping third party libraries, cleaning up resources, etc.
 
+Note that lifecycle events are attached to virtual DOM nodes not to components. Consider adding a key to ensure that the event is attached to a specific DOM element, rather than a recycled one.
+
 #### oncreate
 
 This event is fired after the element is created and attached to the DOM. Use it to manipulate the DOM node directly, make a network request, create a slide/fade in animation, etc.

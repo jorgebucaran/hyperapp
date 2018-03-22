@@ -79,15 +79,16 @@ test("actions in the view", done => {
   app(state, actions, view, document.body)
 })
 
-test("returning null on a component", done => {
-  const oncreate = () => {
-    expect(document.body.innerHTML).toBe("<div></div>")
-    done()
-  }
+test("returning null from a component", done => {
+  const NullComponent = () => null
 
-  const NullComponent = () => null;
   const view = () => (
-    <div oncreate={oncreate}>
+    <div
+      oncreate={() => {
+        expect(document.body.innerHTML).toBe("<div></div>")
+        done()
+      }}
+    >
       <NullComponent />
     </div>
   )
@@ -95,15 +96,16 @@ test("returning null on a component", done => {
   app(null, null, view, document.body)
 })
 
-test("returning null on a lazy component", done => {
-  const oncreate = () => {
-    expect(document.body.innerHTML).toBe("<div></div>")
-    done()
-  }
+test("returning null from a lazy component", done => {
+  const NullComponent = () => () => null
 
-  const NullComponent = () => () => null;
   const view = () => (
-    <div oncreate={oncreate}>
+    <div
+      oncreate={() => {
+        expect(document.body.innerHTML).toBe("<div></div>")
+        done()
+      }}
+    >
       <NullComponent />
     </div>
   )

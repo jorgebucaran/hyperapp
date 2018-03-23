@@ -499,7 +499,7 @@ export const PlayerList = ({ players }) =>
 
 * [Slack](https://hyperappjs.herokuapp.com)
 * [Twitter](https://twitter.com/hyperappJS)
-* [Examples](https://codepen.io/search/pens/?q=hyperapp&limit=mine)
+* [Examples](https://codepen.io/search/pens/?q=hyperapp)
 * [/r/hyperapp](https://www.reddit.com/r/hyperapp)
 
 ## License

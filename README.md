@@ -495,11 +495,11 @@ export const PlayerList = ({ players }) =>
     ))
 ```
 
-## Community
+## Links
 
 * [Slack](https://hyperappjs.herokuapp.com)
 * [Twitter](https://twitter.com/hyperappJS)
-* [CodePen](https://codepen.io/hyperapp)
+* [Examples](https://codepen.io/search/pens/?q=hyperapp&limit=mine)
 * [/r/hyperapp](https://www.reddit.com/r/hyperapp)
 
 ## License

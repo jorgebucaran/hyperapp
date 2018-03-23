@@ -13,12 +13,12 @@ export interface VNode<Attributes = {}> {
   key: string
 }
 
-/** A Component is a function that returns a custom VNode.
+/** A Component is a function that returns a custom VNode or View.
  *
  * @memberOf [VDOM]
  */
-export interface Component<Attributes = {}> {
-  (attributes: Attributes, children: Array<VNode | string>): VNode<Attributes>
+export interface Component<Attributes = {}, State = {}, Actions = {}> {
+  (attributes: Attributes, children: Array<VNode | string>): VNode<Attributes> | View<State, Actions>
 }
 
 /**
@@ -35,7 +35,7 @@ export type Children = VNode | string | number | null
  * @memberOf [VDOM]
  */
 export function h<Attributes>(
-  nodeName: Component<Attributes> | string,
+  nodeName: Component<Attributes, any, any> | string,
   attributes?: Attributes,
   ...children: Array<Children | Children[]>
 ): VNode<Attributes>
@@ -96,7 +96,7 @@ export function app<State, Actions>(
 
 declare global {
   namespace JSX {
-    interface Element<Data> extends VNode<object> {}
+    interface Element extends VNode<any> {}
     interface IntrinsicElements {
       [elemName: string]: any
     }

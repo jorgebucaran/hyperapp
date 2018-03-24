@@ -161,10 +161,16 @@ export function app(state, actions, view, container) {
       }
     } else {
       if (name[0] === "o" && name[1] === "n") {
-        if (!element.events) {
+        name = name.slice(2)
+
+        if (element.events) {
+          if (!oldValue) oldValue = element.events[name]
+        } else {
           element.events = {}
         }
-        element.events[(name = name.slice(2))] = value
+
+        element.events[name] = value
+
         if (value) {
           if (!oldValue) {
             element.addEventListener(name, eventListener)

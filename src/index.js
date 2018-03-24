@@ -29,10 +29,10 @@ export function h(name, attributes) {
 export function app(state, actions, view, container) {
   var map = [].map
   var rootElement = (container && container.children[0]) || null
-  var oldNode = rootElement && recycleElement(rootElement)
+  var oldNode = rootElement && (rootElement.node || recycleElement(rootElement))
   var lifecycle = []
   var skipRender
-  var isRecycling = true
+  var isRecycling = !(rootElement && rootElement.node)
   var globalState = clone(state)
   var wiredActions = wireStateToActions([], globalState, clone(actions))
 
@@ -65,6 +65,7 @@ export function app(state, actions, view, container) {
 
     if (container && !skipRender) {
       rootElement = patch(container, rootElement, oldNode, (oldNode = node))
+      rootElement.node = node
     }
 
     isRecycling = false
@@ -108,9 +109,10 @@ export function app(state, actions, view, container) {
 
   function wireStateToActions(path, state, actions) {
     for (var key in actions) {
-      typeof actions[key] === "function"
+      var action = actions[key].h || actions[key]
+      typeof action === "function"
         ? (function(key, action) {
-            actions[key] = function(data) {
+            var wiredAction = function(data) {
               var result = action(data)
 
               if (typeof result === "function") {
@@ -129,11 +131,13 @@ export function app(state, actions, view, container) {
 
               return result
             }
-          })(key, actions[key])
+            wiredAction.h = action
+            actions[key] = wiredAction
+          })(key, action)
         : wireStateToActions(
             path.concat(key),
             (state[key] = clone(state[key])),
-            (actions[key] = clone(actions[key]))
+            (actions[key] = clone(action))
           )
     }
 

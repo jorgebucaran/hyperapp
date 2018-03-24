@@ -16,8 +16,10 @@
   "author": "Jorge Bucaran",
   "keywords": [
     "hyperapp",
-    "vdom",
-    "virtual-dom"
+    "frontend",
+    "framework",
+    "virtual dom",
+    "vdom"
   ],
   "scripts": {
     "test": "jest --coverage --no-cache && tsc -p test/ts",

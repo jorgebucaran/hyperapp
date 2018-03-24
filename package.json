@@ -1,7 +1,7 @@
 {
   "name": "hyperapp",
   "description": "1 kB JavaScript framework for building web applications.",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "main": "dist/hyperapp.js",
   "module": "src/index.js",
   "typings": "hyperapp.d.ts",

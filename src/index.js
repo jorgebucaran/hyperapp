@@ -320,9 +320,18 @@ export function app(state, actions, view, container) {
 
       while (k < children.length) {
         var oldKey = getKey(oldChildren[i])
+        var nextOldKey = getKey(oldChildren[i + 1])
         var newKey = getKey((children[k] = resolveNode(children[k])))
 
         if (newKeyed[oldKey]) {
+          i++
+          continue
+        }
+
+        if (newKey != null && newKey === nextOldKey) {
+          if (oldKey == null) {
+            removeElement(element, oldElements[i], oldChildren[i])
+          }
           i++
           continue
         }

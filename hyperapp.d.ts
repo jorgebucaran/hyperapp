@@ -54,8 +54,8 @@ export type ActionResult<State> = Partial<State> | Promise<any> | null | void
  *
  * @memberOf [App]
  */
-export type ActionType<State, Actions> = (
-  data?: any
+export type ActionType<Data, State, Actions> = (
+  data?: Data
 ) =>
   | ((state: State, actions: Actions) => ActionResult<State>)
   | ActionResult<State>

@@ -35,3 +35,22 @@ test("svg", done => {
 
   app(null, null, view, document.body)
 })
+
+test("xlink:href", done => {
+  const XLINK_NS = "http://www.w3.org/1999/xlink"
+  
+  const oncreate = () => {
+    const use = document.getElementById("use")
+    expect(use.getAttributeNS(XLINK_NS, "href")).toBe("about:blank")
+
+    done()
+  }
+
+  const view = () => (
+    h("svg", { viewBox: "0 0 10 10", oncreate }, [
+      h("use", { id: "use", "xlink:href": "about:blank" })
+    ])
+  )
+
+  app(null, null, view, document.body)
+})

@@ -181,7 +181,11 @@ export function app(state, actions, view, container) {
       } else if (name in element && name !== "list" && !isSvg) {
         element[name] = value == null ? "" : value
       } else if (value != null && value !== false) {
-        element.setAttribute(name, value)
+        if (name === "xlink:href") {
+          element.setAttributeNS("http://www.w3.org/1999/xlink", "href", value)
+        } else {
+          element.setAttribute(name, value)
+        }
       }
 
       if (value == null || value === false) {

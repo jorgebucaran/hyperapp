@@ -88,17 +88,19 @@ export function app(state, actions, view, container) {
     return out
   }
 
-  function set(path, value, source) {
+  function setPartialState(path, value, source) {
     var target = {}
     if (path.length) {
       target[path[0]] =
-        path.length > 1 ? set(path.slice(1), value, source[path[0]]) : value
+        path.length > 1
+          ? setPartialState(path.slice(1), value, source[path[0]])
+          : value
       return clone(source, target)
     }
     return value
   }
 
-  function get(path, source) {
+  function getPartialState(path, source) {
     var i = 0
     while (i < path.length) {
       source = source[path[i++]]
@@ -114,16 +116,20 @@ export function app(state, actions, view, container) {
               var result = action(data)
 
               if (typeof result === "function") {
-                result = result(get(path, globalState), actions)
+                result = result(getPartialState(path, globalState), actions)
               }
 
               if (
                 result &&
-                result !== (state = get(path, globalState)) &&
+                result !== (state = getPartialState(path, globalState)) &&
                 !result.then // !isPromise
               ) {
                 scheduleRender(
-                  (globalState = set(path, clone(state, result), globalState))
+                  (globalState = setPartialState(
+                    path,
+                    clone(state, result),
+                    globalState
+                  ))
                 )
               }
 

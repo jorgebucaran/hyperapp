@@ -66,7 +66,7 @@ export type ActionType<Data, State, Actions> = (
  */
 export type ActionsType<State, Actions> = {
   [P in keyof Actions]:
-    | ActionType<State, Actions>
+    | ActionType<any, State, Actions>
     | ActionsType<any, Actions[P]>
 }
 

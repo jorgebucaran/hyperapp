@@ -165,34 +165,32 @@ export function app(state, actions, view, container) {
           element[name][i] = style
         }
       }
-    } else {
-      if (name[0] === "o" && name[1] === "n") {
-        name = name.slice(2)
+    } else if (name[0] === "o" && name[1] === "n") {
+      name = name.slice(2)
 
-        if (element.events) {
-          if (!oldValue) oldValue = element.events[name]
-        } else {
-          element.events = {}
-        }
-
-        element.events[name] = value
-
-        if (value) {
-          if (!oldValue) {
-            element.addEventListener(name, eventListener)
-          }
-        } else {
-          element.removeEventListener(name, eventListener)
-        }
-      } else if (name in element && name !== "list" && !isSvg) {
-        element[name] = value == null ? "" : value
-      } else if (value != null && value !== false) {
-        element.setAttribute(name, value)
+      if (element.events) {
+        if (!oldValue) oldValue = element.events[name]
+      } else {
+        element.events = {}
       }
 
-      if (value == null || value === false) {
-        element.removeAttribute(name)
+      element.events[name] = value
+
+      if (value) {
+        if (!oldValue) {
+          element.addEventListener(name, eventListener)
+        }
+      } else {
+        element.removeEventListener(name, eventListener)
       }
+    } else if (name in element && name !== "list" && !isSvg) {
+      element[name] = value == null ? "" : value
+    } else if (value != null && value !== false) {
+      element.setAttribute(name, value)
+    }
+
+    if (value == null || value === false) {
+      element.removeAttribute(name)
     }
   }
 

@@ -498,6 +498,10 @@ export const PlayerList = ({ players }) =>
     ))
 ```
 
+#### Top-Level Nodes
+
+Keys are not registered on the top-level node of your view. If you are toggling the top-level view, and you must use keys, wrap them in an unchanging node.
+
 ## Links
 
 * [Slack](https://hyperappjs.herokuapp.com)

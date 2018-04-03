@@ -494,6 +494,33 @@ testVdomToHtml("styles", [
   }
 ])
 
+testVdomToHtml("inline styles", [
+  {
+    vdom: <div />,
+    html: `<div></div>`
+  },
+  {
+    vdom: <div style="color:red;font-size:1em;--foo:red" />,
+    html: `<div style="color: red; font-size: 1em;"></div>`
+  },
+  {
+    vdom: <div style="color:blue;float:left;--foo:blue" />,
+    html: `<div style="color: blue; float: left;"></div>`
+  },
+  {
+    vdom: <div style="" />,
+    html: `<div style=""></div>`
+  },
+  {
+    vdom: <div style={null} />,
+    html: `<div style=""></div>`
+  },
+  {
+    vdom: <div />,
+    html: `<div></div>`
+  }
+])
+
 testVdomToHtml("update element data", [
   {
     vdom: <div id="foo" class="bar" />,

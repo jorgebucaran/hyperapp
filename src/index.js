@@ -156,7 +156,7 @@ export function app(state, actions, view, container) {
 
   function updateAttribute(element, name, value, oldValue, isSvg) {
     if (name === "key") {
-    } else if (name === "style") {
+    } else if (name === "style" && typeof value === "object") {
       for (var i in clone(oldValue, value)) {
         var style = value == null || value[i] == null ? "" : value[i]
         if (i[0] === "-") {

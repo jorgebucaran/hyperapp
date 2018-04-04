@@ -61,6 +61,31 @@ const view = (state, actions) =>
 
 Note that JSX is not required for building applications with Hyperapp. You can use <samp>hyperapp.h</samp> directly and without a compilation step as shown above. Other alternatives to JSX include [@hyperapp/html](https://github.com/hyperapp/html), [hyperx](https://github.com/substack/hyperx), [t7](https://github.com/trueadm/t7) and [ijk](https://github.com/lukejacksonn/ijk).
 
+The second example shows how to read data from a DOM element.
+
+```js
+const { h, app } = hyperapp
+// @jsx h 
+
+const state = {
+  name: ''
+}
+
+const actions = {
+  nameUpdated: value => state => ({ name: value })
+}
+
+const view = (state, actions) => (
+  <main>
+    <label>Name:</label>
+    <input value={state.name} oninput={(event) => actions.nameUpdated(event.target.value)} />
+    <h1>Hello {state.name}!</h1>
+  </main>
+)
+
+app(state, actions, view, document.body)
+```
+
 ## Installation
 
 Install with npm or Yarn.

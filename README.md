@@ -110,6 +110,8 @@ const state = {
 }
 ```
 
+Because Hyperapp performs a shallow merge when updating your state, the top-level state must be a plain JavaScript object, other than this, you can use any type, including arrays, ES6 [Maps](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map), [Sets](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set), [Immutable.js](https://facebook.github.io/immutable-js/) structures, etc.
+
 ### Actions
 
 The only way to change the state is via actions. An action is a unary function (accepts a single argument) expecting a payload. The payload can be anything you want to pass into the action.

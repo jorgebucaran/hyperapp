@@ -504,17 +504,15 @@ export const PlayerList = ({ players }) =>
 
 Keys are not registered on the top-level node of your view. If you are toggling the top-level view, and you must use keys, wrap them in an unchanging node.
 
-
 ## Supporting Hyperapp
 
-This project exists thanks to all the people who contribute. 
+This project exists thanks to all the people who contribute.
 You can support Hyperapp financially using Patreon.
 
 [![Patreon](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/JorgeBucaran)
- 
+
 All feedback and suggestions are welcome! Feel free to open an Issue or Pull Request,
 here you have the [Contribution Guidelines](https://github.com/hyperapp/hyperapp/blob/master/CONTRIBUTING.md).
-
 
 ## Links
 

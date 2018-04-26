@@ -348,14 +348,6 @@ export function app(state, actions, view, container) {
           continue
         }
 
-        if (newKey != null && newKey === getKey(oldChildren[i + 1])) {
-          if (oldKey == null) {
-            removeElement(element, oldElements[i], oldChildren[i])
-          }
-          i++
-          continue
-        }
-
         if (newKey == null || isRecycling) {
           if (oldKey == null) {
             node.childElements.push(
@@ -373,15 +365,20 @@ export function app(state, actions, view, container) {
             )
             i++
           } else if (keyedNode[0]) {
-            node.childElements.push(
-              patch(
-                element,
-                element.insertBefore(keyedNode[0], oldElements[i]),
-                keyedNode[1],
-                children[k],
-                isSvg
+            if (newKeyedLookUp[oldKey] || oldKey == null) {
+              node.childElements.push(
+                patch(
+                  element,
+                  element.insertBefore(keyedNode[0], oldElements[i]),
+                  keyedNode[1],
+                  children[k],
+                  isSvg
+                )
               )
-            )
+            } else {
+              i++
+              continue
+            }
           } else {
             node.childElements.push(
               patch(element, oldElements[i], null, children[k], isSvg)

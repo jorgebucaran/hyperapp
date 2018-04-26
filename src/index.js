@@ -286,6 +286,9 @@ export function app(state, actions, view, container) {
   }
 
   function patch(parent, element, oldNode, node, isSvg) {
+    if (node && typeof node === "object") {
+      node.childElements = node.childElements || []
+    }
     if (node === oldNode) {
     } else if (oldNode == null || oldNode.nodeName !== node.nodeName) {
       var newElement = createElement(node, isSvg)
@@ -308,16 +311,24 @@ export function app(state, actions, view, container) {
 
       var oldKeyed = {}
       var newKeyed = {}
-      var oldElements = []
+      var newKeyedLookUp = {}
+      var oldElements = oldNode.childElements || []
       var oldChildren = oldNode.children
       var children = node.children
 
       for (var i = 0; i < oldChildren.length; i++) {
-        oldElements[i] = element.childNodes[i]
+        oldElements[i] = oldElements[i] || element.childNodes[i]
 
         var oldKey = getKey(oldChildren[i])
         if (oldKey != null) {
           oldKeyed[oldKey] = [oldElements[i], oldChildren[i]]
+        }
+      }
+
+      for (var i = 0; i < children.length; i++) {
+        var _newKey = getKey(children[i])
+        if (_newKey != null) {
+          newKeyedLookUp[_newKey] = true
         }
       }
 
@@ -343,7 +354,7 @@ export function app(state, actions, view, container) {
 
         if (newKey == null || isRecycling) {
           if (oldKey == null) {
-            patch(element, oldElements[i], oldChildren[i], children[k], isSvg)
+            node.childElements.push(patch(element, oldElements[i], oldChildren[i], children[k], isSvg))
             k++
           }
           i++
@@ -351,18 +362,22 @@ export function app(state, actions, view, container) {
           var keyedNode = oldKeyed[newKey] || []
 
           if (oldKey === newKey) {
-            patch(element, keyedNode[0], keyedNode[1], children[k], isSvg)
+            node.childElements.push(patch(element, keyedNode[0], keyedNode[1], children[k], isSvg))
             i++
           } else if (keyedNode[0]) {
-            patch(
-              element,
-              element.insertBefore(keyedNode[0], oldElements[i]),
-              keyedNode[1],
-              children[k],
-              isSvg
-            )
+            if (newKeyedLookUp[oldKey]) {
+              node.childElements.push(patch(
+                element,
+                element.insertBefore(keyedNode[0], oldElements[i]),
+                keyedNode[1],
+                children[k],
+                isSvg
+              ))
+            } else {
+              i++
+            }
           } else {
-            patch(element, oldElements[i], null, children[k], isSvg)
+            node.childElements.push(patch(element, oldElements[i], null, children[k], isSvg))
           }
 
           newKeyed[newKey] = children[k]

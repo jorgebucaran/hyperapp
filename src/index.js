@@ -55,7 +55,9 @@ export function app(state, actions, view, container) {
   function resolveNode(node) {
     return typeof node === "function"
       ? resolveNode(node(globalState, wiredActions))
-      : node != null ? node : ""
+      : node != null
+        ? node
+        : ""
   }
 
   function render() {
@@ -354,7 +356,9 @@ export function app(state, actions, view, container) {
 
         if (newKey == null || isRecycling) {
           if (oldKey == null) {
-            node.childElements.push(patch(element, oldElements[i], oldChildren[i], children[k], isSvg))
+            node.childElements.push(
+              patch(element, oldElements[i], oldChildren[i], children[k], isSvg)
+            )
             k++
           }
           i++
@@ -362,22 +366,28 @@ export function app(state, actions, view, container) {
           var keyedNode = oldKeyed[newKey] || []
 
           if (oldKey === newKey) {
-            node.childElements.push(patch(element, keyedNode[0], keyedNode[1], children[k], isSvg))
+            node.childElements.push(
+              patch(element, keyedNode[0], keyedNode[1], children[k], isSvg)
+            )
             i++
           } else if (keyedNode[0]) {
             if (newKeyedLookUp[oldKey]) {
-              node.childElements.push(patch(
-                element,
-                element.insertBefore(keyedNode[0], oldElements[i]),
-                keyedNode[1],
-                children[k],
-                isSvg
-              ))
+              node.childElements.push(
+                patch(
+                  element,
+                  element.insertBefore(keyedNode[0], oldElements[i]),
+                  keyedNode[1],
+                  children[k],
+                  isSvg
+                )
+              )
             } else {
               i++
             }
           } else {
-            node.childElements.push(patch(element, oldElements[i], null, children[k], isSvg))
+            node.childElements.push(
+              patch(element, oldElements[i], null, children[k], isSvg)
+            )
           }
 
           newKeyed[newKey] = children[k]

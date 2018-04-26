@@ -217,12 +217,14 @@ export function app(state, actions, view, container) {
         })
       }
 
+      node.childElements = []
+
       for (var i = 0; i < node.children.length; i++) {
         element.appendChild(
-          createElement(
+          (node.childElements[i] = createElement(
             (node.children[i] = resolveNode(node.children[i])),
             isSvg
-          )
+          ))
         )
       }
 
@@ -371,19 +373,15 @@ export function app(state, actions, view, container) {
             )
             i++
           } else if (keyedNode[0]) {
-            if (newKeyedLookUp[oldKey]) {
-              node.childElements.push(
-                patch(
-                  element,
-                  element.insertBefore(keyedNode[0], oldElements[i]),
-                  keyedNode[1],
-                  children[k],
-                  isSvg
-                )
+            node.childElements.push(
+              patch(
+                element,
+                element.insertBefore(keyedNode[0], oldElements[i]),
+                keyedNode[1],
+                children[k],
+                isSvg
               )
-            } else {
-              i++
-            }
+            )
           } else {
             node.childElements.push(
               patch(element, oldElements[i], null, children[k], isSvg)

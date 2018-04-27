@@ -55,7 +55,9 @@ export function app(state, actions, view, container) {
   function resolveNode(node) {
     return typeof node === "function"
       ? resolveNode(node(globalState, wiredActions))
-      : node != null ? node : ""
+      : node != null
+        ? node
+        : ""
   }
 
   function render() {

@@ -330,7 +330,7 @@ export function app(state, actions, view, container) {
       }
 
       for (var i = 0; i < children.length; i++) {
-        var _newKey = getKey(children[i] = resolveNode(children[i]))
+        var _newKey = getKey((children[i] = resolveNode(children[i])))
         if (_newKey != null) {
           newKeyedLookUp[_newKey] = true
         }

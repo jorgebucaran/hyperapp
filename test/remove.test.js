@@ -51,11 +51,6 @@ test("onremove reordering", function(done) {
       expect(document.body.innerHTML).toBe(
         "<ul><li>0</li><li>1</li><li>2</li><li>3</li></ul>"
       )
-    })
-    .then(() => {
-      removers.forEach(f => f())
-      removers = []
-      expect(document.body.innerHTML).toBe("<ul><li>2</li><li>3</li></ul>")
       return changeApp(theApp.changeAgain)
     })
     .then(() => {

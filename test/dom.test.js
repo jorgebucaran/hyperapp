@@ -652,3 +652,18 @@ testVdomToHtml("events", [
     html: `<button id="clicked"></button>`
   }
 ])
+
+testVdomToHtml("innerHTML", [
+  {
+    vdom: <div>foo</div>,
+    html: `<div>foo</div>`
+  },
+  {
+    vdom: <div innerHTML="bar" />,
+    html: `<div>bar</div>`
+  },
+  {
+    vdom: <div>baz</div>,
+    html: `<div>baz</div>`
+  }
+])

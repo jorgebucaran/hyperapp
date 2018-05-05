@@ -157,7 +157,7 @@ export function app(state, actions, view, container) {
   }
 
   function updateAttribute(element, name, value, oldValue, isSvg) {
-    if (name === "key") {
+    if (name === "key" || name === "innerHTML") {
     } else if (name === "style") {
       for (var i in clone(oldValue, value)) {
         var style = value == null || value[i] == null ? "" : value[i]
@@ -313,6 +313,17 @@ export function app(state, actions, view, container) {
       var oldElements = []
       var oldChildren = oldNode.children
       var children = node.children
+      var html = node.attributes.innerHTML
+      var oldHtml = oldNode.attributes.innerHTML
+
+      if (isRecycling && html != null) {
+        oldHtml = element.innerHTML
+        oldChildren = []
+      }
+
+      if (oldHtml != null && html == null) {
+        element.innerHTML = ""
+      }
 
       for (var i = 0; i < oldChildren.length; i++) {
         oldElements[i] = element.childNodes[i]
@@ -383,6 +394,10 @@ export function app(state, actions, view, container) {
         if (!newKeyed[i]) {
           removeElement(element, oldKeyed[i][0], oldKeyed[i][1])
         }
+      }
+
+      if (html != null && html !== oldHtml) {
+        element.innerHTML = html
       }
     }
     return element

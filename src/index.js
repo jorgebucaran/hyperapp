@@ -296,7 +296,10 @@ export function app(state, actions, view, container) {
     if (node === oldNode) {
     } else if (oldNode == null || oldNode.nodeName !== node.nodeName) {
       var newElement = createElement(node, isSvg)
-      parent.insertBefore(newElement, element)
+      if (typeof element === "undefined") {
+        throw new Error("test")
+      }
+      parent.insertBefore(newElement, element || null)
 
       if (oldNode != null) {
         removeElement(parent, element, oldNode)
@@ -369,7 +372,7 @@ export function app(state, actions, view, container) {
               node.childElements.push(
                 patch(
                   element,
-                  element.insertBefore(keyedNode[0], oldElements[i]),
+                  element.insertBefore(keyedNode[0], oldElements[i] || null),
                   keyedNode[1],
                   children[k],
                   isSvg

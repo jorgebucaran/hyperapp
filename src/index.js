@@ -296,9 +296,6 @@ export function app(state, actions, view, container) {
     if (node === oldNode) {
     } else if (oldNode == null || oldNode.nodeName !== node.nodeName) {
       var newElement = createElement(node, isSvg)
-      if (typeof element === "undefined") {
-        throw new Error("test")
-      }
       parent.insertBefore(newElement, element || null)
 
       if (oldNode != null) {

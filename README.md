@@ -3,6 +3,8 @@
 [![Travis CI](https://img.shields.io/travis/hyperapp/hyperapp/master.svg)](https://travis-ci.org/hyperapp/hyperapp)
 [![Codecov](https://img.shields.io/codecov/c/github/hyperapp/hyperapp/master.svg)](https://codecov.io/gh/hyperapp/hyperapp)
 [![npm](https://img.shields.io/npm/v/hyperapp.svg)](https://www.npmjs.org/package/hyperapp)
+[![gzip size](http://img.badgesize.io/https://unpkg.com/hyperapp?compression=gzip)](https://unpkg.com/hyperapp)
+[![install size](https://packagephobia.now.sh/badge?p=hyperapp)](https://packagephobia.now.sh/result?p=hyperapp)
 [![Slack](https://hyperappjs.herokuapp.com/badge.svg)](https://hyperappjs.herokuapp.com "Join us")
 
 Hyperapp is a JavaScript micro-framework for building web applications.

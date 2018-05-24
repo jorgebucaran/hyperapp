@@ -123,17 +123,13 @@ test("a top level view can return null", done => {
 })
 
 test("a lazy component can return an array", function(done) {
-  var Component = function() {
-    return function() {
-      return [<p />]
-    }
-  }
+  var Component = () => () => [<p />]
   app(
     null,
     null,
     () => (
       <div
-        oncreate={function() {
+        oncreate={() => {
           expect(document.body.innerHTML).toBe("<div><p></p></div>")
           done()
         }}

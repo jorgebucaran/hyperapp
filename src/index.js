@@ -53,11 +53,14 @@ export function app(state, actions, view, container) {
   }
 
   function resolveNode(node) {
+    if (Array.isArray(node)) {
+      return [].concat.apply([], node.map(resolveNode))
+    }
     return typeof node === "function"
       ? resolveNode(node(globalState, wiredActions))
       : node != null
         ? node
-        : ""
+        : []
   }
 
   function render() {
@@ -218,13 +221,11 @@ export function app(state, actions, view, container) {
       }
 
       node.childElements = []
+      node.children = resolveNode(node.children)
 
       for (var i = 0; i < node.children.length; i++) {
         element.appendChild(
-          (node.childElements[i] = createElement(
-            (node.children[i] = resolveNode(node.children[i])),
-            isSvg
-          ))
+          (node.childElements[i] = createElement(node.children[i], isSvg))
         )
       }
 
@@ -313,6 +314,8 @@ export function app(state, actions, view, container) {
         (isSvg = isSvg || node.nodeName === "svg")
       )
 
+      node.children = resolveNode(node.children)
+
       var oldKeyed = {}
       var newKeyed = {}
       var newKeyedLookUp = {}
@@ -330,7 +333,7 @@ export function app(state, actions, view, container) {
       }
 
       for (var i = 0; i < children.length; i++) {
-        var _newKey = getKey((children[i] = resolveNode(children[i])))
+        var _newKey = getKey(children[i])
         if (_newKey != null) {
           newKeyedLookUp[_newKey] = true
         }

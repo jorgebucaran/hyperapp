@@ -60,7 +60,7 @@ export function app(state, actions, view, container) {
       ? resolveNode(node(globalState, wiredActions))
       : node != null
         ? node
-        : []
+        : ""
   }
 
   function render() {

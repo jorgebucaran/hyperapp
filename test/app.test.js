@@ -1,4 +1,5 @@
 import { h, app } from "../src"
+import { callbackify } from "util"
 
 beforeEach(() => {
   document.body.innerHTML = ""
@@ -113,9 +114,35 @@ test("returning null from a lazy component", done => {
   app(null, null, view, document.body)
 })
 
-test("top level component can be null", done => {
+test("a top level view can return null", done => {
   app(null, null, () => null, document.body)
   setTimeout(() => {
     expect(document.body.innerHTML).toBe("")
+    done()
   }, 100)
+})
+
+test("a lazy component can return an array", function(done) {
+  var Component = function() {
+    return function() {
+      return [<p />]
+    }
+  }
+  app(
+    null,
+    null,
+    function() {
+      return (
+        <div
+          oncreate={function() {
+            expect(document.body.innerHTML).toBe("<div><p></p></div>")
+            done()
+          }}
+        >
+          <Component />
+        </div>
+      )
+    },
+    document.body
+  )
 })

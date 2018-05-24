@@ -53,6 +53,9 @@ export function app(state, actions, view, container) {
   }
 
   function resolveNode(node) {
+    if (Array.isArray(node)) {
+      return [].concat.apply([], node.map(resolveNode))
+    }
     return typeof node === "function"
       ? resolveNode(node(globalState, wiredActions))
       : node != null
@@ -217,13 +220,10 @@ export function app(state, actions, view, container) {
         })
       }
 
+      node.children = resolveNode(node.children)
+
       for (var i = 0; i < node.children.length; i++) {
-        element.appendChild(
-          createElement(
-            (node.children[i] = resolveNode(node.children[i])),
-            isSvg
-          )
-        )
+        element.appendChild(createElement(node.children[i], isSvg))
       }
 
       for (var name in attributes) {
@@ -307,6 +307,7 @@ export function app(state, actions, view, container) {
         node.attributes,
         (isSvg = isSvg || node.nodeName === "svg")
       )
+      node.children = resolveNode(node.children)
 
       var oldKeyed = {}
       var newKeyed = {}
@@ -328,7 +329,7 @@ export function app(state, actions, view, container) {
 
       while (k < children.length) {
         var oldKey = getKey(oldChildren[i])
-        var newKey = getKey((children[k] = resolveNode(children[k])))
+        var newKey = getKey(children[k])
 
         if (newKeyed[oldKey]) {
           i++

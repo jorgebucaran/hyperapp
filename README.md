@@ -217,7 +217,7 @@ export const view = (state, actions) =>
   ])
 ```
 
-A virtual DOM is a description of what a DOM should look like using a tree of nested JavaScript objects known as virtual nodes. Think of it as a lightweight representation of the DOM. In the example, the view function returns and object like this.
+A virtual DOM is a description of what a DOM should look like using a tree of nested JavaScript objects known as virtual nodes. Think of it as a lightweight representation of the DOM. In the example, the view function returns an object like this.
 
 ```jsx
 {

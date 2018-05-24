@@ -112,3 +112,10 @@ test("returning null from a lazy component", done => {
 
   app(null, null, view, document.body)
 })
+
+test("top level component can be null", done => {
+  app(null, null, () => null, document.body)
+  setTimeout(() => {
+    expect(document.body.innerHTML).toBe("")
+  }, 100)
+})

@@ -131,18 +131,16 @@ test("a lazy component can return an array", function(done) {
   app(
     null,
     null,
-    function() {
-      return (
-        <div
-          oncreate={function() {
-            expect(document.body.innerHTML).toBe("<div><p></p></div>")
-            done()
-          }}
-        >
-          <Component />
-        </div>
-      )
-    },
+    () => (
+      <div
+        oncreate={function() {
+          expect(document.body.innerHTML).toBe("<div><p></p></div>")
+          done()
+        }}
+      >
+        <Component />
+      </div>
+    ),
     document.body
   )
 })

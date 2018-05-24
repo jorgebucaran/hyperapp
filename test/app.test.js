@@ -1,5 +1,4 @@
 import { h, app } from "../src"
-import { callbackify } from "util"
 
 beforeEach(() => {
   document.body.innerHTML = ""

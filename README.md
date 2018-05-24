@@ -5,6 +5,9 @@
 [![npm](https://img.shields.io/npm/v/hyperapp.svg)](https://www.npmjs.org/package/hyperapp)
 [![Slack](https://hyperappjs.herokuapp.com/badge.svg)](https://hyperappjs.herokuapp.com "Join us")
 
+## Travis CI for this fork
+[![Travis CI](https://img.shields.io/travis/infinnie/hyperapp/master.svg)](https://travis-ci.org/infinnie/hyperapp)
+
 Hyperapp is a JavaScript micro-framework for building web applications.
 
 * **Minimal** — We have aggressively minimized the concepts you need to understand to be productive while remaining on par with what other frameworks can do.
@@ -217,7 +220,7 @@ export const view = (state, actions) =>
   ])
 ```
 
-A virtual DOM is a description of what a DOM should look like using a tree of nested JavaScript objects known as virtual nodes. Think of it as a lightweight representation of the DOM. In the example, the view function returns and object like this.
+A virtual DOM is a description of what a DOM should look like using a tree of nested JavaScript objects known as virtual nodes. Think of it as a lightweight representation of the DOM. In the example, the view function returns an object like this.
 
 ```jsx
 {

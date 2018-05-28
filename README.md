@@ -112,9 +112,9 @@ const state = {
 
 Because Hyperapp performs a shallow merge when updating your state, the top-level state must be a plain JavaScript object, other than this, you can use any type, including arrays, ES6 [Maps](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map), [Sets](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set), [Immutable.js](https://facebook.github.io/immutable-js/) structures, etc.
 
-#### Local Component State
+#### Local State
 
-Hyperapp does not have the concept of local component state. Instead, all components are pure functions that return a virtual DOM representation of the global state.
+Hyperapp does not have the concept of local state. Instead, components are pure functions that return a virtual DOM representation of the global state.
 
 ### Actions
 
@@ -357,7 +357,7 @@ export const view = (state, actions) => (
 
 Suppose you have a list of questions with answers that are collapsed initially. A flag `answerIsOpen` is used to determine if a question's answer is open.
 
-Since there is no concept of local state in Hyperapp, the global state must be needs to be updated to reflect the new state.
+Since there is no concept of local state in Hyperapp, the global state is always updated rather than an individual component's state.
 
 To update a single question's state, the entire `questions` array will be mapped to a new array where the `answerIsOpen` property will be toggled if the question matches the one belonging to the component.
 

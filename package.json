@@ -23,7 +23,8 @@
   ],
   "scripts": {
     "test": "jest --coverage --no-cache && tsc -p test/ts",
-    "build": "npm run bundle && npm run minify",
+    "build": "npm run bundle && npm run minify && npm run build:es",
+    "build:es": "minify src/index.js --mangle.keepClassName --outFile dist/hyperapp.es.js",
     "bundle": "rollup -i src/index.js -o dist/hyperapp.js -m -f umd -n hyperapp",
     "minify": "uglifyjs dist/hyperapp.js -o dist/hyperapp.js -mc pure_funcs=['Object.defineProperty'] --source-map includeSources,url=hyperapp.js.map",
     "prepare": "npm run build",
@@ -42,6 +43,7 @@
     ]
   },
   "devDependencies": {
+    "babel-minify": "^0.3.0",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.6.1",
     "jest": "^22.4.3",

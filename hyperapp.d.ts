@@ -20,7 +20,6 @@ export interface VNode<Attributes = {}> {
 export interface Component<Attributes = {}, State = {}, Actions = {}> {
   (attributes: Attributes, children: Array<VNode | string>):
     | VNode<Attributes>
-    | View<State, Actions>
 }
 
 /**

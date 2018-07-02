@@ -1,4 +1,4 @@
-export as namespace hyperapp
+export as namespace hyperapp;
 
 /** @namespace [VDOM] */
 
@@ -7,10 +7,10 @@ export as namespace hyperapp
  * @memberOf [VDOM]
  */
 export interface VNode<Attributes = {}> {
-  nodeName: string
-  attributes?: Attributes
-  children: Array<VNode | string>
-  key: string
+  nodeName: string;
+  attributes?: Attributes;
+  children: Array<VNode | string>;
+  key: string;
 }
 
 /** A Component is a function that returns a custom VNode or View.
@@ -20,12 +20,13 @@ export interface VNode<Attributes = {}> {
 export interface Component<Attributes = {}, State = {}, Actions = {}> {
   (attributes: Attributes, children: Array<VNode | string>):
     | VNode<Attributes>
+    | View<State, Actions>;
 }
 
 /**
  * Possibles children types
  */
-export type Children = VNode | string | number | null
+export type Children = VNode | string | number | null;
 
 /** The soft way to create a VNode.
  * @param name      An element name or a Component function
@@ -39,7 +40,7 @@ export function h<Attributes>(
   nodeName: Component<Attributes, any, any> | string,
   attributes?: Attributes,
   ...children: Array<Children | Children[]>
-): VNode<Attributes>
+): VNode<Attributes> | View<any, any>;
 
 /** @namespace [App] */
 
@@ -47,7 +48,7 @@ export function h<Attributes>(
  *
  * @memberOf [App]
  */
-export type ActionResult<State> = Partial<State> | Promise<any> | null | void
+export type ActionResult<State> = Partial<State> | Promise<any> | null | void;
 
 /** The interface for a single action implementation.
  *
@@ -57,7 +58,7 @@ export type ActionType<State, Actions> = (
   data?: any
 ) =>
   | ((state: State, actions: Actions) => ActionResult<State>)
-  | ActionResult<State>
+  | ActionResult<State>;
 
 /** The interface for the actions tree implementation.
  *
@@ -67,14 +68,14 @@ export type ActionsType<State, Actions> = {
   [P in keyof Actions]:
     | ActionType<State, Actions>
     | ActionsType<any, Actions[P]>
-}
+};
 
 /** The view function describes the application UI as a tree of VNodes.
  * @returns A VNode tree.
  * @memberOf [App]
  */
 export interface View<State, Actions> {
-  (state: State, actions: Actions): VNode<object>
+  (state: State, actions: Actions): VNode<object>;
 }
 
 /** The app() call creates and renders a new application.
@@ -91,7 +92,7 @@ export function app<State, Actions>(
   actions: ActionsType<State, Actions>,
   view: View<State, Actions>,
   container: Element | null
-): Actions
+): Actions;
 
 /** @namespace [JSX] */
 
@@ -99,7 +100,7 @@ declare global {
   namespace JSX {
     interface Element extends VNode<any> {}
     interface IntrinsicElements {
-      [elemName: string]: any
+      [elemName: string]: any;
     }
   }
 }

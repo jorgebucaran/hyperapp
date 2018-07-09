@@ -1,7 +1,7 @@
 {
   "name": "hyperapp",
-  "description": "1 kB JavaScript framework for building web applications.",
-  "version": "1.2.6",
+  "description": "JavaScript micro-framework for building web applications.",
+  "version": "2.0.0-beta.0",
   "main": "dist/hyperapp.js",
   "module": "src/index.js",
   "typings": "hyperapp.d.ts",
@@ -43,12 +43,12 @@
   },
   "devDependencies": {
     "babel-plugin-transform-react-jsx": "^6.24.1",
-    "babel-preset-env": "^1.6.1",
-    "jest": "^22.4.3",
-    "prettier": "^1.11.1",
-    "rollup": "^0.57.1",
-    "typescript": "2.8.1",
-    "uglify-js": "3.3.16"
+    "babel-preset-env": "^1.7.0",
+    "jest": "^23.3.0",
+    "prettier": "^1.13.7",
+    "rollup": "^0.62.0",
+    "typescript": "2.9.2",
+    "uglify-js": "3.4.3"
   },
   "prettier": {
     "semi": false

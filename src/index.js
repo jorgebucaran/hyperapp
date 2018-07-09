@@ -161,7 +161,7 @@ var removeChildren = function(node) {
     removeChildren(node.children[i])
   }
 
-  var cb = node.props.ondestroy
+  var cb = node.props.onDestroy
   if (cb != null) {
     cb(node.element)
   }
@@ -174,7 +174,7 @@ var removeElement = function(parent, node) {
     parent.removeChild(removeChildren(node))
   }
 
-  var cb = node.props && node.props.onremove
+  var cb = node.props && node.props.onRemove
   if (cb != null) {
     cb(node.element, remove)
   } else {

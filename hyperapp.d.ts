@@ -78,6 +78,24 @@ export interface View<State, Actions> {
   (state: State, actions: Actions): VNode<object>
 }
 
+/** The interface for an application.
+ *
+ * @param state The state object.
+ * @param actions The actions object implementation.
+ * @param view The view function.
+ * @param container The DOM element where the app will be rendered to.
+ * @returns The actions wired to the application.
+ * @memberOf [App]
+ */
+export interface App<State, Actions> {
+  (
+    state: State,
+    actions: ActionsType<State, Actions>,
+    view: View<State, Actions>,
+    container: Element | null
+  ): Actions
+}
+
 /** The app() call creates and renders a new application.
  *
  * @param state The state object.

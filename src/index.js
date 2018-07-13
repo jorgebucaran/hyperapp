@@ -556,14 +556,41 @@ export function app(props) {
     }
   }
 
-  var dispatch = function(obj, data) {
-    typeof obj === "function"
-      ? dispatch(obj(state, data))
-      : Array.isArray(obj)
-        ? obj[1].effect(obj[1].props, dispatch, setState(obj[0]))
-        : obj != null && typeof obj.effect === "function"
-          ? dispatch([state, obj])
-          : setState(obj)
+  var dispatch = function(obj, data1, data2) {
+    // Action=>nextState
+    // [nextState,Effect→Action]
+    // [Action,someData]
+    // nextState
+
+    if (typeof obj === "function") {
+      dispatch(obj(state, data1, data2))
+    } else if (isArray(obj)) {
+      var a = obj[0]
+      var b = obj[1]
+      if (typeof obj[0] === "function") {
+        var arg = state
+        var tmp = obj[0]
+        obj.push(data1)
+        for (var i = 1, len = obj.length; i <= len; i++) {
+          tmp = tmp(arg)
+          if (typeof tmp !== "function") break
+          arg = obj[i]
+        }
+        dispatch(tmp)
+      } else {
+        obj[1].effect(obj[1].props, dispatch, setState(obj[0]))
+      }
+    } else {
+      setState(obj)
+    }
+
+    // typeof obj === "function"
+    //   ? dispatch(obj(state, data))
+    //   : Array.isArray(obj)
+    //     ? obj[1].effect(obj[1].props, dispatch, setState(obj[0]))
+    //     : obj != null && typeof obj.effect === "function"
+    //       ? dispatch([state, obj])
+    //       : setState(obj)
   }
 
   var eventProxy = function(event) {

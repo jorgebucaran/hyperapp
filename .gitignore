@@ -17,3 +17,5 @@ coverage
 # Dist
 *.gz
 dist/
+/null
+/{

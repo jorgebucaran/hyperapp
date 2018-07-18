@@ -112,3 +112,29 @@ test("returning null from a lazy component", done => {
 
   app(null, null, view, document.body)
 })
+test("a top level view can return null", done => {
+  app(null, null, () => null, document.body)
+  setTimeout(() => {
+    expect(document.body.innerHTML).toBe("")
+    done()
+  }, 100)
+})
+
+test("a lazy component can return an array", function(done) {
+  var Component = () => () => [<p />]
+  app(
+    null,
+    null,
+    () => (
+      <div
+        oncreate={() => {
+          expect(document.body.innerHTML).toBe("<div><p></p></div>")
+          done()
+        }}
+      >
+        <Component />
+      </div>
+    ),
+    document.body
+  )
+})

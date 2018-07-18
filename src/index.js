@@ -186,7 +186,7 @@ export function app(state, actions, view, container) {
         } else {
           element.removeEventListener(name, eventListener)
         }
-      } else if (name in element && name !== "list" && !isSvg) {
+      } else if (name in element && name !== "list" && name !== "type" && !isSvg) {
         element[name] = value == null ? "" : value
       } else if (value != null && value !== false) {
         element.setAttribute(name, value)

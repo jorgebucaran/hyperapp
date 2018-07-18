@@ -652,3 +652,30 @@ testVdomToHtml("events", [
     html: `<button id="clicked"></button>`
   }
 ])
+
+testVdomToHtml("boolean attributes", [
+  {
+    vdom: (
+      <main>
+        <input
+          checked={true}
+          spellcheck="true"
+          autocomplete="on"
+          translate="yes"
+        />
+        <input
+          checked={false}
+          spellcheck="false"
+          autocomplete="off"
+          translate="no"
+        />
+      </main>
+    ),
+    html: `
+        <main>
+          <input spellcheck="true" autocomplete="on" translate="yes">
+          <input spellcheck="false" autocomplete="off" translate="no">
+        </main>
+      `
+  }
+])

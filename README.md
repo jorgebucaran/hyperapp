@@ -13,7 +13,7 @@ Hyperapp is a JavaScript micro-framework for building web applications.
 
 ## Getting Started
 
-Our first example is a counter that can be incremented or decremented. Go ahead and [try it online](https://codepen.io/hyperapp/pen/zNxZLP/left/?editors=0010).
+Our first example is a counter that can be incremented or decremented. Go ahead and [try it online](https://hyperstart.io/projects/jTKWL6gY5U5z).
 
 ```jsx
 import { h, app } from "hyperapp"
@@ -162,6 +162,8 @@ const actions = {
 }
 ```
 
+You can [try both examples online.](https://hyperstart.io/projects/EHG94jzAyqpW)
+
 #### Nested Actions
 
 Actions can be nested inside namespaces. Updating deeply nested state is as easy as declaring actions inside an object in the same path as the part of the state you want to update.
@@ -281,7 +283,7 @@ This is how we can recycle server-rendered content out the counter example from 
 
 A component is a pure function that returns a virtual node. Unlike the view function, components are not wired to your application state or actions. Components are dumb, reusable blocks of code that encapsulate markup, styles and behaviors that belong together.
 
-Here's a taste of how to use components in your application. The application is a typical To-Do manager. Go ahead and [try it online here](https://codepen.io/hyperapp/pen/zNxRLy).
+Here's a taste of how to use components in your application. The application is a typical To-Do manager. Go ahead and [try it online here](https://hyperstart.io/projects/95I5x2ZnFRyY).
 
 ```jsx
 import { h } from "hyperapp"
@@ -321,7 +323,7 @@ const TodoList = ({ todos, toggle }) =>
 
 #### Lazy Components
 
-Components can only receive attributes and children from their parent component. Similarly to the top-level view function, lazy components are passed your application global state and actions. To create a lazy component, return a view function from a regular component.
+Components can only receive attributes and children from their parent component. Similarly to the top-level view function, lazy components are passed your application global state and actions. To create a lazy component, return a view function from a regular component. [Try it online.](https://hyperstart.io/projects/gy9ty4n9lurd)
 
 ```jsx
 import { h } from "hyperapp"

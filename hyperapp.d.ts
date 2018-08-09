@@ -18,19 +18,21 @@ export interface VNode<Attributes = {}> {
  * @memberOf [VDOM]
  */
 export interface Component<Attributes = {}> {
-  (attributes: Attributes, children: Array<VNode | string>): VNode<Attributes>
+  (attributes: Attributes, children: Array<VNode | string>): VNode<Attributes>  
 }
 
 /** A LazyComponent is a Component that returns a view function.
  *
  * @memberOf [VDOM]
  */
+
 export interface LazyComponent<Attributes = {}, State = {}, Actions = {}> {
   (attributes: Attributes, children: Array<VNode | string>): View<
     State,
     Actions
   >
 }
+
 
 /**
  * Possibles children types
@@ -46,7 +48,7 @@ export type Children = VNode | string | number | null
  * @memberOf [VDOM]
  */
 export function h<Attributes>(
-  nodeName: Component<Attributes> | string,
+  nodeName: Component<Attributes> | LazyComponent<Attributes, any, any> | string,
   attributes?: Attributes,
   ...children: Array<Children | Children[]>
 ): VNode<Attributes>
@@ -83,7 +85,9 @@ export type ActionsType<State, Actions> = {
  * @returns A VNode tree.
  * @memberOf [App]
  */
-type View<State, Actions> = (state: State, actions: Actions) => VNode<object>
+export interface View<State, Actions> {
+  (state: State, actions: Actions): VNode<object>
+}
 
 /** The app() call creates and renders a new application.
  *

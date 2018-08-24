@@ -510,8 +510,12 @@ var listen = function(sub, oldSub, dispatch) {
   }
 
   return sub
-    ? oldSub ? update(sub, oldSub, dispatch) : start(sub, dispatch)
-    : oldSub ? cancel(oldSub) : oldSub
+    ? oldSub
+      ? update(sub, oldSub, dispatch)
+      : start(sub, dispatch)
+    : oldSub
+      ? cancel(oldSub)
+      : oldSub
 }
 /* OR
 var toArray = function(any) {
@@ -539,11 +543,11 @@ export function app(props) {
   var state
   var updateInProgress
   var view = props.view
+  var node
+  var element
   var subscribe = props.subscribe
   var subscriptions = []
   var container = props.container
-  var element = container && container.children[0]
-  var node = element && recycleElement(element)
 
   var setState = function(newState) {
     if (state !== newState) {
@@ -556,41 +560,20 @@ export function app(props) {
     }
   }
 
-  var dispatch = function(obj, data1, data2) {
-    // Action=>nextState
-    // [nextState,Effect→Action]
-    // [Action,someData]
-    // nextState
-
-    if (typeof obj === "function") {
-      dispatch(obj(state, data1, data2))
+  var dispatch = function(obj, data) {
+    if (obj == null) {
+    } else if (typeof obj === "function") {
+      // {Action}
+      dispatch(obj(state, data))
     } else if (isArray(obj)) {
-      var a = obj[0]
-      var b = obj[1]
-      if (typeof obj[0] === "function") {
-        var arg = state
-        var tmp = obj[0]
-        obj.push(data1)
-        for (var i = 1, len = obj.length; i <= len; i++) {
-          tmp = tmp(arg)
-          if (typeof tmp !== "function") break
-          arg = obj[i]
-        }
-        dispatch(tmp)
-      } else {
-        obj[1].effect(obj[1].props, dispatch, setState(obj[0]))
-      }
+      // [nextState, nextEffect]
+      obj[1].effect(obj[1], dispatch, setState(obj[0]))
+    } else if (typeof obj.action === "function") {
+      // {action:Action, ...props}
+      dispatch(obj.action(state, obj, data))
     } else {
       setState(obj)
     }
-
-    // typeof obj === "function"
-    //   ? dispatch(obj(state, data))
-    //   : Array.isArray(obj)
-    //     ? obj[1].effect(obj[1].props, dispatch, setState(obj[0]))
-    //     : obj != null && typeof obj.effect === "function"
-    //       ? dispatch([state, obj])
-    //       : setState(obj)
   }
 
   var eventProxy = function(event) {
@@ -605,7 +588,15 @@ export function app(props) {
     }
 
     if (view) {
-      node = patch(container, element, node, view(state), eventProxy)
+      node = patch(
+        container,
+        (element = container.children[0]),
+        node === undefined && element !== undefined
+          ? recycleElement(element)
+          : node,
+        view(state),
+        eventProxy
+      )
     }
   }
 

@@ -436,11 +436,18 @@ var recycleElement = function(element) {
 var patch = function(container, element, lastNode, nextNode, eventProxy) {
   var lifecycle = []
 
-  patchElement(container, element, lastNode, nextNode, lifecycle, eventProxy)
+  element = patchElement(
+    container,
+    element,
+    lastNode,
+    nextNode,
+    lifecycle,
+    eventProxy
+  )
 
   while (lifecycle.length > 0) lifecycle.pop()()
 
-  return nextNode
+  return element
 }
 
 export var h = function(name, props) {
@@ -479,12 +486,10 @@ var cancel = function(sub) {
 }
 
 var update = function(sub, oldSub, dispatch) {
-  if (sub.effect === oldSub.effect) {
-    for (var k in merge(sub.props, oldSub.props)) {
-      if (sub.props[k] !== oldSub.props[k]) {
-        cancel(oldSub)
-        return start(sub, dispatch)
-      }
+  for (var k in merge(sub, oldSub)) {
+    if (k !== "cancel" && sub[k] !== oldSub[k]) {
+      cancel(oldSub)
+      return start(sub, dispatch)
     }
   }
   return oldSub
@@ -492,18 +497,18 @@ var update = function(sub, oldSub, dispatch) {
 
 var start = function(sub, dispatch) {
   return merge(sub, {
-    cancel: sub.effect(sub.props, dispatch)
+    cancel: sub.effect(sub, dispatch)
   })
 }
 
-var listen = function(sub, oldSub, dispatch) {
+var refresh = function(sub, oldSub, dispatch) {
   if (isArray(sub) || isArray(oldSub)) {
     var out = []
-    var subs = isArray(sub) ? sub : [subs]
+    var subs = isArray(sub) ? sub : [sub]
     var oldSubs = isArray(oldSub) ? oldSub : [oldSubs]
 
     for (var i = 0; i < subs.length || i < oldSubs.length; i++) {
-      out.push(listen(subs[i], oldSubs[i], dispatch))
+      out.push(refresh(subs[i], oldSubs[i], dispatch))
     }
 
     return out
@@ -517,37 +522,16 @@ var listen = function(sub, oldSub, dispatch) {
       ? cancel(oldSub)
       : oldSub
 }
-/* OR
-var toArray = function(any) {
-  return isArray(any) ? any : any == null ? [] : [any]
-}
-
-var batch = function(subs, oldSubs, dispatch) {
-  var out = []
-  for (var i = 0; i < subs.length || i < oldSubs.length; i++) {
-    out.push(listen(subs[i], oldSubs[i], dispatch))
-  }
-  return out
-}
-
-export var listen = function(sub, oldSub, dispatch) {
-  return isArray(sub) || isArray(oldSub)
-    ? batch(toArray(sub), toArray(oldSub), dispatch)
-    : sub
-      ? oldSub ? update(sub, oldSub, dispatch) : start(sub, dispatch)
-      : oldSub ? cancel(oldSub) : oldSub
-}
-*/
 
 export function app(props) {
   var state
-  var updateInProgress
   var view = props.view
-  var node
-  var element
-  var subscribe = props.subscribe
-  var subscriptions = []
+  var subs = props.subscriptions
   var container = props.container
+  var element = container.children[0]
+  var lastNode = element && recycleElement(element)
+  var lastSub = []
+  var updateInProgress = false
 
   var setState = function(newState) {
     if (state !== newState) {
@@ -562,14 +546,11 @@ export function app(props) {
 
   var dispatch = function(obj, data) {
     if (obj == null) {
-    } else if (typeof obj === "function") {
-      // {Action}
-      dispatch(obj(state, data))
     } else if (isArray(obj)) {
-      // [nextState, nextEffect]
       obj[1].effect(obj[1], dispatch, setState(obj[0]))
+    } else if (typeof obj === "function") {
+      dispatch(obj(state, data))
     } else if (typeof obj.action === "function") {
-      // {action:Action, ...props}
       dispatch(obj.action(state, obj, data))
     } else {
       setState(obj)
@@ -583,18 +564,16 @@ export function app(props) {
   var render = function() {
     updateInProgress = false
 
-    if (subscribe) {
-      subscriptions = listen(subscribe(state), subscriptions, dispatch)
+    if (subs) {
+      lastSub = refresh(subs(state), lastSub, dispatch)
     }
 
     if (view) {
-      node = patch(
+      element = patch(
         container,
-        (element = container.children[0]),
-        node === undefined && element !== undefined
-          ? recycleElement(element)
-          : node,
-        view(state),
+        element,
+        lastNode,
+        (lastNode = view(state)),
         eventProxy
       )
     }

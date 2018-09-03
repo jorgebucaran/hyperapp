@@ -40,11 +40,11 @@ app(state, actions, view, document.body)
 
 Hyperapp consists of a two-function API. <samp>hyperapp.h</samp> returns a new [virtual DOM](#view) node tree and <samp>hyperapp.app</samp> [mounts](#mounting) a new application in the specified DOM element. Without an element, it's possible to use Hyperapp "headless", which can be useful when unit testing your program.
 
-This example assumes you are using a JavaScript compiler like [Babel](https://babeljs.io) or [TypeScript](https://www.typescriptlang.org) and a module bundler like [Parcel](https://parceljs.org), [Webpack](https://webpack.js.org), etc. If you are using JSX, all you need to do is install the JSX [transform plugin](https://babeljs.io/docs/plugins/transform-react-jsx) and add the pragma option to your <samp>.babelrc</samp> file.
+This example assumes you are using a JavaScript compiler like [Babel](https://babeljs.io) or [TypeScript](https://www.typescriptlang.org) and a module bundler like [Parcel](https://parceljs.org), [Webpack](https://webpack.js.org), etc. If you are using JSX, all you need to do is install the JSX [transform plugin](https://babeljs.io/docs/en/babel-plugin-transform-react-jsx) and add the pragma option to your <samp>.babelrc</samp> file.
 
 ```json
 {
-  "plugins": [["transform-react-jsx", { "pragma": "h" }]]
+  "plugins": [["@babel/plugin-transform-react-jsx", { "pragma": "h" }]]
 }
 ```
 

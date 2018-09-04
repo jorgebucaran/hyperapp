@@ -1,8 +1,8 @@
 language: node_js
 node_js:
-  - "6"
-  - "8"
-  - "10"
+  - 6
+  - 8
+  - 10
 
 env:
   - NODE_ENV=development

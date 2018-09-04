@@ -47,7 +47,7 @@
     "jest": "^23.5.0",
     "prettier": "^1.14.2",
     "rollup": "^0.65.0",
-    "typescript": "2.8.1",
+    "typescript": "3.0.3",
     "uglify-js": "3.4.9"
   },
   "prettier": {

@@ -43,12 +43,12 @@
   },
   "devDependencies": {
     "babel-plugin-transform-react-jsx": "^6.24.1",
-    "babel-preset-env": "^1.6.1",
-    "jest": "^22.4.3",
-    "prettier": "^1.11.1",
-    "rollup": "^0.57.1",
+    "babel-preset-env": "^1.7.0",
+    "jest": "^23.5.0",
+    "prettier": "^1.14.2",
+    "rollup": "^0.65.0",
     "typescript": "2.8.1",
-    "uglify-js": "3.3.16"
+    "uglify-js": "3.4.9"
   },
   "prettier": {
     "semi": false

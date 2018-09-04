@@ -485,9 +485,21 @@ var cancel = function(sub) {
   sub.cancel()
 }
 
-var update = function(sub, oldSub, dispatch) {
+var isSameAction = function(a, b) {
+  return (
+    typeof a === typeof b &&
+    (a === b || (isArray(a) && a[0] === b[0] && a[1] === b[1]))
+  )
+}
+
+var restart = function(sub, oldSub, dispatch) {
   for (var k in merge(sub, oldSub)) {
-    if (k !== "cancel" && sub[k] !== oldSub[k]) {
+    if (k === "cancel") {
+    } else if (
+      sub[k] === oldSub[k] ||
+      (k === "action" && isSameAction(sub[k], oldSub[k]))
+    ) {
+    } else {
       cancel(oldSub)
       return start(sub, dispatch)
     }
@@ -505,7 +517,7 @@ var refresh = function(sub, oldSub, dispatch) {
   if (isArray(sub) || isArray(oldSub)) {
     var out = []
     var subs = isArray(sub) ? sub : [sub]
-    var oldSubs = isArray(oldSub) ? oldSub : [oldSubs]
+    var oldSubs = isArray(oldSub) ? oldSub : [oldSub]
 
     for (var i = 0; i < subs.length || i < oldSubs.length; i++) {
       out.push(refresh(subs[i], oldSubs[i], dispatch))
@@ -516,7 +528,7 @@ var refresh = function(sub, oldSub, dispatch) {
 
   return sub
     ? oldSub
-      ? update(sub, oldSub, dispatch)
+      ? restart(sub, oldSub, dispatch)
       : start(sub, dispatch)
     : oldSub
       ? cancel(oldSub)
@@ -546,12 +558,14 @@ export function app(props) {
 
   var dispatch = function(obj, data) {
     if (obj == null) {
-    } else if (isArray(obj)) {
-      obj[1].effect(obj[1], dispatch, setState(obj[0]))
     } else if (typeof obj === "function") {
       dispatch(obj(state, data))
-    } else if (typeof obj.action === "function") {
-      dispatch(obj.action(state, obj, data))
+    } else if (isArray(obj)) {
+      if (typeof obj[0] === "function") {
+        dispatch(obj[0](state, obj[1], data))
+      } else {
+        obj[1].effect(obj[1], dispatch, setState(obj[0]))
+      }
     } else {
       setState(obj)
     }

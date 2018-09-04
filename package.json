@@ -44,11 +44,11 @@
   "devDependencies": {
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.7.0",
-    "jest": "^23.3.0",
-    "prettier": "^1.13.7",
-    "rollup": "^0.62.0",
-    "typescript": "2.9.2",
-    "uglify-js": "3.4.3"
+    "jest": "^23.5.0",
+    "prettier": "^1.14.2",
+    "rollup": "^0.65.0",
+    "typescript": "3.0.3",
+    "uglify-js": "3.4.9"
   },
   "prettier": {
     "semi": false

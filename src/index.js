@@ -485,8 +485,20 @@ var cancel = function(sub) {
   sub.cancel()
 }
 
+var isSameValue = function(a, b) {
+  if (a !== b) {
+    for (var k in merge(a, b)) {
+      if (a[k] !== b[k]) return false
+    }
+  }
+  return true
+}
+
 var isSameAction = function(a, b) {
-  return typeof a === typeof b && (isArray(a) && a[0] === b[0] && a[1] === b[1])
+  return (
+    typeof a === typeof b &&
+    (isArray(a) && a[0] === b[0] && isSameValue(a[1], b[1]))
+  )
 }
 
 var restart = function(sub, oldSub, dispatch) {

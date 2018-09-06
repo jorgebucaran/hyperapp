@@ -486,19 +486,13 @@ var cancel = function(sub) {
 }
 
 var isSameAction = function(a, b) {
-  return (
-    typeof a === typeof b &&
-    (a === b || (isArray(a) && a[0] === b[0] && a[1] === b[1]))
-  )
+  return typeof a === typeof b && (isArray(a) && a[0] === b[0] && a[1] === b[1])
 }
 
 var restart = function(sub, oldSub, dispatch) {
   for (var k in merge(sub, oldSub)) {
     if (k === "cancel") {
-    } else if (
-      sub[k] === oldSub[k] ||
-      (k === "action" && isSameAction(sub[k], oldSub[k]))
-    ) {
+    } else if (sub[k] === oldSub[k] || isSameAction(sub[k], oldSub[k])) {
     } else {
       cancel(oldSub)
       return start(sub, dispatch)

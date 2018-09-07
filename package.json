@@ -1,7 +1,7 @@
 {
   "name": "hyperapp",
   "description": "1 kB JavaScript micro-framework for building declarative web applications.",
-  "version": "1.2.9",
+  "version": "1.2.8",
   "main": "dist/hyperapp.js",
   "module": "src/index.js",
   "typings": "hyperapp.d.ts",

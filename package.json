@@ -1,12 +1,12 @@
 {
   "name": "hyperapp",
-  "description": "1 kB JavaScript framework for building web applications.",
-  "version": "1.2.8",
+  "description": "1 kB JavaScript micro-framework for building declarative web applications.",
+  "version": "1.2.9",
   "main": "dist/hyperapp.js",
   "module": "src/index.js",
   "typings": "hyperapp.d.ts",
   "license": "MIT",
-  "repository": "hyperapp/hyperapp",
+  "repository": "jorgebucaran/hyperapp",
   "homepage": "https://hyperapp.js.org",
   "files": [
     "src",
@@ -19,7 +19,7 @@
     "frontend",
     "framework",
     "virtual dom",
-    "vdom"
+    "declarative"
   ],
   "scripts": {
     "test": "jest --coverage --no-cache && tsc -p test/ts",

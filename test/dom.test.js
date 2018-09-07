@@ -477,16 +477,25 @@ testVdomToHtml("mixed keyed/non-keyed", [
 
 testVdomToHtml("styles", [
   {
-    vdom: <div />,
-    html: `<div></div>`
+    vdom: <div style="color: red;" />,
+    html: `<div style="color: red;"></div>`
   },
   {
     vdom: <div style={{ color: "red", fontSize: "1em", "--foo": "red" }} />,
     html: `<div style="color: red; font-size: 1em;"></div>`
   },
+
   {
-    vdom: <div style={{ color: "blue", float: "left", "--foo": "blue" }} />,
-    html: `<div style="color: blue; float: left;"></div>`
+    vdom: <div style={{ color: "blue", display: "flex", "--foo": "blue" }} />,
+    html: `<div style="color: blue; display: flex;"></div>`
+  },
+  {
+    vdom: <div style="background-color: blue;" />,
+    html: `<div style="background-color: blue;"></div>`
+  },
+  {
+    vdom: <div style={null} />,
+    html: `<div style=""></div>`
   },
   {
     vdom: <div style="" />,

@@ -159,12 +159,17 @@ export function app(state, actions, view, container) {
   function updateAttribute(element, name, value, oldValue, isSvg) {
     if (name === "key") {
     } else if (name === "style") {
-      for (var i in clone(oldValue, value)) {
-        var style = value == null || value[i] == null ? "" : value[i]
-        if (i[0] === "-") {
-          element[name].setProperty(i, style)
-        } else {
-          element[name][i] = style
+      if (typeof value === "string") {
+        element.style.cssText = value
+      } else {
+        if (typeof oldValue === "string") oldValue = element.style.cssText = ""
+        for (var i in clone(oldValue, value)) {
+          var style = value == null || value[i] == null ? "" : value[i]
+          if (i[0] === "-") {
+            element.style.setProperty(i, style)
+          } else {
+            element.style[i] = style
+          }
         }
       }
     } else {

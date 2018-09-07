@@ -1,15 +1,15 @@
-# <img height=24 src=https://cdn.rawgit.com/jorgebucaran/f53d2c00bafcf36e84ffd862f0dc2950/raw/882f20c970ff7d61aa04d44b92fc3530fa758bc0/Hyperapp.svg> Hyperapp
+# Hyperapp
 
-[![Travis CI](https://img.shields.io/travis/hyperapp/hyperapp/master.svg)](https://travis-ci.org/hyperapp/hyperapp)
-[![Codecov](https://img.shields.io/codecov/c/github/hyperapp/hyperapp/master.svg)](https://codecov.io/gh/hyperapp/hyperapp)
+[![Travis CI](https://img.shields.io/travis/jorgebucaran/hyperapp/master.svg)](https://travis-ci.org/jorgebucaran/hyperapp)
+[![Codecov](https://img.shields.io/codecov/c/github/jorgebucaran/hyperapp/master.svg)](https://codecov.io/gh/jorgebucaran/hyperapp)
 [![npm](https://img.shields.io/npm/v/hyperapp.svg)](https://www.npmjs.org/package/hyperapp)
 [![Slack](https://hyperappjs.herokuapp.com/badge.svg)](https://hyperappjs.herokuapp.com "Join us")
 
 Hyperapp is a JavaScript micro-framework for building web applications.
 
-* **Minimal** — We have aggressively minimized the concepts you need to understand to be productive while remaining on par with what other frameworks can do.
-* **Pragmatic** — Hyperapp holds firm on the functional programming front when managing your state, but takes a pragmatic approach to allowing for side effects, asynchronous actions, and DOM manipulations.
-* **Standalone** — Do more with less. Hyperapp combines state management with a virtual DOM engine that supports keyed updates & lifecycle events — all with no dependencies.
+- **Minimal** — We have aggressively minimized the concepts you need to understand to be productive while remaining on par with what other frameworks can do.
+- **Pragmatic** — Hyperapp holds firm on the functional programming front when managing your state, but takes a pragmatic approach to allow for side effects, asynchronous actions, and DOM manipulations.
+- **Standalone** — Do more with less. Hyperapp combines state management with a virtual DOM engine that supports keyed updates & lifecycle events — all with no dependencies.
 
 ## Getting Started
 
@@ -85,7 +85,7 @@ If you don't want to set up a build environment, you can download Hyperapp from 
 
 Hyperapp applications consist of three interconnected parts: the [state](#state), [view](#view), and [actions](#actions).
 
-Once initialized, your application executes in a continuous loop, taking in actions from users or from external events, updating the state, and representing changes in the view through a virtual DOM model. Think of an action as a signal that notifies Hyperapp to update the state and schedule the next view redraw. After processing an action, the new state is presented back to the user.
+Once initialized, your application executes in a continuous loop, taking in actions from users or from external events, updating the state, and representing changes in the view through a virtual DOM model. Think of an action as a signal that notifies Hyperapp to update the state and schedule the next view to redraw. After processing an action, the new state is presented back to the user.
 
 ### State
 
@@ -120,7 +120,7 @@ Hyperapp does not have the concept of local state. Instead, components are pure 
 
 The only way to change the state is via actions. An action is a unary function (accepts a single argument) expecting a payload. The payload can be anything you want to pass into the action.
 
-To update the state, an action must return a partial state object. The new state will be the result of a shallow merge between this object and the current state. Under the hood, Hyperapp wires every function from your actions to schedule a view redraw whenever the state changes.
+To update the state, an action must return a partial state object. The new state will be the result of a shallow merge between this object and the current state. Under the hood, Hyperapp wires every function in your actions to automatically redraw the view on state changes.
 
 ```js
 const actions = {
@@ -198,7 +198,7 @@ setInterval(main.up, 250, 1)
 setInterval(main.down, 500, 1)
 ```
 
-Including an action returning the state argument can be useful. Because state updates are always immutable, returning a reference to the current state will not schedule a view redraw.
+Because state updates are always immutable, returning a reference to the current state will not schedule a view redraw.
 
 ```jsx
 const actions = {
@@ -253,7 +253,7 @@ It may seem wasteful to throw away the old virtual DOM and re-create it entirely
 
 ### Mounting
 
-To mount your application in a page, we need a DOM element. This element is referred to as the application container. Applications built with Hyperapp always have a single container.
+To mount your application on a page, we need a DOM element. This element is referred to as the application container. Applications built with Hyperapp always have a single container.
 
 ```jsx
 app(state, actions, view, container)
@@ -283,7 +283,7 @@ This is how we can recycle server-rendered content out the counter example from 
 
 ### Components
 
-A component is a pure function that returns a virtual node. Unlike the view function, components are not wired to your application state or actions. Components are dumb, reusable blocks of code that encapsulate markup, styles and behaviors that belong together.
+A component is a pure function that returns a virtual node. Unlike the view function, components are not wired to your application state or actions. Components are dumb, reusable blocks of code that encapsulate markup, styles, and behaviors that belong together.
 
 Here's a taste of how to use components in your application. The application is a typical To-Do manager. Go ahead and [try it online here](https://codepen.io/hyperapp/pen/zNxRLy).
 
@@ -352,7 +352,6 @@ export const view = (state, actions) => (
 )
 ```
 
-
 #### Handling Component State
 
 Suppose you have a list of questions with answers that are collapsed initially. A flag `answerIsOpen` is used to determine if a question's answer is open.
@@ -409,9 +408,9 @@ export const Jumbotron = ({ text }) => (
 
 ### Lifecycle Events
 
-You can be notified when elements managed by the virtual DOM are created, updated or removed via lifecycle events. Use them for animation, data fetching, wrapping third party libraries, cleaning up resources, etc.
+You can be notified when elements managed by the virtual DOM are created, updated or removed via lifecycle events. Use them for animation, data fetching, wrapping third-party libraries, cleaning up resources, etc.
 
-Note that lifecycle events are attached to virtual DOM nodes not to components. Consider adding a key to ensure that the event is attached to a specific DOM element, rather than a recycled one.
+Note that lifecycle events are attached to virtual DOM nodes, not to components. Consider adding a key to ensure that the event is attached to a specific DOM element, rather than a recycled one.
 
 #### oncreate
 
@@ -486,7 +485,7 @@ export const Camera = ({ onerror }) => (
 
 ### Keys
 
-Keys helps identify nodes every time we update the DOM. By setting the <samp>key</samp> property on a virtual node, you declare that the node should correspond to a particular DOM element. This allow us to re-order the element into its new position, if the position changed, rather than risk destroying it.
+Keys help identify nodes every time we update the DOM. By setting the <samp>key</samp> property on a virtual node, you declare that the node should correspond to a particular DOM element. This allows us to re-order the element into its new position, if the position changed, rather than risk destroying it.
 
 ```jsx
 import { h } from "hyperapp"
@@ -499,7 +498,7 @@ export const ImageGallery = ({ images }) =>
   ))
 ```
 
-Keys must be unique among sibling-nodes. Don't use an array index as key, if the index also specifies the order of siblings. If the position and number of items in a list is fixed, it will make no difference, but if the list is dynamic, the key will change every time the tree is rebuilt.
+Keys must be unique among sibling nodes. Don't use an array index as the key, if the index also specifies the order of siblings. If the position and number of items in a list are fixed, it will make no difference, but if the list is dynamic, the key will change every time the tree is rebuilt.
 
 ```jsx
 import { h } from "hyperapp"
@@ -521,10 +520,10 @@ Keys are not registered on the top-level node of your view. If you are toggling 
 
 ## Links
 
-* [Slack](https://hyperappjs.herokuapp.com)
-* [Twitter](https://twitter.com/hyperappJS)
-* [Examples](https://codepen.io/search/pens/?q=hyperapp)
-* [/r/hyperapp](https://www.reddit.com/r/hyperapp)
+- [Slack](https://hyperappjs.herokuapp.com)
+- [Twitter](https://twitter.com/hyperappJS)
+- [Examples](https://codepen.io/search/pens/?q=hyperapp)
+- [/r/hyperapp](https://www.reddit.com/r/hyperapp)
 
 ## License
 

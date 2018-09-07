@@ -7,6 +7,8 @@
 
 Hyperapp is a JavaScript micro-framework for building web applications.
 
+> :wave: [**Hyperapp 2.0**](https://github.com/jorgebucaran/hyperapp/pull/726) is coming out soon! Try it from the [V2](https://github.com/jorgebucaran/hyperapp/tree/V2) branch right now and be sure to follow [@HyperappJS](https://twitter.com/hyperappjs) for all the Hyperapp news & updates.
+
 - **Minimal** — We have aggressively minimized the concepts you need to understand to be productive while remaining on par with what other frameworks can do.
 - **Pragmatic** — Hyperapp holds firm on the functional programming front when managing your state, but takes a pragmatic approach to allow for side effects, asynchronous actions, and DOM manipulations.
 - **Standalone** — Do more with less. Hyperapp combines state management with a virtual DOM engine that supports keyed updates & lifecycle events — all with no dependencies.

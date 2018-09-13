@@ -321,6 +321,8 @@ export function app(state, actions, view, container) {
         (isSvg = isSvg || node.nodeName === "svg")
       )
 
+      if (node.nodeName.indexOf("-") !== -1) return element
+
       var oldKeyed = {}
       var newKeyed = {}
       var oldElements = []

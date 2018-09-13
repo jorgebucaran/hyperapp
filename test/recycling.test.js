@@ -50,3 +50,25 @@ test("recycle markup against keyed vdom", done => {
     document.getElementById("app")
   )
 })
+
+test("recycle custom elements", done => {
+  const SSR_HTML = `<div id="app"><main><custom-element>foo</custom-element></main></div>`
+
+  document.body.innerHTML = SSR_HTML
+
+  app(
+    null,
+    null,
+    state => (
+      <main>
+        <custom-element
+          oncreate={() => {
+            expect(document.body.innerHTML).toBe(SSR_HTML)
+            done()
+          }}
+        />
+      </main>
+    ),
+    document.getElementById("app")
+  )
+})

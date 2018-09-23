@@ -648,6 +648,13 @@ testVdomToHtml("input list attribute", [
   }
 ])
 
+testVdomToHtml("input form attribute", [
+  {
+    vdom: <input form="foobar" />,
+    html: `<input form="foobar">`
+  }
+])
+
 testVdomToHtml("events", [
   {
     vdom: (

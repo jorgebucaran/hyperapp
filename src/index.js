@@ -194,6 +194,7 @@ export function app(state, actions, view, container) {
       } else if (
         name in element &&
         name !== "list" &&
+        name !== "form" &&
         name !== "type" &&
         name !== "draggable" &&
         name !== "spellcheck" &&

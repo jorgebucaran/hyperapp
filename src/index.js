@@ -385,11 +385,14 @@ export function app(state, actions, view, container) {
         }
       }
 
-      while (i < oldChildren.length) {
-        if (getKey(oldChildren[i]) == null) {
-          removeElement(element, oldElements[i], oldChildren[i])
+      var isCustomElement = element.nodeName.indexOf("-") !== -1
+      if (!isRecycling && !isCustomElement) {
+        while (i < oldChildren.length) {
+          if (getKey(oldChildren[i]) == null) {
+            removeElement(element, oldElements[i], oldChildren[i])
+          }
+          i++
         }
-        i++
       }
 
       for (var i in oldKeyed) {

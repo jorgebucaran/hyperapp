@@ -75,7 +75,7 @@ export type ActionsType<State, Actions> = {
  * @memberOf [App]
  */
 export interface View<State, Actions> {
-  (state: State, actions: Actions): VNode<object>
+  (state: State, actions: Actions): VNode<object> | null
 }
 
 /** The app() call creates and renders a new application.

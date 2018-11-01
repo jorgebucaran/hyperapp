@@ -322,7 +322,7 @@ If you don't know all the attributes that you want to place in a component ahead
 
 ```jsx
 const TodoList = ({ todos, toggle }) =>
-  (todos.map(todo => <TodoItem {...todo} toggle={toggle} />)
+  todos.map(todo => <TodoItem {...todo} toggle={toggle} />)
 ```
 
 #### Lazy Components

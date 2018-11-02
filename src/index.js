@@ -1,6 +1,6 @@
 var DEFAULT = 0
 var RECYCLED_NODE = 1
-var TEXT_NODE = 2
+var TEXT_NODE = 3 // Node.TEXT_NODE
 
 var XLINK_NS = "http://www.w3.org/1999/xlink"
 var SVG_NS = "http://www.w3.org/2000/svg"
@@ -417,7 +417,7 @@ var createTextVNode = function(text, element) {
 }
 
 var recycleChild = function(element) {
-  return element.nodeType === 3 // Node.TEXT_NODE
+  return element.nodeType === TEXT_NODE
     ? createTextVNode(element.nodeValue, element)
     : recycleElement(element)
 }

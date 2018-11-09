@@ -1,5 +1,6 @@
 var DEFAULT = 0
 var RECYCLED_NODE = 1
+var LAZY_NODE = 2
 var TEXT_NODE = 3 // Node.TEXT_NODE
 
 var XLINK_NS = "http://www.w3.org/1999/xlink"
@@ -111,7 +112,12 @@ var createElement = function(node, lifecycle, eventProxy, isSvg) {
 
   for (var i = 0, length = node.children.length; i < length; i++) {
     element.appendChild(
-      createElement(node.children[i], lifecycle, eventProxy, isSvg)
+      createElement(
+        (node.children[i] = resolveNode(node.children[i])),
+        lifecycle,
+        eventProxy,
+        isSvg
+      )
     )
   }
 
@@ -220,7 +226,12 @@ var patchElement = function(
     }
   } else if (lastNode == null || lastNode.name !== nextNode.name) {
     var newElement = parent.insertBefore(
-      createElement(nextNode, lifecycle, eventProxy, isSvg),
+      createElement(
+        (nextNode = resolveNode(nextNode)),
+        lifecycle,
+        eventProxy,
+        isSvg
+      ),
       element
     )
 
@@ -313,7 +324,12 @@ var patchElement = function(
 
       while (nextChStart <= nextChEnd) {
         lastKey = getKey((childNode = lastChildren[lastChStart]))
-        nextKey = getKey(nextChildren[nextChStart])
+        nextKey = getKey(
+          (nextChildren[nextChStart] = resolveNode(
+            nextChildren[nextChStart],
+            childNode
+          ))
+        )
 
         if (
           nextKeyed[lastKey] ||
@@ -479,6 +495,31 @@ export var h = function(name, props) {
   return typeof name === "function"
     ? name(props, (props.children = children))
     : createVNode(name, props, children, null, props.key, DEFAULT)
+}
+
+var resolveNode = function(newNode, oldNode) {
+  var node = newNode
+
+  if (node.type === LAZY_NODE) {
+    node =
+      oldNode && isSameValue(node.props, oldNode.props)
+        ? oldNode
+        : node.render()
+  }
+  return node
+}
+
+export var Lazy = function(props) {
+  return {
+    type: LAZY_NODE,
+    key: props.key,
+    props: props,
+    render: function() {
+      var node = props.render(props)
+      node.props = props
+      return node
+    }
+  }
 }
 
 var cancel = function(sub) {

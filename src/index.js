@@ -502,9 +502,7 @@ var resolveNode = function(newNode, oldNode) {
 
   if (node.type === LAZY_NODE) {
     node =
-      oldNode && isSameValue(node.props, oldNode.props)
-        ? oldNode
-        : node.render()
+      oldNode && isSameValue(node.lazy, oldNode.lazy) ? oldNode : node.render()
   }
   return node
 }
@@ -513,10 +511,10 @@ export var Lazy = function(props) {
   return {
     type: LAZY_NODE,
     key: props.key,
-    props: props,
+    lazy: props,
     render: function() {
       var node = props.render(props)
-      node.props = props
+      node.lazy = props
       return node
     }
   }

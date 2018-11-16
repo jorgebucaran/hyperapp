@@ -502,7 +502,9 @@ var resolveNode = function(newNode, oldNode) {
 
   if (node.type === LAZY_NODE) {
     node =
-      oldNode && isSameValue(node.lazy, oldNode.lazy) ? oldNode : node.render()
+      oldNode && oldNode.lazy && isSameValue(node.lazy, oldNode.lazy)
+        ? oldNode
+        : node.render()
   }
   return node
 }

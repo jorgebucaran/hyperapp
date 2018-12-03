@@ -10,7 +10,7 @@ export interface VNode<Attributes = {}> {
   nodeName: string
   attributes?: Attributes
   children: Array<VNode | string>
-  key: string
+  key: string | number
 }
 
 /** A Component is a function that returns a custom VNode or View.

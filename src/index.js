@@ -100,8 +100,8 @@ var createElement = function(node, lifecycle, eventProxy, isSvg) {
     node.type === TEXT_NODE
       ? document.createTextNode(node.name)
       : (isSvg = isSvg || node.name === "svg")
-        ? document.createElementNS(SVG_NS, node.name)
-        : document.createElement(node.name)
+      ? document.createElementNS(SVG_NS, node.name)
+      : document.createElement(node.name)
 
   var props = node.props
   if (props.onCreate) {
@@ -272,7 +272,10 @@ var patchElement = function(
         element,
         lastChildren[lastChStart].element,
         lastChildren[lastChStart],
-        nextChildren[nextChStart],
+        (nextChildren[nextChStart] = resolveNode(
+          nextChildren[nextChStart],
+          lastChildren[lastChStart]
+        )),
         lifecycle,
         eventProxy,
         isSvg
@@ -292,7 +295,10 @@ var patchElement = function(
         element,
         lastChildren[lastChEnd].element,
         lastChildren[lastChEnd],
-        nextChildren[nextChEnd],
+        (nextChildren[nextChEnd] = resolveNode(
+          nextChildren[nextChEnd],
+          lastChildren[lastChEnd]
+        )),
         lifecycle,
         eventProxy,
         isSvg
@@ -306,7 +312,9 @@ var patchElement = function(
       while (nextChStart <= nextChEnd) {
         element.insertBefore(
           createElement(
-            nextChildren[nextChStart++],
+            (nextChildren[nextChStart] = resolveNode(
+              nextChildren[nextChStart++]
+            )),
             lifecycle,
             eventProxy,
             isSvg
@@ -578,8 +586,8 @@ var refresh = function(sub, oldSub, dispatch) {
       ? restart(sub, oldSub, dispatch)
       : start(sub, dispatch)
     : oldSub
-      ? cancel(oldSub)
-      : oldSub
+    ? cancel(oldSub)
+    : oldSub
 }
 
 export function app(props) {

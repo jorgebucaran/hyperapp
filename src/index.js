@@ -458,6 +458,11 @@ export var h = function(name, props) {
   var length = arguments.length
 
   while (length-- > 2) rest.push(arguments[length])
+  
+  if(isArray(props)){
+    if(rest.length <= 0) rest.push(...props)
+    props = {}
+  }
 
   if ((props = props == null ? {} : props).children != null) {
     if (rest.length <= 0) {

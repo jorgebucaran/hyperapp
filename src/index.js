@@ -402,15 +402,14 @@ var patchElement = function(
 }
 
 var createVNode = function(name, props, children, element, key, type) {
-  var pureVNode = Object.create(null)
-  return Object.assign(pureVNode, {
+  return {
     name: name,
     props: props,
     children: children,
     element: element,
     key: key,
     type: type
-  })
+  }
 }
 
 var createTextVNode = function(text, element) {
@@ -463,7 +462,7 @@ export var h = function(name, props) {
     if(rest.length <= 0) rest.push(...props)
     props = {}
   }
-
+  
   if ((props = props == null ? {} : props).children != null) {
     if (rest.length <= 0) {
       rest.push(props.children)

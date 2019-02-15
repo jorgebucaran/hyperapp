@@ -546,7 +546,7 @@ export function app(props) {
   var view = props.view
   var subs = props.subscriptions
   var container = props.container
-  var element = container.children[0]
+  var element = container && container.children && container.children[0]
   var lastNode = element && recycleElement(element)
   var lastSub = []
   var updateInProgress = false

@@ -15,43 +15,36 @@ test('runs a subscription', () => {
     resolve = a
   })
 
-  var mySubscription = function(props) {
-    return merge(
-      props,
-      {
-        effect: (args, dispatch) => {
-          var fire = () => {
-            dispatch(args.action, {})
-          }
+  var mySubEffect = function(args, dispatch) {
+    var fire = () => {
+      dispatch(args.action, {})
+    }
 
-          var interval = setInterval(fire, args.every)
+    var interval = setInterval(fire, args.every)
 
-          return function () {
-            clearInterval(interval)
-          }
-        }
-      }
-    )
+    return function () {
+      clearInterval(interval)
+    }
   }
+
+  var max = 5
 
   var tickAction = function(_, state) {
     var count = state.count + 1
     return [
       merge(state, { count: count }),
-      state.count < 5 ? null : [myEndEffect, 'foo']
+      state.count < max ? null : [myEndEffect, 'foo']
     ]
   }
 
-  var myEndEffect = props => resolve(props[1]);
+  var myEndEffect = props => resolve(props);
 
   app({
     init: { count: 0 },
     subscriptions: state => [
-      state.count < 5 && mySubscription({
-        action: tickAction,
-        every: 5
-      }),
-    ]
+      state.count < max && [mySubEffect, { action: tickAction, every: 5 }],
+    ],
+    container: { children: [] }
   })
 
   return expect(promise).resolves.toBe('foo')

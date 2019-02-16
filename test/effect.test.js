@@ -7,12 +7,12 @@ test('runs an effect', () => {
     resolve = a;
   })
 
-  var myEffect = function (fx) {
-    resolve(fx.text)
+  var myEffect = function (arg) {
+    resolve(arg)
   }
 
   app({
-    init: [{}, { effect: myEffect, text: 'foo' }],
+    init: [{}, [myEffect, 'foo']],
     container: { children: [] }
   })
 

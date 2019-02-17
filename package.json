@@ -23,8 +23,9 @@
   ],
   "scripts": {
     "test": "jest --coverage --no-cache && tsc -p test/ts",
-    "build": "npm run bundle && npm run minify",
-    "bundle": "rollup -i src/index.js -o dist/hyperapp.js -m -f umd -n hyperapp",
+    "build": "npm run bundle && npm run bundle:dev && npm run minify",
+    "bundle": "rollup -c",
+    "bundle:dev": "NODE_ENV=development rollup -c -o dist/hyperapp.dev.js",
     "minify": "uglifyjs dist/hyperapp.js -o dist/hyperapp.js -mc pure_funcs=['Object.defineProperty'] --source-map includeSources,url=hyperapp.js.map",
     "prepare": "npm run build",
     "format": "prettier --write {src,test}/**/*.js {,test/ts/}*.{ts,tsx}",
@@ -47,6 +48,7 @@
     "jest": "^23.5.0",
     "prettier": "^1.14.2",
     "rollup": "^0.65.2",
+    "rollup-plugin-replace": "^2.1.0",
     "typescript": "3.0.3",
     "uglify-js": "3.4.9"
   },

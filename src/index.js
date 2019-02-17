@@ -581,7 +581,7 @@ export function app(props) {
     dispatch(event.currentTarget.events[event.type], event)
   }
 
-  if (ENVIRONMENT === 'development') {
+  if (typeof NODE_ENV !== 'undefined' && NODE_ENV === 'development') {
     var overrides = makeDebugger(setState, dispatch, eventProxy);
     dispatch = overrides.dispatch
     setState = overrides.setState

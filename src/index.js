@@ -546,7 +546,6 @@ export function app(props) {
   var view = props.view
   var subs = props.subscriptions
   var container = props.container
-  var middleware = props.middleware || []
   var element = container && container.children && container.children[0]
   var lastNode = element && recycleElement(element)
   var lastSub = []
@@ -582,7 +581,7 @@ export function app(props) {
     dispatch(event.currentTarget.events[event.type], event)
   }
 
-  if (middleware.indexOf('debugger') >= 0) {
+  if (ENVIRONMENT === 'development') {
     var overrides = makeDebugger(setState, dispatch, eventProxy);
     dispatch = overrides.dispatch
     setState = overrides.setState
@@ -626,9 +625,9 @@ function makeDebugger(setState, dispatch, eventProxy) {
   debugWindow.document.body.style.boxSizing = 'border-box'
 
   var makeStream = function() {
-    var actionState = { action: { name: '<init>' } };
-    var listener = null;
-    var pending = [];
+    var actionState = { action: { name: '<init>' } }
+    var listener = null
+    var pending = []
 
     var setCurrentAction = function(action, data) {
       if (typeof action === 'function' && typeof actionState.action === 'undefined') {
@@ -640,13 +639,13 @@ function makeDebugger(setState, dispatch, eventProxy) {
     var setCurrentState = function(state) {
       if (actionState.action && typeof actionState.state === 'undefined') {
         actionState.state = state
-        pending.push(actionState);
+        pending.push(actionState)
 
         if (listener) {
           listener(actionState)
         }
 
-        actionState = {};
+        actionState = {}
       }
     }
 
@@ -655,7 +654,8 @@ function makeDebugger(setState, dispatch, eventProxy) {
       setState: setCurrentState,
       listen: function(cb) {
         listener = cb
-        pending.forEach(p => listener(p))
+        pending.forEach(function(p) { listener(p) })
+        pending = []
         return function() {
           if (listener === cb) {
             listener = null
@@ -851,20 +851,22 @@ function makeDebugger(setState, dispatch, eventProxy) {
   app({
     init: { history: [], currentTime: -1, view: 'by-time' },
     container: debugWindow.document.body,
-    view: state => {
+    view: function(state) {
       var index = state.currentTime === -1
         ? state.history.length - 1
         : state.currentTime
 
-      const time = state.history[index];
+      var time = state.history[index];
 
       return state.view === 'by-time'
         ? timeView(state.history, index, time)
         : actionView(state.history, index, time)
     },
-    subscriptions: state => [
-      { effect: streamSubFx, action: addHistoryAction }
-    ]
+    subscriptions: function(state) {
+      return [
+        { effect: streamSubFx, action: addHistoryAction }
+      ]
+    }
   })
 
   return {

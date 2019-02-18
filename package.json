@@ -23,10 +23,10 @@
   ],
   "scripts": {
     "test": "jest --coverage --no-cache && tsc -p test/ts",
-    "build": "npm run bundle && npm run bundle:dev && npm run minify",
-    "bundle": "rollup -c",
-    "bundle:dev": "NODE_ENV=development rollup -c -o dist/hyperapp.dev.js",
-    "minify": "uglifyjs dist/hyperapp.js -o dist/hyperapp.js -mc pure_funcs=['Object.defineProperty'] --source-map includeSources,url=hyperapp.js.map",
+    "build": "npm run bundle && npm run bundle:debugger && npm run minify",
+    "bundle": "rollup -i src/index.js -o dist/hyperapp.js -m -f umd -n hyperapp",
+    "bundle:debugger": "rollup -i src/debugger.js -o dist/hyperapp.debugger.js -m -f umd",
+    "minify": "uglifyjs dist/hyperapp.js -o dist/hyperapp.min.js -mc pure_funcs=['Object.defineProperty'] --source-map includeSources,url=hyperapp.js.map",
     "prepare": "npm run build",
     "format": "prettier --write {src,test}/**/*.js {,test/ts/}*.{ts,tsx}",
     "release": "npm run build && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"

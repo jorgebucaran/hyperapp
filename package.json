@@ -32,7 +32,7 @@
     "release": "npm run build && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
   },
   "babel": {
-    "presets": "env",
+    "presets": ["env"],
     "plugins": [
       [
         "transform-react-jsx",

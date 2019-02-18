@@ -8,12 +8,9 @@ var merge = function(a, b) {
 }
 
 export function timeTravelDebugger(app, h, setState, dispatch) {
-  var debuggerId = Math.random().toString(36).slice(2)
-  var windowId = "hyperappDebugger." + debuggerId
-
   var debugWindow = window.open(
     "",
-    windowId,
+    "hyperappDebugger",
     "dependent=yes,alwaysRaised=yes,dialog=yes,width=350,height=500,left=0,bottom=0"
   );
 
@@ -40,7 +37,10 @@ export function timeTravelDebugger(app, h, setState, dispatch) {
 
     var setCurrentAction = function(action, data) {
       if (typeof action === 'function' && typeof actionState.actionName === 'undefined') {
-        actionState.actionName = action.name
+        actionState.actionName = action.name || 'unknownAction'
+        if (!action.name) {
+          console.warn('An action was ran, but the function name was anonymous. If you are using a function to generate an action, make sure you wrap the generator call in (state, arg) => generatorFn(...)(state, arg) to avoid this warning.');
+        }
         actionState.actionData = data
       }
     }

@@ -5,7 +5,7 @@ node_js:
   - "10"
 
 env:
-  - NODE_ENV=development
+  - NODE_ENV=test
 
 before_install:
   - npm i -g codecov

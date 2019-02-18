@@ -40,8 +40,11 @@ var updateProperty = function(
   } else if (name === "style") {
     for (var i in merge(lastValue, nextValue)) {
       var style = nextValue == null || nextValue[i] == null ? "" : nextValue[i]
+      var match = style.match(/(.*)\W+!important\W*$/)
       if (i[0] === "-") {
         element[name].setProperty(i, style)
+      } else if(match){
+        element[name].setProperty(i, match[1], 'important')
       } else {
         element[name][i] = style
       }

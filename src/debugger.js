@@ -1,7 +1,3 @@
-import { app, h } from '../dist/hyperapp.min.js'
-
-var active = false
-
 var merge = function(a, b) {
   var target = {}
 
@@ -11,19 +7,13 @@ var merge = function(a, b) {
   return target
 }
 
-function timeTravelDebugger(setState, dispatch, eventProxy) {
-  if (active) {
-    return {
-      setState: setState,
-      dispatch: dispatch,
-      eventProxy: eventProxy,
-    }
-  }
-  active = true
+export function timeTravelDebugger(app, h, setState, dispatch) {
+  var debuggerId = Math.random().toString(36).slice(2)
+  var windowId = "hyperappDebugger." + debuggerId
 
   var debugWindow = window.open(
     "",
-    "hyperappDebugger",
+    windowId,
     "dependent=yes,alwaysRaised=yes,dialog=yes,width=350,height=500,left=0,bottom=0"
   );
 
@@ -391,7 +381,8 @@ function timeTravelDebugger(setState, dispatch, eventProxy) {
         { effect: streamSubFx, action: addHistoryAction },
         { effect: dragAndDropSubFx, action: setHistoryAction }
       ]
-    }
+    },
+    timeTravelDebugger: false,
   })
 
   return {
@@ -399,5 +390,3 @@ function timeTravelDebugger(setState, dispatch, eventProxy) {
     dispatch: wrappedDispatch
   }
 }
-
-window.hyperappMiddleware = (window.hyperappMiddleware || []).concat(timeTravelDebugger)

@@ -1,3 +1,5 @@
+import { timeTravelDebugger } from './debugger.js'
+
 var DEFAULT = 0
 var RECYCLED_NODE = 1
 var TEXT_NODE = 3 // Node.TEXT_NODE
@@ -284,8 +286,7 @@ var patchElement = function(
         nextChildren[nextChEnd],
         lifecycle,
         eventProxy,
-        isSvg
-      )
+        isSvg)
 
       lastChEnd--
       nextChEnd--
@@ -581,10 +582,9 @@ export function app(props) {
     dispatch(event.currentTarget.events[event.type], event)
   }
 
-  if (isArray(window.hyperappMiddleware)) {
-    for(var i = 0; i < window.hyperappMiddleware.length; i++) {
-      var middleware = window.hyperappMiddleware[i]
-      var overrides = middleware(setState, dispatch);
+  if (NODE_ENV === 'development') {
+    if (props.timeTravelDebugger !== false) {
+      var overrides = timeTravelDebugger(app, h, setState, dispatch)
       dispatch = overrides.dispatch
       setState = overrides.setState
     }

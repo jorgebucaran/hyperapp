@@ -20,12 +20,6 @@ var merge = function(a, b) {
   return target
 }
 
-var assign = function(a, b) {
-  for(var i in b) if(b.hasOwnProperty(i)) a[i] = b[i]
-  
-  return a
-}
-
 var resolved = typeof Promise === "function" && Promise.resolve()
 
 var defer = !resolved
@@ -408,15 +402,14 @@ var patchElement = function(
 }
 
 var createVNode = function(name, props, children, element, key, type) {
-  var pureVNode = Object.create(null)
-  return assign(pureVNode, {
+  return {
     name: name,
     props: props,
     children: children,
     element: element,
     key: key,
     type: type
-  })
+  }
 }
 
 var createTextVNode = function(text, element) {

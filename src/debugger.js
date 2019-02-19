@@ -151,8 +151,42 @@ export function timeTravelDebugger(app, h, setState, dispatch) {
     })
   }
 
+  var stringDiff = function(prev, curr, depth) {
+    if (depth === 0) {
+      return '<deep change>'
+    }
+
+    var i
+    var key
+    var pKeys = Object.keys(prev)
+    var cKeys = Object.keys(curr)
+    var allKeys = pKeys.concat(cKeys.filter(function (k) { return pKeys.indexOf(k) === -1 }))
+    var diff = {}
+    for(i = 0; i < allKeys.length; i++) {
+      key = allKeys[i]
+      if (typeof curr[key] === 'undefined') {
+        diff[key] = '<removed>'
+      } else if (prev[key] === curr[key]) {
+      } else if (typeof prev[key] === 'undefined') {
+        diff[key] = curr[key]
+      } else if (curr[key] !== pKeys[key]) {
+        if (typeof curr[key] !== 'object' || curr[key] === null) {
+          diff[key] = curr[key]
+        } else {
+          diff[key] = stringDiff(prev[key], curr[key], depth - 1)
+        }
+      }
+    }
+    return diff
+  }
+
   var addHistoryAction = function(state, actionState) {
-    var nextHistory = state.history.concat(actionState)
+    var previous = state.history.slice(-1)[0]
+    var diff = previous
+      ? JSON.stringify(stringDiff(previous.state, actionState.state, 2))
+      : '<initial state>'
+
+    var nextHistory = state.history.concat(merge(actionState, { diff: diff }))
     return merge(state, {
       history: nextHistory,
       currentTime: nextHistory.length - 1,
@@ -357,7 +391,7 @@ export function timeTravelDebugger(app, h, setState, dispatch) {
             return h('option', { value: group.children.slice(-1)[0].index, selected: currentGroupIndex === groupIndex }, group.actionName + ' (' + group.children.length + ')')
           })),
           h('select', { size: 10, onchange: setCurrentTimeAction, style: styles.actionSelect }, currentGroup.children.map(function(child, childIndex) {
-            return h('option', { value: child.index, selected: child.index === index }, 'Diff ' + child.index.toString())
+            return h('option', { value: child.index, selected: child.index === index }, child.diff)
           })),
         ]),
         showStateView(time),

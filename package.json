@@ -25,13 +25,13 @@
     "test": "jest --coverage --no-cache && tsc -p test/ts",
     "build": "npm run bundle && npm run minify",
     "bundle": "rollup -i src/index.js -o dist/hyperapp.js -m -f umd -n hyperapp",
-    "minify": "uglifyjs dist/hyperapp.js -o dist/hyperapp.js -mc pure_funcs=['Object.defineProperty'] --source-map includeSources,url=hyperapp.js.map",
+    "minify": "terser dist/hyperapp.js -o dist/hyperapp.js -mc pure_funcs=['Object.defineProperty'] --source-map includeSources,url=hyperapp.js.map",
     "prepare": "npm run build",
     "format": "prettier --write {src,test}/**/*.js {,test/ts/}*.{ts,tsx}",
     "release": "npm run build && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
   },
   "babel": {
-    "presets": "env",
+    "presets": ["env"],
     "plugins": [
       [
         "transform-react-jsx",
@@ -44,11 +44,11 @@
   "devDependencies": {
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.7.0",
-    "jest": "^23.5.0",
-    "prettier": "^1.14.2",
-    "rollup": "^0.65.2",
-    "typescript": "3.0.3",
-    "uglify-js": "3.4.9"
+    "jest": "^24.1.0",
+    "prettier": "^1.16.4",
+    "rollup": "^1.2.2",
+    "typescript": "3.3.3",
+    "terser": "^3.16.1"
   },
   "prettier": {
     "semi": false

@@ -531,7 +531,7 @@ export var Lazy = function(props) {
 }
 
 var cancel = function(sub) {
-  sub.cancel()
+  sub[1][2]()
 }
 
 var isSameValue = function(a, b) {
@@ -552,8 +552,7 @@ var isSameAction = function(a, b) {
 
 var restart = function(sub, oldSub, dispatch) {
   for (var k in merge(sub, oldSub)) {
-    if (k === "cancel") {
-    } else if (sub[k] === oldSub[k] || isSameAction(sub[k], oldSub[k])) {
+    if (sub[k] === oldSub[k] || isSameAction(sub[k], oldSub[k])) {
     } else {
       cancel(oldSub)
       return start(sub, dispatch)
@@ -563,31 +562,29 @@ var restart = function(sub, oldSub, dispatch) {
 }
 
 var start = function(sub, dispatch) {
-  return merge(sub, {
-    cancel: sub.effect(sub, dispatch)
-  })
+  return [sub[0], sub[1], sub[0](sub[1], dispatch)]
 }
 
 var refresh = function(sub, oldSub, dispatch) {
-  if (isArray(sub) || isArray(oldSub)) {
-    var out = []
-    var subs = isArray(sub) ? sub : [sub]
-    var oldSubs = isArray(oldSub) ? oldSub : [oldSub]
+  var current = [].concat(sub)
+  var previous = [].concat(oldSub)
+  var out = []
 
-    for (var i = 0; i < subs.length || i < oldSubs.length; i++) {
-      out.push(refresh(subs[i], oldSubs[i], dispatch))
-    }
-
-    return out
+  for (var i = 0; i < current.length || i < previous.length; i++) {
+    var cSub = current[i]
+    var pSub = previous[i]
+    out.push(
+      cSub
+        ? pSub
+          ? restart(cSub, pSub, dispatch)
+          : start(cSub, dispatch)
+        : pSub
+          ? cancel(pSub)
+          : pSub
+    )
   }
 
-  return sub
-    ? oldSub
-      ? restart(sub, oldSub, dispatch)
-      : start(sub, dispatch)
-    : oldSub
-    ? cancel(oldSub)
-    : oldSub
+  return out
 }
 
 export function app(props) {
@@ -595,7 +592,7 @@ export function app(props) {
   var view = props.view
   var subs = props.subscriptions
   var container = props.container
-  var element = container.children[0]
+  var element = container && container.children && container.children[0]
   var lastNode = element && recycleElement(element)
   var lastSub = []
   var updateInProgress = false
@@ -619,7 +616,7 @@ export function app(props) {
       if (typeof obj[0] === "function") {
         dispatch(obj[0](state, obj[1], data))
       } else {
-        obj[1].effect(obj[1], dispatch, setState(obj[0]))
+        obj[1][0](obj[1][1], dispatch, setState(obj[0]))
       }
     } else {
       setState(obj)

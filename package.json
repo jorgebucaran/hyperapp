@@ -1,7 +1,7 @@
 {
   "name": "hyperapp",
   "description": "JavaScript micro-framework for building web applications.",
-  "version": "2.0.0-alpha.0",
+  "version": "2.0.0-alpha.1",
   "main": "dist/hyperapp.js",
   "module": "src/index.js",
   "typings": "hyperapp.d.ts",

@@ -20,7 +20,9 @@ const changeName = (state, name) => ({ ...state, name })
 app({
   init: [
     { name: "Hello" },
-    delay([changeName, "World"], duration: 1000 })
+    delay([changeName, "World"], {
+      duration: 1000
+    })
   ],
   view: state => <h1>{state.name}</h1>,
   container: document.body
@@ -31,7 +33,7 @@ What's that `delay` magic? Glad you asked. Here's a way it can be implemented. H
 
 ```js
 // hyperapp/time.js
-export const delay = (fx => ({ action, duration }) => [
+export const delay = (fx => (action, { duration }) => [
   fx,
   { action, duration }
 ])((props, dispatch) =>

@@ -482,7 +482,7 @@ export var h = function(name, props) {
 }
 
 var cancel = function(sub) {
-  sub[1][2]()
+  sub[2]()
 }
 
 var isSameValue = function(a, b) {

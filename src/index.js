@@ -25,8 +25,7 @@ var resolved = typeof Promise === "function" && Promise.resolve()
 var defer = !resolved
   ? setTimeout
   : function(cb) {
-      return resolved.then(cb)
-    }
+      return resolved.then(cb) }
 
 var updateProperty = function(
   element,
@@ -481,58 +480,77 @@ export var h = function(name, props) {
     : createVNode(name, props, children, null, props.key, DEFAULT)
 }
 
-var cancel = function(sub) {
-  sub[2]()
+var isSub = function(maybeSub) {
+  return typeof maybeSub[0] === 'function' && maybeSub.length <= 3
 }
 
-var isSameValue = function(a, b) {
-  if (a !== b) {
-    for (var k in merge(a, b)) {
-      if (a[k] !== b[k]) return false
-    }
+var flattenSubs = function(subs) {
+  if (!subs) {
+    return []
   }
-  return true
-}
 
-var isSameAction = function(a, b) {
-  return (
-    typeof a === typeof b &&
-    (isArray(a) && a[0] === b[0] && isSameValue(a[1], b[1]))
-  )
-}
-
-var restart = function(sub, oldSub, dispatch) {
-  for (var k in merge(sub, oldSub)) {
-    if (sub[k] === oldSub[k] || isSameAction(sub[k], oldSub[k])) {
-    } else {
-      cancel(oldSub)
-      return start(sub, dispatch)
-    }
+  if (isSub(subs)) {
+    return [subs]
   }
-  return oldSub
-}
 
-var start = function(sub, dispatch) {
-  return [sub[0], sub[1], sub[0](sub[1], dispatch)]
-}
-
-var refresh = function(sub, oldSub, dispatch) {
-  var current = [].concat(sub)
-  var previous = [].concat(oldSub)
   var out = []
+  for(var i = 0; i < subs.length; i++) {
+    out = out.concat(flattenSubs(subs[i]))
+  }
 
-  for (var i = 0; i < current.length || i < previous.length; i++) {
-    var cSub = current[i]
-    var pSub = previous[i]
-    out.push(
-      cSub
-        ? pSub
-          ? restart(cSub, pSub, dispatch)
-          : start(cSub, dispatch)
-        : pSub
-          ? cancel(pSub)
-          : pSub
-    )
+  return out
+}
+
+var isSameFn = function(a, b) {
+  return a === b || (a.name && (a.name === b.name))
+}
+
+var isSameSubArg = function(a, b, deep) {
+  if (a && b && a !== b && typeof a === 'object' && deep) {
+    var combined = merge(a, b)
+    for(var key in combined) {
+      if (!isSameSubArg(a[key], b[key], false)) {
+        return false
+      }
+    }
+    return true
+  }
+  if (a === b) {
+    return true
+  }
+  return false
+}
+
+var isSameSub = function(a, b) {
+  return isSameFn(a[0], b[0]) && isSameSubArg(a[1], b[1], true)
+}
+
+var refresh = function(subs, oldSubs, dispatch) {
+  var usedOldSubIndexes = []
+  var out = [];
+
+  for(var sub of subs) {
+    var found = false
+    for(var i = 0; i < oldSubs.length; i++) {
+      if (usedOldSubIndexes.indexOf(i) >= 0) {
+        continue;
+      }
+      if (isSameSub(sub, oldSubs[i])) {
+        found = true
+        usedOldSubIndexes.push(i)
+        out.push(oldSubs[i])
+        break
+      }
+    }
+    if (!found) {
+      out.push(sub.concat(sub[0](sub[1], dispatch)))
+    }
+  }
+
+  for(var oldSubIndex = 0; oldSubIndex < oldSubs.length; oldSubIndex++) {
+    if (usedOldSubIndexes.indexOf(oldSubIndex) === -1) {
+      oldSubs[oldSubIndex][2]()
+    }
   }
 
   return out
@@ -545,14 +563,18 @@ export function app(props) {
   var container = props.container
   var element = container && container.children && container.children[0]
   var lastNode = element && recycleElement(element)
-  var lastSub = []
+  var lastSubs = []
   var updateInProgress = false
 
   var setState = function(newState) {
     if (state !== newState) {
       state = newState
 
-      if (!updateInProgress) {
+      if (subs) {
+        lastSubs = refresh(flattenSubs(subs(state)), lastSubs, dispatch)
+      }
+
+      if (!updateInProgress && view) {
         updateInProgress = true
         defer(render)
       }
@@ -581,19 +603,13 @@ export function app(props) {
   var render = function() {
     updateInProgress = false
 
-    if (subs) {
-      lastSub = refresh(subs(state), lastSub, dispatch)
-    }
-
-    if (view) {
-      element = patch(
-        container,
-        element,
-        lastNode,
-        (lastNode = view(state)),
-        eventProxy
-      )
-    }
+    element = patch(
+      container,
+      element,
+      lastNode,
+      (lastNode = view(state)),
+      eventProxy
+    )
   }
 
   dispatch(props.init)

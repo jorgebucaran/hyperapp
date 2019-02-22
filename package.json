@@ -31,10 +31,12 @@
     "release": "npm run build && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
   },
   "babel": {
-    "presets": ["env"],
+    "presets": [
+      "@babel/env"
+    ],
     "plugins": [
       [
-        "transform-react-jsx",
+        "@babel/transform-react-jsx",
         {
           "pragma": "h"
         }
@@ -42,13 +44,14 @@
     ]
   },
   "devDependencies": {
-    "babel-plugin-transform-react-jsx": "^6.24.1",
-    "babel-preset-env": "^1.7.0",
+    "@babel/core": "^7.0.0-0",
+    "@babel/preset-env": "^7.3.1",
+    "@babel/plugin-transform-react-jsx": "^7.3.0",
     "jest": "^24.1.0",
     "prettier": "^1.16.4",
     "rollup": "^1.2.2",
-    "typescript": "3.3.3",
-    "terser": "^3.16.1"
+    "terser": "^3.16.1",
+    "typescript": "3.3.3"
   },
   "prettier": {
     "semi": false

@@ -502,14 +502,21 @@ var flattenSubs = function(subs) {
 }
 
 var isSameFn = function(a, b) {
-  return a === b || (a.name && (a.name === b.name))
+  const result = a === b || (a.name && (a.name === b.name))
+
+  return result
 }
 
-var isSameSubArg = function(a, b, deep) {
-  if (a && b && a !== b && typeof a === 'object' && deep) {
+var canDeepCheck = function(a) {
+  return isArray(a)
+    || (Object(a) === a && Object.getPrototypeOf(a) === Object.prototype)
+}
+
+var isSameSubArg = function(a, b) {
+  if (a && b && a !== b && (canDeepCheck(a) && canDeepCheck(b))) {
     var combined = merge(a, b)
     for(var key in combined) {
-      if (!isSameSubArg(a[key], b[key], false)) {
+      if (!isSameSubArg(a[key], b[key])) {
         return false
       }
     }
@@ -522,7 +529,7 @@ var isSameSubArg = function(a, b, deep) {
 }
 
 var isSameSub = function(a, b) {
-  return isSameFn(a[0], b[0]) && isSameSubArg(a[1], b[1], true)
+  return isSameFn(a[0], b[0]) && isSameSubArg(a[1], b[1])
 }
 
 var refresh = function(subs, oldSubs, dispatch) {

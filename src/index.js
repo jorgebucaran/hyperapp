@@ -9,6 +9,10 @@ var SVG_NS = "http://www.w3.org/2000/svg"
 var EMPTY_OBJECT = {}
 var EMPTY_ARRAY = []
 
+var CREATE_EVENT = new Event('create')
+var UPDATE_EVENT = new Event('update')
+var REMOVE_EVENT = new Event('remove')
+
 var map = EMPTY_ARRAY.map
 var isArray = Array.isArray
 
@@ -104,9 +108,9 @@ var createElement = function(node, lifecycle, eventProxy, isSvg) {
       : document.createElement(node.name)
 
   var props = node.props
-  if (props.onCreate) {
+  if (props.oncreate) {
     lifecycle.push(function() {
-      props.onCreate(element)
+      element.dispatchEvent(CREATE_EVENT)
     })
   }
 
@@ -154,10 +158,10 @@ var updateElement = function(
     }
   }
 
-  var cb = isRecycled ? nextProps.onCreate : nextProps.onUpdate
+  var cb = isRecycled ? nextProps.oncreate : nextProps.onupdate
   if (cb != null) {
     lifecycle.push(function() {
-      cb(element, lastProps)
+      element.dispatchEvent(UPDATE_EVENT)
     })
   }
 }
@@ -167,25 +171,15 @@ var removeChildren = function(node) {
     removeChildren(node.children[i])
   }
 
-  var cb = node.props.onDestroy
-  if (cb != null) {
-    cb(node.element)
+  if (node.props.onremove != null) {
+    node.element.dispatchEvent(REMOVE_EVENT)
   }
 
   return node.element
 }
 
 var removeElement = function(parent, node) {
-  var remove = function() {
-    parent.removeChild(removeChildren(node))
-  }
-
-  var cb = node.props && node.props.onRemove
-  if (cb != null) {
-    cb(node.element, remove)
-  } else {
-    remove()
-  }
+  parent.removeChild(removeChildren(node))
 }
 
 var getKey = function(node) {

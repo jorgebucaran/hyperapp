@@ -29,6 +29,26 @@ var defer = !resolved
       return resolved.then(cb)
     }
 
+function createClass(names) {
+  var tmp
+  var out = ""
+  var type = typeof names
+
+  if (type === "string" || type === "number") return names || ""
+
+  if (isArray(names) && names.length > 0) {
+    for (var i = 0, len = names.length; i < len; i++) {
+      if ((tmp = createClass(names[i])) !== "") out += (out && " ") + tmp
+    }
+  } else {
+    for (var i in names) {
+      if (names.hasOwnProperty(i) && names[i]) out += (out && " ") + i
+    }
+  }
+
+  return out
+}
+
 var updateProperty = function(
   element,
   name,
@@ -46,6 +66,12 @@ var updateProperty = function(
       } else {
         element[name][i] = style
       }
+    }
+  } else if (name === "class") {
+    if ((nextValue = createClass(nextValue))) {
+      element.setAttribute(name, nextValue)
+    } else {
+      element.removeAttribute(name)
     }
   } else {
     if (name[0] === "o" && name[1] === "n") {

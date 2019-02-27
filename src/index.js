@@ -209,25 +209,25 @@ var createKeyMap = function(children, start, end) {
 var patchElement = function(
   parent,
   element,
-  lastNode,
-  nextNode,
+  oldNode,
+  newNode,
   lifecycle,
   eventProxy,
   isSvg
 ) {
-  if (nextNode === lastNode) {
+  if (newNode === oldNode) {
   } else if (
-    lastNode != null &&
-    lastNode.type === TEXT_NODE &&
-    nextNode.type === TEXT_NODE
+    oldNode != null &&
+    oldNode.type === TEXT_NODE &&
+    newNode.type === TEXT_NODE
   ) {
-    if (lastNode.name !== nextNode.name) {
-      element.nodeValue = nextNode.name
+    if (oldNode.name !== newNode.name) {
+      element.nodeValue = newNode.name
     }
-  } else if (lastNode == null || lastNode.name !== nextNode.name) {
+  } else if (oldNode == null || oldNode.name !== newNode.name) {
     var newElement = parent.insertBefore(
       createElement(
-        (nextNode = resolveNode(nextNode)),
+        (newNode = resolveNode(newNode)),
         lifecycle,
         eventProxy,
         isSvg
@@ -235,30 +235,30 @@ var patchElement = function(
       element
     )
 
-    if (lastNode != null) removeElement(parent, lastNode)
+    if (oldNode != null) removeElement(parent, oldNode)
 
     element = newElement
   } else {
     updateElement(
       element,
-      lastNode.props,
-      nextNode.props,
+      oldNode.props,
+      newNode.props,
       lifecycle,
       eventProxy,
-      (isSvg = isSvg || nextNode.name === "svg"),
-      lastNode.type === RECYCLED_NODE
+      (isSvg = isSvg || newNode.name === "svg"),
+      oldNode.type === RECYCLED_NODE
     )
 
     var savedNode
     var childNode
 
     var lastKey
-    var lastChildren = lastNode.children
+    var lastChildren = oldNode.children
     var lastChStart = 0
     var lastChEnd = lastChildren.length - 1
 
     var nextKey
-    var nextChildren = nextNode.children
+    var nextChildren = newNode.children
     var nextChStart = 0
     var nextChEnd = nextChildren.length - 1
 
@@ -350,7 +350,7 @@ var patchElement = function(
           continue
         }
 
-        if (nextKey == null || lastNode.type === RECYCLED_NODE) {
+        if (nextKey == null || oldNode.type === RECYCLED_NODE) {
           if (lastKey == null) {
             patchElement(
               element,
@@ -422,7 +422,15 @@ var patchElement = function(
     }
   }
 
-  return (nextNode.element = element)
+  return (newNode.element = element)
+}
+
+var resolveNode = function(newNode, oldNode) {
+  return newNode.type === LAZY_NODE
+    ? oldNode && /*oldNode.lazy &&*/ isSameValue(newNode.lazy, oldNode.lazy)
+      ? oldNode
+      : newNode.render()
+    : newNode
 }
 
 var createVNode = function(name, props, children, element, key, type) {
@@ -457,14 +465,14 @@ var recycleElement = function(element) {
   )
 }
 
-var patch = function(container, element, lastNode, nextNode, eventProxy) {
+var patch = function(container, element, oldNode, newNode, eventProxy) {
   var lifecycle = []
 
   element = patchElement(
     container,
     element,
-    lastNode,
-    nextNode,
+    oldNode,
+    newNode,
     lifecycle,
     eventProxy
   )
@@ -472,6 +480,19 @@ var patch = function(container, element, lastNode, nextNode, eventProxy) {
   while (lifecycle.length > 0) lifecycle.pop()()
 
   return element
+}
+
+export var Lazy = function(props) {
+  return {
+    type: LAZY_NODE,
+    key: props.key,
+    lazy: props,
+    render: function() {
+      var node = props.render(props)
+      node.lazy = props
+      return node
+    }
+  }
 }
 
 export var h = function(name, props) {
@@ -505,86 +526,38 @@ export var h = function(name, props) {
     : createVNode(name, props, children, null, props.key, DEFAULT)
 }
 
-var resolveNode = function(newNode, oldNode) {
-  var node = newNode
-
-  if (node.type === LAZY_NODE) {
-    node =
-      oldNode && oldNode.lazy && isSameValue(node.lazy, oldNode.lazy)
-        ? oldNode
-        : node.render()
-  }
-  return node
-}
-
-export var Lazy = function(props) {
-  return {
-    type: LAZY_NODE,
-    key: props.key,
-    lazy: props,
-    render: function() {
-      var node = props.render(props)
-      node.lazy = props
-      return node
-    }
-  }
-}
-
-var cancel = function(sub) {
-  sub[2]()
-}
-
-var isSameValue = function(a, b) {
-  if (a !== b) {
-    for (var k in merge(a, b)) {
-      if (a[k] !== b[k]) return false
-    }
-  }
-  return true
-}
-
 var isSameAction = function(a, b) {
-  return (
-    typeof a === typeof b &&
-    (isArray(a) && a[0] === b[0] && isSameValue(a[1], b[1]))
-  )
+  return isArray(a) && isArray(b) && typeof a[0] === "function" && a[0] === b[0]
 }
 
-var restart = function(sub, oldSub, dispatch) {
-  for (var k in merge(sub, oldSub)) {
-    if (sub[k] === oldSub[k] || isSameAction(sub[k], oldSub[k])) {
-    } else {
-      cancel(oldSub)
-      return start(sub, dispatch)
+var needsRestart = function(a, b) {
+  for (var k in merge(a, b)) {
+    if (a[k] !== b[k] && !isSameAction(a[k], b[k])) return true
+    b[k] = a[k]
+  }
+}
+
+var patchSubs = function(sub, oldSub, dispatch) {
+  if (
+    (sub && (!sub[0] || isArray(sub[0]))) ||
+    (oldSub && (!oldSub[0] || isArray(oldSub[0])))
+  ) {
+    var out = []
+    var subs = sub ? sub : [sub]
+    var oldSubs = oldSub ? oldSub : [oldSub]
+
+    for (var i = 0; i < subs.length || i < oldSubs.length; i++) {
+      out.push(patchSubs(subs[i], oldSubs[i], dispatch))
     }
-  }
-  return oldSub
-}
 
-var start = function(sub, dispatch) {
-  return [sub[0], sub[1], sub[0](sub[1], dispatch)]
-}
-
-var refresh = function(sub, oldSub, dispatch) {
-  var current = [].concat(sub)
-  var previous = [].concat(oldSub)
-  var out = []
-
-  for (var i = 0; i < current.length || i < previous.length; i++) {
-    var cSub = current[i]
-    var pSub = previous[i]
-    out.push(
-      cSub
-        ? pSub
-          ? restart(cSub, pSub, dispatch)
-          : start(cSub, dispatch)
-        : pSub
-          ? cancel(pSub)
-          : pSub
-    )
+    return out
   }
 
-  return out
+  return sub
+    ? !oldSub || sub[0] !== oldSub[0] || needsRestart(sub[1], oldSub[1])
+      ? [sub[0], sub[1], sub[0](sub[1], dispatch), oldSub && oldSub[2]()]
+      : oldSub
+    : oldSub && oldSub[2]()
 }
 
 export function app(props) {
@@ -592,29 +565,28 @@ export function app(props) {
   var view = props.view
   var subs = props.subscriptions
   var container = props.container
-  var element = container && container.children && container.children[0]
-  var lastNode = element && recycleElement(element)
-  var lastSub = []
-  var updateInProgress = false
+  var element = container && container.children[0]
+  var oldNode = element && recycleElement(element)
+  var stateLock = false
+  var lastSub
 
   var setState = function(newState) {
     if (state !== newState) {
       state = newState
-
-      if (!updateInProgress) {
-        updateInProgress = true
+      if (!stateLock) {
+        stateLock = true
         defer(render)
       }
     }
   }
 
-  var dispatch = function(obj, data) {
+  var dispatch = function(obj, props) {
     if (obj == null) {
     } else if (typeof obj === "function") {
-      dispatch(obj(state, data))
+      dispatch(obj(state, props))
     } else if (isArray(obj)) {
       if (typeof obj[0] === "function") {
-        dispatch(obj[0](state, obj[1], data))
+        dispatch(obj[0](state, obj[1], props))
       } else {
         obj[1][0](obj[1][1], dispatch, setState(obj[0]))
       }
@@ -628,18 +600,14 @@ export function app(props) {
   }
 
   var render = function() {
-    updateInProgress = false
-
-    if (subs) {
-      lastSub = refresh(subs(state), lastSub, dispatch)
-    }
-
+    stateLock = false
+    if (subs) lastSub = patchSubs(subs(state), lastSub, dispatch)
     if (view) {
       element = patch(
         container,
         element,
-        lastNode,
-        (lastNode = view(state)),
+        oldNode,
+        (oldNode = view(state)),
         eventProxy
       )
     }

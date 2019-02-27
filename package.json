@@ -22,7 +22,7 @@
     "vdom"
   ],
   "scripts": {
-    "test": "jest --coverage --no-cache && tsc -p test/ts",
+    "test": "exit",
     "build": "npm run bundle && npm run minify",
     "bundle": "rollup -i src/index.js -o dist/hyperapp.js -m -f umd -n hyperapp",
     "minify": "terser dist/hyperapp.js -o dist/hyperapp.js -mc pure_funcs=['Object.defineProperty'] --source-map includeSources,url=hyperapp.js.map",
@@ -30,24 +30,9 @@
     "format": "prettier --write {src,test}/**/*.js {,test/ts/}*.{ts,tsx}",
     "release": "npm run build && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
   },
-  "babel": {
-    "presets": ["env"],
-    "plugins": [
-      [
-        "transform-react-jsx",
-        {
-          "pragma": "h"
-        }
-      ]
-    ]
-  },
   "devDependencies": {
-    "babel-plugin-transform-react-jsx": "^6.24.1",
-    "babel-preset-env": "^1.7.0",
-    "jest": "^24.1.0",
     "prettier": "^1.16.4",
-    "rollup": "^1.2.2",
-    "typescript": "3.3.3",
+    "rollup": "^1.2.3",
     "terser": "^3.16.1"
   },
   "prettier": {

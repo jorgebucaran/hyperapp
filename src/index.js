@@ -451,9 +451,14 @@ var patchElement = function(
   return (newNode.element = element)
 }
 
+var shouldUpdate = function(a, b) {
+  for (var k in a) if (a[k] !== b[k]) return true
+  for (var k in b) if (a[k] !== b[k]) return true
+}
+
 var resolveNode = function(newNode, oldNode) {
   return newNode.type === LAZY_NODE
-    ? oldNode && /*oldNode.lazy &&*/ isSameValue(newNode.lazy, oldNode.lazy)
+    ? oldNode && isSameValue(newNode.lazy, oldNode.lazy)
       ? oldNode
       : newNode.render()
     : newNode
@@ -556,10 +561,10 @@ var isSameAction = function(a, b) {
   return isArray(a) && isArray(b) && typeof a[0] === "function" && a[0] === b[0]
 }
 
-var needsRestart = function(a, b) {
+var shouldRestart = function(a, b) {
   for (var k in merge(a, b)) {
-    if (a[k] !== b[k] && !isSameAction(a[k], b[k])) return true
-    b[k] = a[k]
+    if (a[k] === b[k] || isSameAction(a[k], b[k])) b[k] = a[k]
+    else return true
   }
 }
 
@@ -580,7 +585,7 @@ var patchSubs = function(sub, oldSub, dispatch) {
   }
 
   return sub
-    ? !oldSub || sub[0] !== oldSub[0] || needsRestart(sub[1], oldSub[1])
+    ? !oldSub || sub[0] !== oldSub[0] || shouldRestart(sub[1], oldSub[1])
       ? [sub[0], sub[1], sub[0](sub[1], dispatch), oldSub && oldSub[2]()]
       : oldSub
     : oldSub && oldSub[2]()

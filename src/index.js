@@ -458,7 +458,7 @@ var shouldUpdate = function(a, b) {
 
 var resolveNode = function(newNode, oldNode) {
   return newNode.type === LAZY_NODE
-    ? oldNode && isSameValue(newNode.lazy, oldNode.lazy)
+    ? oldNode && shouldUpdate(newNode.lazy, oldNode.lazy)
       ? oldNode
       : newNode.render()
     : newNode

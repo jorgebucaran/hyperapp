@@ -644,5 +644,5 @@ export function app(props) {
     }
   }
 
-  dispatch(props.init)
+  dispatch(props.init || {})
 }

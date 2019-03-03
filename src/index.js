@@ -12,6 +12,13 @@ var EMPTY_ARRAY = []
 var map = EMPTY_ARRAY.map
 var isArray = Array.isArray
 
+var defer =
+  typeof Promise === "function"
+    ? function(cb) {
+        Promise.resolve().then(cb)
+      }
+    : setTimeout
+
 var merge = function(a, b) {
   var target = {}
 
@@ -20,13 +27,6 @@ var merge = function(a, b) {
 
   return target
 }
-
-var defer =
-  typeof Promise === "function"
-    ? function(cb) {
-        Promise.resolve().then(cb)
-      }
-    : setTimeout
 
 function createClass(obj) {
   var tmp = typeof obj
@@ -50,15 +50,15 @@ function createClass(obj) {
 var updateProperty = function(
   element,
   name,
-  lastValue,
-  nextValue,
-  eventProxy,
+  oldValue,
+  newValue,
+  eventCb,
   isSvg
 ) {
   if (name === "key") {
   } else if (name === "style") {
-    for (var i in merge(lastValue, nextValue)) {
-      var style = nextValue == null || nextValue[i] == null ? "" : nextValue[i]
+    for (var i in merge(oldValue, newValue)) {
+      var style = newValue == null || newValue[i] == null ? "" : newValue[i]
       if (i[0] === "-") {
         element[name].setProperty(i, style)
       } else {
@@ -66,27 +66,24 @@ var updateProperty = function(
       }
     }
   } else if (name === "class") {
-    if ((nextValue = createClass(nextValue))) {
-      element.setAttribute(name, nextValue)
+    if ((newValue = createClass(newValue))) {
+      element.setAttribute(name, newValue)
     } else {
       element.removeAttribute(name)
     }
   } else {
     if (name[0] === "o" && name[1] === "n") {
-      name = name.slice(2).toLowerCase()
-
       if (!element.events) element.events = {}
 
-      element.events[name] = nextValue
+      element.events[(name = name.slice(2).toLowerCase())] = newValue
 
-      if (nextValue == null) {
-        element.removeEventListener(name, eventProxy)
-      } else if (lastValue == null) {
-        element.addEventListener(name, eventProxy)
+      if (newValue == null) {
+        element.removeEventListener(name, eventCb)
+      } else if (oldValue == null) {
+        element.addEventListener(name, eventCb)
       }
     } else {
-      var nullOrFalse = nextValue == null || nextValue === false
-
+      var nullOrFalse = newValue == null || newValue === false
       if (
         name in element &&
         name !== "list" &&
@@ -95,7 +92,7 @@ var updateProperty = function(
         name !== "translate" &&
         !isSvg
       ) {
-        element[name] = nextValue == null ? "" : nextValue
+        element[name] = newValue == null ? "" : newValue
         if (nullOrFalse) {
           element.removeAttribute(name)
         }
@@ -105,13 +102,13 @@ var updateProperty = function(
           if (nullOrFalse) {
             element.removeAttributeNS(XLINK_NS, name)
           } else {
-            element.setAttributeNS(XLINK_NS, name, nextValue)
+            element.setAttributeNS(XLINK_NS, name, newValue)
           }
         } else {
           if (nullOrFalse) {
             element.removeAttribute(name)
           } else {
-            element.setAttribute(name, nextValue)
+            element.setAttribute(name, newValue)
           }
         }
       }
@@ -119,7 +116,7 @@ var updateProperty = function(
   }
 }
 
-var createElement = function(node, eventProxy, isSvg) {
+var createElement = function(node, eventCb, isSvg) {
   var element =
     node.type === TEXT_NODE
       ? document.createTextNode(node.name)
@@ -131,7 +128,7 @@ var createElement = function(node, eventProxy, isSvg) {
     element.appendChild(
       createElement(
         (node.children[i] = resolveNode(node.children[i])),
-        eventProxy,
+        eventCb,
         isSvg
       )
     )
@@ -139,25 +136,25 @@ var createElement = function(node, eventProxy, isSvg) {
 
   var props = node.props
   for (var name in props) {
-    updateProperty(element, name, null, props[name], eventProxy, isSvg)
+    updateProperty(element, name, null, props[name], eventCb, isSvg)
   }
 
   return (node.element = element)
 }
 
-var updateElement = function(element, lastProps, nextProps, eventProxy, isSvg) {
-  for (var name in merge(lastProps, nextProps)) {
+var updateElement = function(element, oldProps, newProps, eventCb, isSvg) {
+  for (var name in merge(oldProps, newProps)) {
     if (
       (name === "value" || name === "checked"
         ? element[name]
-        : lastProps[name]) !== nextProps[name]
+        : oldProps[name]) !== newProps[name]
     ) {
       updateProperty(
         element,
         name,
-        lastProps[name],
-        nextProps[name],
-        eventProxy,
+        oldProps[name],
+        newProps[name],
+        eventCb,
         isSvg
       )
     }
@@ -173,27 +170,15 @@ var getKey = function(node) {
 }
 
 var createKeyMap = function(children, start, end) {
-  var out = {}
-  var key
-  var node
-
-  for (; start <= end; start++) {
+  for (var out = {}, key, node; start <= end; start++) {
     if ((key = (node = children[start]).key) != null) {
       out[key] = node
     }
   }
-
   return out
 }
 
-var patchElement = function(
-  parent,
-  element,
-  oldNode,
-  newNode,
-  eventProxy,
-  isSvg
-) {
+var patchElement = function(parent, element, oldNode, newNode, eventCb, isSvg) {
   if (newNode === oldNode) {
   } else if (
     oldNode != null &&
@@ -205,7 +190,7 @@ var patchElement = function(
     }
   } else if (oldNode == null || oldNode.name !== newNode.name) {
     var newElement = parent.insertBefore(
-      createElement((newNode = resolveNode(newNode)), eventProxy, isSvg),
+      createElement((newNode = resolveNode(newNode)), eventCb, isSvg),
       element
     )
 
@@ -217,135 +202,133 @@ var patchElement = function(
       element,
       oldNode.props,
       newNode.props,
-      eventProxy,
+      eventCb,
       (isSvg = isSvg || newNode.name === "svg")
     )
 
     var savedNode
     var childNode
 
-    var lastKey
-    var lastChildren = oldNode.children
-    var lastChStart = 0
-    var lastChEnd = lastChildren.length - 1
+    var oldKey
+    var oldChildren = oldNode.children
+    var oldChStart = 0
+    var oldChEnd = oldChildren.length - 1
 
-    var nextKey
-    var nextChildren = newNode.children
-    var nextChStart = 0
-    var nextChEnd = nextChildren.length - 1
+    var newKey
+    var newChildren = newNode.children
+    var newChStart = 0
+    var newChEnd = newChildren.length - 1
 
-    while (nextChStart <= nextChEnd && lastChStart <= lastChEnd) {
-      lastKey = getKey(lastChildren[lastChStart])
-      nextKey = getKey(nextChildren[nextChStart])
+    while (newChStart <= newChEnd && oldChStart <= oldChEnd) {
+      oldKey = getKey(oldChildren[oldChStart])
+      newKey = getKey(newChildren[newChStart])
 
-      if (lastKey == null || lastKey !== nextKey) break
-
-      patchElement(
-        element,
-        lastChildren[lastChStart].element,
-        lastChildren[lastChStart],
-        (nextChildren[nextChStart] = resolveNode(
-          nextChildren[nextChStart],
-          lastChildren[lastChStart]
-        )),
-        eventProxy,
-        isSvg
-      )
-
-      lastChStart++
-      nextChStart++
-    }
-
-    while (nextChStart <= nextChEnd && lastChStart <= lastChEnd) {
-      lastKey = getKey(lastChildren[lastChEnd])
-      nextKey = getKey(nextChildren[nextChEnd])
-
-      if (lastKey == null || lastKey !== nextKey) break
+      if (oldKey == null || oldKey !== newKey) break
 
       patchElement(
         element,
-        lastChildren[lastChEnd].element,
-        lastChildren[lastChEnd],
-        (nextChildren[nextChEnd] = resolveNode(
-          nextChildren[nextChEnd],
-          lastChildren[lastChEnd]
+        oldChildren[oldChStart].element,
+        oldChildren[oldChStart],
+        (newChildren[newChStart] = resolveNode(
+          newChildren[newChStart],
+          oldChildren[oldChStart]
         )),
-        eventProxy,
+        eventCb,
         isSvg
       )
 
-      lastChEnd--
-      nextChEnd--
+      oldChStart++
+      newChStart++
     }
 
-    if (lastChStart > lastChEnd) {
-      while (nextChStart <= nextChEnd) {
+    while (newChStart <= newChEnd && oldChStart <= oldChEnd) {
+      oldKey = getKey(oldChildren[oldChEnd])
+      newKey = getKey(newChildren[newChEnd])
+
+      if (oldKey == null || oldKey !== newKey) break
+
+      patchElement(
+        element,
+        oldChildren[oldChEnd].element,
+        oldChildren[oldChEnd],
+        (newChildren[newChEnd] = resolveNode(
+          newChildren[newChEnd],
+          oldChildren[oldChEnd]
+        )),
+        eventCb,
+        isSvg
+      )
+
+      oldChEnd--
+      newChEnd--
+    }
+
+    if (oldChStart > oldChEnd) {
+      while (newChStart <= newChEnd) {
         element.insertBefore(
           createElement(
-            (nextChildren[nextChStart] = resolveNode(
-              nextChildren[nextChStart++]
-            )),
-            eventProxy,
+            (newChildren[newChStart] = resolveNode(newChildren[newChStart++])),
+            eventCb,
             isSvg
           ),
-          (childNode = lastChildren[lastChStart]) && childNode.element
+          (childNode = oldChildren[oldChStart]) && childNode.element
         )
       }
-    } else if (nextChStart > nextChEnd) {
-      while (lastChStart <= lastChEnd) {
-        removeElement(element, lastChildren[lastChStart++])
+    } else if (newChStart > newChEnd) {
+      while (oldChStart <= oldChEnd) {
+        removeElement(element, oldChildren[oldChStart++])
       }
     } else {
-      var lastKeyed = createKeyMap(lastChildren, lastChStart, lastChEnd)
-      var nextKeyed = {}
+      var oldKeyed = createKeyMap(oldChildren, oldChStart, oldChEnd)
+      var newKeyed = {}
 
-      while (nextChStart <= nextChEnd) {
-        lastKey = getKey((childNode = lastChildren[lastChStart]))
-        nextKey = getKey(
-          (nextChildren[nextChStart] = resolveNode(
-            nextChildren[nextChStart],
+      while (newChStart <= newChEnd) {
+        oldKey = getKey((childNode = oldChildren[oldChStart]))
+        newKey = getKey(
+          (newChildren[newChStart] = resolveNode(
+            newChildren[newChStart],
             childNode
           ))
         )
 
         if (
-          nextKeyed[lastKey] ||
-          (nextKey != null && nextKey === getKey(lastChildren[lastChStart + 1]))
+          newKeyed[oldKey] ||
+          (newKey != null && newKey === getKey(oldChildren[oldChStart + 1]))
         ) {
-          if (lastKey == null) {
+          if (oldKey == null) {
             removeElement(element, childNode)
           }
-          lastChStart++
+          oldChStart++
           continue
         }
 
-        if (nextKey == null || oldNode.type === RECYCLED_NODE) {
-          if (lastKey == null) {
+        if (newKey == null || oldNode.type === RECYCLED_NODE) {
+          if (oldKey == null) {
             patchElement(
               element,
               childNode && childNode.element,
               childNode,
-              nextChildren[nextChStart],
-              eventProxy,
+              newChildren[newChStart],
+              eventCb,
               isSvg
             )
-            nextChStart++
+            newChStart++
           }
-          lastChStart++
+          oldChStart++
         } else {
-          if (lastKey === nextKey) {
+          if (oldKey === newKey) {
             patchElement(
               element,
               childNode.element,
               childNode,
-              nextChildren[nextChStart],
-              eventProxy,
+              newChildren[newChStart],
+              eventCb,
               isSvg
             )
-            nextKeyed[nextKey] = true
-            lastChStart++
+            newKeyed[newKey] = true
+            oldChStart++
           } else {
-            if ((savedNode = lastKeyed[nextKey]) != null) {
+            if ((savedNode = oldKeyed[newKey]) != null) {
               patchElement(
                 element,
                 element.insertBefore(
@@ -353,35 +336,35 @@ var patchElement = function(
                   childNode && childNode.element
                 ),
                 savedNode,
-                nextChildren[nextChStart],
-                eventProxy,
+                newChildren[newChStart],
+                eventCb,
                 isSvg
               )
-              nextKeyed[nextKey] = true
+              newKeyed[newKey] = true
             } else {
               patchElement(
                 element,
                 childNode && childNode.element,
                 null,
-                nextChildren[nextChStart],
-                eventProxy,
+                newChildren[newChStart],
+                eventCb,
                 isSvg
               )
             }
           }
-          nextChStart++
+          newChStart++
         }
       }
 
-      while (lastChStart <= lastChEnd) {
-        if (getKey((childNode = lastChildren[lastChStart++])) == null) {
+      while (oldChStart <= oldChEnd) {
+        if (getKey((childNode = oldChildren[oldChStart++])) == null) {
           removeElement(element, childNode)
         }
       }
 
-      for (var key in lastKeyed) {
-        if (nextKeyed[key] == null) {
-          removeElement(element, lastKeyed[key])
+      for (var key in oldKeyed) {
+        if (newKeyed[key] == null) {
+          removeElement(element, oldKeyed[key])
         }
       }
     }
@@ -435,14 +418,8 @@ var recycleElement = function(element) {
   )
 }
 
-var patch = function(container, element, oldNode, newNode, eventProxy) {
-  return (element = patchElement(
-    container,
-    element,
-    oldNode,
-    newNode,
-    eventProxy
-  ))
+var patch = function(container, element, oldNode, newNode, eventCb) {
+  return (element = patchElement(container, element, oldNode, newNode, eventCb))
 }
 
 export var Lazy = function(props) {
@@ -500,47 +477,49 @@ var shouldRestart = function(a, b) {
   }
 }
 
-var patchSubs = function(sub, oldSub, dispatch) {
+var patchSub = function(oldSub, newSub, dispatch) {
   if (
-    (sub && (!sub[0] || isArray(sub[0]))) ||
+    (newSub && (!newSub[0] || isArray(newSub[0]))) ||
     (oldSub && (!oldSub[0] || isArray(oldSub[0])))
   ) {
-    var out = []
-    var subs = sub ? sub : [sub]
+    var subs = []
+    var newSubs = newSub ? newSub : [newSub]
     var oldSubs = oldSub ? oldSub : [oldSub]
 
-    for (var i = 0; i < subs.length || i < oldSubs.length; i++) {
-      out.push(patchSubs(subs[i], oldSubs[i], dispatch))
+    for (var i = 0; i < newSubs.length || i < oldSubs.length; i++) {
+      subs.push(patchSub(oldSubs[i], newSubs[i], dispatch))
     }
 
-    return out
+    return subs
   }
 
-  return sub
-    ? !oldSub || sub[0] !== oldSub[0] || shouldRestart(sub[1], oldSub[1])
-      ? [sub[0], sub[1], sub[0](sub[1], dispatch), oldSub && oldSub[2]()]
+  return newSub
+    ? !oldSub || newSub[0] !== oldSub[0] || shouldRestart(newSub[1], oldSub[1])
+      ? [
+          newSub[0],
+          newSub[1],
+          newSub[0](newSub[1], dispatch),
+          oldSub && oldSub[2]()
+        ]
       : oldSub
     : oldSub && oldSub[2]()
 }
 
 export function app(props) {
-  var state
-  var view = props.view
-  var subs = props.subscriptions
   var container = props.container
   var element = container && container.children[0]
   var oldNode = element && recycleElement(element)
-  var stateLock = false
-  var lastSub
+  var subs = props.subscriptions
+  var view = props.view
+  var renderLock = false
+  var state
+  var sub
 
   var setState = function(newState) {
-    if (state !== newState) {
-      state = newState
-      if (!stateLock) {
-        stateLock = true
-        defer(render)
-      }
+    if (!(state === newState || renderLock)) {
+      defer(render, (renderLock = true))
     }
+    state = newState
   }
 
   var dispatch = function(obj, props) {
@@ -560,20 +539,20 @@ export function app(props) {
     }
   }
 
-  var eventProxy = function(event) {
+  var eventCb = function(event) {
     dispatch(event.currentTarget.events[event.type], event)
   }
 
   var render = function() {
-    stateLock = false
-    if (subs) lastSub = patchSubs(subs(state), lastSub, dispatch)
+    renderLock = false
+    if (subs) sub = patchSub(sub, subs(state), dispatch)
     if (view) {
       element = patch(
         container,
         element,
         oldNode,
         (oldNode = view(state)),
-        eventProxy
+        eventCb
       )
     }
   }

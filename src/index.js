@@ -21,13 +21,12 @@ var merge = function(a, b) {
   return target
 }
 
-var resolved = typeof Promise === "function" && Promise.resolve()
-
-var defer = !resolved
-  ? setTimeout
-  : function(cb) {
-      return resolved.then(cb)
-    }
+var defer =
+  typeof Promise === "function"
+    ? function(cb) {
+        Promise.resolve().then(cb)
+      }
+    : setTimeout
 
 function createClass(names) {
   var tmp

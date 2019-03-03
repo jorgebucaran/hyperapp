@@ -28,20 +28,19 @@ var defer =
       }
     : setTimeout
 
-function createClass(names) {
-  var tmp
+function createClass(obj) {
+  var tmp = typeof obj
   var out = ""
-  var type = typeof names
 
-  if (type === "string" || type === "number") return names || ""
+  if (tmp === "string" || tmp === "number") return obj || ""
 
-  if (isArray(names) && names.length > 0) {
-    for (var i = 0, len = names.length; i < len; i++) {
-      if ((tmp = createClass(names[i])) !== "") out += (out && " ") + tmp
+  if (isArray(obj) && obj.length > 0) {
+    for (var i = 0, length = obj.length; i < length; i++) {
+      if ((tmp = createClass(obj[i])) !== "") out += (out && " ") + tmp
     }
   } else {
-    for (var i in names) {
-      if (names.hasOwnProperty(i) && names[i]) out += (out && " ") + i
+    for (var i in obj) {
+      if (obj[i]) out += (out && " ") + i
     }
   }
 

@@ -1,4 +1,4 @@
-var DEFAULT = 0
+var DEFAULT_NODE = 0
 var RECYCLED_NODE = 1
 var LAZY_NODE = 2
 var TEXT_NODE = 3
@@ -553,7 +553,7 @@ export var h = function(name, props) {
 
   return typeof name === "function"
     ? name(props, (props.children = children))
-    : createVNode(name, props, children, null, props.key, DEFAULT)
+    : createVNode(name, props, children, null, props.key, DEFAULT_NODE)
 }
 
 var isSameAction = function(a, b) {

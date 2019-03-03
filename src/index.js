@@ -120,7 +120,7 @@ var updateProperty = function(
   }
 }
 
-var createElement = function(node, lifecycle, eventProxy, isSvg) {
+var createElement = function(node, eventProxy, isSvg) {
   var element =
     node.type === TEXT_NODE
       ? document.createTextNode(node.name)
@@ -128,24 +128,17 @@ var createElement = function(node, lifecycle, eventProxy, isSvg) {
       ? document.createElementNS(SVG_NS, node.name)
       : document.createElement(node.name)
 
-  var props = node.props
-  if (props.onCreate) {
-    lifecycle.push(function() {
-      props.onCreate(element)
-    })
-  }
-
   for (var i = 0, length = node.children.length; i < length; i++) {
     element.appendChild(
       createElement(
         (node.children[i] = resolveNode(node.children[i])),
-        lifecycle,
         eventProxy,
         isSvg
       )
     )
   }
 
+  var props = node.props
   for (var name in props) {
     updateProperty(element, name, null, props[name], eventProxy, isSvg)
   }
@@ -153,15 +146,7 @@ var createElement = function(node, lifecycle, eventProxy, isSvg) {
   return (node.element = element)
 }
 
-var updateElement = function(
-  element,
-  lastProps,
-  nextProps,
-  lifecycle,
-  eventProxy,
-  isSvg,
-  isRecycled
-) {
+var updateElement = function(element, lastProps, nextProps, eventProxy, isSvg) {
   for (var name in merge(lastProps, nextProps)) {
     if (
       (name === "value" || name === "checked"
@@ -178,39 +163,10 @@ var updateElement = function(
       )
     }
   }
-
-  var cb = isRecycled ? nextProps.onCreate : nextProps.onUpdate
-  if (cb != null) {
-    lifecycle.push(function() {
-      cb(element, lastProps)
-    })
-  }
-}
-
-var removeChildren = function(node) {
-  for (var i = 0, length = node.children.length; i < length; i++) {
-    removeChildren(node.children[i])
-  }
-
-  var cb = node.props.onDestroy
-  if (cb != null) {
-    cb(node.element)
-  }
-
-  return node.element
 }
 
 var removeElement = function(parent, node) {
-  var remove = function() {
-    parent.removeChild(removeChildren(node))
-  }
-
-  var cb = node.props && node.props.onRemove
-  if (cb != null) {
-    cb(node.element, remove)
-  } else {
-    remove()
-  }
+  parent.removeChild(node.element)
 }
 
 var getKey = function(node) {
@@ -236,7 +192,6 @@ var patchElement = function(
   element,
   oldNode,
   newNode,
-  lifecycle,
   eventProxy,
   isSvg
 ) {
@@ -251,12 +206,7 @@ var patchElement = function(
     }
   } else if (oldNode == null || oldNode.name !== newNode.name) {
     var newElement = parent.insertBefore(
-      createElement(
-        (newNode = resolveNode(newNode)),
-        lifecycle,
-        eventProxy,
-        isSvg
-      ),
+      createElement((newNode = resolveNode(newNode)), eventProxy, isSvg),
       element
     )
 
@@ -268,10 +218,8 @@ var patchElement = function(
       element,
       oldNode.props,
       newNode.props,
-      lifecycle,
       eventProxy,
-      (isSvg = isSvg || newNode.name === "svg"),
-      oldNode.type === RECYCLED_NODE
+      (isSvg = isSvg || newNode.name === "svg")
     )
 
     var savedNode
@@ -301,7 +249,6 @@ var patchElement = function(
           nextChildren[nextChStart],
           lastChildren[lastChStart]
         )),
-        lifecycle,
         eventProxy,
         isSvg
       )
@@ -324,7 +271,6 @@ var patchElement = function(
           nextChildren[nextChEnd],
           lastChildren[lastChEnd]
         )),
-        lifecycle,
         eventProxy,
         isSvg
       )
@@ -340,7 +286,6 @@ var patchElement = function(
             (nextChildren[nextChStart] = resolveNode(
               nextChildren[nextChStart++]
             )),
-            lifecycle,
             eventProxy,
             isSvg
           ),
@@ -382,7 +327,6 @@ var patchElement = function(
               childNode && childNode.element,
               childNode,
               nextChildren[nextChStart],
-              lifecycle,
               eventProxy,
               isSvg
             )
@@ -396,7 +340,6 @@ var patchElement = function(
               childNode.element,
               childNode,
               nextChildren[nextChStart],
-              lifecycle,
               eventProxy,
               isSvg
             )
@@ -412,7 +355,6 @@ var patchElement = function(
                 ),
                 savedNode,
                 nextChildren[nextChStart],
-                lifecycle,
                 eventProxy,
                 isSvg
               )
@@ -423,7 +365,6 @@ var patchElement = function(
                 childNode && childNode.element,
                 null,
                 nextChildren[nextChStart],
-                lifecycle,
                 eventProxy,
                 isSvg
               )
@@ -496,20 +437,13 @@ var recycleElement = function(element) {
 }
 
 var patch = function(container, element, oldNode, newNode, eventProxy) {
-  var lifecycle = []
-
-  element = patchElement(
+  return (element = patchElement(
     container,
     element,
     oldNode,
     newNode,
-    lifecycle,
     eventProxy
-  )
-
-  while (lifecycle.length > 0) lifecycle.pop()()
-
-  return element
+  ))
 }
 
 export var Lazy = function(props) {

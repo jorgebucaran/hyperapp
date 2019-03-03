@@ -619,7 +619,9 @@ export function app(props) {
       if (typeof obj[0] === "function") {
         dispatch(obj[0](state, obj[1], props))
       } else {
-        obj[1][0](obj[1][1], dispatch, setState(obj[0]))
+        obj.slice(1).map(function(fx) {
+          fx[0](fx[1], dispatch)
+        }, setState(obj[0]))
       }
     } else {
       setState(obj)

@@ -462,7 +462,7 @@ export var h = function(name, props) {
   }
 
   return typeof name === "function"
-    ? name(props, (props.children = children))
+    ? name(props, name !== Lazy && (props.children = children))
     : createVNode(name, props, children, null, props.key, DEFAULT_NODE)
 }
 

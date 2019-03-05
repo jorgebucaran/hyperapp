@@ -54,7 +54,8 @@ var updateProperty = function(
   eventCb,
   isSvg
 ) {
-  if (name === "style") {
+  if (name === "key") {
+  } else if (name === "style") {
     for (var i in merge(oldValue, newValue)) {
       var style = newValue == null || newValue[i] == null ? "" : newValue[i]
       if (i[0] === "-") {
@@ -408,7 +409,6 @@ export var Lazy = function(props) {
 }
 
 export var h = function(name, props) {
-  props = props || EMPTY_OBJECT
   var node
   var rest = []
   var children = []
@@ -426,6 +426,8 @@ export var h = function(name, props) {
       children.push(typeof node === "object" ? node : createTextVNode(node))
     }
   }
+
+  props = props || EMPTY_OBJECT
 
   return typeof name === "function"
     ? name(props, children)

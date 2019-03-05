@@ -3,7 +3,6 @@ var RECYCLED_NODE = 1
 var LAZY_NODE = 2
 var TEXT_NODE = 3
 
-var XLINK_NS = "http://www.w3.org/1999/xlink"
 var SVG_NS = "http://www.w3.org/2000/svg"
 
 var EMPTY_OBJECT = {}
@@ -55,8 +54,7 @@ var updateProperty = function(
   eventCb,
   isSvg
 ) {
-  if (name === "key") {
-  } else if (name === "style") {
+  if (name === "style") {
     for (var i in merge(oldValue, newValue)) {
       var style = newValue == null || newValue[i] == null ? "" : newValue[i]
       if (i[0] === "-") {
@@ -64,12 +62,6 @@ var updateProperty = function(
       } else {
         element[name][i] = style
       }
-    }
-  } else if (name === "class") {
-    if ((newValue = createClass(newValue))) {
-      element.setAttribute(name, newValue)
-    } else {
-      element.removeAttribute(name)
     }
   } else {
     if (name[0] === "o" && name[1] === "n") {
@@ -82,36 +74,16 @@ var updateProperty = function(
       } else if (!oldValue) {
         element.addEventListener(name, eventCb)
       }
+    } else if (name !== "list" && !isSvg && name in element) {
+      element[name] = newValue == null ? "" : newValue
+    } else if (
+      newValue == null ||
+      newValue === false ||
+      (name === "class" && !(newValue = createClass(newValue)))
+    ) {
+      element.removeAttribute(name)
     } else {
-      var nullOrFalse = newValue == null || newValue === false
-      if (
-        name in element &&
-        name !== "list" &&
-        name !== "draggable" &&
-        name !== "spellcheck" &&
-        name !== "translate" &&
-        !isSvg
-      ) {
-        element[name] = newValue == null ? "" : newValue
-        if (nullOrFalse) {
-          element.removeAttribute(name)
-        }
-      } else {
-        var ns = isSvg && name !== (name = name.replace(/^xlink:?/, ""))
-        if (ns) {
-          if (nullOrFalse) {
-            element.removeAttributeNS(XLINK_NS, name)
-          } else {
-            element.setAttributeNS(XLINK_NS, name, newValue)
-          }
-        } else {
-          if (nullOrFalse) {
-            element.removeAttribute(name)
-          } else {
-            element.setAttribute(name, newValue)
-          }
-        }
-      }
+      element.setAttribute(name, newValue)
     }
   }
 }

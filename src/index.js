@@ -73,13 +73,13 @@ var updateProperty = function(
     }
   } else {
     if (name[0] === "o" && name[1] === "n") {
-      if (!element.events) element.events = {}
-
-      element.events[(name = name.slice(2).toLowerCase())] = newValue
-
-      if (newValue == null) {
+      if (
+        !((element.events || (element.events = {}))[
+          (name = name.slice(2).toLowerCase())
+        ] = newValue)
+      ) {
         element.removeEventListener(name, eventCb)
-      } else if (oldValue == null) {
+      } else if (!oldValue) {
         element.addEventListener(name, eventCb)
       }
     } else {

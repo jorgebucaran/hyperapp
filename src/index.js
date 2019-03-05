@@ -436,19 +436,13 @@ export var Lazy = function(props) {
 }
 
 export var h = function(name, props) {
+  props = props || EMPTY_OBJECT
   var node
   var rest = []
   var children = []
   var length = arguments.length
 
   while (length-- > 2) rest.push(arguments[length])
-
-  if ((props = props == null ? {} : props).children != null) {
-    if (rest.length <= 0) {
-      rest.push(props.children)
-    }
-    delete props.children
-  }
 
   while (rest.length > 0) {
     if (isArray((node = rest.pop()))) {
@@ -462,7 +456,7 @@ export var h = function(name, props) {
   }
 
   return typeof name === "function"
-    ? name(props, name !== Lazy && (props.children = children))
+    ? name(props, children)
     : createVNode(name, props, children, null, props.key, DEFAULT_NODE)
 }
 

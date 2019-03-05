@@ -435,19 +435,19 @@ export var Lazy = function(props) {
   }
 }
 
-export var h = function(name, props) {
+export var h = function(name, attrs) {
   var node
+  var props = merge(attrs)
   var rest = []
   var children = []
   var length = arguments.length
 
   while (length-- > 2) rest.push(arguments[length])
 
-  if ((props = props == null ? {} : props).children != null) {
+  if (attrs && attrs.children != null) {
     if (rest.length <= 0) {
-      rest.push(props.children)
+      rest.push(attrs.children)
     }
-    delete props.children
   }
 
   while (rest.length > 0) {

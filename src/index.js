@@ -1,9 +1,9 @@
 var EMPTY_OBJECT = {}
 var EMPTY_ARRAY = []
+
 var map = EMPTY_ARRAY.map
 var isArray = Array.isArray
 
-var SVG_NS = "http://www.w3.org/2000/svg"
 var DEFAULT_NODE = 0
 var RECYCLED_NODE = 1
 var LAZY_NODE = 2
@@ -25,7 +25,41 @@ var merge = function(a, b) {
   return out
 }
 
-function createClass(obj) {
+var batch = function(list) {
+  return list.reduce(function(out, obj) {
+    return out.concat(
+      !obj || obj === true
+        ? false
+        : typeof obj[0] === "function"
+        ? [obj]
+        : batch(obj)
+    )
+  }, EMPTY_ARRAY)
+}
+
+var isSameAction = function(a, b) {
+  return isArray(a) && isArray(b) && a[0] === b[0] && typeof a[0] === "function"
+}
+
+var shouldRestart = function(a, b) {
+  for (var k in merge(a, b)) {
+    if (a[k] === b[k] || isSameAction(a[k], b[k])) b[k] = a[k]
+    else return true
+  }
+}
+
+var patchSub = function(sub, newSub, dispatch) {
+  return batch(newSub).map(function(a, b) {
+    b = sub[b]
+    return a
+      ? !b || a[0] !== b[0] || shouldRestart(a[1], b[1])
+        ? [a[0], a[1], a[0](a[1], dispatch), b && b[2]()]
+        : b
+      : b && b[2]()
+  })
+}
+
+var createClass = function(obj) {
   var out = ""
   var tmp = typeof obj
 
@@ -44,7 +78,7 @@ function createClass(obj) {
   return out
 }
 
-var updateProperty = function(element, name, value, newValue, cb, isSvg) {
+var updateProperty = function(element, name, value, newValue, eventCb, isSvg) {
   if (name === "key") {
   } else if (name === "style") {
     for (var i in merge(value, newValue)) {
@@ -62,9 +96,9 @@ var updateProperty = function(element, name, value, newValue, cb, isSvg) {
           (name = name.slice(2).toLowerCase())
         ] = newValue)
       ) {
-        element.removeEventListener(name, cb)
+        element.removeEventListener(name, eventCb)
       } else if (!value) {
-        element.addEventListener(name, cb)
+        element.addEventListener(name, eventCb)
       }
     } else if (name !== "list" && !isSvg && name in element) {
       element[name] = newValue == null ? "" : newValue
@@ -84,34 +118,38 @@ var removeElement = function(parent, node) {
   parent.removeChild(node.element)
 }
 
-var createElement = function(node, cb, isSvg) {
+var createElement = function(node, eventCb, isSvg) {
   var element =
     node.type === TEXT_NODE
       ? document.createTextNode(node.name)
       : (isSvg = isSvg || node.name === "svg")
-      ? document.createElementNS(SVG_NS, node.name)
+      ? document.createElementNS("http://www.w3.org/2000/svg", node.name)
       : document.createElement(node.name)
+  var props = node.props
 
   for (var i = 0, len = node.children.length; i < len; i++) {
     element.appendChild(
-      createElement((node.children[i] = getNode(node.children[i])), cb, isSvg)
+      createElement(
+        (node.children[i] = getNode(node.children[i])),
+        eventCb,
+        isSvg
+      )
     )
   }
 
-  var props = node.props
   for (var k in props) {
-    updateProperty(element, k, null, props[k], cb, isSvg)
+    updateProperty(element, k, null, props[k], eventCb, isSvg)
   }
 
   return (node.element = element)
 }
 
-var updateElement = function(element, props, newProps, cb, isSvg) {
+var updateElement = function(element, props, newProps, eventCb, isSvg) {
   for (var k in merge(props, newProps)) {
     if (
       (k === "value" || k === "checked" ? element[k] : props[k]) !== newProps[k]
     ) {
-      updateProperty(element, k, props[k], newProps[k], cb, isSvg)
+      updateProperty(element, k, props[k], newProps[k], eventCb, isSvg)
     }
   }
 }
@@ -129,19 +167,17 @@ var createKeyMap = function(children, start, end) {
   return out
 }
 
-var patchElement = function(parent, element, node, newNode, cb, isSvg) {
+var patch = function(parent, element, node, newNode, eventCb, isSvg) {
   if (newNode === node) {
   } else if (
     node != null &&
     node.type === TEXT_NODE &&
     newNode.type === TEXT_NODE
   ) {
-    if (node.name !== newNode.name) {
-      element.nodeValue = newNode.name
-    }
+    if (node.name !== newNode.name) element.nodeValue = newNode.name
   } else if (node == null || node.name !== newNode.name) {
     var newElement = parent.insertBefore(
-      createElement((newNode = getNode(newNode)), cb, isSvg),
+      createElement((newNode = getNode(newNode)), eventCb, isSvg),
       element
     )
 
@@ -153,7 +189,7 @@ var patchElement = function(parent, element, node, newNode, cb, isSvg) {
       element,
       node.props,
       newNode.props,
-      cb,
+      eventCb,
       (isSvg = isSvg || newNode.name === "svg")
     )
 
@@ -176,7 +212,7 @@ var patchElement = function(parent, element, node, newNode, cb, isSvg) {
 
       if (key == null || key !== newKey) break
 
-      patchElement(
+      patch(
         element,
         children[start].element,
         children[start],
@@ -184,7 +220,7 @@ var patchElement = function(parent, element, node, newNode, cb, isSvg) {
           newChildren[newStart],
           children[start]
         )),
-        cb,
+        eventCb,
         isSvg
       )
 
@@ -198,12 +234,12 @@ var patchElement = function(parent, element, node, newNode, cb, isSvg) {
 
       if (key == null || key !== newKey) break
 
-      patchElement(
+      patch(
         element,
         children[end].element,
         children[end],
         (newChildren[newEnd] = getNode(newChildren[newEnd], children[end])),
-        cb,
+        eventCb,
         isSvg
       )
 
@@ -216,7 +252,7 @@ var patchElement = function(parent, element, node, newNode, cb, isSvg) {
         element.insertBefore(
           createElement(
             (newChildren[newStart] = getNode(newChildren[newStart++])),
-            cb,
+            eventCb,
             isSvg
           ),
           (childNode = children[start]) && childNode.element
@@ -249,12 +285,12 @@ var patchElement = function(parent, element, node, newNode, cb, isSvg) {
 
         if (newKey == null || node.type === RECYCLED_NODE) {
           if (key == null) {
-            patchElement(
+            patch(
               element,
               childNode && childNode.element,
               childNode,
               newChildren[newStart],
-              cb,
+              eventCb,
               isSvg
             )
             newStart++
@@ -262,19 +298,19 @@ var patchElement = function(parent, element, node, newNode, cb, isSvg) {
           start++
         } else {
           if (key === newKey) {
-            patchElement(
+            patch(
               element,
               childNode.element,
               childNode,
               newChildren[newStart],
-              cb,
+              eventCb,
               isSvg
             )
             newKeyed[newKey] = true
             start++
           } else {
             if ((savedNode = keyed[newKey]) != null) {
-              patchElement(
+              patch(
                 element,
                 element.insertBefore(
                   savedNode.element,
@@ -282,17 +318,17 @@ var patchElement = function(parent, element, node, newNode, cb, isSvg) {
                 ),
                 savedNode,
                 newChildren[newStart],
-                cb,
+                eventCb,
                 isSvg
               )
               newKeyed[newKey] = true
             } else {
-              patchElement(
+              patch(
                 element,
                 childNode && childNode.element,
                 null,
                 newChildren[newStart],
-                cb,
+                eventCb,
                 isSvg
               )
             }
@@ -363,10 +399,6 @@ var recycleElement = function(element) {
   )
 }
 
-var patch = function(container, element, node, newNode, cb) {
-  return (element = patchElement(container, element, node, newNode, cb))
-}
-
 export var Lazy = function(props) {
   return {
     type: LAZY_NODE,
@@ -401,67 +433,36 @@ export var h = function(name, props) {
     : createVNode(name, props, children, null, props.key, DEFAULT_NODE)
 }
 
-var isSameAction = function(a, b) {
-  return isArray(a) && isArray(b) && typeof a[0] === "function" && a[0] === b[0]
-}
-
-var shouldRestart = function(a, b) {
-  for (var k in merge(a, b)) {
-    if (a[k] === b[k] || isSameAction(a[k], b[k])) b[k] = a[k]
-    else return true
-  }
-}
-
-var patchSub = function(sub, newSub, dispatch) {
-  if (
-    (newSub && (!newSub[0] || isArray(newSub[0]))) ||
-    (sub && (!sub[0] || isArray(sub[0])))
-  ) {
-    var out = []
-    var subs = sub ? sub : [sub]
-    var newSubs = newSub ? newSub : [newSub]
-
-    for (var i = 0; i < newSubs.length || i < subs.length; i++) {
-      out.push(patchSub(subs[i], newSubs[i], dispatch))
-    }
-
-    return out
-  }
-
-  return newSub
-    ? !sub || newSub[0] !== sub[0] || shouldRestart(newSub[1], sub[1])
-      ? [newSub[0], newSub[1], newSub[0](newSub[1], dispatch), sub && sub[2]()]
-      : sub
-    : sub && sub[2]()
-}
-
-export function app(props) {
+export var app = function(props) {
   var container = props.container
   var element = container && container.children[0]
   var node = element && recycleElement(element)
   var subs = props.subscriptions
   var view = props.view
-  var renderLock = false
+  var lock = false
+  var sub = []
   var state
-  var sub
+
+  var eventCb = function(event) {
+    dispatch(event.currentTarget.events[event.type], event)
+  }
 
   var setState = function(newState) {
-    if (!(state === newState || renderLock)) {
-      defer(render, (renderLock = true))
+    if (!(state === newState || lock)) {
+      defer(render, (lock = true))
     }
     state = newState
   }
 
   var dispatch = function(obj, props) {
-    if (obj == null) {
-    } else if (typeof obj === "function") {
+    if (typeof obj === "function") {
       dispatch(obj(state, props))
     } else if (isArray(obj)) {
       if (typeof obj[0] === "function") {
         dispatch(obj[0](state, obj[1], props))
       } else {
-        obj.slice(1).map(function(fx) {
-          fx[0](fx[1], dispatch)
+        batch(obj.slice(1)).map(function(fx) {
+          fx && fx[0](fx[1], dispatch)
         }, setState(obj[0]))
       }
     } else {
@@ -469,15 +470,11 @@ export function app(props) {
     }
   }
 
-  var cb = function(event) {
-    dispatch(event.currentTarget.events[event.type], event)
-  }
-
   var render = function() {
-    renderLock = false
+    lock = false
     if (subs) sub = patchSub(sub, subs(state), dispatch)
     if (view) {
-      element = patch(container, element, node, (node = view(state)), cb)
+      element = patch(container, element, node, (node = view(state)), eventCb)
     }
   }
 

@@ -437,11 +437,11 @@ export var app = function(props) {
   var container = props.container
   var element = container && container.children[0]
   var node = element && recycleElement(element)
+  var lock = false
   var subs = props.subscriptions
   var view = props.view
-  var lock = false
+  var state = {}
   var sub = []
-  var state
 
   var eventCb = function(event) {
     dispatch(event.currentTarget.events[event.type], event)
@@ -478,5 +478,5 @@ export var app = function(props) {
     }
   }
 
-  dispatch(props.init || {})
+  dispatch(props.init)
 }

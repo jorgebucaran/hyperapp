@@ -1,13 +1,12 @@
+var DEFAULT_NODE = 0
+var RECYCLED_NODE = 1
+var LAZY_NODE = 2
+var TEXT_NODE = 3
 var EMPTY_OBJECT = {}
 var EMPTY_ARRAY = []
 
 var map = EMPTY_ARRAY.map
 var isArray = Array.isArray
-
-var DEFAULT_NODE = 0
-var RECYCLED_NODE = 1
-var LAZY_NODE = 2
-var TEXT_NODE = 3
 
 var defer =
   typeof Promise === "function"
@@ -25,14 +24,14 @@ var merge = function(a, b) {
   return out
 }
 
-var batch = function(list) {
-  return list.reduce(function(out, obj) {
+var flatten = function(arr) {
+  return arr.reduce(function(out, obj) {
     return out.concat(
       !obj || obj === true
         ? false
         : typeof obj[0] === "function"
         ? [obj]
-        : batch(obj)
+        : flatten(obj)
     )
   }, EMPTY_ARRAY)
 }
@@ -49,7 +48,7 @@ var shouldRestart = function(a, b) {
 }
 
 var patchSub = function(sub, newSub, dispatch) {
-  return batch(newSub).map(function(a, b) {
+  return flatten(newSub).map(function(a, b) {
     b = sub[b]
     return a
       ? !b || a[0] !== b[0] || shouldRestart(a[1], b[1])
@@ -417,7 +416,7 @@ export var h = function(name, props) {
     rest.push(arguments[i])
   }
 
-  for (; rest.length > 0; ) {
+  while (rest.length > 0) {
     if (isArray((node = rest.pop()))) {
       for (i = node.length; i-- > 0; ) rest.push(node[i])
     } else if (node === false || node === true || node == null) {
@@ -437,9 +436,9 @@ export var app = function(props) {
   var container = props.container
   var element = container && container.children[0]
   var node = element && recycleElement(element)
-  var lock = false
   var subs = props.subscriptions
   var view = props.view
+  var lock = false
   var state = {}
   var sub = []
 
@@ -461,7 +460,7 @@ export var app = function(props) {
       if (typeof obj[0] === "function") {
         dispatch(obj[0](state, obj[1], props))
       } else {
-        batch(obj.slice(1)).map(function(fx) {
+        flatten(obj.slice(1)).map(function(fx) {
           fx && fx[0](fx[1], dispatch)
         }, setState(obj[0]))
       }

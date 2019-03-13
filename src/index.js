@@ -48,14 +48,17 @@ var shouldRestart = function(a, b) {
 }
 
 var patchSub = function(sub, newSub, dispatch) {
-  return flatten(newSub).map(function(a, b) {
-    b = sub[b]
-    return a
-      ? !b || a[0] !== b[0] || shouldRestart(a[1], b[1])
-        ? [a[0], a[1], a[0](a[1], dispatch), b && b[2]()]
-        : b
-      : b && b[2]()
-  })
+  for (var i = 0, a, b, out = []; i < sub.length || i < newSub.length; i++) {
+    a = sub[i]
+    out.push(
+      (b = newSub[i])
+        ? !a || b[0] !== a[0] || shouldRestart(b[1], a[1])
+          ? [b[0], b[1], b[0](b[1], dispatch), a && a[2]()]
+          : a
+        : a && a[2]()
+    )
+  }
+  return out
 }
 
 var createClass = function(obj) {
@@ -471,7 +474,7 @@ export var app = function(props) {
 
   var render = function() {
     lock = false
-    if (subs) sub = patchSub(sub, subs(state), dispatch)
+    if (subs) sub = patchSub(sub, flatten(subs(state)), dispatch)
     if (view) {
       element = patch(container, element, node, (node = view(state)), eventCb)
     }

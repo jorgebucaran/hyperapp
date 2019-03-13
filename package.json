@@ -6,11 +6,10 @@
   "module": "src/index.js",
   "license": "MIT",
   "repository": "jorgebucaran/hyperapp",
-  "homepage": "https://hyperapp.js.org",
+  "homepage": "https://github.com/jorgebucaran/hyperapp",
   "files": [
     "src",
-    "dist",
-    "hyperapp.d.ts"
+    "dist"
   ],
   "author": "Jorge Bucaran",
   "keywords": [
@@ -23,8 +22,8 @@
   "scripts": {
     "test": "exit",
     "build": "npm run bundle && npm run minify",
-    "bundle": "rollup -i src/index.js -o dist/hyperapp.js -m -f umd -n hyperapp",
-    "minify": "terser dist/hyperapp.js -o dist/hyperapp.js -mc pure_funcs=['Object.defineProperty'] --source-map includeSources,url=hyperapp.js.map",
+    "bundle": "rollup -i src/index.js -o dist/hyperapp.js --no-esModule -m -f umd -n hyperapp",
+    "minify": "terser dist/hyperapp.js -o dist/hyperapp.js -mc --source-map includeSources,url=hyperapp.js.map",
     "prepare": "npm run build",
     "format": "prettier --write {src,test}/**/*.js",
     "release": "npm run build && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"

@@ -160,15 +160,6 @@ var getKey = function(node) {
   return node == null ? null : node.key
 }
 
-var createKeyMap = function(children, start, end) {
-  for (var out = {}, key, node; start <= end; start++) {
-    if ((key = (node = children[start]).key) != null) {
-      out[key] = node
-    }
-  }
-  return out
-}
-
 var patch = function(parent, element, node, newNode, eventCb, isSvg) {
   if (newNode === node) {
   } else if (
@@ -265,8 +256,11 @@ var patch = function(parent, element, node, newNode, eventCb, isSvg) {
         removeElement(element, children[start++])
       }
     } else {
-      var keyed = createKeyMap(children, start, end)
-      var newKeyed = {}
+      for (var i = start, keyed = {}, newKeyed = {}; i <= end; i++) {
+        if ((key = children[i].key) != null) {
+          keyed[key] = children[i]
+        }
+      }
 
       while (newStart <= newEnd) {
         key = getKey((childNode = children[start]))

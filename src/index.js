@@ -95,7 +95,7 @@ var updateProperty = function(element, name, value, newValue, eventCb, isSvg) {
     if (name[0] === "o" && name[1] === "n") {
       if (
         !((element.events || (element.events = {}))[
-          (name = name.slice(2).toLowerCase())
+          (name = name.slice(2))
         ] = newValue)
       ) {
         element.removeEventListener(name, eventCb)

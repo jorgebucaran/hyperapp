@@ -91,28 +91,26 @@ var updateProperty = function(element, name, value, newValue, eventCb, isSvg) {
         element[name][i] = style
       }
     }
-  } else {
-    if (name[0] === "o" && name[1] === "n") {
-      if (
-        !((element.events || (element.events = {}))[
-          (name = name.slice(2))
-        ] = newValue)
-      ) {
-        element.removeEventListener(name, eventCb)
-      } else if (!value) {
-        element.addEventListener(name, eventCb)
-      }
-    } else if (name !== "list" && !isSvg && name in element) {
-      element[name] = newValue == null ? "" : newValue
-    } else if (
-      newValue == null ||
-      newValue === false ||
-      (name === "class" && !(newValue = createClass(newValue)))
+  } else if (name[0] === "o" && name[1] === "n") {
+    if (
+      !((element.events || (element.events = {}))[
+        (name = name.slice(2))
+      ] = newValue)
     ) {
-      element.removeAttribute(name)
-    } else {
-      element.setAttribute(name, newValue)
+      element.removeEventListener(name, eventCb)
+    } else if (!value) {
+      element.addEventListener(name, eventCb)
     }
+  } else if (name !== "list" && !isSvg && name in element) {
+    element[name] = newValue == null ? "" : newValue
+  } else if (
+    newValue == null ||
+    newValue === false ||
+    (name === "class" && !(newValue = createClass(newValue)))
+  ) {
+    element.removeAttribute(name)
+  } else {
+    element.setAttribute(name, newValue)
   }
 }
 

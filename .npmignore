@@ -16,6 +16,7 @@ coverage
 
 # Dist
 *.gz
-hyperapp.js
-hyperapp.js.map
+dist/
 
+# Not necessary for distribution
+.travis.yml

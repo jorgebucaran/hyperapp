@@ -71,7 +71,7 @@ Hyperapp calls your view function so that you can specify how the DOM should loo
 }
 ```
 
-To create this object we use Hyperapp's `h` function. It expects three arguments: a string that specifies the type of element: `div`, `h1`, `button`, the element's properties (HTML/SVG attributes), and the element's child nodes.
+To create this object we use Hyperapp's `h` function. It takes three arguments: a string that specifies the type of element: `div`, `h1`, `button`, the element's properties (HTML/SVG attributes), and the element's child nodes.
 
 ```js
 h("h1", { id: "title" }, "Hello") // Think: <h1 id="title">Hello</h1>
@@ -133,23 +133,66 @@ Save it and start the development server.
 $ parcel index.html
 ```
 
-...and you should be up and running. If something isn't working as expected you can always [try this example online] to see how it's done. Spend a little time thinking about how the view reacts to changes in the state. Experiment with the source. Can you add a reset button that sets the counter to zero? How would you disable the decrement button when the state is zero or less?
+...and you should be up and running. If something isn't working as expected you can always [try it online] to see how it's done. Experiment with the source. Spend a little time thinking about how the view reacts to changes in the state. Can you add a reset button that sets the counter to zero? How would you disable the decrement button when the state is less than one?
 
 ## Taking it up a notch
 
-For our next example, we'll build a calculator that can perform basic arithmetic operations. You probably already know how they work, but maybe you've never built one yourself. This example will explore actions in more detail. We'll learn how to pass values to our actions and handle state more complex than a single number.
+For our next example, we'll build a random password generator. You've probably seen one before. We'll learn how to access the DOM [`Event`](https://developer.mozilla.org/en-US/docs/Web/Events) object. It provides information about a particular event, including the [target](https://developer.mozilla.org/en-US/docs/Web/API/Event/target) element.
 
-Previously, we defined our actions right there inside the view. This is inefficient, as a new function is created for each action every time Hyperapp calls your view. Now we'll declare them separately.
+We want to be able to adjust its length, increasing or decreasing the strength of the password. No warranty of any kind is implied, though. Use at your own risk.
 
-```jsx
-// Calculator here.
-```
-
-## How's the weather?
+Here is the entire program in one place. You can [try it online] too. We'll dissect it afterwards.
 
 ```jsx
-// Weather app here.
+import { h, app } from "hyperapp"
+
+const createPassword = length =>
+  String.fromCharCode(
+    ...Array.from({ length }, () => Math.floor(Math.random() * 58) + 64) // @ to z
+  )
+
+const MIN = 8
+const MAX = 24
+
+const NewLength = (_, event) => event.target.value
+
+app({
+  init: MIN,
+  view: state => (
+    <main>
+      <input type="text" value={createPassword(state)} readonly />
+      <input type="range" min={MIN} max={MAX} value={state} oninput={NewLength} />
+    </main>
+  ),
+  container: document.body
+})
 ```
+
+Previously, we defined actions inside the view function itself. This is inefficient, as it creates a new function every time Hyperapp calls your view.
+
+The event object is the second argument to `NewLength`. In it we find the input's value and return it to update the application state. We don't need the previous state argument to derive the new state, so we can ignore it.
+
+Both input elements are synchronized with the application state. This prevents the state from going out of sync if the user changes their value.
+
+Discussing `createPassword` in detail is out of the scope of this document, but you should be able to figure it out yourself. The magic numbers represent the range of ASCII characters from `@` to `z`.
+
+## Putting it all together
+
+Now that we have some experience under our belts, we are ready for something more sophisticated. This time we'll build a to-do app. Maybe you've already built one yourself using a different library. If not,that shouldn't be a problem.
+
+We want to be able to add, edit and delete items. Filtering items is left as an excercise for the reader. We'll learn how to pass values to our actions and handle state more complex than a single value. We'll also see how to break up our view into functions that improve code reusability and readability.
+
+As usual, here's the source code upfront. Let's get down to work.
+
+```jsx
+// To-do app
+```
+
+Explain the to-do app here.
+
+## Next Steps
+
+Explain this is just the tip of the iceberg. Provide links to more advanced code walkthroughs later in this documentation.
 
 ## Installation
 
@@ -179,13 +222,21 @@ It may seem wasteful to throw away the old virtual DOM and re-create it entirely
 
 ### View
 
+```jsx
+// Usage example
+```
+
 ### Actions
+
+```jsx
+// Usage example
+```
 
 ### Effects
 
 ```jsx
-// Must have examples
-// DOM manipulation (focus/blur, animation), delay, and HTTP.
+// Usage example
+// DOM manipulation (focus/blur, animation), delay, and HTTP (weather app?).
 ```
 
 ### Subscriptions
@@ -198,7 +249,15 @@ It may seem wasteful to throw away the old virtual DOM and re-create it entirely
 
 ### Keys
 
+```jsx
+// Usage example
+```
+
 ### Lazy Views
+
+```jsx
+// Usage example
+```
 
 ## Support
 

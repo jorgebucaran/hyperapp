@@ -45,7 +45,7 @@ Our first example is a counter that can be incremented or decremented. This is f
 
 What's going on here? The `app` function creates a new application and mounts it on the supplied container. The container can be any element on the DOM. Hyperapp will try to reuse child nodes in it instead of throwing away your server-side rendered content. See [Recycling] to learn more about this feature.
 
-Hyperapp calls your view function so that you can specify how the DOM should look based on the state. The view returns your specification in the form of a plain JavaScript object known as a virtual DOM and Hyperapp updates the actual DOM to match it. The result is an object similar to the one below. Think of it as a lightweight representation of the DOM.
+Hyperapp calls your view function so that you can specify how the DOM should look based on the state. The view returns your specification in the form of a plain JavaScript object known as a virtual DOM and Hyperapp updates the actual DOM to match it. Think of a virtual DOM as a lightweight representation of the DOM. Here's an example.
 
 ```js
 {
@@ -139,7 +139,7 @@ $ parcel index.html
 
 For our next example, we'll build a random password generator. You've probably seen one before. We'll learn how to access the DOM [`Event`](https://developer.mozilla.org/en-US/docs/Web/Events) object. It provides information about a particular event, including the [target](https://developer.mozilla.org/en-US/docs/Web/API/Event/target) element.
 
-We want to be able to adjust its length, increasing or decreasing the strength of the password. No warranty of any kind is implied, though. Use at your own risk.
+We want to be able to adjust the generated password length, increasing or decreasing its strength. No warranty of any kind is implied, though. Use at your own risk.
 
 Here is the entire program in one place. You can [try it online] too. We'll dissect it afterwards.
 
@@ -161,7 +161,13 @@ app({
   view: state => (
     <main>
       <input type="text" value={createPassword(state)} readonly />
-      <input type="range" min={MIN} max={MAX} value={state} oninput={NewLength} />
+      <input
+        type="range"
+        min={MIN}
+        max={MAX}
+        value={state}
+        oninput={NewLength}
+      />
     </main>
   ),
   container: document.body
@@ -170,25 +176,125 @@ app({
 
 Previously, we defined actions inside the view function itself. This is inefficient, as it creates a new function every time Hyperapp calls your view.
 
-The event object is the second argument to `NewLength`. In it we find the input's value and return it to update the application state. We don't need the previous state argument to derive the new state, so we can ignore it.
+The event object is the second argument to `NewLength`. In it we find the input's current value and return it to update the application state. We don't need the previous state argument to derive the new state, so we can ignore it.
 
 Both input elements are synchronized with the application state. This prevents the state from going out of sync if the user changes their value.
 
 Discussing `createPassword` in detail is out of the scope of this document, but you should be able to figure it out yourself. The magic numbers represent the range of ASCII characters from `@` to `z`.
 
+## How many celsius are there?
+
+**Tentative**. Implement a temperature converter. Shows working with bidirectional dataflow, and handling a state object, before we tackle the To-Do app in the next section.
+
+```jsx
+// °C ←~→ °F
+```
+
 ## Putting it all together
 
-Now that we have some experience under our belts, we are ready for something more sophisticated. This time we'll build a to-do app. Maybe you've already built one yourself using a different library. If not,that shouldn't be a problem.
+Now that we have some experience under our belts, we are ready for something more sophisticated. This time we'll build a to-do app. Maybe you've already built one yourself using a different library. If not, that shouldn't be a problem.
 
-We want to be able to add, edit and delete items. Filtering items is left as an excercise for the reader. We'll learn how to pass values to our actions and handle state more complex than a single value. We'll also see how to break up our view into functions that improve code reusability and readability.
+We want to be able to add, edit and delete items. Filtering items is left as an excercise for the reader. We'll learn how to pass values to our actions and handle state more complex than a single value. We'll also see how to break up our view into functions to improve code reusability and readability.
 
 As usual, here's the source code upfront. Let's get down to work.
 
 ```jsx
-// To-do app
+import { h, app } from "hyperapp"
+
+const newItem = value => ({
+  id: Math.random().toString(36),
+  isEditing: false,
+  lastValue: "",
+  value
+})
+
+const mapItems = (items, id, getItem) =>
+  items.map(item => (item.id === id ? { ...item, ...getItem(item) } : item))
+
+const SetValue = (state, event) => ({ ...state, value: event.target.value })
+
+const Add = state => ({
+  ...state,
+  value: "",
+  items: state.items.concat(newItem(state.value))
+})
+
+const StartUpdate = (state, id) => ({
+  ...state,
+  items: mapItems(state.items, id, item => ({
+    lastValue: item.value,
+    isEditing: true
+  }))
+})
+
+const Update = (state, id, event) => ({
+  ...state,
+  items: mapItems(state.items, id, () => ({ value: event.target.value }))
+})
+
+const EndUpdate = (state, id) => ({
+  ...state,
+  items: mapItems(state.items, id, () => ({ isEditing: false }))
+})
+
+const Cancel = (state, id) => ({
+  ...state,
+  items: mapItems(state.items, id, item => ({
+    value: item.lastValue,
+    isEditing: false
+  }))
+})
+
+const Remove = (state, id) => ({
+  ...state,
+  items: state.items.filter(item => item.id !== id)
+})
+
+const TodoList = props =>
+  props.items.map(item => (
+    <div>
+      {item.isEditing ? (
+        <div>
+          <input type="text" value={item.value} oninput={[Update, item.id]} />
+          <button onclick={[Cancel, item.id]}>Cancel</button>
+          <button onclick={[Remove, item.id]}>Remove</button>
+          <button onclick={[EndUpdate, item.id]}>Save</button>
+        </div>
+      ) : (
+        <li onclick={[StartUpdate, item.id]}>{item.value}</li>
+      )}
+    </div>
+  ))
+
+app({
+  init: {
+    value: "",
+    items: [
+      newItem("Make a sandwich"),
+      newItem("Go to the circus"),
+      newItem("Speak to the king")
+    ]
+  },
+  view: state => (
+    <main>
+      <h1>To-Do</h1>
+      <TodoList items={state.items} />
+      <input
+        type="text"
+        value={state.value}
+        oninput={SetValue}
+        placeholder="What's next?"
+      />
+      <button onclick={Add} disabled={state.value === ""}>
+        Add
+      </button>
+    </main>
+  ),
+  container: document.body
+})
 ```
 
-Explain the to-do app here.
+Things to mention: `TodoList` list view/component, action function signature when we pass data and also access the Event object, e.g., `Update`, dynamically UI toggling in `TodoList` to show the input box when we're editing, `mapItems` which we use to refactor repetitive code out from each action that maps over `state.items`.
 
 ## Next Steps
 

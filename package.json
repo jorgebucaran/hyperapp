@@ -21,6 +21,7 @@
   ],
   "scripts": {
     "test": "exit",
+    "docco": "docco src/index.js",
     "build": "npm run bundle && npm run minify",
     "bundle": "rollup -i src/index.js -o dist/hyperapp.js --no-esModule -m -f umd -n hyperapp",
     "minify": "terser dist/hyperapp.js -o dist/hyperapp.js -mc --source-map includeSources,url=hyperapp.js.map",
@@ -28,6 +29,7 @@
     "release": "npm run build && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
   },
   "devDependencies": {
+    "docco": "^0.8.0",
     "rollup": "^1.6.0",
     "terser": "^3.17.0"
   }

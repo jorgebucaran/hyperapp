@@ -1,29 +1,42 @@
-var DEFAULT_NODE = 0
-var RECYCLED_NODE = 1
-var LAZY_NODE = 2
-var TEXT_NODE = 3
-var EMPTY_OBJECT = {}
-var EMPTY_ARRAY = []
+// # Hyperapp V2
+//
+//
 
-var map = EMPTY_ARRAY.map
-var isArray = Array.isArray
+// ## Utilities
 
+// Corresponds to dom [nodeType](https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType).
+// Constants provided here for cross-platform compatibility
+var DEFAULT_NODE = 0;
+var RECYCLED_NODE = 1;
+var LAZY_NODE = 2;
+var TEXT_NODE = 3;
+var EMPTY_OBJECT = {};
+var EMPTY_ARRAY = [];
+
+var map = EMPTY_ARRAY.map;
+var isArray = Array.isArray;
+
+// Using a promise here (when available) ensures that rendering happens on the next available tick.
+// This should prevent updates from locking the javascript thread.
 var defer =
   typeof Promise === "function"
     ? function(cb) {
-        Promise.resolve().then(cb)
+        Promise.resolve().then(cb);
       }
-    : setTimeout
+    : setTimeout;
 
+// While `Object.assign` may be a good replacement for our `merge()` function,
+// [mdn's compatability table](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign#Browser_compatibility) demonstrates that this may require polyfills.
 var merge = function(a, b) {
-  var out = {}
+  var out = {};
 
-  for (var i in a) out[i] = a[i]
-  for (var i in b) out[i] = b[i]
+  for (var i in a) out[i] = a[i];
+  for (var i in b) out[i] = b[i];
 
-  return out
-}
+  return out;
+};
 
+// `Array#flat` will be a good replacement candidate once there's better [browser support](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat).
 var flatten = function(arr) {
   return arr.reduce(function(out, obj) {
     return out.concat(
@@ -32,63 +45,77 @@ var flatten = function(arr) {
         : typeof obj[0] === "function"
         ? [obj]
         : flatten(obj)
-    )
-  }, EMPTY_ARRAY)
-}
+    );
+  }, EMPTY_ARRAY);
+};
 
+// ## Subscriptions
+
+// Determine if two actions are the same. This is only necessary when using the `[actionFn, boundValue]` action tuple syntax.
 var isSameAction = function(a, b) {
-  return isArray(a) && isArray(b) && a[0] === b[0] && typeof a[0] === "function"
-}
+  return (
+    isArray(a) && isArray(b) && a[0] === b[0] && typeof a[0] === "function"
+  );
+};
 
+// Determine if a change in subscription props require a full restart of this subscription.
+// Changing a action tuple bound value should not restart a subscription, but other prop changes should trigger a restart
 var shouldRestart = function(a, b) {
   for (var k in merge(a, b)) {
-    if (a[k] === b[k] || isSameAction(a[k], b[k])) b[k] = a[k]
-    else return true
+    if (a[k] === b[k] || isSameAction(a[k], b[k])) b[k] = a[k];
+    else return true;
   }
-}
+};
 
+// Iteracte over old and new subscriptions to determine which are old, new, and cancelled.
+// While a little terse, this function is written to save on a byte count by abusing the for loop variable initializations.
 var patchSub = function(sub, newSub, dispatch) {
   for (var i = 0, a, b, out = []; i < sub.length || i < newSub.length; i++) {
-    a = sub[i]
+    a = sub[i];
     out.push(
       (b = newSub[i])
         ? !a || b[0] !== a[0] || shouldRestart(b[1], a[1])
           ? [b[0], b[1], b[0](b[1], dispatch), a && a[2]()]
           : a
         : a && a[2]()
-    )
+    );
   }
-  return out
-}
+  return out;
+};
 
+// ## Virtual DOM
+
+// Combine classes using an interface similar to classcat.
+// Provide an object where keys are css classes, and their value is truthy to add the class, and falsy to ignore it.
 var createClass = function(obj) {
-  var out = ""
-  var tmp = typeof obj
+  var out = "";
+  var tmp = typeof obj;
 
-  if (tmp === "string" || tmp === "number") return obj
+  if (tmp === "string" || tmp === "number") return obj;
 
   if (isArray(obj) && obj.length > 0) {
     for (var i = 0; i < obj.length; i++) {
-      if ((tmp = createClass(obj[i])) !== "") out += (out && " ") + tmp
+      if ((tmp = createClass(obj[i])) !== "") out += (out && " ") + tmp;
     }
   } else {
     for (var i in obj) {
-      if (obj[i]) out += (out && " ") + i
+      if (obj[i]) out += (out && " ") + i;
     }
   }
 
-  return out
-}
+  return out;
+};
 
+// TODO
 var updateProperty = function(element, name, value, newValue, eventCb, isSvg) {
   if (name === "key") {
   } else if (name === "style") {
     for (var i in merge(value, newValue)) {
-      var style = newValue == null || newValue[i] == null ? "" : newValue[i]
+      var style = newValue == null || newValue[i] == null ? "" : newValue[i];
       if (i[0] === "-") {
-        element[name].setProperty(i, style)
+        element[name].setProperty(i, style);
       } else {
-        element[name][i] = style
+        element[name][i] = style;
       }
     }
   } else if (name[0] === "o" && name[1] === "n") {
@@ -97,26 +124,27 @@ var updateProperty = function(element, name, value, newValue, eventCb, isSvg) {
         (name = name.slice(2))
       ] = newValue)
     ) {
-      element.removeEventListener(name, eventCb)
+      element.removeEventListener(name, eventCb);
     } else if (!value) {
-      element.addEventListener(name, eventCb)
+      element.addEventListener(name, eventCb);
     }
   } else if (name !== "list" && !isSvg && name in element) {
-    element[name] = newValue == null ? "" : newValue
+    element[name] = newValue == null ? "" : newValue;
   } else if (
     newValue == null ||
     newValue === false ||
     (name === "class" && !(newValue = createClass(newValue)))
   ) {
-    element.removeAttribute(name)
+    element.removeAttribute(name);
   } else {
-    element.setAttribute(name, newValue)
+    element.setAttribute(name, newValue);
   }
-}
+};
+
 
 var removeElement = function(parent, node) {
-  parent.removeChild(node.element)
-}
+  parent.removeChild(node.element);
+};
 
 var createElement = function(node, eventCb, isSvg) {
   var element =
@@ -124,8 +152,8 @@ var createElement = function(node, eventCb, isSvg) {
       ? document.createTextNode(node.name)
       : (isSvg = isSvg || node.name === "svg")
       ? document.createElementNS("http://www.w3.org/2000/svg", node.name)
-      : document.createElement(node.name)
-  var props = node.props
+      : document.createElement(node.name);
+  var props = node.props;
 
   for (var i = 0, len = node.children.length; i < len; i++) {
     element.appendChild(
@@ -134,29 +162,29 @@ var createElement = function(node, eventCb, isSvg) {
         eventCb,
         isSvg
       )
-    )
+    );
   }
 
   for (var k in props) {
-    updateProperty(element, k, null, props[k], eventCb, isSvg)
+    updateProperty(element, k, null, props[k], eventCb, isSvg);
   }
 
-  return (node.element = element)
-}
+  return (node.element = element);
+};
 
 var updateElement = function(element, props, newProps, eventCb, isSvg) {
   for (var k in merge(props, newProps)) {
     if (
       (k === "value" || k === "checked" ? element[k] : props[k]) !== newProps[k]
     ) {
-      updateProperty(element, k, props[k], newProps[k], eventCb, isSvg)
+      updateProperty(element, k, props[k], newProps[k], eventCb, isSvg);
     }
   }
-}
+};
 
 var getKey = function(node) {
-  return node == null ? null : node.key
-}
+  return node == null ? null : node.key;
+};
 
 var patch = function(parent, element, node, newNode, eventCb, isSvg) {
   if (newNode === node) {
@@ -165,16 +193,16 @@ var patch = function(parent, element, node, newNode, eventCb, isSvg) {
     node.type === TEXT_NODE &&
     newNode.type === TEXT_NODE
   ) {
-    if (node.name !== newNode.name) element.nodeValue = newNode.name
+    if (node.name !== newNode.name) element.nodeValue = newNode.name;
   } else if (node == null || node.name !== newNode.name) {
     var newElement = parent.insertBefore(
       createElement((newNode = getNode(newNode)), eventCb, isSvg),
       element
-    )
+    );
 
-    if (node != null) removeElement(parent, node)
+    if (node != null) removeElement(parent, node);
 
-    element = newElement
+    element = newElement;
   } else {
     updateElement(
       element,
@@ -182,26 +210,26 @@ var patch = function(parent, element, node, newNode, eventCb, isSvg) {
       newNode.props,
       eventCb,
       (isSvg = isSvg || newNode.name === "svg")
-    )
+    );
 
-    var savedNode
-    var childNode
+    var savedNode;
+    var childNode;
 
-    var key
-    var children = node.children
-    var start = 0
-    var end = children.length - 1
+    var key;
+    var children = node.children;
+    var start = 0;
+    var end = children.length - 1;
 
-    var newKey
-    var newChildren = newNode.children
-    var newStart = 0
-    var newEnd = newChildren.length - 1
+    var newKey;
+    var newChildren = newNode.children;
+    var newStart = 0;
+    var newEnd = newChildren.length - 1;
 
     while (newStart <= newEnd && start <= end) {
-      key = getKey(children[start])
-      newKey = getKey(newChildren[newStart])
+      key = getKey(children[start]);
+      newKey = getKey(newChildren[newStart]);
 
-      if (key == null || key !== newKey) break
+      if (key == null || key !== newKey) break;
 
       patch(
         element,
@@ -213,17 +241,17 @@ var patch = function(parent, element, node, newNode, eventCb, isSvg) {
         )),
         eventCb,
         isSvg
-      )
+      );
 
-      start++
-      newStart++
+      start++;
+      newStart++;
     }
 
     while (newStart <= newEnd && start <= end) {
-      key = getKey(children[end])
-      newKey = getKey(newChildren[newEnd])
+      key = getKey(children[end]);
+      newKey = getKey(newChildren[newEnd]);
 
-      if (key == null || key !== newKey) break
+      if (key == null || key !== newKey) break;
 
       patch(
         element,
@@ -232,10 +260,10 @@ var patch = function(parent, element, node, newNode, eventCb, isSvg) {
         (newChildren[newEnd] = getNode(newChildren[newEnd], children[end])),
         eventCb,
         isSvg
-      )
+      );
 
-      end--
-      newEnd--
+      end--;
+      newEnd--;
     }
 
     if (start > end) {
@@ -247,34 +275,34 @@ var patch = function(parent, element, node, newNode, eventCb, isSvg) {
             isSvg
           ),
           (childNode = children[start]) && childNode.element
-        )
+        );
       }
     } else if (newStart > newEnd) {
       while (start <= end) {
-        removeElement(element, children[start++])
+        removeElement(element, children[start++]);
       }
     } else {
       for (var i = start, keyed = {}, newKeyed = {}; i <= end; i++) {
         if ((key = children[i].key) != null) {
-          keyed[key] = children[i]
+          keyed[key] = children[i];
         }
       }
 
       while (newStart <= newEnd) {
-        key = getKey((childNode = children[start]))
+        key = getKey((childNode = children[start]));
         newKey = getKey(
           (newChildren[newStart] = getNode(newChildren[newStart], childNode))
-        )
+        );
 
         if (
           newKeyed[key] ||
           (newKey != null && newKey === getKey(children[start + 1]))
         ) {
           if (key == null) {
-            removeElement(element, childNode)
+            removeElement(element, childNode);
           }
-          start++
-          continue
+          start++;
+          continue;
         }
 
         if (newKey == null || node.type === RECYCLED_NODE) {
@@ -286,10 +314,10 @@ var patch = function(parent, element, node, newNode, eventCb, isSvg) {
               newChildren[newStart],
               eventCb,
               isSvg
-            )
-            newStart++
+            );
+            newStart++;
           }
-          start++
+          start++;
         } else {
           if (key === newKey) {
             patch(
@@ -299,9 +327,9 @@ var patch = function(parent, element, node, newNode, eventCb, isSvg) {
               newChildren[newStart],
               eventCb,
               isSvg
-            )
-            newKeyed[newKey] = true
-            start++
+            );
+            newKeyed[newKey] = true;
+            start++;
           } else {
             if ((savedNode = keyed[newKey]) != null) {
               patch(
@@ -314,8 +342,8 @@ var patch = function(parent, element, node, newNode, eventCb, isSvg) {
                 newChildren[newStart],
                 eventCb,
                 isSvg
-              )
-              newKeyed[newKey] = true
+              );
+              newKeyed[newKey] = true;
             } else {
               patch(
                 element,
@@ -324,42 +352,42 @@ var patch = function(parent, element, node, newNode, eventCb, isSvg) {
                 newChildren[newStart],
                 eventCb,
                 isSvg
-              )
+              );
             }
           }
-          newStart++
+          newStart++;
         }
       }
 
       while (start <= end) {
         if (getKey((childNode = children[start++])) == null) {
-          removeElement(element, childNode)
+          removeElement(element, childNode);
         }
       }
 
       for (var key in keyed) {
         if (newKeyed[key] == null) {
-          removeElement(element, keyed[key])
+          removeElement(element, keyed[key]);
         }
       }
     }
   }
 
-  return (newNode.element = element)
-}
+  return (newNode.element = element);
+};
 
 var shouldUpdate = function(a, b) {
-  for (var k in a) if (a[k] !== b[k]) return true
-  for (var k in b) if (a[k] !== b[k]) return true
-}
+  for (var k in a) if (a[k] !== b[k]) return true;
+  for (var k in b) if (a[k] !== b[k]) return true;
+};
 
 var getNode = function(newNode, node) {
   return newNode.type === LAZY_NODE
     ? !node || shouldUpdate(newNode.lazy, node.lazy)
       ? newNode.render()
       : node
-    : newNode
-}
+    : newNode;
+};
 
 var createVNode = function(name, props, children, element, key, type) {
   return {
@@ -369,18 +397,18 @@ var createVNode = function(name, props, children, element, key, type) {
     element: element,
     type: type,
     key: key
-  }
-}
+  };
+};
 
 var createTextVNode = function(text, element) {
-  return createVNode(text, EMPTY_OBJECT, EMPTY_ARRAY, element, null, TEXT_NODE)
-}
+  return createVNode(text, EMPTY_OBJECT, EMPTY_ARRAY, element, null, TEXT_NODE);
+};
 
 var recycleChild = function(element) {
   return element.nodeType === TEXT_NODE
     ? createTextVNode(element.nodeValue, element)
-    : recycleElement(element)
-}
+    : recycleElement(element);
+};
 
 var recycleElement = function(element) {
   return createVNode(
@@ -390,8 +418,8 @@ var recycleElement = function(element) {
     element,
     null,
     RECYCLED_NODE
-  )
-}
+  );
+};
 
 export var Lazy = function(props) {
   return {
@@ -399,78 +427,78 @@ export var Lazy = function(props) {
     key: props.key,
     lazy: props,
     render: function() {
-      var node = props.render(props)
-      node.lazy = props
-      return node
+      var node = props.render(props);
+      node.lazy = props;
+      return node;
     }
-  }
-}
+  };
+};
 
 export var h = function(name, props) {
   for (var node, rest = [], children = [], i = arguments.length; i-- > 2; ) {
-    rest.push(arguments[i])
+    rest.push(arguments[i]);
   }
 
   while (rest.length > 0) {
     if (isArray((node = rest.pop()))) {
-      for (i = node.length; i-- > 0; ) rest.push(node[i])
+      for (i = node.length; i-- > 0; ) rest.push(node[i]);
     } else if (node === false || node === true || node == null) {
     } else {
-      children.push(typeof node === "object" ? node : createTextVNode(node))
+      children.push(typeof node === "object" ? node : createTextVNode(node));
     }
   }
 
-  props = props || EMPTY_OBJECT
+  props = props || EMPTY_OBJECT;
 
   return typeof name === "function"
     ? name(props, children)
-    : createVNode(name, props, children, null, props.key, DEFAULT_NODE)
-}
+    : createVNode(name, props, children, null, props.key, DEFAULT_NODE);
+};
 
 export var app = function(props) {
-  var container = props.container
-  var element = container && container.children[0]
-  var node = element && recycleElement(element)
-  var subs = props.subscriptions
-  var view = props.view
-  var lock = false
-  var state = {}
-  var sub = []
+  var container = props.container;
+  var element = container && container.children[0];
+  var node = element && recycleElement(element);
+  var subs = props.subscriptions;
+  var view = props.view;
+  var lock = false;
+  var state = {};
+  var sub = [];
 
   var eventCb = function(event) {
-    dispatch(event.currentTarget.events[event.type], event)
-  }
+    dispatch(event.currentTarget.events[event.type], event);
+  };
 
   var setState = function(newState) {
     if (!(state === newState || lock)) {
-      defer(render, (lock = true))
+      defer(render, (lock = true));
     }
-    state = newState
-  }
+    state = newState;
+  };
 
   var dispatch = function(obj, props) {
     if (typeof obj === "function") {
-      dispatch(obj(state, props))
+      dispatch(obj(state, props));
     } else if (isArray(obj)) {
       if (typeof obj[0] === "function") {
-        dispatch(obj[0](state, obj[1], props))
+        dispatch(obj[0](state, obj[1], props));
       } else {
         flatten(obj.slice(1)).map(function(fx) {
-          fx && fx[0](fx[1], dispatch)
-        }, setState(obj[0]))
+          fx && fx[0](fx[1], dispatch);
+        }, setState(obj[0]));
       }
     } else {
-      setState(obj)
+      setState(obj);
     }
-  }
+  };
 
   var render = function() {
-    lock = false
-    if (subs) sub = patchSub(sub, flatten(subs(state)), dispatch)
+    lock = false;
+    if (subs) sub = patchSub(sub, flatten(subs(state)), dispatch);
     if (view) {
-      element = patch(container, element, node, (node = view(state)), eventCb)
+      element = patch(container, element, node, (node = view(state)), eventCb);
     }
-  }
+  };
 
-  dispatch(props.init)
-}
+  dispatch(props.init);
+};

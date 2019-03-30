@@ -7,13 +7,7 @@ var EMPTY_ARRAY = []
 
 var map = EMPTY_ARRAY.map
 var isArray = Array.isArray
-
-var defer =
-  typeof Promise === "function"
-    ? function(cb) {
-        Promise.resolve().then(cb)
-      }
-    : setTimeout
+var defer = requestAnimationFrame || setTimeout
 
 var merge = function(a, b) {
   var out = {}
@@ -442,9 +436,7 @@ export var app = function(props) {
   }
 
   var setState = function(newState) {
-    if (!(state === newState || lock)) {
-      defer(render, (lock = true))
-    }
+    if (!(state === newState || lock)) defer(render, (lock = true))
     state = newState
   }
 

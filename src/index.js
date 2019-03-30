@@ -4,10 +4,28 @@ var LAZY_NODE = 2
 var TEXT_NODE = 3
 var EMPTY_OBJECT = {}
 var EMPTY_ARRAY = []
-
 var map = EMPTY_ARRAY.map
 var isArray = Array.isArray
 var defer = requestAnimationFrame || setTimeout
+
+var createClass = function(obj) {
+  var out = ""
+  var tmp = typeof obj
+
+  if (tmp === "string" || tmp === "number") return obj
+
+  if (isArray(obj) && obj.length > 0) {
+    for (var i = 0; i < obj.length; i++) {
+      if ((tmp = createClass(obj[i])) !== "") out += (out && " ") + tmp
+    }
+  } else {
+    for (var i in obj) {
+      if (obj[i]) out += (out && " ") + i
+    }
+  }
+
+  return out
+}
 
 var merge = function(a, b) {
   var out = {}
@@ -52,25 +70,6 @@ var patchSub = function(sub, newSub, dispatch) {
         : a && a[2]()
     )
   }
-  return out
-}
-
-var createClass = function(obj) {
-  var out = ""
-  var tmp = typeof obj
-
-  if (tmp === "string" || tmp === "number") return obj
-
-  if (isArray(obj) && obj.length > 0) {
-    for (var i = 0; i < obj.length; i++) {
-      if ((tmp = createClass(obj[i])) !== "") out += (out && " ") + tmp
-    }
-  } else {
-    for (var i in obj) {
-      if (obj[i]) out += (out && " ") + i
-    }
-  }
-
   return out
 }
 
@@ -370,21 +369,17 @@ var createTextVNode = function(text, element) {
   return createVNode(text, EMPTY_OBJECT, EMPTY_ARRAY, element, null, TEXT_NODE)
 }
 
-var recycleChild = function(element) {
+var recycleElement = function(element) {
   return element.nodeType === TEXT_NODE
     ? createTextVNode(element.nodeValue, element)
-    : recycleElement(element)
-}
-
-var recycleElement = function(element) {
-  return createVNode(
-    element.nodeName.toLowerCase(),
-    EMPTY_OBJECT,
-    map.call(element.childNodes, recycleChild),
-    element,
-    null,
-    RECYCLED_NODE
-  )
+    : createVNode(
+        element.nodeName.toLowerCase(),
+        EMPTY_OBJECT,
+        map.call(element.childNodes, recycleElement),
+        element,
+        null,
+        RECYCLED_NODE
+      )
 }
 
 export var Lazy = function(props) {

@@ -427,7 +427,7 @@ export var h = function(name, props) {
     : createVNode(name, props, children, null, props.key, DEFAULT_NODE)
 }
 
-export var app = function(props) {
+export var app = function(props, decorateDispatch) {
   var container = props.container
   var element = container && container.children[0]
   var node = element && recycleElement(element)
@@ -436,6 +436,7 @@ export var app = function(props) {
   var lock = false
   var state = {}
   var sub = []
+  var decorator = decorateDispatch || (function (d) { return d })
 
   var eventCb = function(event) {
     dispatch(event.currentTarget.events[event.type], event)
@@ -448,7 +449,7 @@ export var app = function(props) {
     state = newState
   }
 
-  var dispatch = function(obj, props) {
+  var dispatch = decorator(function(obj, props) {
     if (typeof obj === "function") {
       dispatch(obj(state, props))
     } else if (isArray(obj)) {
@@ -462,7 +463,7 @@ export var app = function(props) {
     } else {
       setState(obj)
     }
-  }
+  })
 
   var render = function() {
     lock = false

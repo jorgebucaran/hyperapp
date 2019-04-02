@@ -28,7 +28,7 @@
     "release": "npm run build && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
   },
   "devDependencies": {
-    "rollup": "^1.6.0",
+    "rollup": "^1.8.0",
     "terser": "^3.17.0"
   }
 }

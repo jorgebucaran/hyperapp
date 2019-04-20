@@ -520,6 +520,21 @@ export const PlayerList = ({ players }) =>
 
 Keys are not registered on the top-level node of your view. If you are toggling the top-level view, and you must use keys, wrap them in an unchanging node.
 
+## Packages
+
+The Hyperapp community has provided several packages for additional functionality to use with Hyperapp.
+
+* [**@hyperapp/router**](https://github.com/hyperapp/router) - Declarative routing for Hyperapp using the History API.
+* [**@hyperapp/transitions**](https://github.com/hyperapp/transitions) - Animate elements as they are appear, disappear and move around on the page.
+* [**@hyperapp/render**](https://github.com/hyperapp/render) - Render Hyperapp views to an HTML string.
+
+## Starter Kits
+
+If you are looking to get started with a production app using a build setup quickly and easily, there are community starter kits to help.
+
+* [**Hyperapp Kit**](https://github.com/atomiks/hyperapp-kit) - A starter kit using [Parcel](https://parceljs.org/) that supports prerendering for improved inital page load performance.
+* [**Hyperapp One**](https://github.com/selfup/hyperapp-one) - A starter kit using [Webpack](https://webpack.js.org) for quickstarting an application with AirBnB's JavaScript Styleguide.
+
 ## Links
 
 - [Slack](https://hyperappjs.herokuapp.com)

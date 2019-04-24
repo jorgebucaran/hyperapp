@@ -72,15 +72,14 @@ export type ActionResult<State> = State | [State, ...Effect<State, unknown>[]];
  *
  * @memberOf [App]
  */
-export type ActionFunc<State, Data = {}, Props = undefined> =
-    Props extends void ? ((state: State, data: Data) => ActionResult<State>) : ((state: State, props: Props, data: Data) => ActionResult<State>);
+export type ActionFunc<State, Payload> = (state: State, data: Payload) => ActionResult<State>
 
 /** A reference to an action to be invoked by Hyperapp, with optional additional parameters
  * 
  * @memberOf [App]
  */
-export type Action<State, Data = {}, Props = undefined> =
-    Props extends void ? ActionFunc<State, Data, Props> : [ActionFunc<State, Data, Props>, Props]
+export type Action<State, Data = {}, Props = void> =
+    Props extends void ? ActionFunc<State, Data> : [ActionFunc<State, Props>, (Props | ((data: Data) => Props))]
 
 /** A reference to an subscription to be managed by Hyperapp, with optional additional parameters
  * 

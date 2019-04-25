@@ -5,21 +5,80 @@
 [![npm](https://img.shields.io/npm/v/hyperapp.svg)](https://www.npmjs.org/package/hyperapp)
 [![Slack](https://hyperappjs.herokuapp.com/badge.svg)](https://hyperappjs.herokuapp.com "Join us")
 
-Hyperapp is a JavaScript micro-framework for building web applications.
+Hyperapp is a JavaScript micro-framework for building web interfaces.
 
-You want to build high-quality, rich, and fast single-page applications. You heard about declarative UIs, unidirectional data-flow, immutable state, effects as data, functional reactive programming and thought you might try them out, but don't know how or where to get started. Hyperapp combines all these concepts into a single apparatus, clean architecture and tiny foundation. Once you learn how to use it, you'll never go back to DOM traversal and manipulation.
+> :wave: Psst! The documentation is still a work-in-progress. Please be patient as we work on it. If you think you've found a bug in Hyperapp, [create a new issue](https://github.com/jorgebucaran/hyperapp/issues/new) or [hop on Slack](https://hyperappjs.herokuapp.com) and let us know.
 
-- **Minimal**—We have aggressively minimized the concepts you need to learn to be productive while remaining on par with what other frameworks can do. Dynamic, purely functional frontend applications without the headache.
-- **Declarative**–Design your UI as a function of the state, and Hyperapp will efficiently update the DOM as your data changes. Declarative views, managed effects, and subscriptions make your code predictable and easy to debug.
-- **Standalone**—Do more with less. Hyperapp includes state management and a [state-of-the-art] Virtual DOM engine that supports keyed updates, functional components & tree memoization—all without dependencies.
+- **Minimal**—We have aggressively minimized the concepts you need to learn to be productive out of the box. Immutable state, unidirectional data-flow, effects as data and subscriptions—all combined into a single apparatus, clean, and tiny foundation.
+- **Declarative**–Write what, not how, and Hyperapp will figure out the best way to update the DOM as your data changes. Declarative user interfaces lead to highly testable and predictable applications—you'll never go back to DOM traversal and manipulation.
+- **Standalone**—Do more with less. Hyperapp includes state management and a [state-of-the-art] Virtual DOM engine that supports keyed updates, functional components & view memoization—all without dependencies.
 
-[Try Hyperapp], and [follow us](https://twitter.com/hyperappjs) on Twitter for all the news and updates!
+[Check out the examples](#examples) and [follow us](https://twitter.com/hyperappjs) on Twitter for news and updates. Did you know that maintaining and developing this project is a full-time effort? If you love Hyperapp, please [support me](https://patreon.com/jorgebucaran) on Patreon. If you are not comfortable with a recurring pledge, I also accept one-time donations via [PayPal](https://www.paypal.me/jorgebucaran). Thank you! 🙌
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Getting started](#getting-started)
+- [Help, I'm stuck!](#help-im-stuck)
+- [Fundamentals](#fundamentals)
+  - [Initializing the state](#initializing-the-state)
+  - [Rendering a page](#rendering-a-page)
+  - [Dispatching actions](#dispatching-actions)
+  - [Handling text input](#handling-text-input)
+  - [Putting it all together](#putting-it-all-together)
+- [Subscriptions](#subscriptions)
+  - [Controlling time]
+  - [Mouse and keyboard input]
+  - [Implementing your own subscriptions]
+- [Effects](#effects)
+  - [Talking to servers](#talking-to-servers)
+  - [Manipulating the DOM]
+  - [Generating random numbers](#generating-random-numbers)
+  - [Implementing your own effects]
+- [HTML Attributes](#html-attributes)
+- [Techniques](#techniques)
+  - [Testing]
+  - [Hydration]
+  - [Navigation]
+  - [Working with Forms](#working-with-forms)
+  - [Using external libraries](#using-external-libraries)
+  - [Animating elements]
+- [Optimization](#optimization)
+  - [Keys]
+  - [Lazy views]
+  - [Virtual DOM]
+- [Examples](#examples)
+- [Ecosystem](#ecosystem)
+- [License](#license)
+
+## Installation
+
+Install the latest Hyperapp release with npm or Yarn. Using a package manager is the recommended installation method when building large scale applications with Hyperapp.
+
+<pre>
+npm i <a href=https://www.npmjs.com/package/hyperapp>hyperapp@alpha</a>
+</pre>
+
+Then with a module bundler like [Parcel](https://parceljs.org/), [Webpack](https://webpack.js.org), or [Rollup](https://rollupjs.org), import it as you would anything else.
+
+```js
+import { h, app } from "hyperapp"
+```
+
+Don't want to set up a build environment? Download Hyperapp from a CDN like [unpkg.com](https://unpkg.com/hyperapp?module) and it will be globally available through the `window.hyperapp` object (or download it to your own server and import it as a module). Hyperapp supports all ES5-compliant browsers, including IE10 and above.
+
+```html
+<script src="https://unpkg.com/hyperapp"></script>
+<script>
+  const { h, app } = hyperapp
+</script>
+```
+
+Want to get a sense of what Hyperapp is like without installing anything? Try it in [this code playground].
 
 ## Getting started
 
-Our first example is a counter that can be incremented or decremented. This is far from a real world application, but we need to start somewhere. The goal of this tutorial is to help you get a sense of how Hyperapp works. The example shows you how to initialize your application state, wire actions to user-driven events, and render HTML on the page.
-
-Go ahead and paste this code in a new HTML file or [try it online].
+Our first example is a counter that can be incremented or decremented. This is not a real world application, but we're not trying to build one either. The goal of this tutorial is to give you a taste of how Hyperapp works. The example shows you how to initialize the application state, wire actions to DOM events, and render HTML on the page.
 
 ```html
 <!DOCTYPE html>
@@ -47,9 +106,9 @@ Go ahead and paste this code in a new HTML file or [try it online].
 </html>
 ```
 
-Let's break it down from top to bottom.
+Go ahead and paste that code in a new HTML file or [try it online]. Let's break it down from top to bottom.
 
-We import Hyperapp as a JavaScript module over a <a href=https://en.wikipedia.org/wiki/Content_delivery_network title="Content Delivery Network">CDN</a>. Don't fret, it works in all evergreen browsers. You might still prefer a more traditional approach, and put the `<script>` tag inside the `<body>` at the bottom. It's up to you.
+We import Hyperapp as a module over a <a href=https://en.wikipedia.org/wiki/Content_delivery_network title="Content Delivery Network">CDN</a>. Don't fret, it works in all evergreen browsers. If you prefer a more traditional approach, put the `<script>` tag at the bottom of the `<body>`. It's up to you.
 
 The `app` function creates a new application and mounts it on the supplied container, which can be any element in the DOM. The application starts by dispatching the `init` action to initialize the state. Our code does not explicitly maintain any state. Instead, we define actions to transform it and a view to visualize it. The view returns a representation of the DOM in the form of a plain JavaScript object known as a virtual DOM and Hyperapp updates the actual DOM to match it.
 
@@ -79,11 +138,11 @@ Here's what the virtual DOM looks like, abridged for clarity.
 }
 ```
 
-To create the virtual DOM like the one above, we use Hyperapp's `h` function. It takes three arguments: a string that specifies the type of element: `div`, `h1`, `button`, `form`; the element's properties (HTML/SVG attributes), and the element's child nodes.
+To create the virtual DOM like the one above, we use Hyperapp's `h` (hyperscript) function. It takes three arguments: a string that specifies the type of element: `div`, `h1`, `button`, `form`; the element's properties (HTML/SVG attributes), and the element's child nodes.
 
 Another way of creating a virtual DOM is using [JSX](https://reactjs.org/docs/introducing-jsx.html). JSX is an embeddable XML-like syntax language extension that lets you write HTML tags interspersed with JavaScript. Because browsers don't understand JSX, we need a compiler like [Babel](https://github.com/babel/babel) or [TypeScript](https://github.com/Microsoft/TypeScript) to translate it to `h` function calls.
 
-The end result is the same, but our code now looks as follows.
+The end result is the same, but our code now looks like this.
 
 ```jsx
 import { h, app } from "hyperapp"
@@ -116,11 +175,11 @@ If you are using Babel, you'll need to install the [JSX transform plugin](https:
 }
 ```
 
-Fair warning, if you see JSX used in this documentation, it's purely an stylistic choice. Zero-hassle, compilation-free options include: [@hyperapp/html], [htmlo], [hyperx], [htm], and [ijk]. Try them all to find out which one works best for you.
+Fair warning, if you see JSX used in this documentation, it's purely an stylistic choice. Compilation-free options include: [@hyperapp/html], [htmlo], [hyperx], [htm], and [ijk]. Try them all to find out which one works best for you.
 
 Now, let's put it all together with a module bundler.
 
-Bundlers take JavaScript files (or fonts, images, stylesheets), and combine them together into one or a few files optimized for the browser. In a real world scenario you'll likely be using one. For this example, we chose [Parcel]. If you prefer [Webpack] or [Rollup], refer to their documentation for usage details.
+Bundlers take JavaScript modules (or fonts, images, stylesheets), and combine them together into one or a few files optimized for the browser. In a real world scenario you'll likely be using one. For this example, we are choosing [Parcel]. If you prefer [Webpack] or [Rollup], refer to their documentation for usage details.
 
 Open the HTML file you created for this example and modify it like so.
 
@@ -147,7 +206,7 @@ $ parcel index.html
 
 If something isn't working as expected you can always [check out] the source online to see how it's done. Experiment with the code. Spend some time thinking about how the view reacts to changes in the state. Can we add a button that resets the counter back to zero? How about disabling the decrement button when the state is less than one? Let's work on that next.
 
-Previously, we defined actions inside the view function. This was inefficient, as it creates a new function every time Hyperapp calls your view. Anonymous functions are also difficult to debug since they lack a real name. A good rule of thumb is to create a function for every action in your program.
+Previously, we defined actions inside the view function. This is inefficient, as it creates a new function every time Hyperapp calls your view. Anonymous functions are also awkward to debug since they don't have a name. A good rule of thumb is to create a function for every action in your program. Don't hold back, they're cheap!
 
 ```jsx
 const Reset = () => 0
@@ -155,7 +214,7 @@ const Decrement = state => state - 1
 const Increment = state => state + 1
 ```
 
-An action can be any function that takes your application state as the first argument and returns a new state. We don't need the previous state argument to reset the counter, so we can ignore it.
+An action is any function that takes your application state as the first argument and returns a new state. Notice that `Reset` doesn't need the state argument to reset the counter, so we can ignore it. Actions can also receive a payload, but let's not get ahead of ourselves.
 
 Here's our program. You can check out the final result [here].
 
@@ -182,70 +241,13 @@ app({
 })
 ```
 
-We're off to a great start! But we left more questions unanswered than we tried to cover in this section. How do we dispatch an action with a payload, access DOM event objects, handle text input, cause side effects, subscribe to global events, manipulate the DOM, animate elements? We're just getting started. Keep reading to find out.
+We left more questions unanswered than we tried to cover in this section. How do we dispatch an action with a payload, access DOM event objects, handle text input, cause side effects, subscribe to global events, manipulate the DOM, animate elements?
 
-## Help, I'm Stuck!
+We're off to a great start! Keep calm and read on.
 
-We all get stuck sometimes. If you've hit a stumbling block and need to get help, check out the community support resources. Hop on the [Hyperapp Slack Room] to get help quickly, and if you don't receive an answer, or if you remain stuck, please file an issue, and we'll help you out.
+## Help, I'm stuck!
 
-## Table of Contents
-
-- [Getting started](#getting-started)
-- [Help, I'm Stuck!](#help-im-stuck)
-- [Installation](#installation)
-- [Fundamentals](#fundamentals)
-  - [Initializing the state](#initializing-the-state)
-  - [Rendering a page](#rendering-a-page)
-  - [Dispatching actions](#dispatching-actions)
-  - [Handling text input](#handling-text-input)
-  - [Putting it all together](#putting-it-all-together)
-- [Effects](#effects)
-  - [Talking to servers]
-  - [Manipulating the DOM]
-  - [Creating random numbers]
-  - [Implementing your own effects]
-- [Subscriptions](#subscriptions)
-  - [Controlling time]
-  - [Mouse and keyboard input]
-  - [Implementing your own subscriptions]
-- [HTML Attributes]
-  - [class]
-  - [style]
-  - [checked]
-  - [selected]
-- [Techniques]
-  - [Testing]
-  - [Recycling]
-  - [Navigation]
-  - [Using Forms]
-  - [Animating elements]
-  - [Headless applications]
-  - [Using external libraries]
-- [Optimization]
-  - [Keys]
-  - [Lazy views]
-  - [Virtual DOM]
-- [Ecosystem]
-- [Support]
-- [License](#license)
-
-## Installation
-
-<pre>
-npm i <a href=https://www.npmjs.com/package/hyperapp>hyperapp</a>
-</pre>
-
-Then with a module bundler like [Rollup](https://rollupjs.org) or [Webpack](https://webpack.js.org), use as you would anything else.
-
-```js
-import { h, app } from "hyperapp"
-```
-
-Don't want to set up a build environment? Download Hyperapp over a CDN like [unpkg.com](https://unpkg.com/hyperapp) and it will be globally available through the `window.hyperapp` object. We support all ES5-compliant browsers, including Internet Explorer 10 and above.
-
-```html
-<script src="https://unpkg.com/hyperapp"></script>
-```
+We all get stuck sometimes. If you've hit a stumbling block and need to get help, check out the community support resources. Hop on the [Hyperapp Slack Room](https://hyperappjs.herokuapp.com/) to get help quickly, and if you don't receive an answer, or if you remain stuck, please file an issue, and we'll help you out.
 
 ## Fundamentals
 
@@ -255,7 +257,7 @@ A virtual DOM allows us to write code as if the entire document is thrown away a
 
 It may seem wasteful to throw away the old virtual DOM and re-create it entirely on every update—not to mention the fact that at any one time, Hyperapp is keeping two virtual DOM trees in memory, but as it turns out, browsers can create hundreds of thousands of objects very quickly. On the other hand, modifying the DOM is several orders of magnitude more expensive.
 
-In this section, we'll walk you through building a to-do list app that can add, view, edit, and delete items. Don't skip it. The concepts you'll learn are essential to master Hyperapp. We'll learn how to pass values to an action, handle user input, and access the event object and element triggering a DOM event. We'll also see how to break down our view into functions to improve code reusability and readability.
+In this section, we'll walk you through building a to-do list app that can add, view, edit, and delete items. Don't skip this tutorial. The concepts you'll learn are essential to master Hyperapp. We'll learn how to pass values to an action, handle user input, and access the event object and element triggering a DOM event. We'll also see how to break down our view into functions to improve code reusability and readability.
 
 ### Initializing the state
 
@@ -283,7 +285,9 @@ app({
 
 The `init` action describes how to initialize the state. Think of it as the entry point of the program. Unlike [model–view–controller](https://en.wikipedia.org/wiki/Model–view–controller) and derivatives that encourage spreading the state out across different components, Hyperapp's state is consolidated in one place.
 
-Here's an opportunity to refactor code. If we create new to-dos through a function, we can reduce code duplication and automate generating a unique id for each item using a base change algorithm. No warranty of any kind is implied, though. Use at your own risk.
+If we decide to start with more than one to-do items, we're going to run out of vertical space quickly. By creating new to-do items through a function, we can reduce code duplication and automate generating a unique id for each item using a base change algorithm. No warranty of any kind is implied, though. Use at your own risk.
+
+> Using the `Math.random` method to generate random numbers is a side effect. We're taking a pragmatic approach to allow for side effects in this example only for convenience. You can read more about [generating random numbers] using Hyperapp effects later in this guide.
 
 ```jsx
 import { app } from "hyperapp"
@@ -307,7 +311,7 @@ app({
 })
 ```
 
-Looking good. We have an initial state, but there's still no user interface to display it. In the next section, we'll learn how to render a page and look more closely at the virtual DOM model.
+We have an initial state, but there's still no user interface to display it. In the next section, we'll learn how to render a page and look more closely at the virtual DOM model.
 
 ### Rendering a page
 
@@ -369,7 +373,7 @@ app({
 })
 ```
 
-Excellent! Now we have a user interface to work with. Next, we want to populate the list dynamically based on the current state. We [previously] learned how to initialize the application state, and we know the `view` function takes in the state, so let's put the two together.
+Excellent! Now we have a user interface to work with. Next, we want to populate the list dynamically based on the current state. [Previously], we learned how to initialize the application state, and we know the `view` function takes in the state, so let's put the two together.
 
 ```jsx
 import { h, app } from "hyperapp"
@@ -472,7 +476,7 @@ Actions describe state transitions: current state in, new state out. An action d
 <button onclick={Add}>New Item</button>
 ```
 
-When the user clicks the button, the browser sends a click event to the button. Hyperapp intercepts the event to dispatch the specified action with the current state and event object as a payload, and uses its return value as the new state. Then, it calls the view function to calculate a new virtual DOM and [schedules](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame) a DOM update before the next browser repaint, minimizing expensive layout reflows and further repaints.
+When the user clicks the button, the browser sends a click event to the button. Hyperapp intercepts the event to dispatch the specified action with the current state and event object as a payload and uses the return value of the action as the new state. At this point, the state and the DOM are out of sync. Next, it calls the view function to calculate a new virtual DOM and [schedules](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame) the DOM to update before the next browser repaint, minimizing expensive layout reflows and further repaints.
 
 Hyperapp's state is immutable. You initialize it, but you can't change it like you would any other object. Instead, changes are presented by creating a new object based on the current state; for example, here's the action to describe adding a new item in our to-do app.
 
@@ -717,30 +721,119 @@ app({
 })
 ```
 
-This is the last stop of our fundamentals tour. If you made it here, congratulations, we built a minimal, fully functional to-do app from scratch in just a few lines of code. We left out useful features such as marking items as complete rather than deleting them, filtering, searching, and saving our data to local storage, but you should have a decent grasp of how Hyperapp works by now.
+This is the last stop of our fundamentals tour. If you made it here, congratulations, we built a minimal, fully functional to-do app from scratch in just a few lines of code. We left out features like marking items as complete rather than deleting them, filtering, searching, and saving our data to local storage, but you should have a decent grasp of how Hyperapp works by now.
 
-If you're up for the challenge, try implementing one or two new features; for example, it would be useful to cross-out a to-do to indicate we've completed a task without removing it from the list. Also useful to have is a button to clear the entire list in one go. Sometimes we need to start over to see things in a new light. Happy hacking!
-
-## Effects
-
-At the end of the day, we run programs for their side effects.
-
-### Talking to servers
-
-### Manipulating the DOM
-
-### Creating random numbers
-
-### Implementing your own effects
+If you're up for the challenge, try implementing one or two new features; for example, it would be useful to cross-out a to-do to indicate you've completed a task without removing it from the list. Also nice to have is a button to clear the entire list in one go. Sometimes we need to start over to see things in a new light.
 
 ## Subscriptions
 
+<!--
+
+Did the user resize the browser's window? Did the physical orientation of the hosting device change?
+
+When our application state changes we compare the new and old subscriptions, compute their differences and rewire the underlying connections to match the desired state. Think of subscriptions as "virtual DOM meets events".
+
+-->
+
+We want to know when something interesting happens outside of our application. We can dispatch an action when the user clicks on a button, or types into a text field, but how do we subscribe to global key presses, animation frames, clock ticks, or events that aren't a direct result of user activity like location changes or server-sent events? Subscriptions allow us to listen for such things using a declarative paradigm.
+
+Working with traditional event emitters requires complicated resource management like adding and removing event listeners, closing connections, clearing intervals—not to mention testing asynchronous code is tricky. What happens when the source you are subscribed to shuts down? How do you cancel or restart a subscription? Think of subscriptions as "virtual DOM meets events". When our application state changes we compare the new and old subscriptions, compute their differences and rewire the underlying connections to match the desired state.
+
+Similar to how we use hyperscript to create virtual nodes instead of writing them out by hand, we use a function to create each type of event we want to subscribe to. For time ticks there is [@hyperapp/time], for global mouse and keyboard events there is [@hyperapp/mouse] and [@hyperapp/keyboard]. Need to use WebSockets for real-time two-way communication? [`@hyperapp/websocket`] got you covered. In this section, we'll walk through concrete examples that show how to use and create your own subscriptions. Let's dive in!
+
 ### Controlling time
+
+{{general info about cliock ticks To subscribe to clock ticks, we'll import the `tick` function from `@hyperapp/time`.}}
 
 ```jsx
 import { h, app } from "hyperapp"
-import * as Time from "@hyperapp/time"
+import { tick } from "@hyperapp/time"
 ```
+
+{{
+The `app` function can a `subscriptions` function
+
+Subscriptions are described using arrays. If a new subscription appears in the array, we'll start the subscription. When a subscription leaves the array, we'll cancel it. If any of its properties change, we'll restart it.
+}}
+
+```jsx
+const Tick = (state, { time }) => ({ ...state, time })
+
+app({
+  subscriptions: () => [
+    tick({
+      action: Tick,
+      interval: 1000
+    })
+  ]
+})
+```
+
+{{
+Now let's put it all together. Say some random thing. There is a fair amount of code, but do not worry. We will go through it all!
+}}
+
+```jsx
+import { h, app } from "hyperapp"
+import { tick } from "@hyperapp/time"
+
+const timeToUnits = date => [
+  date.getHours(),
+  date.getMinutes(),
+  date.getSeconds()
+]
+
+const formatTime = (hours, minutes, seconds, use24) =>
+  (use24 ? hours : hours > 12 ? hours - 12 : hours) +
+  ":" +
+  `${minutes}`.padStart(2, "0") +
+  ":" +
+  `${seconds}`.padStart(2, "0") +
+  (use24 ? "" : ` ${hours > 12 ? "PM" : "AM"}`)
+
+const posixToHumanTime = (time, use24) =>
+  formatTime(...timeToUnits(new Date(time)), use24)
+
+const Tick = (state, { time }) => ({ ...state, time })
+
+const ToggleFormat = state => ({ ...state, use24: !state.use24 })
+
+app({
+  init: () => ({
+    time: Date.now(),
+    use24: false
+  }),
+  view: state => (
+    <main>
+      <h1>{posixToHumanTime(state.time, state.use24)}</h1>
+      <fieldset>
+        <legend>Settings</legend>
+        <label>
+          <input type="checkbox" checked={state.use24} oninput={ToggleFormat} />
+          Use 24 Hour Clock
+        </label>
+      </fieldset>
+    </main>
+  ),
+  subscriptions: () => [
+    tick({
+      action: Tick,
+      interval: 1000
+    })
+  ],
+  container: document.body
+})
+```
+
+{{
+Explain what's going on. No need to write a bible.
+
+closing remarks
+
+Subscriptions are a way to think about event streams whose lifecycle is determined by changes in our program state. in this example we didn't look at it, but the `subscriptions` function takes in the application state as an argument. Here we are subscribed to clock ticks forever, but we can turn our subscription on or off using the state.
+
+show a new simple example or say we're going to deal with this later.
+}}
 
 ### Mouse input
 
@@ -757,6 +850,74 @@ import * as Keyboard from "@hyperapp/keyboard"
 ```
 
 ### Implementing your own subscriptions
+
+## Effects
+
+We run programs for their side effects. Likewise, we want our programs to be predictable, easy to compose, test, and parallelize. JavaScript single-threaded execution guarantees that operations are atomic; two functions will never run at the same time, and we don't usually need to worry about concurrency, deadlock or race conditions (at least not the type of race condition caused by interleaved multi-threaded code), but we can still shoot ourselves in the foot by uncontrolled, indiscriminate use of side effects.
+
+How can our programs be pure while conversing with the outside world? Rather than setting a timeout or making an HTTP request, an action can return a description of the work that needs to be done, and Hyperapp will figure out how to do the job behind the scenes. Like the view function returns a specification of the DOM, but doesn't touch the real DOM; an effect describes a side effect: creating an HTTP request, giving focus to an element, saving data to local storage, sending data over a WebSocket, etc., without executing any code.
+
+{{
+explain that hyperapp effects are not like built-into hyperapp, instead we need to import modules that produce the type of effects that we want. these modules encapsulate the implementation—the part that tells hyperapp exactly what to do. In this section, we'll walk through concrete examples that show how to use several Hyperapp effects to create timeouts, talk to servers, generate random numbers, manipulate the DOM, and much more. Finally, we'll learn how to create custom effects and discuss when we might want to use them.
+}}
+
+### Delaying time
+
+{{
+_Instead of having JavaScript execute a function immediately, you can tell it to execute a function after a certain period of time._ we coulve chosen from other more realistic examples, but timeout'S minimal api surface make them a perfect candidate to introduce effects in hyperapp. Let's start with a bla bla that demonstrates the gist of the idea. First, we'll import the effect we need from the `@hyperapp/time` module_. _Next, we'll create an action to do bla bla. Finally, we'll initialize the application and start the effect at the same time.
+}}
+
+```jsx
+```
+
+{{
+up until this point weve used init to describe the initial state of our application, but it just so happens that actions are also allowed to return 2-tuple state-effect pairs. Think of it as a plan that describes what the state should be and the side effect we want to produce.
+}}
+
+### Talking to servers
+
+{{
+say some generic thing about making http requests and why we cant live without them and about the history of doing http in javascript and make sure to use words like ajax, fetch, xmlhttprequest. then try to make a case for why using any of those technologies is bad or difficult or prone to errors and how fetch, while eliminating many of the pitfalls of xmlhttprequest doesn't really improve much, not to mention the fact that its promise-based api is total garbage. now try to keep that at a minimum, remember this is not a book.
+}}
+
+```jsx
+// gif search
+```
+
+```jsx
+// https://exchangeratesapi.io
+```
+
+### Manipulating the DOM
+
+```jsx
+// focus example
+import { h, app } from "hyperapp"
+import { focus } from "@hyperapp/dom"
+
+const SetFocus = state => [state, focus({ id: "input" })]
+
+app({
+  view: () => (
+    <main>
+      <input id="input" type="text" />
+      <button onclick={SetFocus}>Set Focus</button>
+    </main>
+  ),
+  container: document.body
+})
+```
+
+### Generating random numbers
+
+```jsx
+// dice roll game
+```
+
+### Implementing your own effects
+
+```jsx
+```
 
 ## HTML Attributes
 
@@ -776,16 +937,17 @@ import * as Keyboard from "@hyperapp/keyboard"
 
 ### Testing
 
-### Recycling
+### Hydration
 
-Hyperapp will try to hydrate child nodes instead of throwing away your server-side rendered content.
+Hyperapp will try to hydrate child nodes instead of throwing away your server-side rendered content. Hydration recycles existing DOM (usually from server-side rendering) rather than create new elements.
 
 ### Navigation
 
-<!--
-WIP: Oh, the Places You'll Go! Declarative routing using the History API.
+{{
+Oh, the Places You'll Go! Declarative routing using the History API.
+}}
 
-```jsx
+```
 import { h, app } from "hyperapp"
 import { location } from "@hyperapp/location"
 
@@ -821,13 +983,27 @@ app({
   container: document.body
 })
 ```
--->
 
-### Animating elements
+### Working with forms
 
-### Headless applications
+{{
+This module provides a series of articles that will help you master HTML forms. HTML forms are a very powerful tool for interacting with users; however, for historical and technical reasons, it's not always obvious how to use them to their full potential. In this guide, we'll cover all aspects of HTML forms, from structure to styling, from data handling to custom widgets.
+
+HTML Forms are one of the main points of interaction between a user and a web site or application. They allow users to send data to the web site. Most of the time that data is sent to the web server, but the web page can also intercept it to use it on its own.
+
+An HTML Form is made of one or more widgets. Those widgets can be text fields (single line or multiline), select boxes, buttons, checkboxes, or radio buttons. Most of the time those widgets are paired with a label that describes their purpose — properly implemented labels are able to clearly instruct both sighted and blind users on what to enter into a form input.
+
+The main difference between a HTML form and a regular HTML document is that most of the time, the data collected by the form is sent to a web server. In that case, you need to set up a web server to receive and process the data. How to set up such a server is beyond the scope of this article, but if you want to know more, see Sending form data later in the module.
+}}
 
 ### Using external libraries
+
+{{
+
+Maybe you've run into a situation where Hyperapp alone isn't enough to do what you want and you are under a time constraint or need to step outside the boundaries set by a functional paradigm. you need to reach for external, third-party libraries. In this tutorial, we'll learn how to integrate a third-party library with a Hyperapp application.
+}}
+
+### Animating elements
 
 ## Optimization
 
@@ -847,18 +1023,29 @@ import { h, Lazy, app } from "hyperapp"
 
 Perf overhead you say? More like perf benefit!
 
+## Examples
+
+- [7GUI] - A GUI Programming Benchmark
+  - [Counter]
+  - [Temperature converter]
+  - [Flight booker]
+  - [Timer]
+  - [CRUD]
+  - [Circle drawer]
+  - [Spreadsheet]
+- [TodoMVC] - Helping your select an MV\* framework
+- [HNPWA] - Hacker News reader as a progressive web application
+- [RealWorld] - Fullstack Medium-like clone
+- [Starter Kit] - Everything you need to start building applications with Hyperapp
+
 ## Ecosystem
 
-## Support
-
-Hyperapp is an open source project. The effort necessary to maintain and develop it is not sustainable without financial backing. You can [support me](https://www.patreon.com/jorgebucaran) on Patreon. If you are not comfortable with recurring pledges, I also accept one-time donations via [PayPal](https://www.paypal.me/jorgebucaran). Thank you.
-
-## Links
-
-- [Slack](https://hyperappjs.herokuapp.com)
-- [Twitter](https://twitter.com/hyperappJS)
-- [Examples](https://codepen.io/search/pens/?q=hyperapp)
-- [/r/hyperapp](https://www.reddit.com/r/hyperapp)
+| Package                            | Version                                                                                                 | About                                       |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| [`hyperapp`](.)                    | [![npm](https://img.shields.io/npm/v/hyperapp.svg)](https://www.npmjs.com/package/hyperapp)             | Hyperapp                                    |
+| [`@hyperapp/html`](/packages/html) | [![npm](https://img.shields.io/npm/v/@hyperapp/html.svg)](https://www.npmjs.com/package/@hyperapp/html) | Write HTML using functions in Hyperapp      |
+| [`@hyperapp/http`](/packages/http) | [![npm](https://img.shields.io/npm/v/@hyperapp/http.svg)](https://www.npmjs.com/package/@hyperapp/http) | Make HTTP requests in Hyperapp              |
+| [`@hyperapp/time`](/packages/time) | [![npm](https://img.shields.io/npm/v/@hyperapp/time.svg)](https://www.npmjs.com/package/@hyperapp/time) | Time effects and subscriptions for Hyperapp |
 
 ## License
 

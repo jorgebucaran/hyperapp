@@ -418,7 +418,7 @@ export var h = function(name, props) {
     : createVNode(name, props, children, null, props.key, DEFAULT_NODE)
 }
 
-export var app = function(props, decorateDispatch) {
+export var app = function(props, enhance) {
   var container = props.container
   var element = container && container.children[0]
   var node = element && recycleElement(element)
@@ -427,31 +427,32 @@ export var app = function(props, decorateDispatch) {
   var lock = false
   var state = {}
   var sub = []
-  var decorator = decorateDispatch || (function (d) { return d })
 
   var eventCb = function(event) {
     dispatch(event.currentTarget.events[event.type], event)
   }
 
   var setState = function(newState) {
-    if (!(state === newState || lock)) defer(render, (lock = true))
-    state = newState
+    return (
+      state === newState || lock || defer(render, (lock = true)),
+      (state = newState)
+    )
   }
 
-  var dispatch = decorator(function(obj, props) {
-    if (typeof obj === "function") {
-      dispatch(obj(state, props))
-    } else if (isArray(obj)) {
-      if (typeof obj[0] === "function") {
-        dispatch(obj[0](state, obj[1], props))
-      } else {
-        flatten(obj.slice(1)).map(function(fx) {
-          fx && fx[0](fx[1], dispatch)
-        }, setState(obj[0]))
-      }
-    } else {
-      setState(obj)
-    }
+  var dispatch = (enhance ||
+    function(a) {
+      return a
+    })(function(obj, props) {
+    return typeof obj === "function"
+      ? dispatch(obj(state, props))
+      : isArray(obj)
+      ? typeof obj[0] === "function"
+        ? dispatch(obj[0], typeof obj[1] === "function" ? obj[1](props) : obj[1])
+        : (flatten(obj.slice(1)).map(function(fx) {
+            fx && fx[0](fx[1], dispatch)
+          }, setState(obj[0])),
+          state)
+      : setState(obj)
   })
 
   var render = function() {

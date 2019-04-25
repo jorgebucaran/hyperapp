@@ -473,7 +473,13 @@ export var app = function(props, enhance) {
     lock = false
     if (subs) sub = patchSub(sub, flatten(subs(state)), dispatch)
     if (view) {
-      element = patch(container, element, node, (node = view(state)), eventProxy)
+      element = patch(
+        container,
+        element,
+        node,
+        typeof (node = view(state)) === "string" ? createTextVNode(node) : node,
+        eventProxy
+      )
     }
   }
 

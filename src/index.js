@@ -92,7 +92,11 @@ var updateProperty = function(element, name, value, newValue, eventCb, isSvg) {
     ) {
       element.removeEventListener(name, eventCb)
     } else if (!value) {
-      element.addEventListener(name, eventCb)
+      element.addEventListener(
+        name,
+        eventCb,
+        newValue.passive ? newValue : false
+      )
     }
   } else if (name !== "list" && !isSvg && name in element) {
     element[name] = newValue == null ? "" : newValue
@@ -429,7 +433,10 @@ export var app = function(props, enhance) {
   var sub = []
 
   var eventCb = function(event) {
-    dispatch(event.currentTarget.events[event.type], event)
+    var obj = this.events[event.type]
+    if (obj.preventDefault) event.preventDefault()
+    if (obj.stopPropagation) event.stopPropagation()
+    dispatch(obj.action || obj, event)
   }
 
   var setState = function(newState) {

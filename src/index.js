@@ -73,7 +73,14 @@ var patchSub = function(sub, newSub, dispatch) {
   return out
 }
 
-var updateProperty = function(element, name, value, newValue, eventCb, isSvg) {
+var updateProperty = function(
+  element,
+  name,
+  value,
+  newValue,
+  eventProxy,
+  isSvg
+) {
   if (name === "key") {
   } else if (name === "style") {
     for (var i in merge(value, newValue)) {
@@ -90,11 +97,11 @@ var updateProperty = function(element, name, value, newValue, eventCb, isSvg) {
         (name = name.slice(2))
       ] = newValue)
     ) {
-      element.removeEventListener(name, eventCb)
+      element.removeEventListener(name, eventProxy)
     } else if (!value) {
       element.addEventListener(
         name,
-        eventCb,
+        eventProxy,
         newValue.passive ? newValue : false
       )
     }
@@ -115,7 +122,7 @@ var removeElement = function(parent, node) {
   parent.removeChild(node.element)
 }
 
-var createElement = function(node, eventCb, isSvg) {
+var createElement = function(node, eventProxy, isSvg) {
   var element =
     node.type === TEXT_NODE
       ? document.createTextNode(node.name)
@@ -125,14 +132,14 @@ var createElement = function(node, eventCb, isSvg) {
   var props = node.props
 
   for (var k in props) {
-    updateProperty(element, k, null, props[k], eventCb, isSvg)
+    updateProperty(element, k, null, props[k], eventProxy, isSvg)
   }
 
   for (var i = 0, len = node.children.length; i < len; i++) {
     element.appendChild(
       createElement(
         (node.children[i] = getNode(node.children[i])),
-        eventCb,
+        eventProxy,
         isSvg
       )
     )
@@ -141,14 +148,14 @@ var createElement = function(node, eventCb, isSvg) {
   return (node.element = element)
 }
 
-var updateElement = function(element, props, newProps, eventCb, isSvg) {
+var updateElement = function(element, props, newProps, eventProxy, isSvg) {
   for (var k in merge(props, newProps)) {
     if (
       (k === "value" || k === "selected" || k === "checked"
         ? element[k]
         : props[k]) !== newProps[k]
     ) {
-      updateProperty(element, k, props[k], newProps[k], eventCb, isSvg)
+      updateProperty(element, k, props[k], newProps[k], eventProxy, isSvg)
     }
   }
 }
@@ -157,7 +164,7 @@ var getKey = function(node) {
   return node == null ? null : node.key
 }
 
-var patch = function(parent, element, node, newNode, eventCb, isSvg) {
+var patch = function(parent, element, node, newNode, eventProxy, isSvg) {
   if (newNode === node) {
   } else if (
     node != null &&
@@ -167,7 +174,7 @@ var patch = function(parent, element, node, newNode, eventCb, isSvg) {
     if (node.name !== newNode.name) element.nodeValue = newNode.name
   } else if (node == null || node.name !== newNode.name) {
     var newElement = parent.insertBefore(
-      createElement((newNode = getNode(newNode)), eventCb, isSvg),
+      createElement((newNode = getNode(newNode)), eventProxy, isSvg),
       element
     )
 
@@ -179,7 +186,7 @@ var patch = function(parent, element, node, newNode, eventCb, isSvg) {
       element,
       node.props,
       newNode.props,
-      eventCb,
+      eventProxy,
       (isSvg = isSvg || newNode.name === "svg")
     )
 
@@ -210,7 +217,7 @@ var patch = function(parent, element, node, newNode, eventCb, isSvg) {
           newChildren[newStart],
           children[start]
         )),
-        eventCb,
+        eventProxy,
         isSvg
       )
 
@@ -229,7 +236,7 @@ var patch = function(parent, element, node, newNode, eventCb, isSvg) {
         children[end].element,
         children[end],
         (newChildren[newEnd] = getNode(newChildren[newEnd], children[end])),
-        eventCb,
+        eventProxy,
         isSvg
       )
 
@@ -242,7 +249,7 @@ var patch = function(parent, element, node, newNode, eventCb, isSvg) {
         element.insertBefore(
           createElement(
             (newChildren[newStart] = getNode(newChildren[newStart++])),
-            eventCb,
+            eventProxy,
             isSvg
           ),
           (childNode = children[start]) && childNode.element
@@ -283,7 +290,7 @@ var patch = function(parent, element, node, newNode, eventCb, isSvg) {
               childNode && childNode.element,
               childNode,
               newChildren[newStart],
-              eventCb,
+              eventProxy,
               isSvg
             )
             newStart++
@@ -296,7 +303,7 @@ var patch = function(parent, element, node, newNode, eventCb, isSvg) {
               childNode.element,
               childNode,
               newChildren[newStart],
-              eventCb,
+              eventProxy,
               isSvg
             )
             newKeyed[newKey] = true
@@ -311,7 +318,7 @@ var patch = function(parent, element, node, newNode, eventCb, isSvg) {
                 ),
                 savedNode,
                 newChildren[newStart],
-                eventCb,
+                eventProxy,
                 isSvg
               )
               newKeyed[newKey] = true
@@ -321,7 +328,7 @@ var patch = function(parent, element, node, newNode, eventCb, isSvg) {
                 childNode && childNode.element,
                 null,
                 newChildren[newStart],
-                eventCb,
+                eventProxy,
                 isSvg
               )
             }
@@ -432,7 +439,7 @@ export var app = function(props, enhance) {
   var state = {}
   var sub = []
 
-  var eventCb = function(event) {
+  var eventProxy = function(event) {
     var obj = this.events[event.type]
     if (obj.preventDefault) event.preventDefault()
     if (obj.stopPropagation) event.stopPropagation()
@@ -466,7 +473,7 @@ export var app = function(props, enhance) {
     lock = false
     if (subs) sub = patchSub(sub, flatten(subs(state)), dispatch)
     if (view) {
-      element = patch(container, element, node, (node = view(state)), eventCb)
+      element = patch(container, element, node, (node = view(state)), eventProxy)
     }
   }
 

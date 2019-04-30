@@ -354,9 +354,9 @@ var propsChanged = function(a, b) {
 
 var getVNode = function(newVNode, oldVNode) {
   return newVNode.type === LAZY_NODE
-    ? !oldVNode || propsChanged(newVNode.lazy, oldVNode.lazy)
-      ? newVNode.render()
-      : oldVNode
+    ? ((!oldVNode || propsChanged(oldVNode.lazy, newVNode.lazy)) &&
+        ((oldVNode = newVNode.lazy.view(newVNode.lazy)).lazy = newVNode.lazy),
+      oldVNode)
     : newVNode
 }
 
@@ -391,13 +391,7 @@ var recycleNode = function(node) {
 export var Lazy = function(props) {
   return {
     type: LAZY_NODE,
-    key: props.key,
-    lazy: props,
-    render: function() {
-      var vnode = props.render(props)
-      vnode.lazy = props
-      return vnode
-    }
+    lazy: props
   }
 }
 

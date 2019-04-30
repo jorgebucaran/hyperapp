@@ -1,4 +1,3 @@
-var DEFAULT_NODE = 0
 var RECYCLED_NODE = 1
 var LAZY_NODE = 2
 var TEXT_NODE = 3
@@ -12,9 +11,8 @@ var defer = requestAnimationFrame || setTimeout
 var createClass = function(obj) {
   var out = ""
 
-  if (typeof obj === "string" || typeof obj === "number") {
-    return obj
-  }
+  if (typeof obj === "string") return obj
+
   if (isArray(obj) && obj.length > 0) {
     for (var k = 0, tmp; k < obj.length; k++) {
       if ((tmp = createClass(obj[k])) !== "") {
@@ -344,7 +342,7 @@ var patch = function(parent, node, oldVNode, newVNode, listener, isSvg) {
     }
   }
 
-  return (newVNode.node = node)
+  newVNode.node = node
 }
 
 var propsChanged = function(a, b) {
@@ -390,8 +388,8 @@ var recycleNode = function(node) {
 
 export var Lazy = function(props) {
   return {
-    type: LAZY_NODE,
-    lazy: props
+    lazy: props,
+    type: LAZY_NODE
   }
 }
 
@@ -415,23 +413,23 @@ export var h = function(name, props) {
 
   return typeof name === "function"
     ? name(props, children)
-    : createVNode(name, props, children, null, props.key, DEFAULT_NODE)
+    : createVNode(name, props, children, null, props.key)
 }
 
 export var app = function(props, enhance) {
+  var state = {}
   var lock = false
   var view = props.view
   var node = props.node
   var vdom = node && recycleNode(node)
   var subscriptions = props.subscriptions
   var subs = []
-  var state = {}
 
   var listener = function(event) {
-    var obj = this.actions[event.type]
-    if (obj.preventDefault) event.preventDefault()
-    if (obj.stopPropagation) event.stopPropagation()
-    dispatch(obj.action || obj, event)
+    var action = this.actions[event.type]
+    if (action.preventDefault) event.preventDefault()
+    if (action.stopPropagation) event.stopPropagation()
+    dispatch(action.action || action, event)
   }
 
   var setState = function(newState) {
@@ -466,7 +464,7 @@ export var app = function(props, enhance) {
       subs = patchSubs(subs, batch(subscriptions(state)), dispatch)
     }
     if (view) {
-      node = patch(
+      patch(
         node.parentNode,
         node,
         vdom,

@@ -7,13 +7,13 @@
 
 Hyperapp is a JavaScript micro-framework for building web interfaces.
 
-> :wave: Psst! The documentation is still a work-in-progress. Please be patient as we work on it. If you think you've found a bug in Hyperapp, [create a new issue](https://github.com/jorgebucaran/hyperapp/issues/new) or [hop on Slack](https://hyperappjs.herokuapp.com) and let us know.
+> 👋 Psst! The documentation is still a work-in-progress. Please be patient as we work on it. If you think you've found a bug in Hyperapp, [create a new issue](https://github.com/jorgebucaran/hyperapp/issues/new) or [hop on Slack](https://hyperappjs.herokuapp.com) and let us know.
 
 - **Minimal**—We have aggressively minimized the concepts you need to learn to be productive out of the box. Immutable state, unidirectional data-flow, effects as data and subscriptions—all combined into a single apparatus, clean, and tiny foundation.
 - **Declarative**–Write what, not how, and Hyperapp will figure out the best way to update the DOM as your data changes. Declarative user interfaces lead to highly testable and predictable applications—you'll never go back to DOM traversal and manipulation.
 - **Standalone**—Do more with less. Hyperapp includes state management and a [state-of-the-art] Virtual DOM engine that supports keyed updates, functional components & view memoization—all without dependencies.
 
-[Check out the examples](#examples) and [follow us](https://twitter.com/hyperappjs) on Twitter for news and updates. Did you know that maintaining and developing this project is a full-time effort? If you love Hyperapp, please [support me](https://patreon.com/jorgebucaran) on Patreon. If you are not comfortable with a recurring pledge, I also accept one-time donations via [PayPal](https://www.paypal.me/jorgebucaran). Thank you! 🙌
+[Check out the examples](#examples) and [follow Hyperapp](https://twitter.com/hyperappjs) on Twitter for news and updates. Did you know that maintaining and developing this project is a full-time effort? If you love Hyperapp, please [support me](https://patreon.com/jorgebucaran) on Patreon. If you are not comfortable with a recurring pledge, I also accept one-time donations via [PayPal](https://www.paypal.me/jorgebucaran). Thank you! 🙌
 
 ## Table of Contents
 
@@ -53,19 +53,19 @@ Hyperapp is a JavaScript micro-framework for building web interfaces.
 
 ## Installation
 
-Install the latest Hyperapp release with npm or Yarn. Using a package manager is the recommended installation method when building large scale applications with Hyperapp.
+Install the latest version of Hyperapp with a package manager. We recommend using npm or Yarn to manage your front-end dependencies and keep them up-to-date.
 
 <pre>
-npm i <a href=https://www.npmjs.com/package/hyperapp>hyperapp@alpha</a>
+npm i <a href=https://www.npmjs.com/package/hyperapp>hyperapp@beta</a>
 </pre>
 
-Then with a module bundler like [Parcel](https://parceljs.org/), [Webpack](https://webpack.js.org), or [Rollup](https://rollupjs.org), import it as you would anything else.
+Then with a module bundler like [Parcel](https://parceljs.org) or [Webpack](https://webpack.js.org) import Hyperapp in your application and get right down to business.
 
 ```js
 import { h, app } from "hyperapp"
 ```
 
-Don't want to set up a build environment? Download Hyperapp from a CDN like [unpkg.com](https://unpkg.com/hyperapp?module) and it will be globally available through the `window.hyperapp` object (or download it to your own server and import it as a module). Hyperapp supports all ES5-compliant browsers, including IE10 and above.
+Don't want to set up a build step? Load Hyperapp in a `<script>` tag and it will be available in the global scope through the `hyperapp` object. We support all ES5-compliant browsers out of the box, including IE11 and above.
 
 ```html
 <script src="https://unpkg.com/hyperapp"></script>
@@ -78,7 +78,9 @@ Want to get a sense of what Hyperapp is like without installing anything? Try it
 
 ## Getting started
 
-Our first example is a counter that can be incremented or decremented. This is not a real world application, but we're not trying to build one either. The goal of this tutorial is to give you a taste of how Hyperapp works. The example shows you how to initialize the application state, wire actions to DOM events, and render HTML on the page.
+Our first example is a counter that can be incremented or decremented. This is far from a real world application, but we're just getting started. The goal of this tutorial is to give you a taste of how Hyperapp works. The example shows you how to initialize your application state, wire actions to user-triggered events, and render HTML on the page.
+
+Go ahead and paste the following code in a new HTML file. We'll break it down afterwards.
 
 ```html
 <!DOCTYPE html>
@@ -96,21 +98,19 @@ Our first example is a counter that can be incremented or decremented. This is n
             h("button", { onclick: state => state - 1 }, "-"),
             h("button", { onclick: state => state + 1 }, "+")
           ]),
-        container: document.body
+        node: document.getElementById("app")
       })
     </script>
   </head>
   <body>
-    <!-- Your app will be mounted here. -->
+    <div id="app"></div>
   </body>
 </html>
 ```
 
-Go ahead and paste that code in a new HTML file or [try it online]. Let's break it down from top to bottom.
+Let's start from the bottom and work our way up the HTML tree. First, we create an empty `<div>` inside the document body. We want to take over that node and replace it with our view. Maybe your program is within a broader application, in a sidebar widget and surrounded by other elements. That's fine. Hyperapp gives you absolute control over where the root element of your application is rendered in the DOM.
 
-We import Hyperapp as a module over a <a href=https://en.wikipedia.org/wiki/Content_delivery_network title="Content Delivery Network">CDN</a>. Don't fret, it works in all evergreen browsers. If you prefer a more traditional approach, put the `<script>` tag at the bottom of the `<body>`. It's up to you.
-
-The `app` function creates a new application and mounts it on the supplied container, which can be any element in the DOM. The application starts by dispatching the `init` action to initialize the state. Our code does not explicitly maintain any state. Instead, we define actions to transform it and a view to visualize it. The view returns a representation of the DOM in the form of a plain JavaScript object known as a virtual DOM and Hyperapp updates the actual DOM to match it.
+Inside the `<script>` tag we load Hyperapp as a module from a <a href=https://en.wikipedia.org/wiki/Content_delivery_network title="Content Delivery Network">CDN</a>. Don't worry, it works in all evergreen, self-updating desktop and mobile browsers. The application starts by dispatching the `init` action to initialize the state. Our code does not explicitly maintain any state. Instead, we define actions to transform it and a view to visualize it. The view returns a representation of the DOM known as a virtual DOM and Hyperapp updates the actual DOM to match it.
 
 Here's what the virtual DOM looks like, abridged for clarity.
 
@@ -122,27 +122,33 @@ Here's what the virtual DOM looks like, abridged for clarity.
     {
       name: "h1",
       props: {},
-      children: 0
+      children: [0]
     },
     {
       name: "button",
-      props: { onclick: state => state - 1 },
-      children: "-"
+      props: {},
+      children: ["-"]
     },
     {
       name: "button",
-      props: { onclick: state => state + 1 },
-      children: "+"
+      props: {},
+      children: ["+"]
     }
   ]
 }
 ```
 
-To create the virtual DOM like the one above, we use Hyperapp's `h` (hyperscript) function. It takes three arguments: a string that specifies the type of element: `div`, `h1`, `button`, `form`; the element's properties (HTML/SVG attributes), and the element's child nodes.
+We use Hyperapp's `h` function to create virtual DOM nodes. It takes three arguments:
 
-Another way of creating a virtual DOM is using [JSX](https://reactjs.org/docs/introducing-jsx.html). JSX is an embeddable XML-like syntax language extension that lets you write HTML tags interspersed with JavaScript. Because browsers don't understand JSX, we need a compiler like [Babel](https://github.com/babel/babel) or [TypeScript](https://github.com/Microsoft/TypeScript) to translate it to `h` function calls.
+- A string that specifies the type of element: `div`, `h1`, `button`, etc.
+- The element's properties (HTML or SVG attributes).
+- The element's child nodes.
 
-The end result is the same, but our code now looks like this.
+Describing HTML trees using functions, also known as hyperscript, is a common idea in virtual DOM implementations; the virtual DOM object specification may vary between libraries, but the function's signature stays the same.
+
+Another way of creating virtual DOM nodes is using [JSX](https://facebook.github.io/jsx). JSX is an embeddable XML-like syntax language extension that lets you write HTML tags interspersed with JavaScript. It's syntactic sugar for pure, nested `h` function calls. The trade-off is that we need to compile it to standard JavaScript using a specialized tool before we can run the application.
+
+If you are tagging along, create an `index.js` file and paste the following code.
 
 ```jsx
 import { h, app } from "hyperapp"
@@ -156,11 +162,11 @@ app({
       <button onclick={state => state + 1}>+</button>
     </div>
   ),
-  container: document.body
+  node: document.getElementById("app")
 })
 ```
 
-If you are using Babel, you'll need to install the [JSX transform plugin](https://www.npmjs.com/package/@babel/plugin-transform-react-jsx) and add the pragma option to your `.babelrc` file. With TypeScript, you'll need to add the [`jsxFactory`](https://www.typescriptlang.org/docs/handbook/jsx.html#factory-functions) compiler option to your project's configuration file.
+We'll use [Babel](https://babeljs.io) to translate JSX to `h` function calls. First, install [`@babel/core`](https://www.npmjs.com/package/@babel/core) and [`@babel/plugin-transform-react-jsx`](https://www.npmjs.com/package/@babel/plugin-transform-react-jsx). One is the compiler, the other is a plugin that can rewrite JSX as an arbitrary function call. Then, add the following configuration to your `.babelrc` file, creating one if you still haven't.
 
 ```json
 {
@@ -175,13 +181,9 @@ If you are using Babel, you'll need to install the [JSX transform plugin](https:
 }
 ```
 
-Fair warning, if you see JSX used in this documentation, it's purely an stylistic choice. Compilation-free options include: [@hyperapp/html], [htmlo], [hyperx], [htm], and [ijk]. Try them all to find out which one works best for you.
+Fair warning, if you see JSX used in this documentation, it's purely a stylistic choice. If you don't want to set up a build step, there are compilation-free options such as [@hyperapp/html], [htmlo], and [htm](https://github.com/developit/htm). Try them all to find out which one works best for you.
 
-Now, let's put it all together with a module bundler.
-
-Bundlers take JavaScript modules (or fonts, images, stylesheets), and combine them together into one or a few files optimized for the browser. In a real world scenario you'll likely be using one. For this example, we are choosing [Parcel]. If you prefer [Webpack] or [Rollup], refer to their documentation for usage details.
-
-Open the HTML file you created for this example and modify it like so.
+Now, open the `index.html` file created earlier for this example and modify it like so.
 
 ```html
 <!DOCTYPE html>
@@ -191,22 +193,24 @@ Open the HTML file you created for this example and modify it like so.
     <script defer src="index.js"></script>
   </head>
   <body>
-    <!-- Your app will be mounted here. -->
+    <div id="app"></div>
   </body>
 </html>
 ```
 
-The `defer` attribute indicates to the browser that `index.js` should be executed after the document has been parsed and we have a body. Save the file and start the development server.
+The `defer` attribute indicates to the browser that `index.js` should be executed after the document has been parsed and we have a body. Now, let's put it all together with a module bundler.
+
+Bundlers take JavaScript modules (or fonts, images, stylesheets), and combine them into one or a few files optimized for the browser. For this example, we are choosing [Parcel](https://parceljs.org). If you prefer [Webpack] or [Rollup], refer to their documentation for usage details.
 
 ```console
-$ parcel index.html
+$ npx parcel index.html
 ```
 
-...and you should be up and running. You did it! But wait, we're not done yet.
+...and you should be up and running. You did it.
 
 If something isn't working as expected you can always [check out] the source online to see how it's done. Experiment with the code. Spend some time thinking about how the view reacts to changes in the state. Can we add a button that resets the counter back to zero? How about disabling the decrement button when the state is less than one? Let's work on that next.
 
-Previously, we defined actions inside the view function. This is inefficient, as it creates a new function every time Hyperapp calls your view. Anonymous functions are also awkward to debug since they don't have a name. A good rule of thumb is to create a function for every action in your program. Don't hold back, they're cheap!
+Previously, we defined actions inside the view function. This is inefficient, as it creates a new function every time Hyperapp calls the view. Anonymous functions are also awkward to debug since they don't have a name. A good rule of thumb is to create a function for every action in your program. Don't hold back, they're cheap!
 
 ```jsx
 const Reset = () => 0
@@ -214,9 +218,9 @@ const Decrement = state => state - 1
 const Increment = state => state + 1
 ```
 
-An action is any function that takes your application state as the first argument and returns a new state. Notice that `Reset` doesn't need the state argument to reset the counter, so we can ignore it. Actions can also receive a payload, but let's not get ahead of ourselves.
+An action can be any function that takes the application state as the first argument and returns a new state. Notice that `Reset` doesn't need the state argument to reset the counter, so we can ignore it. Actions can also receive a payload, but let's not get ahead of ourselves.
 
-Here's our program. You can check out the final result [here].
+Here's how our program looks now. You can [try it online here].
 
 ```jsx
 import { h, app } from "hyperapp"
@@ -237,7 +241,7 @@ app({
       <button onclick={Increment}>+</button>
     </div>
   ),
-  container: document.body
+  node: document.getElementById("app")
 })
 ```
 
@@ -315,20 +319,18 @@ We have an initial state, but there's still no user interface to display it. In 
 
 ### Rendering a page
 
-When describing the content of a page, we use the `h` function to create a virtual DOM. A virtual DOM is an object representation of how the DOM should look at any point in time. Hyperapp calls your `view` function to get this object and converts it into real DOM nodes in the browser efficiently.
+When describing the content of a page, we use the `h` function to create a virtual DOM. A virtual DOM is an object representation of how the DOM should look at any point in time. Hyperapp calls your `view` function to create this object and converts it into real DOM nodes in the browser efficiently.
 
 ```jsx
 import { h, app } from "hyperapp"
 
 app({
-  view: () => h("h1", { class: "title" }, "Hello"),
-  container: document.body
+  view: () => h("h1", {}, "Hello"),
+  node: document.getElementById("app")
 })
 ```
 
-The `h` stands for hyperscript. It's a way to describe HTML trees using functions. Hyperscript is widely used as a common interface to create nodes in virtual DOM implementations. While the virtual DOM object specification can vary between libraries, the `h`'s function signature is generally always the same.
-
-Hyperapp will render the view in the supplied container. Unlike other frameworks, it's common to use the document's `body` because we don't take over the entire content of the element you pass in. Depending on your use case, you may also have a `div` element with an `id="root"` or `id="app"` for this purpose.
+We also need to tell Hyperapp where to render the view. Usually, you'll have a node with an `id="app"` or `id="root"` in your HTML for this purpose. You can use any type of node, even a text node. If the node isn't empty, Hyperapp will recycle its children instead of throwing away the existing content. This process is also called [hydration]. We'll discuss it later in the documentation.
 
 Let's use what we've learned to render our to-do app with Hyperapp.
 
@@ -347,7 +349,7 @@ app({
       h("input", { type: "text", value: "" }),
       h("button", {}, "New Item")
     ]),
-  container: document.body
+  node: document.getElementById("app")
 })
 ```
 
@@ -369,7 +371,7 @@ app({
       <button>New Item</button>
     </div>
   ),
-  container: document.body
+  node: document.getElementById("app")
 })
 ```
 
@@ -406,11 +408,11 @@ app({
       <button>Add</button>
     </div>
   ),
-  container: document.body
+  node: document.getElementById("app")
 })
 ```
 
-The view is a visual representation of the state. The text field is synchronized with `state.value`, though, there's no way to update it yet, and by mapping through `state.items` we can turn the items array into an array of `<li>` nodes. There was no need to mutate the DOM manually, the markup is entirely declarative.
+The view is a way to view your state as HTML. The text field is synchronized with `state.value`, though, there's no way to update it yet, and by mapping through `state.items` we can turn the items array into an array of `<li>` nodes. There was no need to mutate the DOM manually, the markup is entirely declarative.
 
 Eventually, you'll want to break down your view into reusable components. Hyperapp components are stateless functions that return virtual DOM nodes. Their input is the state or a part thereof; their output is the markup that represents the supplied state. Components make it easy to split your UI into chunks of content, styles, and behavior that belong together.
 
@@ -460,7 +462,7 @@ app({
       <button>Add</button>
     </div>
   ),
-  container: document.body
+  node: document.getElementById("app")
 })
 ```
 
@@ -717,7 +719,7 @@ app({
       <button onclick={Add}>New Item</button>
     </main>
   ),
-  container: document.body
+  node: document.getElementById("app")
 })
 ```
 
@@ -821,7 +823,7 @@ app({
       interval: 1000
     })
   ],
-  container: document.body
+  node: document.getElementById("app")
 })
 ```
 
@@ -830,7 +832,7 @@ Explain what's going on. No need to write a bible.
 
 closing remarks
 
-Subscriptions are a way to think about event streams whose lifecycle is determined by changes in our program state. in this example we didn't look at it, but the `subscriptions` function takes in the application state as an argument. Here we are subscribed to clock ticks forever, but we can turn our subscription on or off using the state.
+Subscriptions are a way to think about event streams whose lifecycle is determined by changes in our program state. in this example we didn't look at it, but the `subscriptions` function takes in the application state as an argument. Here we are subscribed to clock ticks forever, but we can turn our subscription on or off based on the state.
 
 show a new simple example or say we're going to deal with this later.
 }}
@@ -904,7 +906,7 @@ app({
       <button onclick={SetFocus}>Set Focus</button>
     </main>
   ),
-  container: document.body
+  node: document.getElementById("app")
 })
 ```
 
@@ -940,6 +942,12 @@ app({
 ### Hydration
 
 Hyperapp will try to hydrate child nodes instead of throwing away your server-side rendered content. Hydration recycles existing DOM (usually from server-side rendering) rather than create new elements.
+
+Hyperapp works transparently with SSR and pre-rendered HTML, enabling SEO optimization and improving your sites time-to-interactive. The process consists of serving a fully pre-rendered page together with your application.
+
+Then instead of throwing away the server-rendered markdown, we'll turn your DOM nodes into an interactive application.
+
+{{Hyperapp expects that the rendered content is identical between the server and the client. It can patch up differences in text content, but you should treat mismatches as bugs and fix them. In development mode, Hyperapp warns about mismatches during hydration. There are no guarantees that attribute differences will be patched up in case of mismatches. This is important for performance reasons because in most apps, mismatches are rare, and so validating all markup would be prohibitively expensive.}}
 
 ### Navigation
 
@@ -980,7 +988,7 @@ app({
     </div>
   ),
   subscriptions: state => [location.onLocationChange],
-  container: document.body
+  node: document.getElementById("app")
 })
 ```
 
@@ -1001,6 +1009,7 @@ The main difference between a HTML form and a regular HTML document is that most
 {{
 
 Maybe you've run into a situation where Hyperapp alone isn't enough to do what you want and you are under a time constraint or need to step outside the boundaries set by a functional paradigm. you need to reach for external, third-party libraries. In this tutorial, we'll learn how to integrate a third-party library with a Hyperapp application.
+
 }}
 
 ### Animating elements

@@ -88,37 +88,35 @@ var patchSubs = function(oldSubs, newSubs, dispatch) {
   return subs
 }
 
-var patchProperty = function(node, name, oldValue, newValue, listener, isSvg) {
-  if (name === "key") {
-  } else if (name === "style") {
+var patchProperty = function(node, key, oldValue, newValue, listener, isSvg) {
+  if (key === "key") {
+  } else if (key === "style") {
     for (var k in merge(oldValue, newValue)) {
       oldValue = newValue == null || newValue[k] == null ? "" : newValue[k]
       if (k[0] === "-") {
-        node[name].setProperty(k, oldValue)
+        node[key].setProperty(k, oldValue)
       } else {
-        node[name][k] = oldValue
+        node[key][k] = oldValue
       }
     }
-  } else if (name[0] === "o" && name[1] === "n") {
+  } else if (key[0] === "o" && key[1] === "n") {
     if (
-      !((node.actions || (node.actions = {}))[
-        (name = name.slice(2))
-      ] = newValue)
+      !((node.actions || (node.actions = {}))[(key = key.slice(2))] = newValue)
     ) {
-      node.removeEventListener(name, listener)
+      node.removeEventListener(key, listener)
     } else if (!oldValue) {
-      node.addEventListener(name, listener, newValue.passive ? newValue : false)
+      node.addEventListener(key, listener, newValue.passive ? newValue : false)
     }
-  } else if (!isSvg && name !== "list" && name in node) {
-    node[name] = newValue == null ? "" : newValue
+  } else if (!isSvg && key !== "list" && key in node) {
+    node[key] = newValue == null ? "" : newValue
   } else if (
     newValue == null ||
     newValue === false ||
-    (name === "class" && !(newValue = createClass(newValue)))
+    (key === "class" && !(newValue = createClass(newValue)))
   ) {
-    node.removeAttribute(name)
+    node.removeAttribute(key)
   } else {
-    node.setAttribute(name, newValue)
+    node.setAttribute(key, newValue)
   }
 }
 
@@ -400,7 +398,7 @@ export var h = function(name, props) {
 
   while (rest.length > 0) {
     if (isArray((vnode = rest.pop()))) {
-      for (i = vnode.length; i-- > 0; ) {
+      for (var i = vnode.length; i-- > 0; ) {
         rest.push(vnode[i])
       }
     } else if (vnode === false || vnode === true || vnode == null) {

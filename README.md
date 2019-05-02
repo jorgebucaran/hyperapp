@@ -7,11 +7,11 @@
 
 Hyperapp is a JavaScript micro-framework for building web interfaces.
 
-> 👋 Psst! The documentation is still a work-in-progress. Please be patient as we work on it. If you think you've found a bug in Hyperapp, [create a new issue](https://github.com/jorgebucaran/hyperapp/issues/new) or [hop on Slack](https://hyperappjs.herokuapp.com) and let us know.
+> 👋 Psst! The documentation is still a work-in-progress and may not be perfect. Please be patient as we work on it. If you think you've found a bug in Hyperapp, [create a new issue](https://github.com/jorgebucaran/hyperapp/issues/new) or [hop on Slack](https://hyperappjs.herokuapp.com) and let us know.
 
 - **Minimal**—We have aggressively minimized the concepts you need to learn to be productive out of the box. Immutable state, unidirectional data-flow, effects as data and subscriptions—all combined into a single apparatus, clean, and tiny foundation.
 - **Declarative**–Write what, not how, and Hyperapp will figure out the best way to update the DOM as your data changes. Declarative user interfaces lead to highly testable and predictable applications—you'll never go back to DOM traversal and manipulation.
-- **Standalone**—Do more with less. Hyperapp includes state management and a [state-of-the-art] Virtual DOM engine that supports keyed updates, functional components & view memoization—all without dependencies.
+- **Standalone**—Do more with less. Hyperapp includes state management and a [state-of-the-art] Virtual DOM engine that supports keyed updates, functional components & view memoization—all without extra dependencies.
 
 [Check out the examples](#examples) and [follow Hyperapp](https://twitter.com/hyperappjs) on Twitter for news and updates. Did you know that maintaining and developing this project is a full-time effort? If you love Hyperapp, please [support me](https://patreon.com/jorgebucaran) on Patreon. If you are not comfortable with a recurring pledge, I also accept one-time donations via [PayPal](https://www.paypal.me/jorgebucaran). Thank you! 🙌
 
@@ -46,7 +46,6 @@ Hyperapp is a JavaScript micro-framework for building web interfaces.
 - [Optimization](#optimization)
   - [Keys]
   - [Lazy views]
-  - [Virtual DOM]
 - [Examples](#examples)
 - [Ecosystem](#ecosystem)
 - [License](#license)
@@ -78,15 +77,16 @@ Want to get a sense of what Hyperapp is like without installing anything? Try it
 
 ## Getting started
 
-Our first example is a counter that can be incremented or decremented. This is far from a real world application, but we're just getting started. The goal of this tutorial is to give you a taste of how Hyperapp works. The example shows you how to initialize your application state, wire actions to user-triggered events, and render HTML on the page.
+You want to develop feature-rich, scalable browser-based applications using a functional paradigm and thought you might give Hyperapp a go. Let's see what it can do. Along the way, we'll explain the most important principles and terminology so you'll be ready to tackle the rest of the documentation. Before we sign off, we'll even walk you through setting up a minimal build step and a local development server using a JavaScript module bundler.
 
-Go ahead and paste the following code in a new HTML file. We'll break it down afterwards.
+Our first example is a counter that can be incremented or decremented. The goal of this tutorial is to give you a taste of how Hyperapp works, not build a real-world application. You'll learn how to initialize your application state, wire actions to user-triggered events, and render HTML on the page.
+
+Create a new `index.html` file and paste the following code in it. We'll break it down afterwards.
 
 ```html
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8" />
     <script type="module">
       import { h, app } from "https://unpkg.com/hyperapp?module"
 
@@ -108,7 +108,7 @@ Go ahead and paste the following code in a new HTML file. We'll break it down af
 </html>
 ```
 
-Let's start from the bottom and work our way up the HTML tree. First, we create an empty `<div>` inside the document body. We want to take over that node and replace it with our view. Maybe your program is within a broader application, in a sidebar widget and surrounded by other elements. That's fine. Hyperapp gives you absolute control over where the root element of your application is rendered in the DOM.
+Let's start from the bottom and work our way up the HTML tree. First, we create an empty `<div>` inside the document body. We want to take over that node and replace it with our view. Maybe your program is within a broader application, in a sidebar widget and surrounded by other elements. That's fine too. Hyperapp gives you absolute control over where the root element of your application is rendered in the DOM.
 
 Inside the `<script>` tag we load Hyperapp as a module from a <a href=https://en.wikipedia.org/wiki/Content_delivery_network title="Content Delivery Network">CDN</a>. Don't worry, it works in all evergreen, self-updating desktop and mobile browsers. The application starts by dispatching the `init` action to initialize the state. Our code does not explicitly maintain any state. Instead, we define actions to transform it and a view to visualize it. The view returns a representation of the DOM known as a virtual DOM and Hyperapp updates the actual DOM to match it.
 
@@ -138,17 +138,11 @@ Here's what the virtual DOM looks like, abridged for clarity.
 }
 ```
 
-We use Hyperapp's `h` function to create virtual DOM nodes. It takes three arguments:
-
-- A string that specifies the type of element: `div`, `h1`, `button`, etc.
-- The element's properties (HTML or SVG attributes).
-- The element's child nodes.
-
-Describing HTML trees using functions, also known as hyperscript, is a common idea in virtual DOM implementations; the virtual DOM object specification may vary between libraries, but the function's signature stays the same.
+We use Hyperapp's `h` function to create virtual DOM nodes. It takes three arguments: a string that specifies the name of the node; `div`, `h1`, `button`, etc., an object of HTML or SVG properties, and an array of child nodes. Describing HTML trees using functions, also known as hyperscript, is a common idea in virtual DOM implementations; the virtual DOM object specification may vary between libraries, but the function's signature stays the same.
 
 Another way of creating virtual DOM nodes is using [JSX](https://facebook.github.io/jsx). JSX is an embeddable XML-like syntax language extension that lets you write HTML tags interspersed with JavaScript. It's syntactic sugar for pure, nested `h` function calls. The trade-off is that we need to compile it to standard JavaScript using a specialized tool before we can run the application.
 
-If you are tagging along, create an `index.js` file and paste the following code.
+If you are tagging along, create an `index.js` file and paste the following code in it.
 
 ```jsx
 import { h, app } from "hyperapp"
@@ -166,7 +160,7 @@ app({
 })
 ```
 
-We'll use [Babel](https://babeljs.io) to translate JSX to `h` function calls. First, install [`@babel/core`](https://www.npmjs.com/package/@babel/core) and [`@babel/plugin-transform-react-jsx`](https://www.npmjs.com/package/@babel/plugin-transform-react-jsx). One is the compiler, the other is a plugin that can rewrite JSX as an arbitrary function call. Then, add the following configuration to your `.babelrc` file, creating one if you still haven't.
+We'll use [Babel](https://babeljs.io) to translate JSX to `h` function calls. First, install [`@babel/core`](https://www.npmjs.com/package/@babel/core) and [`@babel/plugin-transform-react-jsx`](https://www.npmjs.com/package/@babel/plugin-transform-react-jsx). One is the compiler, the other is the JSX to JavaScript plugin. Then, add the following configuration to your `.babelrc` file, creating one if you still haven't.
 
 ```json
 {
@@ -183,7 +177,7 @@ We'll use [Babel](https://babeljs.io) to translate JSX to `h` function calls. Fi
 
 Fair warning, if you see JSX used in this documentation, it's purely a stylistic choice. If you don't want to set up a build step, there are compilation-free options such as [@hyperapp/html], [htmlo], and [htm](https://github.com/developit/htm). Try them all to find out which one works best for you.
 
-Now, open the `index.html` file created earlier for this example and modify it like so.
+Now, open the `index.html` file you created before and modify it like so.
 
 ```html
 <!DOCTYPE html>
@@ -198,17 +192,17 @@ Now, open the `index.html` file created earlier for this example and modify it l
 </html>
 ```
 
-The `defer` attribute indicates to the browser that `index.js` should be executed after the document has been parsed and we have a body. Now, let's put it all together with a module bundler.
+Finally, let's put it all together with a module bundler. Bundlers take JavaScript modules (or fonts, images, stylesheets), and combine them into one or a few files optimized for the browser. For this example, we choose [Parcel](https://parceljs.org) because of its low barrier to entry. If you prefer [Webpack](https://webpack.js.org) or [Rollup](http://rollupjs.org), refer to their documentation for usage details.
 
-Bundlers take JavaScript modules (or fonts, images, stylesheets), and combine them into one or a few files optimized for the browser. For this example, we are choosing [Parcel](https://parceljs.org). If you prefer [Webpack] or [Rollup], refer to their documentation for usage details.
+Once you've installed [`parcel`](https://www.npmjs.com/package/parcel-bundler), go ahead and start the local development server. It automatically rebuilds your app as you change files, reloading the browser window for you.
 
 ```console
-$ npx parcel index.html
+$ parcel index.html
 ```
 
-...and you should be up and running. You did it.
+...and you should be up and running. You did it!
 
-If something isn't working as expected you can always [check out] the source online to see how it's done. Experiment with the code. Spend some time thinking about how the view reacts to changes in the state. Can we add a button that resets the counter back to zero? How about disabling the decrement button when the state is less than one? Let's work on that next.
+If something isn't working as expected you can always [look at] the source online to see how we did it. Experiment with the code. Spend some time thinking about how the view reacts to changes in the state. Can we add a button that resets the counter back to zero? How about disabling the decrement button if the state is less than one? Let's work on that next.
 
 Previously, we defined actions inside the view function. This is inefficient, as it creates a new function every time Hyperapp calls the view. Anonymous functions are also awkward to debug since they don't have a name. A good rule of thumb is to create a function for every action in your program. Don't hold back, they're cheap!
 
@@ -218,10 +212,18 @@ const Decrement = state => state - 1
 const Increment = state => state + 1
 ```
 
-An action can be any function that takes the application state as the first argument and returns a new state. Notice that `Reset` doesn't need the state argument to reset the counter, so we can ignore it. Actions can also receive a payload, but let's not get ahead of ourselves.
+An action can be any function that takes the application state as the first argument and returns a new state. Notice that `Reset` doesn't need the state argument to reset the counter, so we ignore it. Actions can also receive a payload, but let's not get ahead of ourselves.
 
-Here's how our program looks now. You can [try it online here].
+To indicate the user can't interact with the button, we'll assign a boolean value to the element's `disabled` attribute as follows.
 
+<!-- prettier-ignore -->
+```jsx
+<button onclick={Decrement} disabled={state === 0}>-</button>
+```
+
+That should be all. Here's how our program looks now.
+
+<!-- prettier-ignore -->
 ```jsx
 import { h, app } from "hyperapp"
 
@@ -235,9 +237,7 @@ app({
     <div>
       <h1>{state}</h1>
       <button onclick={Reset}>Reset</button>
-      <button onclick={Decrement} disabled={state === 0}>
-        -
-      </button>
+      <button onclick={Decrement} disabled={state === 0}>-</button>
       <button onclick={Increment}>+</button>
     </div>
   ),
@@ -245,29 +245,25 @@ app({
 })
 ```
 
-We left more questions unanswered than we tried to cover in this section. How do we dispatch an action with a payload, access DOM event objects, handle text input, cause side effects, subscribe to global events, manipulate the DOM, animate elements?
-
-We're off to a great start! Keep calm and read on.
+There's still a lot of ground to cover, but we're off to a great start! In the following sections, we'll learn how to use actions to their full extent, handle text input, submit forms, create side-effects, subscribe to global events, talk to servers, manipulate the DOM, and more. {{By the end, I hope you will not only be able to create great applications in Hyperapp, but also understand the core ideas and patterns that make Hyperapp nice to use}}.
 
 ## Help, I'm stuck!
 
-We all get stuck sometimes. If you've hit a stumbling block and need to get help, check out the community support resources. Hop on the [Hyperapp Slack Room](https://hyperappjs.herokuapp.com/) to get help quickly, and if you don't receive an answer, or if you remain stuck, please file an issue, and we'll help you out.
+We all get stuck sometimes. If you've hit a stumbling block and need to get help, check out the community support resources. Hop on the [Hyperapp Slack Room](https://hyperappjs.herokuapp.com) to get help quickly, and if you don't receive an answer, or if you remain stuck, please file an issue, and we'll help you out.
 
 ## Fundamentals
 
-Hyperapp applications consist of a single state tree, a view that represents your user interface as a function of the state, and actions that describe state transitions. Every time your application state changes, Hyperapp calls your view function to create a virtual representation of the DOM and uses it to update the actual DOM.
+Hyperapp applications consist of a single state tree, a view that describes a user interface, and actions that describe state transitions. Every time your application state changes, Hyperapp calls the view function to create a new virtual representation of the DOM and uses it to update the actual DOM.
 
-A virtual DOM allows us to write code as if the entire document is thrown away and rebuilt on each transition, while we only update the parts that changed. We do this in the least number of steps possible, by comparing the new virtual DOM against the previous one, leading to high-efficiency, since typically only a small percentage of nodes need to change, and changing real DOM nodes is costly compared to recalculating the virtual DOM.
+It may seem wasteful to throw away the old virtual DOM and recalculate it entirely on every update—not to mention the fact that at any one time, Hyperapp is keeping two virtual DOM trees in memory, but as it turns out, browsers can create hundreds of thousands of objects very quickly. On the other hand, modifying the DOM is orders of magnitude more expensive.
 
-It may seem wasteful to throw away the old virtual DOM and re-create it entirely on every update—not to mention the fact that at any one time, Hyperapp is keeping two virtual DOM trees in memory, but as it turns out, browsers can create hundreds of thousands of objects very quickly. On the other hand, modifying the DOM is several orders of magnitude more expensive.
-
-In this section, we'll walk you through building a to-do list app that can add, view, edit, and delete items. Don't skip this tutorial. The concepts you'll learn are essential to master Hyperapp. We'll learn how to pass values to an action, handle user input, and access the event object and element triggering a DOM event. We'll also see how to break down our view into functions to improve code reusability and readability.
+In this section, we'll take a deep dive into the data lifecycle of a typical Hyperapp application as we build a to-do manager step-by-step. We'll look in great detail at how we initialize the state, render content on the page, and dispatch actions. Finally, we'll discuss how breaking down our view into functional components can improve code reusability and readability.
 
 ### Initializing the state
 
 The state is a plain object that contains knowledge about your application at any given time; for example, a blog needs to know whether or not a user is logged in or how many posts they have published, a platform game might keep track of the character's coordinates on the screen, vertical velocity, direction, and so on.
 
-Our to-do app needs an array to store the to-do items and a string to tag what the user is currently typing into a text field. Each item will have an id and a value. We also want to know if the user is editing a particular item, and a way to undo changes if they cancel the operation.
+Our to-do app will need an array to store to-do items and a string to watch what the user is currently typing into a text field. Each item will have an id and a value. We also want to know if the user is editing a particular item, and a way to undo changes if they cancel the operation.
 
 ```jsx
 import { app } from "hyperapp"
@@ -291,7 +287,7 @@ The `init` action describes how to initialize the state. Think of it as the entr
 
 If we decide to start with more than one to-do items, we're going to run out of vertical space quickly. By creating new to-do items through a function, we can reduce code duplication and automate generating a unique id for each item using a base change algorithm. No warranty of any kind is implied, though. Use at your own risk.
 
-> Using the `Math.random` method to generate random numbers is a side effect. We're taking a pragmatic approach to allow for side effects in this example only for convenience. You can read more about [generating random numbers] using Hyperapp effects later in this guide.
+> Using the `Math.random` method to generate random numbers is a side effect. We're taking a pragmatic approach to allow for side effects in this example our of convenience. You can read more about [generating random numbers] using Hyperapp effects later in this guide.
 
 ```jsx
 import { app } from "hyperapp"
@@ -315,17 +311,25 @@ app({
 })
 ```
 
-We have an initial state, but there's still no user interface to display it. In the next section, we'll learn how to render a page and look more closely at the virtual DOM model.
+We have an initial state, but there's still no user interface to display it. What will our program will look like? In the next section, we'll learn how to render a page and look more closely at the virtual DOM model.
 
 ### Rendering a page
 
-When describing the content of a page, we use the `h` function to create a virtual DOM. A virtual DOM is an object representation of how the DOM should look at any point in time. Hyperapp calls your `view` function to create this object and converts it into real DOM nodes in the browser efficiently.
+When describing the content of a page, we use the `h` function to create a virtual DOM. A virtual DOM is an object representation of how the DOM should look at any point in time. Hyperapp calls your `view` function to create this object and converts it into real DOM nodes in the browser.
 
+A virtual DOM allows us to write code as if the entire document is thrown away and rebuilt on each transition, while we only update the parts that actually change. We do this in the least number of steps possible, by comparing the new virtual DOM against the previous one, leading to high-efficiency, since typically only a small percentage of nodes need to change, and changing real DOM nodes is costly compared to recalculating the virtual DOM.
+
+<!-- prettier-ignore -->
 ```jsx
 import { h, app } from "hyperapp"
 
 app({
-  view: () => h("h1", {}, "Hello"),
+  view: () =>
+    h("div", {}, [
+      h("article", {}, [
+        h("h2", {}, "What's Hyperapp?")
+      ])
+    ]),
   node: document.getElementById("app")
 })
 ```
@@ -353,7 +357,7 @@ app({
 })
 ```
 
-If HTML tags in your JavaScript sounds appealing, here's the same code with JSX. It requires a build step, but JSX tends to look like regular HTML, which can be a win for you or your team. We'll be using JSX for the rest of this document, but you can choose whatever works for you. Check out [`@hyperapp/html`] for an official alternative.
+If HTML tags in your JavaScript sounds appealing, here's the same code using JSX. It requires a build step, but JSX tends to look like regular HTML, which can be a win for you or your team. We'll be using JSX for the rest of this document, but you can choose whatever works for you. Check out [`@hyperapp/html`] for an official alternative.
 
 ```jsx
 import { h, app } from "hyperapp"
@@ -509,7 +513,7 @@ What is of interest here is how the action receives the `id`. When we want Hyper
 <button onclick={[Remove, item.id]}>Remove</button>
 ```
 
-And for context, here's the new `TodoList` component. We also went ahead and wired actions to the Save and Cancel buttons, and to each to-do list item to toggle the edit mode when clicked. We'll introduce them after the code snippet.
+And for context, here's the new `TodoList` component. We also wired actions to the Save and Cancel buttons, and to each to-do list item to toggle the edit mode when clicked. You'll learn how they work after the code snippet.
 
 ```jsx
 const TodoList = props =>
@@ -588,43 +592,69 @@ const ToggleEdit = (state, id) => ({
 
 The result is less, and more readable code. A single glance at `Cancel` or `ToggleEdit` reveals what properties are changing in any given to-do, without getting bogged down in the how.
 
-In the next section, we'll learn how to handle text input, and access the event object and element that triggered the event. Hang on tight! We're almost there.
+Look how far we've come. We can initialize an application with some state, visualize it, and dispatch actions to update it. Give or take, everything after this point is building upon the same ideas. In the next section, you'll learn how to handle text input, and access the event object and element that triggered an event. Hang on tight! We're almost done.
 
 ### Handling text input
 
-So far we've seen how to dispatch an action when the user clicks on a button, but how do we update the state when the user types into a text field? Moreover, text fields are inherently stateful—how do we prevent the application state and DOM from getting out of sync? Let's find out.
+So far we've seen how to dispatch an action when the user clicks on a button, but how do we update the state when the user types into a text field? Text fields are inherently stateful—how do we prevent the application state and DOM from getting out of sync? Let's find out.
 
-To capture what the user is typing into a text field, we can use the oninput event attribute to dispatch an action when the text is changed. [Input events](https://developer.mozilla.org/en-US/docs/Web/API/InputEvent/input_event) fire not only on every keystroke but whenever the value of a text field changes; for example, by dragging text to or from the element, by cutting or pasting text either with or without the keyboard, by using speech recognition to dictate the text, etc. And by setting the value attribute of the element to `state.value`, we guarantee that its internal state always mirrors what's in our state.
+To capture what the user is typing into a text field, we can assign an action to the oninput event attribute of the target element. And by setting the value attribute of the element to `state.value`, we guarantee that its internal state always mirrors what's in the state.
 
 ```jsx
 <input type="text" value={state.value} oninput={NewValue} />
 ```
 
-Likewise, the onchange event occurs when the selection, the checked state or the value of an element have changed, however, for a text field, this event only fires when the element loses focus, whereas input events fire immediately on every change. [Change events](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/change_event) are useful for validating forms as sometimes we don't want to display errors until the user is done typing.
+[Input events](https://developer.mozilla.org/en-US/docs/Web/API/InputEvent/input_event) fire not only on every keystroke but whenever the value of a text field changes; for example, by dragging text to or from the element, by cutting or pasting text either with or without the keyboard, or by using speech recognition to dictate the text.
 
-The browser creates an [event object](https://developer.mozilla.org/en-US/docs/Web/API/Event) for every event, carrying detailed information about the event at the time it occurred: the type of the event, the event target, the screen coordinates of a mouse click, etc. Hyperapp sends this object as a payload to every action, allowing us to update `state.value` with the current value of the text field.
+Likewise, the onchange event occurs when the selection, the checked state or the value of an element have changed, however, for a text field, this event only fires when the element loses focus, whereas input events fire immediately on every change. [Change events](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/change_event) are useful for validating forms as sometimes we don't want to display errors until the user is finished typing.
+
+Now, how do we grab the changed value? The browser creates an [event object](https://developer.mozilla.org/en-US/docs/Web/API/Event) for every event, carrying detailed information about the event at the time it occurred: the type of the event, the event target, etc. Hyperapp sends this object as the payload to any action wired to a DOM event, allowing us to update `state.value` with the current value of the text field.
 
 ```jsx
 const NewValue = (state, event) => ({ ...state, value: event.target.value })
 ```
 
-Similarly, we need to handle text input for every to-do item while it is in edit mode, as well as send a custom payload to the action to identify which to-do item the user is editing. In this case, the action will receive the custom payload, followed by the event object.
+When writing actions, wouldn't it be better if we didn't have to think about events at all? Our current strategy may work if not involving a complex payload, but at what cost? Actions tightly coupled to events don't encourage code reusability; besides, destructuring the event object can become awkward. To tackle this problem, Hyperapp offers payload creators.
+
+First, let's rewrite `NewValue` to receive the new text value as a payload instead of the event object. We'll figure out how to pass in the value in a moment.
 
 ```jsx
-const Update = (state, id, event) => ({
+const NewValue = (state, value) => ({ ...state, value })
+```
+
+A payload creator is a function that receives an action's default payload and returns a new payload. It acts as a filter, transforming a payload before it reaches its destination. Here's how we can grab the event's target value.
+
+```jsx
+const targetValue = event => event.target.value
+```
+
+We use it when dispatching the action in place of the custom payload.
+
+```jsx
+<input type="text" value={state.value} oninput={[NewValue, targetValue]} />
+```
+
+Similarly, we need to handle text input for every to-do item while it's in edit mode, as well as send a custom payload with the action to identify which to-do item the user is editing. Sounds like we can use a payload creator here as well. First, let's define an action for this.
+
+```jsx
+const Update = (state, { id, value }) => ({
   ...state,
-  items: setItem(state.items, id, () => ({ value: event.target.value }))
+  items: setItem(state.items, id, () => ({ value }))
 })
 ```
 
-And here's our up-to-date `TodoList` component.
+And here's our up-to-date `TodoList` component using it.
 
 ```jsx
 const TodoList = props =>
   props.items.map(item =>
     item.isEditing ? (
       <li>
-        <input type="text" value={item.value} oninput={[Update, item.id]} />
+        <input
+          type="text"
+          value={item.value}
+          oninput={[Update, e => ({ id: item.id, value: targetValue(e) })]}
+        />
         <button onclick={[Cancel, item.id]}>Cancel</button>
         <button onclick={[Remove, item.id]}>Remove</button>
         <button onclick={[ToggleEdit, item.id]}>Save</button>
@@ -635,14 +665,16 @@ const TodoList = props =>
   )
 ```
 
-Neat! We have all the bits and pieces we need to put our to-do app together now. In the next section, we'll wrap things up and present the entire program in all its shining glory.
+Neat! Whereas custom payloads allow us to send dynamic data into our actions without cluttering the state with intermediate values, payload creators give us full control of the data we can pass in, reducing coupling and improving code reuse. We have all the bits and pieces we need to put our to-do app together now. In the next section, we'll wrap things up and present the entire program in all its shining glory.
 
 ### Putting it all together
 
-Here's the fruit of our work. Everything is in one place to help you see the big picture. In a real-world scenario, you'll want to split up your code into modules instead to reduce complexity and improve maintainability. Check out the example [online] for a potential way to organize a Hyperapp project.
+Here's the fruit of our work. Everything is in one place to help you see the big picture. In a real-world scenario, you'll want to split up your code into modules instead to reduce complexity and improve maintainability. Check out the final result [online] for a potential way to organize a Hyperapp project.
 
 ```jsx
 import { h, app } from "hyperapp"
+
+const targetValue = e => e.target.value
 
 const setItem = (items, id, set) =>
   items.map(item => (item.id === id ? { ...item, ...set(item) } : item))
@@ -654,7 +686,7 @@ const newItem = value => ({
   value
 })
 
-const NewValue = (state, event) => ({ ...state, value: event.target.value })
+const NewValue = (state, value) => ({ ...state, value })
 
 const Add = state => ({
   ...state,
@@ -662,9 +694,9 @@ const Add = state => ({
   items: state.items.concat(newItem(state.value))
 })
 
-const Update = (state, id, event) => ({
+const Update = (state, { id, value }) => ({
   ...state,
-  items: setItem(state.items, id, () => ({ value: event.target.value }))
+  items: setItem(state.items, id, () => ({ value }))
 })
 
 const Cancel = (state, id) => ({
@@ -692,7 +724,11 @@ const TodoList = props =>
   props.items.map(item =>
     item.isEditing ? (
       <li>
-        <input type="text" value={item.value} oninput={[Update, item.id]} />
+        <input
+          type="text"
+          value={item.value}
+          oninput={[Update, e => ({ id: item.id, value: targetValue(e) })]}
+        />
         <button onclick={[Cancel, item.id]}>Cancel</button>
         <button onclick={[Remove, item.id]}>Remove</button>
         <button onclick={[ToggleEdit, item.id]}>Save</button>
@@ -705,17 +741,17 @@ const TodoList = props =>
 app({
   init: {
     value: "",
-    items: [
-      newItem("Go outside"),
-      newItem("Wake up earlier"),
-      newItem("Learn a new language")
-    ]
+    items: [newItem("Make a sandwich")]
   },
   view: state => (
     <main>
       <h1>To-Do</h1>
       <TodoList items={state.items} />
-      <input type="text" value={state.value} oninput={NewValue} />
+      <input
+        type="text"
+        value={state.value}
+        oninput={[NewValue, targetValue]}
+      />
       <button onclick={Add}>New Item</button>
     </main>
   ),
@@ -729,6 +765,8 @@ If you're up for the challenge, try implementing one or two new features; for ex
 
 ## Subscriptions
 
+{{TODO}}
+
 <!--
 
 Did the user resize the browser's window? Did the physical orientation of the hosting device change?
@@ -741,11 +779,13 @@ We want to know when something interesting happens outside of our application. W
 
 Working with traditional event emitters requires complicated resource management like adding and removing event listeners, closing connections, clearing intervals—not to mention testing asynchronous code is tricky. What happens when the source you are subscribed to shuts down? How do you cancel or restart a subscription? Think of subscriptions as "virtual DOM meets events". When our application state changes we compare the new and old subscriptions, compute their differences and rewire the underlying connections to match the desired state.
 
-Similar to how we use hyperscript to create virtual nodes instead of writing them out by hand, we use a function to create each type of event we want to subscribe to. For time ticks there is [@hyperapp/time], for global mouse and keyboard events there is [@hyperapp/mouse] and [@hyperapp/keyboard]. Need to use WebSockets for real-time two-way communication? [`@hyperapp/websocket`] got you covered. In this section, we'll walk through concrete examples that show how to use and create your own subscriptions. Let's dive in!
+Similar to how we use hyperscript to create virtual nodes instead of writing them out by hand, we use a function to create each type of event we want to subscribe to. For time ticks there is [@hyperapp/time], for global mouse and keyboard events there is [@hyperapp/mouse] and [@hyperapp/keyboard]. Need to use WebSockets for real-time two-way communication? [`@hyperapp/websocket`] got you covered. In this section, we'll walk through concrete examples that show how to use and create your own subscriptions.
 
 ### Controlling time
 
-{{general info about cliock ticks To subscribe to clock ticks, we'll import the `tick` function from `@hyperapp/time`.}}
+{{TODO}}
+
+To subscribe to clock ticks, we'll import the `tick` function from `@hyperapp/time`.
 
 ```jsx
 import { h, app } from "hyperapp"
@@ -753,8 +793,6 @@ import { tick } from "@hyperapp/time"
 ```
 
 {{
-The `app` function can a `subscriptions` function
-
 Subscriptions are described using arrays. If a new subscription appears in the array, we'll start the subscription. When a subscription leaves the array, we'll cancel it. If any of its properties change, we'll restart it.
 }}
 
@@ -772,7 +810,7 @@ app({
 ```
 
 {{
-Now let's put it all together. Say some random thing. There is a fair amount of code, but do not worry. We will go through it all!
+Now let's put it all together. There is a fair amount of code, but do not worry. We'll go through it all!
 }}
 
 ```jsx
@@ -828,14 +866,14 @@ app({
 ```
 
 {{
-Explain what's going on. No need to write a bible.
+Break it down.
 
-closing remarks
-
-Subscriptions are a way to think about event streams whose lifecycle is determined by changes in our program state. in this example we didn't look at it, but the `subscriptions` function takes in the application state as an argument. Here we are subscribed to clock ticks forever, but we can turn our subscription on or off based on the state.
-
-show a new simple example or say we're going to deal with this later.
+Subscriptions are a way to think about event streams whose lifecycle is determined by changes in our program state. Similar to how the view function visualizes the current state, the subscriptions function describes a plan of events you wish to subscribe to. In the previous example, we subscribed to clock ticks for all eternity (or until the browser crashed), but we can turn a subscription on or off as easily as we can show or hide an element in our view.
 }}
+
+```jsx
+// Next example that shows how to toggle a sub on/off
+```
 
 ### Mouse input
 
@@ -853,47 +891,52 @@ import * as Keyboard from "@hyperapp/keyboard"
 
 ### Implementing your own subscriptions
 
+```jsx
+const subFx = (props, dispatch) => {}
+export const Sub = props => [subFx, props]
+```
+
 ## Effects
 
 We run programs for their side effects. Likewise, we want our programs to be predictable, easy to compose, test, and parallelize. JavaScript single-threaded execution guarantees that operations are atomic; two functions will never run at the same time, and we don't usually need to worry about concurrency, deadlock or race conditions (at least not the type of race condition caused by interleaved multi-threaded code), but we can still shoot ourselves in the foot by uncontrolled, indiscriminate use of side effects.
 
 How can our programs be pure while conversing with the outside world? Rather than setting a timeout or making an HTTP request, an action can return a description of the work that needs to be done, and Hyperapp will figure out how to do the job behind the scenes. Like the view function returns a specification of the DOM, but doesn't touch the real DOM; an effect describes a side effect: creating an HTTP request, giving focus to an element, saving data to local storage, sending data over a WebSocket, etc., without executing any code.
 
+{{TODO}}
+
 {{
-explain that hyperapp effects are not like built-into hyperapp, instead we need to import modules that produce the type of effects that we want. these modules encapsulate the implementation—the part that tells hyperapp exactly what to do. In this section, we'll walk through concrete examples that show how to use several Hyperapp effects to create timeouts, talk to servers, generate random numbers, manipulate the DOM, and much more. Finally, we'll learn how to create custom effects and discuss when we might want to use them.
+Effects are not built-into hyperapp, instead we need to import modules that produce the type of effects that we want. these modules encapsulate the implementation—the part that tells hyperapp exactly what to do. In this section, we'll walk through concrete examples that show how to use several Hyperapp effects to create timeouts talk to servers, generate random numbers, manipulate the DOM, and much more. Finally, we'll learn how to create custom effects and discuss when we might want to use them.
 }}
 
 ### Delaying time
 
 {{
-_Instead of having JavaScript execute a function immediately, you can tell it to execute a function after a certain period of time._ we coulve chosen from other more realistic examples, but timeout'S minimal api surface make them a perfect candidate to introduce effects in hyperapp. Let's start with a bla bla that demonstrates the gist of the idea. First, we'll import the effect we need from the `@hyperapp/time` module_. _Next, we'll create an action to do bla bla. Finally, we'll initialize the application and start the effect at the same time.
+Instead of having JavaScript execute a function immediately, you can tell it to execute a function after a certain period of time. we coulve chosen from other more realistic examples, but the timeout's minimal api surface makes it a perfect candidate to introduce effects. Let's start with (example description) that demonstrates the gist of the idea. First, we'll import the effect we need from the `@hyperapp/time` module. Next, we'll create an action to (do that thing). Finally, we'll initialize the application and start the effect at the same time.
 }}
 
 ```jsx
+// TODO
 ```
 
 {{
-up until this point weve used init to describe the initial state of our application, but it just so happens that actions are also allowed to return 2-tuple state-effect pairs. Think of it as a plan that describes what the state should be and the side effect we want to produce.
+Up until this point we've used init to describe the initial state of our application, but like every other action, it can return a 2-tuple state-effect pair. Think of it as a sequence that describes what the state should be and the side effect we want to produce.
 }}
 
 ### Talking to servers
 
-{{
-say some generic thing about making http requests and why we cant live without them and about the history of doing http in javascript and make sure to use words like ajax, fetch, xmlhttprequest. then try to make a case for why using any of those technologies is bad or difficult or prone to errors and how fetch, while eliminating many of the pitfalls of xmlhttprequest doesn't really improve much, not to mention the fact that its promise-based api is total garbage. now try to keep that at a minimum, remember this is not a book.
-}}
+{{TODO}}
 
 ```jsx
-// gif search
+// Gif Search
 ```
 
 ```jsx
-// https://exchangeratesapi.io
+// Currency Converter
 ```
 
 ### Manipulating the DOM
 
 ```jsx
-// focus example
 import { h, app } from "hyperapp"
 import { focus } from "@hyperapp/dom"
 
@@ -913,49 +956,97 @@ app({
 ### Generating random numbers
 
 ```jsx
-// dice roll game
+// Roll the dice game
 ```
 
 ### Implementing your own effects
 
 ```jsx
+const fx = (action, dispatch) => dispatch(action)
+const Invoke = action => [fx, { action }]
 ```
 
 ## HTML Attributes
 
+{{TODO}}
+
 ### class
+
+```jsx
+import { h } from "hyperapp"
+
+export const ToggleButton = ({ Toggle, isOn }) => (
+  <div class="btn" onclick={Toggle}>
+    <div
+      class={{
+        circle: true,
+        off: !isOn,
+        on: isOn
+      }}
+    />
+    <span class={{ textOff: !isOn }}>{isOn ? "ON" : "OFF"}</span>
+  </div>
+)
+```
 
 ### style
 
+```jsx
+import { h } from "hyperapp"
+
+export const Jumbotron = ({ text }) => (
+  <div
+    style={{
+      color: "white",
+      fontSize: "32px",
+      textAlign: center,
+      backgroundImage: `url(${imgUrl})`
+    }}
+  >
+    {text}
+  </div>
+)
+```
+
 ### checked
+
+{{TODO}}
 
 ### selected
 
+{{TODO}}
+
 ### multiple
 
+{{TODO}}
+
 ### innerHTML
+
+{{TODO}}
 
 ## Techniques
 
 ### Testing
 
+{{TODO}}
+
 ### Hydration
 
-Hyperapp will try to hydrate child nodes instead of throwing away your server-side rendered content. Hydration recycles existing DOM (usually from server-side rendering) rather than create new elements.
+{{TODO}}
 
-Hyperapp works transparently with SSR and pre-rendered HTML, enabling SEO optimization and improving your sites time-to-interactive. The process consists of serving a fully pre-rendered page together with your application.
+- Hyperapp will try to hydrate child nodes instead of throwing away your server-side rendered content. Hydration recycles existing DOM (usually from server-side rendering) rather than create new elements.
 
-Then instead of throwing away the server-rendered markdown, we'll turn your DOM nodes into an interactive application.
+- Hyperapp works transparently with SSR and pre-rendered HTML, enabling SEO optimization and improving your sites time-to-interactive. The process consists of serving a fully pre-rendered page together with your application.
 
-{{Hyperapp expects that the rendered content is identical between the server and the client. It can patch up differences in text content, but you should treat mismatches as bugs and fix them. In development mode, Hyperapp warns about mismatches during hydration. There are no guarantees that attribute differences will be patched up in case of mismatches. This is important for performance reasons because in most apps, mismatches are rare, and so validating all markup would be prohibitively expensive.}}
+- Then instead of throwing away the server-rendered markdown, we'll turn your DOM nodes into an interactive application.
+
+- Hyperapp expects server side rendered content to be identical between the server and the client. You should treat mismatches as bugs and fix them.
 
 ### Navigation
 
-{{
-Oh, the Places You'll Go! Declarative routing using the History API.
-}}
+{{TODO}}
 
-```
+```jsx
 import { h, app } from "hyperapp"
 import { location } from "@hyperapp/location"
 
@@ -994,27 +1085,43 @@ app({
 
 ### Working with forms
 
-{{
-This module provides a series of articles that will help you master HTML forms. HTML forms are a very powerful tool for interacting with users; however, for historical and technical reasons, it's not always obvious how to use them to their full potential. In this guide, we'll cover all aspects of HTML forms, from structure to styling, from data handling to custom widgets.
+{{TODO}}
 
-HTML Forms are one of the main points of interaction between a user and a web site or application. They allow users to send data to the web site. Most of the time that data is sent to the web server, but the web page can also intercept it to use it on its own.
+```jsx
+const preventDefault = action => ({ action, preventDefault: true })
 
-An HTML Form is made of one or more widgets. Those widgets can be text fields (single line or multiline), select boxes, buttons, checkboxes, or radio buttons. Most of the time those widgets are paired with a label that describes their purpose — properly implemented labels are able to clearly instruct both sighted and blind users on what to enter into a form input.
+const SubmitForm = () => ({})
 
-The main difference between a HTML form and a regular HTML document is that most of the time, the data collected by the form is sent to a web server. In that case, you need to set up a web server to receive and process the data. How to set up such a server is beyond the scope of this article, but if you want to know more, see Sending form data later in the module.
-}}
+app({
+  view: state => (
+    <form onsubmit={preventDefault(SubmitForm)}>
+      <label>
+        Username:
+        <input type="text" value={state.username} oninput={UpdateUsername} />
+      </label>
+      <label>
+        Password:
+        <input type="text" value={state.password} oninput={UpdatePassword} />
+      </label>
+    </form>
+  ),
+  node: document.getElementById("app")
+})
+```
 
 ### Using external libraries
 
-{{
+{{TODO}}
 
-Maybe you've run into a situation where Hyperapp alone isn't enough to do what you want and you are under a time constraint or need to step outside the boundaries set by a functional paradigm. you need to reach for external, third-party libraries. In this tutorial, we'll learn how to integrate a third-party library with a Hyperapp application.
-
-}}
+Maybe you've run into a situation where Hyperapp alone isn't enough to do what you want and you are under a time constraint or need to step outside the boundaries set by a functional paradigm. In this section, we'll learn how to integrate a third-party library with a Hyperapp application.
 
 ### Animating elements
 
+{{TODO}}
+
 ## Optimization
+
+{{TODO}}
 
 ### Keys
 

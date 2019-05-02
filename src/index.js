@@ -340,7 +340,7 @@ var patch = function(parent, node, oldVNode, newVNode, listener, isSvg) {
     }
   }
 
-  newVNode.node = node
+  return (newVNode.node = node)
 }
 
 var propsChanged = function(a, b) {
@@ -462,7 +462,7 @@ export var app = function(props, enhance) {
       subs = patchSubs(subs, batch(subscriptions(state)), dispatch)
     }
     if (view) {
-      patch(
+      node = patch(
         node.parentNode,
         node,
         vdom,

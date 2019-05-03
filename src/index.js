@@ -22,7 +22,7 @@ var createClass = function(obj) {
   } else {
     for (var k in obj) {
       if (obj[k]) {
-        out += (out && " ") + i
+        out += (out && " ") + k
       }
     }
   }

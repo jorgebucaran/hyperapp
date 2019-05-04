@@ -2,7 +2,7 @@
   "name": "hyperapp",
   "description": "JavaScript micro-framework for building web applications.",
   "version": "2.0.0-beta.1",
-  "main": "dist/hyperapp.js",
+  "main": "src/index.js",
   "module": "src/index.js",
   "license": "MIT",
   "repository": "jorgebucaran/hyperapp",

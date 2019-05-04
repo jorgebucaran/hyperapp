@@ -765,25 +765,19 @@ If you're up for the challenge, try implementing one or two new features; for ex
 
 ## Subscriptions
 
-{{TODO}}
+We've covered dispatching actions in response to user input, but sometimes we want to react to something happening outside of our application. How do we subscribe to global events, animation frames, clock ticks, or events that aren't a direct result of user activity like location changes? Did the user resize the browser's window? Did the physical orientation of the hosting device change? Subscriptions allow us to listen for such things.
 
-<!--
+Working with traditional event emitters requires complicated resource management like adding and removing event listeners, closing connections, clearing intervals—not to mention testing asynchronous code is tricky. What happens when the source you are subscribed to shuts down? How do you cancel or restart a subscription?
 
-Did the user resize the browser's window? Did the physical orientation of the hosting device change?
-
-When our application state changes we compare the new and old subscriptions, compute their differences and rewire the underlying connections to match the desired state. Think of subscriptions as "virtual DOM meets events".
-
--->
-
-We want to know when something interesting happens outside of our application. We can dispatch an action when the user clicks on a button, or types into a text field, but how do we subscribe to global key presses, animation frames, clock ticks, or events that aren't a direct result of user activity like location changes or server-sent events? Subscriptions allow us to listen for such things using a declarative paradigm.
-
-Working with traditional event emitters requires complicated resource management like adding and removing event listeners, closing connections, clearing intervals—not to mention testing asynchronous code is tricky. What happens when the source you are subscribed to shuts down? How do you cancel or restart a subscription? Think of subscriptions as "virtual DOM meets events". When our application state changes we compare the new and old subscriptions, compute their differences and rewire the underlying connections to match the desired state.
-
-Similar to how we use hyperscript to create virtual nodes instead of writing them out by hand, we use a function to create each type of event we want to subscribe to. For time ticks there is [@hyperapp/time], for global mouse and keyboard events there is [@hyperapp/mouse] and [@hyperapp/keyboard]. Need to use WebSockets for real-time two-way communication? [`@hyperapp/websocket`] got you covered. In this section, we'll walk through concrete examples that show how to use and create your own subscriptions.
+Subscriptions are plain objects that describe a connection to an event source. Similar to how we use a function to create virtual nodes instead of writing them out by hand, we use a function to create a subscription of the type of event we want to listen to. For time ticks there is [`@hyperapp/time`], for mouse and keyboard events there is [`@hyperapp/mouse`] and [`@hyperapp/keyboard`]. Need to use WebSockets for real-time two-way communication? [`@hyperapp/websocket`] has your back.
 
 ### Controlling time
 
-{{TODO}}
+<!--
+Think of subscriptions as "virtual DOM meets events". When our application state changes we compare the new and old subscriptions, compute their differences and rewire the underlying connections to match the desired state.
+ -->
+
+
 
 To subscribe to clock ticks, we'll import the `tick` function from `@hyperapp/time`.
 

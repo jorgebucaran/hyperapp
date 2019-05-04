@@ -31,7 +31,7 @@
     "minify:time": "terser dist/hyperappTime.js -o dist/hyperappTime.js -mc --source-map includeSources,url=hyperappTime.js.map"
   },
   "devDependencies": {
-    "rollup": "^1.10.1",
+    "rollup": "*",
     "terser": "^3.17.0"
   }
 }

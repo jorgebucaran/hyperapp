@@ -20,7 +20,6 @@ cache:
 script:
   - npm test
   - codecov
-  - npm run format -- --list-different
 
 notifications:
   email: false

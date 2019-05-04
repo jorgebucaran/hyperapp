@@ -22,10 +22,13 @@
   "scripts": {
     "test": "exit",
     "build": "npm run bundle && npm run minify",
-    "bundle": "rollup -i src/index.js -o dist/hyperapp.js --no-esModule -m -f umd -n hyperapp",
+    "bundle": "rollup -i src/index.js -o dist/hyperapp.js --no-esModule -m -f iife -n hyperapp",
     "minify": "terser dist/hyperapp.js -o dist/hyperapp.js -mc --source-map includeSources,url=hyperapp.js.map",
     "prepare": "npm run build",
-    "release": "npm run build && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
+    "release": "npm run build && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
+    "build:time": "npm run bundle:time && npm run minify:time",
+    "bundle:time": "rollup -i src/time/index.js -o dist/hyperappTime.js --no-esModule -m -f iife -n hyperappTime",
+    "minify:time": "terser dist/hyperappTime.js -o dist/hyperappTime.js -mc --source-map includeSources,url=hyperappTime.js.map"
   },
   "devDependencies": {
     "rollup": "^1.10.1",

@@ -1,0 +1,21 @@
+{
+  "name": "@hyperapp/time",
+  "description": "Time effects and subscriptions for Hyperapp.",
+  "version": "0.0.0",
+  "main": "dist/hyperappTime.js",
+  "module": "src/index.js",
+  "license": "MIT",
+  "repository": "jorgebucaran/hyperapp/packages/time",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "author": "Jorge Bucaran",
+  "keywords": [
+    "hyperapp",
+    "time"
+  ],
+  "scripts": {
+    "publish": "echo =$npm_package_version =$npm_package_main"
+  }
+}

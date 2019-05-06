@@ -1,7 +1,7 @@
 {
   "name": "hyperapp",
   "description": "JavaScript micro-framework for building web applications.",
-  "version": "2.0.0-beta.3",
+  "version": "2.0.0-beta.4",
   "main": "dist/hyperapp.js",
   "module": "src/index.js",
   "license": "MIT",
@@ -20,15 +20,13 @@
     "vdom"
   ],
   "scripts": {
-    "test": "exit",
-    "build": "npm run bundle && npm run minify",
-    "bundle": "rollup -i src/index.js -o dist/hyperapp.js --no-esModule -m -f iife -n hyperapp",
-    "minify": "terser dist/hyperapp.js -o dist/hyperapp.js -mc --source-map includeSources,url=hyperapp.js.map",
+    "tag": "node -p \"s=require('./${pkg:+pkg/$pkg/}package'),s.name+'@'+s.version\"",
+    "test": "exit 0",
+    "build": "export dir=${pkg:+pkg/$pkg/} pkg=$npm_package_name$pkg; npm run bundle && npm run minify",
+    "bundle": "rollup -i ${dir}$npm_package_module -o ${dir}dist/$pkg.js --no-esModule -m -f iife -n $pkg",
+    "minify": "terser ${dir}dist/$pkg.js -o ${dir}dist/$pkg.js -mc --source-map includeSources,url=$pkg.js.map",
     "prepare": "npm run build",
-    "release": "npm run build && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
-    "build:time": "npm run bundle:time && npm run minify:time",
-    "bundle:time": "rollup -i src/time/index.js -o dist/hyperappTime.js --no-esModule -m -f iife -n hyperappTime",
-    "minify:time": "terser dist/hyperappTime.js -o dist/hyperappTime.js -mc --source-map includeSources,url=hyperappTime.js.map"
+    "release": "msg=$(npm run -s tag); git commit -am $msg && git tag -s $msg -m $msg && git push && git push --tags && npm publish ${pkg:+@hyperapp/$pkg}"
   },
   "devDependencies": {
     "rollup": "*",

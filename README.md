@@ -64,12 +64,11 @@ Then with a module bundler like [Parcel](https://parceljs.org) or [Webpack](http
 import { h, app } from "hyperapp"
 ```
 
-Don't want to set up a build step? Load Hyperapp in a `<script>` tag and it will be available in the global scope through the `hyperapp` object. We support all ES5-compliant browsers out of the box, including IE11 and above.
+Don't want to set up a build step? Import Hyperapp in a `<script>` tag as a module. Don't worry, modules are supported in all evergreen, self-updating desktop and mobile browsers.
 
 ```html
-<script src="https://unpkg.com/hyperapp"></script>
-<script>
-  const { h, app } = hyperapp
+<script type="module">
+  import { h, app } from "https://unpkg.com/hyperapp?module"
 </script>
 ```
 
@@ -108,9 +107,9 @@ Create a new `index.html` file and paste the following code in it. We'll break i
 </html>
 ```
 
-Let's start from the bottom and work our way up the HTML tree. First, we create an empty `<div>` inside the document body. We want to take over that node and replace it with our view. Maybe your program is within a broader application, in a sidebar widget and surrounded by other elements. That's fine too. Hyperapp gives you absolute control over where the root element of your application is rendered in the DOM.
+Let's start from the bottom and work our way up the HTML tree. First, we create an empty `<div>` in the document body. We want to take over that node and replace it with our view. Maybe your program is within a broader application, in a sidebar widget and surrounded by other elements. That's fine too. Hyperapp gives you absolute control over where the root element of your application is rendered in the DOM.
 
-Inside the `<script>` tag we load Hyperapp as a module from a <a href=https://en.wikipedia.org/wiki/Content_delivery_network title="Content Delivery Network">CDN</a>. Don't worry, it works in all evergreen, self-updating desktop and mobile browsers. The application starts by dispatching the `init` action to initialize the state. Our code does not explicitly maintain any state. Instead, we define actions to transform it and a view to visualize it. The view returns a representation of the DOM known as a virtual DOM and Hyperapp updates the actual DOM to match it.
+The application starts by dispatching the `init` action to initialize the state. Our code does not explicitly maintain any state. Instead, we define actions to transform it and a view to visualize it. The view returns a representation of the DOM known as a virtual DOM, and Hyperapp updates the actual DOM to match it.
 
 Here's what the virtual DOM looks like, abridged for clarity.
 
@@ -776,8 +775,6 @@ Subscriptions are plain objects that describe a connection to an event source. S
 <!--
 Think of subscriptions as "virtual DOM meets events". When our application state changes we compare the new and old subscriptions, compute their differences and rewire the underlying connections to match the desired state.
  -->
-
-
 
 To subscribe to clock ticks, we'll import the `tick` function from `@hyperapp/time`.
 

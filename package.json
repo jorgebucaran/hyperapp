@@ -1,7 +1,7 @@
 {
   "name": "hyperapp",
   "description": "JavaScript micro-framework for building web interfaces.",
-  "version": "2.0.0-beta.6",
+  "version": "2.0.0-beta.7",
   "main": "dist/hyperapp.js",
   "module": "src/index.js",
   "license": "MIT",
@@ -25,7 +25,7 @@
     "bundle": "rollup -i ${dir}$npm_package_module -o ${dir}dist/$pkg.js --no-esModule -m -f iife -n $pkg",
     "minify": "terser ${dir}dist/$pkg.js -o ${dir}dist/$pkg.js -mc --source-map includeSources,url=$pkg.js.map",
     "update": "git commit -am $msg && git tag -s $msg -m $msg && git push && git push --tags",
-    "release": "env msg=$(npm run -s message) npm run update && npm publish ${pkg:+@npm_package_module/$pkg}",
+    "release": "env msg=$(npm run -s message) npm run update && npm publish ${pkg:+$npm_package_module/$pkg}",
     "message": "echo ${pkg:+@npm_package_name/$pkg@}$(node -p \"require('./${pkg:+lib/$pkg/}package').version\")",
     "prepare": "npm run build"
   },

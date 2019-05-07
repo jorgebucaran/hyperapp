@@ -24,10 +24,9 @@
     "build": "export dir=${pkg:+lib/$pkg/} pkg=$npm_package_name$pkg; npm run bundle && npm run minify",
     "bundle": "rollup -i ${dir}$npm_package_module -o ${dir}dist/$pkg.js --no-esModule -m -f iife -n $pkg",
     "minify": "terser ${dir}dist/$pkg.js -o ${dir}dist/$pkg.js -mc --source-map includeSources,url=$pkg.js.map",
-    "update": "git commit -am $msg && git tag -s $msg -m $msg && git push && git push --tags",
+    "update": "npm run build && git commit -am $msg && git tag -s $msg -m $msg && git push && git push --tags",
     "release": "env msg=$(npm run -s message) npm run update && cd ./${pkg:+lib/$pkg} && npm publish --access public",
-    "message": "echo ${pkg:+@$npm_package_name/$pkg@}$(node -p \"require('./${pkg:+lib/$pkg/}package').version\")",
-    "prepare": "npm run build"
+    "message": "echo ${pkg:+@$npm_package_name/$pkg@}$(node -p \"require('./${pkg:+lib/$pkg/}package').version\")"
   },
   "devDependencies": {
     "rollup": "*",

@@ -2,6 +2,7 @@
   "name": "@hyperapp/time",
   "description": "Time effects and subscriptions for Hyperapp.",
   "version": "0.0.2",
+  "main": "dist/hyperapptime.js",
   "module": "src/index.js",
   "license": "MIT",
   "repository": "jorgebucaran/hyperapp/packages/time",

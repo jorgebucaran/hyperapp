@@ -4,7 +4,7 @@ var TEXT_NODE = 3
 var EMPTY_OBJ = {}
 var EMPTY_ARR = []
 
-var map = EMPTY_ARR.map
+var reduce = EMPTY_ARR.reduce
 var isArray = Array.isArray
 var defer = requestAnimationFrame || setTimeout
 
@@ -377,7 +377,13 @@ var recycleNode = function(node) {
     : createVNode(
         node.nodeName.toLowerCase(),
         EMPTY_OBJ,
-        map.call(node.childNodes, recycleNode),
+        reduce.call(node.childNodes, function(out, node) {
+          return out.concat(
+            node.nodeType === TEXT_NODE || node.nodeType === RECYCLED_NODE
+            ? recycleNode(node)
+            : EMPTY_ARR
+          )
+        }, EMPTY_ARR),
         node,
         null,
         RECYCLED_NODE

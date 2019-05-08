@@ -26,8 +26,8 @@ Hyperapp is a JavaScript micro-framework for building web interfaces.
   - [Handling text input](#handling-text-input)
   - [Putting it all together](#putting-it-all-together)
 - [Subscriptions](#subscriptions)
-  - [Controlling time]
-  - [Mouse and keyboard input]
+  - [Controlling time](#controlling-time)
+  - [Mouse and keyboard input](#mouse-and-keyboard-input)
   - [Implementing your own subscriptions]
 - [Effects](#effects)
   - [Talking to servers](#talking-to-servers)
@@ -771,16 +771,12 @@ Subscriptions are plain objects that describe a connection to an event source. S
 
 ### Controlling time
 
-Our first foray into the world of subscriptions will be a clock that shows the current time. First, import Hyperapp and the `every` subscription from `@hyperapp/time` into your application.
+Time will be our first foray into the world of subscriptions. We're building a clock that shows the current time. First, install the [`@hyperapp/time`] core package. Then, import the `every` function into your program and create a new subscription, specifying a time interval and action to dispatch. Unless otherwise stated, time is always measured in milliseconds.
 
 ```jsx
 import { h, app } from "hyperapp"
 import { every } from "@hyperapp/time"
-```
 
-Then, create a new subscription, specifying a time interval and the action to dispatch. Unless otherwise stated, time is always measured in milliseconds.
-
-```jsx
 const Tick = (state, time) => ({ ...state, time })
 
 app({
@@ -793,7 +789,7 @@ app({
 })
 ```
 
-Hyperapp will dispatch `Tick` with the epoch as a payload. Behind the scenes, Hyperapp uses the browser's [`setInterval`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setInterval) method to dispatch the action at the specifed time interval and [`Date.now()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now) to retrieve the current time.
+Hyperapp will dispatch `Tick` with the system timestamp as the payload. Behind the scenes, Hyperapp uses the browser's [`setInterval`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setInterval) method to dispatch the action at the specifed time interval and [`Date.now()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now) to retrieve the current time.
 
 The `subscriptions` function takes in the current state and returns an array of subscriptions. Whenever the state changes, Hyperapp will call this function to calculate a new array. If a subscription appears in the array, we'll start it. If a subscription leaves the array, we'll cancel it. If any of its properties change, we'll restart it.
 
@@ -847,7 +843,7 @@ app({
 })
 ```
 
-Now, let's say we want to be able to hide the clock. Then, we should also cancel the subscription, or we'd be triggering unnecessary renders and wasting browser resources. The real power behind subscriptions is how we can toggle a subscription on or off, without having to keep track of an interval ID or event listener, just as we can show or hide an element in the view without storing a reference to a DOM node.
+Now, let's say we want to be able to hide the clock. No problem, but how do we clear out the interval? If we forget to cancel the subscription, it will trigger unnecessary renders and waste browser resources. A declarative subscription layer shines in that we can start or cancel a subscription, without having to keep track of an interval ID or event listener, just as we can show or hide an element in the view without a reference to a DOM node.
 
 ```jsx
 app({
@@ -861,20 +857,37 @@ app({
 })
 ```
 
-The `@hyperapp/time` package is not a date/time utility library. You won't find constants or functions to format, validate or manipulate time and time zones in it. It has one job. Make time effects and subscriptions available to Hyperapp programs. Over the next sections, we'll continue to look at subscriptions as we explore other Hyperapp core packages. Let's get to work!
+The `@hyperapp/time` package is not a general date/time utility library. You won't find constants or functions to format, validate or manipulate time and time zones in it. It has one purpose. Make time effects and subscriptions available to Hyperapp programs.
 
-### Mouse input
+### Mouse and keyboard input
 
-```jsx
-import { h, app } from "hyperapp"
-import { moves } from "@hyperapp/mouse"
-```
+In essence, mouse, keyboard and other hardware devices are event generators. Whenever the mouse is clicked or moved anywhere on the screen, the browser fires a mouse event. Likewise, whenever a key is pressed, the browser fires a [keyboard event]. Mouse and keyboard input can be useful for creating games, registering application-wide key shortcuts, implementing drag and drop, detecting when the user clicks outside of an element, etc. To subscribe to mouse and keyboard input, we'll be working with the [`@hyperapp/mouse`] and [`@hyperapp/keyboard`] core packages, so make sure to install them first.
 
-### Keyboard input
+Let's begin with a [key/mouse logger/keyboard practice/game]. First, import the `onMouseMove` and `onKeyDown` functions. Then, shazam!
 
 ```jsx
 import { h, app } from "hyperapp"
-import * as Keyboard from "@hyperapp/keyboard"
+import { onMouseMove } from "@hyperapp/mouse"
+import { onKeyDown } from "@hyperapp/keyboard"
+
+// Believe it or not, this app has no state, just logs. Side effects? What's that?
+const Log = (_, e) => console.log(e)
+
+// Payload creators let us reuse the Log action
+const key = e => e.key
+const clientXY = e => [e.clientX, e.clientY]
+
+// Open the dev console and enjoy the view!
+app({
+  subscriptions: state => [
+    onKeyDown({
+      action: [Log, key]
+    }),
+    onMouseMove({
+      action: [Log, clientXY]
+    })
+  ]
+})
 ```
 
 ### Implementing your own subscriptions

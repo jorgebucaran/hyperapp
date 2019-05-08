@@ -20,7 +20,7 @@ app({
 
 ## Notes
 
-- This package is suited for recurring tasks, not for animation. Use `@hyperapp/raf`, which is based on [`requestAnimationFrame`] for smooth animations.
+- This package is best suited for recurring tasks, not for animation. Check out `@hyperapp/raf`, which is based on [`requestAnimationFrame`], to create smooth animations and games.
 
 ## License
 

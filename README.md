@@ -285,7 +285,7 @@ The `init` action describes how to initialize the state. Think of it as the entr
 
 If we decide to start with more than one to-do items, we're going to run out of vertical space quickly. By creating new to-do items through a function, we can reduce code duplication and automate generating a unique id for each item using a base change algorithm. No warranty of any kind is implied, though. Use at your own risk.
 
-> Using the `Math.random` method to generate random numbers is a side effect. We're taking a pragmatic approach to allow for side effects in this example our of convenience. You can read more about [generating random numbers] using Hyperapp effects later in this guide.
+> Using `Math.random` to generate random numbers is a side effect. We're taking a pragmatic approach to allow for side effects in this example out of convenience. You can read more about [generating random numbers] using Hyperapp effects later in the documentation.
 
 ```jsx
 import { app } from "hyperapp"
@@ -742,7 +742,7 @@ app({
     items: [newItem("Make a sandwich")]
   },
   view: state => (
-    <main>
+    <div>
       <h1>To-Do</h1>
       <TodoList items={state.items} />
       <input
@@ -751,7 +751,7 @@ app({
         oninput={[NewValue, targetValue]}
       />
       <button onclick={Add}>New Item</button>
-    </main>
+    </div>
   ),
   node: document.getElementById("app")
 })
@@ -763,35 +763,29 @@ If you're up for the challenge, try implementing one or two new features; for ex
 
 ## Subscriptions
 
-We've covered dispatching actions in response to user input, but sometimes we want to react to something happening outside of our application. How do we subscribe to global events, animation frames, clock ticks, or events that aren't a direct result of user activity like location changes? Did the user resize the browser's window? Did the physical orientation of the hosting device change? Subscriptions allow us to listen for such things.
+We can dispatch an action when the user clicks on a button or types into a text field, but sometimes we want to react to something happening outside of our application. How do we subscribe to global events, animation frames, or clock ticks? Did the user resize the browser's window? Did the physical orientation of the hosting device change? Subscriptions allow us to listen for such things.
 
 Working with traditional event emitters requires complicated resource management like adding and removing event listeners, closing connections, clearing intervals—not to mention testing asynchronous code is tricky. What happens when the source you are subscribed to shuts down? How do you cancel or restart a subscription?
 
-Subscriptions are plain objects that describe a connection to an event source. Similar to how we use a function to create virtual nodes instead of writing them out by hand, we use a function to create a subscription of the type of event we want to listen to. For time ticks there is [`@hyperapp/time`], for mouse and keyboard events there is [`@hyperapp/mouse`] and [`@hyperapp/keyboard`]. Need to use WebSockets for real-time two-way communication? [`@hyperapp/websocket`] has your back.
+Subscriptions are plain objects that describe a connection to an event source. Similar to how we use a function to create virtual nodes instead of writing them out by hand, we use a function to create a subscription of the type of event we want to listen to. For time ticks there is [`@hyperapp/time`](lib/time), for mouse and keyboard events there is [`@hyperapp/mouse`] and [`@hyperapp/keyboard`]. Need to use WebSockets for real-time two-way communication? [`@hyperapp/websocket`] has your back.
 
 ### Controlling time
 
-<!--
-Think of subscriptions as "virtual DOM meets events". When our application state changes we compare the new and old subscriptions, compute their differences and rewire the underlying connections to match the desired state.
- -->
-
-To subscribe to clock ticks, we'll import the `tick` function from `@hyperapp/time`.
+Our first foray into the world of subscriptions will be a clock that shows the current time. First, import Hyperapp and the `every` subscription from `@hyperapp/time` into your application.
 
 ```jsx
 import { h, app } from "hyperapp"
-import { tick } from "@hyperapp/time"
+import { every } from "@hyperapp/time"
 ```
 
-{{
-Subscriptions are described using arrays. If a new subscription appears in the array, we'll start the subscription. When a subscription leaves the array, we'll cancel it. If any of its properties change, we'll restart it.
-}}
+Then, create a new subscription, specifying a time interval and the action to dispatch. Unless otherwise stated, time is always measured in milliseconds.
 
 ```jsx
-const Tick = (state, { time }) => ({ ...state, time })
+const Tick = (state, time) => ({ ...state, time })
 
 app({
-  subscriptions: () => [
-    tick({
+  subscriptions: state => [
+    every({
       action: Tick,
       interval: 1000
     })
@@ -799,19 +793,17 @@ app({
 })
 ```
 
-{{
-Now let's put it all together. There is a fair amount of code, but do not worry. We'll go through it all!
-}}
+Hyperapp will dispatch `Tick` with the epoch as a payload. Behind the scenes, Hyperapp uses the browser's [`setInterval`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setInterval) method to dispatch the action at the specifed time interval and [`Date.now()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now) to retrieve the current time.
+
+The `subscriptions` function takes in the current state and returns an array of subscriptions. Whenever the state changes, Hyperapp will call this function to calculate a new array. If a subscription appears in the array, we'll start it. If a subscription leaves the array, we'll cancel it. If any of its properties change, we'll restart it.
+
+Here's the rest of the program. To spice things up, we've added an option to switch to a 24-hour clock too. You can try it online [here].
 
 ```jsx
 import { h, app } from "hyperapp"
-import { tick } from "@hyperapp/time"
+import { every } from "@hyperapp/time"
 
-const timeToUnits = date => [
-  date.getHours(),
-  date.getMinutes(),
-  date.getSeconds()
-]
+const timeToUnits = t => [t.getHours(), t.getMinutes(), t.getSeconds()]
 
 const formatTime = (hours, minutes, seconds, use24) =>
   (use24 ? hours : hours > 12 ? hours - 12 : hours) +
@@ -824,7 +816,7 @@ const formatTime = (hours, minutes, seconds, use24) =>
 const posixToHumanTime = (time, use24) =>
   formatTime(...timeToUnits(new Date(time)), use24)
 
-const Tick = (state, { time }) => ({ ...state, time })
+const Tick = (state, time) => ({ ...state, time })
 
 const ToggleFormat = state => ({ ...state, use24: !state.use24 })
 
@@ -834,7 +826,7 @@ app({
     use24: false
   }),
   view: state => (
-    <main>
+    <div>
       <h1>{posixToHumanTime(state.time, state.use24)}</h1>
       <fieldset>
         <legend>Settings</legend>
@@ -843,10 +835,10 @@ app({
           Use 24 Hour Clock
         </label>
       </fieldset>
-    </main>
+    </div>
   ),
-  subscriptions: () => [
-    tick({
+  subscriptions: state => [
+    every({
       action: Tick,
       interval: 1000
     })
@@ -855,21 +847,27 @@ app({
 })
 ```
 
-{{
-Break it down.
-
-Subscriptions are a way to think about event streams whose lifecycle is determined by changes in our program state. Similar to how the view function visualizes the current state, the subscriptions function describes a plan of events you wish to subscribe to. In the previous example, we subscribed to clock ticks for all eternity (or until the browser crashed), but we can turn a subscription on or off as easily as we can show or hide an element in our view.
-}}
+Now, let's say we want to be able to hide the clock. Then, we should also cancel the subscription, or we'd be triggering unnecessary renders and wasting browser resources. The real power behind subscriptions is how we can toggle a subscription on or off, without having to keep track of an interval ID or event listener, just as we can show or hide an element in the view without storing a reference to a DOM node.
 
 ```jsx
-// Next example that shows how to toggle a sub on/off
+app({
+  subscriptions: state => [
+    state.isHidden ||
+      every({
+        action: Tick,
+        interval: 1000
+      })
+  ]
+})
 ```
+
+The `@hyperapp/time` package is not a date/time utility library. You won't find constants or functions to format, validate or manipulate time and time zones in it. It has one job. Make time effects and subscriptions available to Hyperapp programs. Over the next sections, we'll continue to look at subscriptions as we explore other Hyperapp core packages. Let's get to work!
 
 ### Mouse input
 
 ```jsx
 import { h, app } from "hyperapp"
-import * as Mouse from "@hyperapp/mouse"
+import { moves } from "@hyperapp/mouse"
 ```
 
 ### Keyboard input
@@ -934,10 +932,10 @@ const SetFocus = state => [state, focus({ id: "input" })]
 
 app({
   view: () => (
-    <main>
+    <div>
       <input id="input" type="text" />
       <button onclick={SetFocus}>Set Focus</button>
-    </main>
+    </div>
   ),
   node: document.getElementById("app")
 })

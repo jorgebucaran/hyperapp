@@ -765,9 +765,9 @@ If you're up for the challenge, try implementing one or two new features; for ex
 
 We can dispatch an action when the user clicks on a button or types into a text field, but sometimes we want to react to something happening outside of our application. How do we subscribe to global events, animation frames, or clock ticks? Did the user resize the browser's window? Did the physical orientation of the hosting device change? Subscriptions allow us to listen for such things.
 
-Working with traditional event emitters requires complicated resource management like adding and removing event listeners, closing connections, clearing intervals—not to mention testing asynchronous code is tricky. What happens when the source you are subscribed to shuts down? How do you cancel or restart a subscription?
+Working with traditional event emitters requires complicated resource management like adding and removing listeners, closing connections, clearing intervals—not to mention testing asynchronous code is tricky. What happens when the source you are subscribed to shuts down? How do you cancel or restart a subscription?
 
-Subscriptions are plain objects that describe a connection to an event source. Similar to how we use a function to create virtual nodes instead of writing them out by hand, we use a function to create a subscription of the type of event we want to listen to. For time ticks there is [`@hyperapp/time`](lib/time), for mouse and keyboard events there is [`@hyperapp/mouse`] and [`@hyperapp/keyboard`]. Need to use WebSockets for real-time two-way communication? [`@hyperapp/websocket`] has your back.
+Subscriptions are plain objects that describe a connection to an event source. Similar to how we use a function to create virtual nodes instead of writing them out by hand, we use a function to create a subscription of the type of event we want to listen to. For clock ticks there is [`@hyperapp/time`](lib/time), for global events like mouse or keyboard events there is [`@hyperapp/events`](). Need to use WebSockets for two-way communication? [`@hyperapp/websocket`]() has your back.
 
 ### Controlling time
 
@@ -861,33 +861,12 @@ The `@hyperapp/time` package is not a general date/time utility library. You won
 
 ### Mouse and keyboard input
 
-In essence, mouse, keyboard and other hardware devices are event generators. Whenever the mouse is clicked or moved anywhere on the screen, the browser fires a mouse event. Likewise, whenever a key is pressed, the browser fires a [keyboard event]. Mouse and keyboard input can be useful for creating games, registering application-wide key shortcuts, implementing drag and drop, detecting when the user clicks outside of an element, etc. To subscribe to mouse and keyboard input, we'll be working with the [`@hyperapp/mouse`] and [`@hyperapp/keyboard`] core packages, so make sure to install them first.
+In essence, mouse, keyboard and other hardware devices are event generators. Whenever the mouse is clicked or moved anywhere on the screen, the browser fires a mouse event. Likewise, whenever a key is pressed, the browser fires a [keyboard event]. Mouse and keyboard input can be useful for creating games, registering application-wide key shortcuts, implementing drag and drop, detecting when the user clicks outside of an element, etc. To subscribe to mouse and keyboard input, we'll be working with the [`@hyperapp/events`] core package, so make sure to install it first.
 
 Let's begin with a [key/mouse logger/keyboard practice/game]. First, import the `onMouseMove` and `onKeyDown` functions. Then, shazam!
 
 ```jsx
-import { h, app } from "hyperapp"
-import { onMouseMove } from "@hyperapp/mouse"
-import { onKeyDown } from "@hyperapp/keyboard"
 
-// Believe it or not, this app has no state, just logs. Side effects? What's that?
-const Log = (_, e) => console.log(e)
-
-// Payload creators let us reuse the Log action
-const key = e => e.key
-const clientXY = e => [e.clientX, e.clientY]
-
-// Open the dev console and enjoy the view!
-app({
-  subscriptions: state => [
-    onKeyDown({
-      action: [Log, key]
-    }),
-    onMouseMove({
-      action: [Log, clientXY]
-    })
-  ]
-})
 ```
 
 ### Implementing your own subscriptions

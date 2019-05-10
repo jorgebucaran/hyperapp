@@ -1,10 +1,6 @@
-# @hyperapp/time
+# @hyperapp/events
 
 ## Installation
-
-<pre>
-npm i @hyperapp/time
-</pre>
 
 ## Usage
 

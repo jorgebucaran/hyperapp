@@ -1,0 +1,19 @@
+{
+    "name": "@hyperapp/events",
+    "description": "Browser and Window global events for Hyperapp.",
+    "version": "0.0.0",
+    "main": "dist/hyperappevents.js",
+    "module": "src/index.js",
+    "license": "MIT",
+    "repository": "jorgebucaran/hyperapp/lib/events",
+    "files": [
+      "src",
+      "dist"
+    ],
+    "author": "Jorge Bucaran",
+    "keywords": [
+      "hyperapp",
+      "events"
+    ]
+  }
+  

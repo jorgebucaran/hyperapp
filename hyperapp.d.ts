@@ -47,7 +47,7 @@ export function h<Attributes>(
  * 
  * @memberOf [App]
  */
-export type Dispatch<State> = <Data = {}, Props=void>(obj: Action<State, Data, Props> | State, data: Data) => void;
+export type Dispatch<State> = <Data = {}>(obj: Action<State, Data> | State, data: Data) => void;
 
 
 /** An effect as the result of an ation
@@ -78,8 +78,9 @@ export type ActionFunc<State, Payload> = (state: State, data: Payload) => Action
  * 
  * @memberOf [App]
  */
-export type Action<State, Data = {}, Props = void> =
-    Props extends void ? ActionFunc<State, Data> : [ActionFunc<State, Props>, (Props | ((data: Data) => Props))]
+export type Action<State, Data = void> =
+    | [ActionFunc<State, unknown>, (unknown | ((data: Data) => unknown))] // TODO: Proper handling w/ existential types!
+    | ActionFunc<State, Data>;
 
 /** A reference to an subscription to be managed by Hyperapp, with optional additional parameters
  * 

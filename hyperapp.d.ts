@@ -122,7 +122,7 @@ export type Subscriptions<State> = (state: State) => SubscriptionsResult<State>;
 export interface App<State> {
     init?: (() => State) | State;
     view: View<State>;
-    container?: Element;
+    node?: Element;
     subscriptions: Subscriptions<State>;
 }
 

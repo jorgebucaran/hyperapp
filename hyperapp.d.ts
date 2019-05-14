@@ -60,7 +60,7 @@ export type EffectFunc<State, Props, Result = void> = (props: Props, dispatch: D
  * 
  * @memberOf [App]
  */
-export type Effect<State, Props> = [EffectFunc<State, Props>, Props];
+export type Effect<State, Props> = [EffectFunc<State, Props>, Props]; // TODO: Use existential types to 'hide' Props
 
 /** The result of an action.
  *

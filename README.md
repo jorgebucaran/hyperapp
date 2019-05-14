@@ -27,8 +27,8 @@ Hyperapp is a JavaScript micro-framework for building web interfaces.
   - [Putting it all together](#putting-it-all-together)
 - [Subscriptions](#subscriptions)
   - [Controlling time](#controlling-time)
-  - [Mouse and keyboard input](#mouse-and-keyboard-input)
-  - [Implementing your own subscriptions]
+  - [Listening to global events](#listening-to-global-events)
+  - [Implementing your own subscriptions]()
 - [Effects](#effects)
   - [Talking to servers](#talking-to-servers)
   - [Manipulating the DOM]
@@ -54,7 +54,7 @@ Hyperapp is a JavaScript micro-framework for building web interfaces.
 Install the latest version of Hyperapp with a package manager. We recommend using npm or Yarn to manage your front-end dependencies and keep them up-to-date.
 
 <pre>
-npm i <a href=https://www.npmjs.com/package/hyperapp>hyperapp@beta</a>
+npm i hyperapp@<em>beta</em>
 </pre>
 
 Then with a module bundler like [Parcel](https://parceljs.org) or [Webpack](https://webpack.js.org) import Hyperapp in your application and get right down to business.
@@ -763,17 +763,17 @@ If you're up for the challenge, try implementing one or two new features; for ex
 
 ## Subscriptions
 
-We can dispatch an action when the user clicks on a button or types into a text field, but sometimes we want to react to something happening outside of our application. How do we subscribe to global events, animation frames, or clock ticks? Did the user resize the browser's window? Did the physical orientation of the hosting device change? Subscriptions allow us to listen for such things.
+Sometimes we want to react to interesting events happening outside of our application like subscribing to location changes, or the current time. Did the user resize the browser's window? Maybe we're building a game and want to hook into the browser's natural repaint cycle. Subscriptions allow us to listen for such things.
 
-Working with traditional event emitters requires complicated resource management like adding and removing listeners, closing connections, clearing out intervals—not to mention testing asynchronous code is tricky. What happens when the source you are subscribed to shuts down? How do you cancel or restart a subscription?
+The alternative, working with traditional event emitters, requires complicated resource management like adding and removing listeners, closing connections, clearing out intervals—not to mention testing asynchronous code is tricky. What happens when the source you are subscribed to shuts down? How do you cancel or restart a subscription?
 
-Subscriptions are plain objects that describe a connection to an event source. Similar to how we use a function to create virtual nodes instead of writing them out by hand, we use functions to create subscriptions of the type of event we want to listen to. For scheduling tasks and clock ticks there is [`@hyperapp/time`](lib/time), for global events like mouse or keyboard events there is [`@hyperapp/events`](). Need to use WebSockets for two-way communication? [`@hyperapp/websocket`]() has your back.
+Subscriptions describe a connection to an event generator. Similar to how we use a function to create virtual nodes instead of writing them out by hand, we use functions to create a subscription of the type of event we want to listen to. For scheduling recurrent tasks there is [`@hyperapp/time`](lib/time), for listening to global events like mouse or keyboard events there is [`@hyperapp/events`](). Need to use WebSockets for two-way communication? [`@hyperapp/websocket`]() has your back.
 
 ### Controlling time
 
 Let's say you want to call a function every second or so. Maybe you're creating a turn-based game where each player has an allotted time to play. Usually, you'd use `setInterval` or concoct something with `setTimeout` to defer calling a function at a later date and keep track of the timeout ID so you can clear out the interval; for example, when you want to pause or resume the game. But what happens when the time needs to change dynamically? In some forms of chess, you have to add a certain number of seconds to the player's clock each time they move. Working with time will be our first foray into the world of subscriptions.
 
-We're going to build a simple clock that shows the current time. You can check out the [final result here]() before we dive into the code. When you're ready, install the [`@hyperapp/time`](lib/time) core package. Then, import the `interval` function into your program and create a new subscription as follows, specifying the action to dispatch and the interval delay. Unless otherwise stated, time is always measured in milliseconds.
+We're going to build a simple clock that shows the current time. You can try the [final result here]() before we dive into the code. When you're ready, install the [`@hyperapp/time`](lib/time) core package. Then, import the `interval` function into your program and create a new subscription as follows, specifying the action to dispatch and the interval delay. Unless otherwise stated, time is always measured in milliseconds.
 
 ```jsx
 import { h, app } from "hyperapp"
@@ -783,15 +783,14 @@ const Tick = (state, time) => ({ ...state, time })
 
 app({
   subscriptions: state => [
-    interval({
-      action: Tick,
+    interval(Tick, {
       delay: 1000
     })
   ]
 })
 ```
 
-Hyperapp will dispatch `Tick` with the system timestamp as the payload every second. Behind the scenes, Hyperapp uses the browser's [`setInterval`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setInterval) method to dispatch the action at the specifed time interval and [`Date.now()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now) to retrieve the current time.
+That is all there is to setting up a subscription. Hyperapp will dispatch `Tick` with the system timestamp as the payload every second. Behind the scenes, it uses the browser's [`setInterval`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setInterval) method to dispatch the action at the specifed time interval and [`Date.now()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now) to retrieve the current time.
 
 The `subscriptions` function takes in the current state and returns an array of subscriptions. Whenever the state changes, Hyperapp calls this function to calculate a new array. If a subscription appears in the array, we'll start it. If a subscription leaves the array, we'll cancel it. If any of its properties change, we'll restart it.
 
@@ -836,8 +835,7 @@ app({
     </div>
   ),
   subscriptions: state => [
-    interval({
-      action: Tick,
+    interval(Tick, {
       delay: 1000
     })
   ],
@@ -845,36 +843,55 @@ app({
 })
 ```
 
-Now, let's say we want to be able to hide the clock. Fair enough, but how do we clear out the interval? If we forget to cancel the subscription, it will trigger unnecessary renders and waste browser resources. We can toggle a subscription on or off whenever the state changes by using a boolean condition and Hyperapp will take care of rewiring the underlying connections for us. The main takeaway is: we can start or cancel a subscription without having to keep track of an ID or event listener, just like we can show or hide an element in the view without a reference to a DOM node.
+Now, let's say we need to hide the clock. Fair enough, but how do we clear out the interval? We don't want to trigger unnecessary renders and waste browser resources. By using a boolean condition we can switch a subscription on or off whenever the state changes and Hyperapp will take care of rewiring the connections for us under the hood. The main takeaway is: we can start or cancel a subscription without having to keep track of an ID or event listener, just like we can show or hide an element in the view without a reference to a DOM node.
 
 ```jsx
 app({
   subscriptions: state => [
     state.isVisible &&
-      interval({
-        action: Tick,
+      interval(Tick, {
         delay: 1000
       })
   ]
 })
 ```
 
-The [`@hyperapp/time`]() package is not a general date/time utility library. You won't find constants or functions to format, validate or manipulate time and time zones in it. It has one purpose. Make time effects and subscriptions available to Hyperapp programs. To learn more about this package, visit the official documentation with the link above.
+The [`@hyperapp/time`](lib/time) package is not a general date/time utility library. You won't find constants or functions to format, validate or manipulate time and time zones in it. It has one purpose. Make time effects and subscriptions available to Hyperapp programs. To learn more about this package, visit the official documentation with the link above.
 
-### Mouse and keyboard input
+### Listening to global events
 
-In essence, mouse, keyboard and other hardware devices are event generators. Whenever the mouse is clicked or moved anywhere on the screen, the browser fires a mouse event. Likewise, whenever a key is pressed, the browser fires a [keyboard event]. Mouse and keyboard input can be useful for creating games, registering application-wide key shortcuts, implementing drag and drop, detecting when the user clicks outside of an element, etc. To subscribe to mouse and keyboard input, we'll be working with the [`@hyperapp/events`] core package, so make sure to install it first.
+Whenever you click or move the mouse anywhere on the screen, press or release a key, scroll the document view, or move across a touch surface, the browser will fire an event you can listen to. You can react to the browser's window or tab losing and gaining focus; for example, when the user looks away, you may want to cancel an expensive subscription, pause video or audio, and so on.
 
-Let's begin with a [key/mouse logger/keyboard practice/game]. First, import the `onMouseMove` and `onKeyDown` functions. Then, shazam!
+In this section you'll learn to respond to mouse and keyboard input, and sync up with the browsers natural refresh rate to create an interactive game. Even if you're goal is not building games, taming the mouse and keyboard will be useful when registering application-wide keyboard shortcuts, implementing a drag and drop feature, and detecting when the user clicks outside of an element.
+
+Let's start off with a couple of questions. What are the current mouse coordinates and what key was pressed? To begin, we'll need the [`@hyperapp/events`] core package, so make sure to install it first. Then, import the `onKey
+
+```jsx
+```
+
+Typing practice
+
+```jsx
+```
+
+Snake/blockade.
 
 ```jsx
 ```
 
 ### Implementing your own subscriptions
 
+Think of subscriptions as orchestration for events or virtual DOM meets event streams. Or just a declarative API on top of the browser's imperative event-driven paradigm.
+
 ```jsx
-const subFx = (props, dispatch) => {}
-export const Sub = props => [subFx, props]
+const fx = a => b => [a, b]
+
+export const Sub = fx((dispatch, props) => {
+  // Subscribe
+  return () => {
+    // Unsubscribe
+  }
+})
 ```
 
 ## Effects
@@ -1069,13 +1086,13 @@ app({
 {{TODO}}
 
 ```jsx
-const preventDefault = action => ({ action, preventDefault: true })
+import { preventDefault } from "@hyperapp/events"
 
-const SubmitForm = () => ({})
+const SubmitForm = state => [{ ...state, otherStuff }, preventDefault]
 
 app({
   view: state => (
-    <form onsubmit={preventDefault(SubmitForm)}>
+    <form onsubmit={SubmitForm}>
       <label>
         Username:
         <input type="text" value={state.username} oninput={UpdateUsername} />

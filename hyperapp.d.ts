@@ -54,25 +54,25 @@ export type Dispatch<State> = <Data = {}>(obj: Action<State, Data> | State, data
  * 
  * @memberOf [App]
  */
-export type EffectFunc<State, Props, Result = void> = (props: Props, dispatch: Dispatch<State>) => Result;
+export type EffectFunc<State, Payload, Result = void> = (dispatch: Dispatch<State>, props: unknown, payload: Payload) => Result;
 
 /** An effect as the result of an ation
  * 
  * @memberOf [App]
  */
-export type Effect<State, Props> = [EffectFunc<State, Props>, Props]; // TODO: Use existential types to 'hide' Props
+export type Effect<State, Payload> = [EffectFunc<State, Payload>, unknown]; // TODO: Use existential type props
 
 /** The result of an action.
  *
  * @memberOf [App]
  */
-export type ActionResult<State> = State | [State, ...Effect<State, unknown>[]];
+export type ActionResult<State, Payload> = State | [State, ...Effect<State, Payload>[]];
 
 /** The interface for a single action implementation.
  *
  * @memberOf [App]
  */
-export type ActionFunc<State, Payload> = (state: State, data: Payload) => ActionResult<State>
+export type ActionFunc<State, Payload> = (state: State, data: Payload) => ActionResult<State, Payload>
 
 /** A reference to an action to be invoked by Hyperapp, with optional additional parameters
  * 

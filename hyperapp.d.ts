@@ -54,13 +54,13 @@ export type Dispatch<State> = <Data = {}>(obj: Action<State, Data> | State, data
  * 
  * @memberOf [App]
  */
-export type EffectFunc<State, Payload, Result = void> = (dispatch: Dispatch<State>, props: unknown, payload: Payload) => Result;
+export type EffectFunc<State, Props, Payload, Result = void> = (dispatch: Dispatch<State>, props: Props, payload: Payload) => Result;
 
 /** An effect as the result of an ation
  * 
  * @memberOf [App]
  */
-export type Effect<State, Payload> = [EffectFunc<State, Payload>, unknown]; // TODO: Use existential type props
+export type Effect<State, Payload> = [EffectFunc<State, unknown, Payload>, unknown]; // TODO: Use existential type props
 
 /** The result of an action.
  *
@@ -86,14 +86,14 @@ export type Action<State, Data = void> =
  * 
  * @memberOf [App]
  */
-export type Subscription<State, Props = any> = [EffectFunc<State, Props, () => void>, Props];
+export type Subscription<State> = [EffectFunc<State, unknown, void, () => void>, unknown]; // TODO: Existential types!
 
 /**
  * A function used to create a particular subscription.
  * 
  * @memberOf [App]
  */
-export type SubscriptionConstructor<State, Props = {}> = (props: Props) => Subscription<State, Props>
+export type SubscriptionConstructor<State, Props = {}> = (props: Props) => Subscription<State>
 
 
 /** The view function describes the application UI as a tree of VNodes.

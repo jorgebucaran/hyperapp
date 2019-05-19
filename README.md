@@ -28,12 +28,12 @@ Hyperapp is a JavaScript micro-framework for building web interfaces.
 - [Subscriptions](#subscriptions)
   - [Controlling time](#controlling-time)
   - [Listening to global events](#listening-to-global-events)
-  - [Implementing your own subscriptions]()
+  - [Implementing your own subscriptions](#implementing-your-own-subscriptions)
 - [Effects](#effects)
   - [Talking to servers](#talking-to-servers)
-  - [Manipulating the DOM]
+  - [Manipulating the DOM](#manipulating-the-dom)
   - [Generating random numbers](#generating-random-numbers)
-  - [Implementing your own effects]
+  - [Implementing your own effects](#implementing-your-own-effects)
 - [HTML Attributes](#html-attributes)
 - [Techniques](#techniques)
   - [Testing]

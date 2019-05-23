@@ -8,9 +8,9 @@ Hyperapp is a JavaScript micro-framework for building web interfaces.
 
 > 👋 Psst! The documentation is still a work-in-progress and may not be perfect. Please be patient as we work on it. If you think you've found a bug in Hyperapp, [create a new issue](https://github.com/jorgebucaran/hyperapp/issues/new) or [hop on Slack](https://hyperappjs.herokuapp.com) and let us know.
 
-- **Minimal** — We have aggressively minimized the concepts you need to learn to be productive out of the box. Immutable state, unidirectional data-flow, effects as data and subscriptions — all combined into a single state machine based on a clean and tiny foundation.
-- **Declarative** – Write what, not how, and Hyperapp will figure out the best way to update the DOM as your data changes. Declarative user interfaces lead to highly testable and predictable applications — you'll never go back to DOM traversal and manipulation.
-- **Standalone** — Do more with less. Hyperapp includes state management and a [state-of-the-art] Virtual DOM engine that supports keyed updates, functional components & view memoization — all without extra dependencies.
+- **Minimal**—We have aggressively minimized the concepts you need to learn to be productive out of the box. Immutable state, unidirectional data-flow, effects as data and subscriptions—all combined into a single state machine based on a clean and tiny foundation.
+- **Declarative**—Write what, not how, and Hyperapp will figure out the best way to update the DOM as your data changes. Declarative user interfaces lead to highly testable and predictable applications—you'll never go back to DOM traversal and manipulation.
+- **Standalone**—Do more with less. Hyperapp includes state management and a [state-of-the-art] Virtual DOM engine that supports keyed updates, functional components & view memoization—all without extra dependencies.
 
 [Check out the examples](#examples) and [follow Hyperapp](https://twitter.com/hyperappjs) on Twitter for news and updates. Did you know that maintaining and developing this project is a full-time effort? If you love Hyperapp, please [support me](https://patreon.com/jorgebucaran) on Patreon. If you are not comfortable with a recurring pledge, I also accept one-time donations via [PayPal](https://www.paypal.me/jorgebucaran). Thank you! 🙌
 
@@ -253,7 +253,7 @@ We all get stuck sometimes. If you've hit a stumbling block and need to get help
 
 Hyperapp applications consist of a single state tree, a view that describes a user interface, and actions that describe state transitions. Every time your application state changes, Hyperapp calls the view function to create a new virtual representation of the DOM and uses it to update the actual DOM.
 
-It may seem wasteful to throw away the old virtual DOM and recalculate it entirely on every update — not to mention the fact that at any one time, Hyperapp is keeping two virtual DOM trees in memory, but as it turns out, browsers can create hundreds of thousands of objects very quickly. On the other hand, modifying the DOM is orders of magnitude more expensive.
+It may seem wasteful to throw away the old virtual DOM and recalculate it entirely on every update—not to mention the fact that at any one time, Hyperapp is keeping two virtual DOM trees in memory, but as it turns out, browsers can create hundreds of thousands of objects very quickly. On the other hand, modifying the DOM is orders of magnitude more expensive.
 
 In this section, we'll take a deep dive into the data lifecycle of a typical Hyperapp application as we build a to-do manager step-by-step. We'll look in great detail at how we initialize the state, render content on the page, and dispatch actions. Finally, we'll discuss how breaking down our view into functional components can improve code reusability and readability.
 
@@ -765,7 +765,7 @@ If you're up for the challenge, try implementing one or two new features; for ex
 
 Sometimes we want to react to interesting events happening outside of our application like subscribing to location changes, or the current time. Did the user resize the browser's window? Maybe we're building a game and want to hook into the browser's natural repaint cycle. Subscriptions allow us to listen for such things.
 
-The alternative, working with traditional event emitters, requires complicated resource management like adding and removing listeners, closing connections, clearing out intervals — not to mention testing asynchronous code is tricky. What happens when the source you are subscribed to shuts down? How do you cancel or restart a subscription?
+The alternative, working with traditional event emitters, requires complicated resource management like adding and removing listeners, closing connections, clearing out intervals—not to mention testing asynchronous code is tricky. What happens when the source you are subscribed to shuts down? How do you cancel or restart a subscription?
 
 Subscriptions describe a connection to an event generator. Similar to how we use a function to create virtual nodes instead of writing them out by hand, we use functions to create a subscription of the type of event we want to listen to. For scheduling recurrent tasks there is [`@hyperapp/time`](lib/time), for listening to global events like mouse or keyboard events there is [`@hyperapp/events`](). Need to use WebSockets for two-way communication? [`@hyperapp/websocket`]() has your back.
 
@@ -1154,22 +1154,13 @@ Perf overhead you say? More like perf benefit!
 
 ## Ecosystem
 
-| Package                            | Version                          | About                                       |
-| ---------------------------------- | ---------------------------------| ------------------------------------------- |
-| [`hyperapp`](.)                    | [![npm][npm-happ-i]][npm-happ-a] | Hyperapp                                    |
-| [`@hyperapp/html`](/packages/html) | [![npm][npm-html-i]][npm-html-a] | Write HTML using functions in Hyperapp      |
-| [`@hyperapp/http`](/packages/http) | [![npm][npm-http-i]][npm-http-a] | Make HTTP requests in Hyperapp              |
-| [`@hyperapp/time`](/packages/time) | [![npm][npm-time-i]][npm-time-a] | Time effects and subscriptions for Hyperapp |
+| Package                            | Version                                                                                                 | About                                       |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| [`hyperapp`](.)                    | [![npm](https://img.shields.io/npm/v/hyperapp.svg)](https://www.npmjs.com/package/hyperapp)             | Hyperapp                                    |
+| [`@hyperapp/html`](/packages/html) | [![npm](https://img.shields.io/npm/v/@hyperapp/html.svg)](https://www.npmjs.com/package/@hyperapp/html) | Write HTML using functions in Hyperapp      |
+| [`@hyperapp/http`](/packages/http) | [![npm](https://img.shields.io/npm/v/@hyperapp/http.svg)](https://www.npmjs.com/package/@hyperapp/http) | Make HTTP requests in Hyperapp              |
+| [`@hyperapp/time`](/packages/time) | [![npm](https://img.shields.io/npm/v/@hyperapp/time.svg)](https://www.npmjs.com/package/@hyperapp/time) | Time effects and subscriptions for Hyperapp |
 
 ## License
 
 [MIT](LICENSE.md)
-
-[npm-happ-i]: https://img.shields.io/npm/v/hyperapp.svg
-[npm-happ-a]: https://www.npmjs.com/package/hyperapp
-[npm-html-i]: https://img.shields.io/npm/v/@hyperapp/html.svg
-[npm-html-a]: https://www.npmjs.com/package/@hyperapp/html
-[npm-http-i]: https://img.shields.io/npm/v/@hyperapp/http.svg
-[npm-http-a]: https://www.npmjs.com/package/@hyperapp/http
-[npm-time-i]: https://img.shields.io/npm/v/@hyperapp/time.svg
-[npm-time-a]: https://www.npmjs.com/package/@hyperapp/time

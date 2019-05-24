@@ -1086,9 +1086,14 @@ app({
 {{TODO}}
 
 ```jsx
-import { preventDefault } from "@hyperapp/events"
+import { h, app } from "hyperapp"
+import { preventDefault, stopPropagation } from "@hyperapp/events"
 
-const SubmitForm = state => [{ ...state, otherStuff }, preventDefault]
+const SubmitForm = state => [
+  { ...state, otherStuff },
+  preventDefault,
+  stopPropagation
+]
 
 app({
   view: state => (

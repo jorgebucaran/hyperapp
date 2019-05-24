@@ -8,8 +8,8 @@ Hyperapp is a JavaScript micro-framework for building web interfaces.
 
 > 👋 Psst! The documentation is still a work-in-progress and may not be perfect. Please be patient as we work on it. If you think you've found a bug in Hyperapp, [create a new issue](https://github.com/jorgebucaran/hyperapp/issues/new) or [hop on Slack](https://hyperappjs.herokuapp.com) and let us know.
 
-- **Minimal**—We have aggressively minimized the concepts you need to learn to be productive out of the box. Immutable state, unidirectional data-flow, effects as data and subscriptions—all combined into a single apparatus, clean, and tiny foundation.
-- **Declarative**–Write what, not how, and Hyperapp will figure out the best way to update the DOM as your data changes. Declarative user interfaces lead to highly testable and predictable applications—you'll never go back to DOM traversal and manipulation.
+- **Minimal**—We have aggressively minimized the concepts you need to learn to be productive out of the box. Immutable state, unidirectional data-flow, effects as data and subscriptions—all combined into a single state machine based on a clean and tiny foundation.
+- **Declarative**—Write what, not how, and Hyperapp will figure out the best way to update the DOM as your data changes. Declarative user interfaces lead to highly testable and predictable applications—you'll never go back to DOM traversal and manipulation.
 - **Standalone**—Do more with less. Hyperapp includes state management and a [state-of-the-art] Virtual DOM engine that supports keyed updates, functional components & view memoization—all without extra dependencies.
 
 [Check out the examples](#examples) and [follow Hyperapp](https://twitter.com/hyperappjs) on Twitter for news and updates. Did you know that maintaining and developing this project is a full-time effort? If you love Hyperapp, please [support me](https://patreon.com/jorgebucaran) on Patreon. If you are not comfortable with a recurring pledge, I also accept one-time donations via [PayPal](https://www.paypal.me/jorgebucaran). Thank you! 🙌
@@ -28,12 +28,12 @@ Hyperapp is a JavaScript micro-framework for building web interfaces.
 - [Subscriptions](#subscriptions)
   - [Controlling time](#controlling-time)
   - [Listening to global events](#listening-to-global-events)
-  - [Implementing your own subscriptions]()
+  - [Implementing your own subscriptions](#implementing-your-own-subscriptions)
 - [Effects](#effects)
   - [Talking to servers](#talking-to-servers)
-  - [Manipulating the DOM]
+  - [Manipulating the DOM](#manipulating-the-dom)
   - [Generating random numbers](#generating-random-numbers)
-  - [Implementing your own effects]
+  - [Implementing your own effects](#implementing-your-own-effects)
 - [HTML Attributes](#html-attributes)
 - [Techniques](#techniques)
   - [Testing]
@@ -75,7 +75,7 @@ Want to get a sense of what Hyperapp is like without installing anything? Try it
 
 ## Getting started
 
-You want to develop feature-rich, scalable browser-based applications using a functional paradigm and thought you might give Hyperapp a go. Let's see what it can do. Along the way, we'll explain the most important principles and terminology so you'll be ready to tackle the rest of the documentation. Before we sign off, we'll even walk you through setting up a minimal build step and a local development server using a JavaScript module bundler.
+You want to develop feature-rich, scalable browser-based applications using a functional paradigm and thought you might give Hyperapp a go? Let's see what it can do. Along the way, we'll explain the most important principles and terminology so you'll be ready to tackle the rest of the documentation. Before we sign off, we'll even walk you through setting up a minimal build step and a local development server using a JavaScript module bundler.
 
 Our first example is a counter that can be incremented or decremented. The goal of this tutorial is to give you a taste of how Hyperapp works, not build a real-world application. You'll learn how to initialize your application state, wire actions to user-triggered events, and render HTML on the page.
 
@@ -158,7 +158,7 @@ app({
 })
 ```
 
-We'll use [Babel](https://babeljs.io) to translate JSX to `h` function calls. First, install [`@babel/core`](https://www.npmjs.com/package/@babel/core) and [`@babel/plugin-transform-react-jsx`](https://www.npmjs.com/package/@babel/plugin-transform-react-jsx). One is the compiler, the other is the JSX to JavaScript plugin. Then, add the following configuration to your `.babelrc` file, creating one if you still haven't.
+We'll use [Babel](https://babeljs.io) to translate JSX to `h` function calls. First, install [`@babel/core`](https://www.npmjs.com/package/@babel/core) and [`@babel/plugin-transform-react-jsx`](https://www.npmjs.com/package/@babel/plugin-transform-react-jsx). One is the compiler, the other is the JSX to JavaScript plugin. Then, add the following configuration to your `.babelrc` file, creating one if you haven't already.
 
 ```json
 {
@@ -173,7 +173,7 @@ We'll use [Babel](https://babeljs.io) to translate JSX to `h` function calls. Fi
 }
 ```
 
-Fair warning, if you see JSX used in this documentation, it's purely a stylistic choice. If you don't want to set up a build step, there are compilation-free options such as [@hyperapp/html], [htmlo], and [htm](https://github.com/developit/htm). Try them all to find out which one works best for you.
+Fair warning, if you see JSX used in this documentation, it's purely a stylistic choice. If you don't want to set up a build step, there are compilation-free options such as [@hyperapp/html](https://github.com/hyperapp/html), [htmlo], and [htm](https://github.com/developit/htm). Try them all to find out which one works best for you.
 
 Now, open the `index.html` file you created before and modify it like so.
 
@@ -355,7 +355,7 @@ app({
 })
 ```
 
-If HTML tags in your JavaScript sounds appealing, here's the same code using JSX. It requires a build step, but JSX tends to look like regular HTML, which can be a win for you or your team. We'll be using JSX for the rest of this document, but you can choose whatever works for you. Check out [`@hyperapp/html`] for an official alternative.
+If HTML tags in your JavaScript sound appealing, here's the same code using JSX. It requires a build step, but JSX tends to look like regular HTML, which can be a win for you or your team. We'll be using JSX for the rest of this document, but you can choose whatever works for you. Check out [`@hyperapp/html`](https://github.com/hyperapp/html) for an official alternative.
 
 ```jsx
 import { h, app } from "hyperapp"
@@ -377,7 +377,7 @@ app({
 })
 ```
 
-Excellent! Now we have a user interface to work with. Next, we want to populate the list dynamically based on the current state. [Previously], we learned how to initialize the application state, and we know the `view` function takes in the state, so let's put the two together.
+Excellent! Now we have a user interface to work with. Next, we want to populate the list dynamically based on the current state. [Previously](#initializing-the-state), we learned how to initialize the application state, and we know the `view` function takes in the state, so let's put the two together.
 
 ```jsx
 import { h, app } from "hyperapp"
@@ -862,7 +862,7 @@ The [`@hyperapp/time`](lib/time) package is not a general date/time utility libr
 
 Whenever you click or move the mouse anywhere on the screen, press or release a key, scroll the document view, or move across a touch surface, the browser will fire an event you can listen to. You can react to the browser's window or tab losing and gaining focus; for example, when the user looks away, you may want to cancel an expensive subscription, pause video or audio, and so on.
 
-In this section you'll learn to respond to mouse and keyboard input, and sync up with the browsers natural refresh rate to create an interactive game. Even if you're goal is not building games, taming the mouse and keyboard will be useful when registering application-wide keyboard shortcuts, implementing a drag and drop feature, and detecting when the user clicks outside of an element.
+In this section you'll learn to respond to mouse and keyboard input, and sync up with the browsers natural refresh rate to create an interactive game. Even if your goal is not building games, taming the mouse and keyboard will be useful when registering application-wide keyboard shortcuts, implementing a drag and drop feature, and detecting when the user clicks outside of an element.
 
 Let's start off with a couple of questions. What are the current mouse coordinates and what key was pressed? To begin, we'll need the [`@hyperapp/events`] core package, so make sure to install it first. Then, import the `onKey
 
@@ -896,20 +896,20 @@ export const Sub = fx((dispatch, props) => {
 
 ## Effects
 
-We run programs for their side effects. Likewise, we want our programs to be predictable, easy to compose, test, and parallelize. JavaScript single-threaded execution guarantees that operations are atomic; two functions will never run at the same time, and we don't usually need to worry about concurrency, deadlock or race conditions (at least not the type of race condition caused by interleaved multi-threaded code), but we can still shoot ourselves in the foot by uncontrolled, indiscriminate use of side effects.
+We run programs for their side effects. Likewise, we want our programs to be predictable, easy to compose, test, and parallelize. JavaScript's single-threaded execution guarantees that operations are atomic; two functions will never run at the same time, and we don't usually need to worry about concurrency, deadlock or race conditions (at least not the type of race condition caused by interleaved multi-threaded code), but we can still shoot ourselves in the foot by uncontrolled, indiscriminate use of side effects.
 
 How can our programs be pure while conversing with the outside world? Rather than setting a timeout or making an HTTP request, an action can return a description of the work that needs to be done, and Hyperapp will figure out how to do the job behind the scenes. Like the view function returns a specification of the DOM, but doesn't touch the real DOM; an effect describes a side effect: creating an HTTP request, giving focus to an element, saving data to local storage, sending data over a WebSocket, etc., without executing any code.
 
 {{TODO}}
 
 {{
-Effects are not built-into hyperapp, instead we need to import modules that produce the type of effects that we want. these modules encapsulate the implementation—the part that tells hyperapp exactly what to do. In this section, we'll walk through concrete examples that show how to use several Hyperapp effects to create timeouts talk to servers, generate random numbers, manipulate the DOM, and much more. Finally, we'll learn how to create custom effects and discuss when we might want to use them.
+Effects are not built-into hyperapp, instead we need to import modules that produce the type of effects that we want. These modules encapsulate the implementation—the part that tells hyperapp exactly what to do. In this section, we'll walk through concrete examples that show how to use several Hyperapp effects to create timeouts talk to servers, generate random numbers, manipulate the DOM, and much more. Finally, we'll learn how to create custom effects and discuss when we might want to use them.
 }}
 
 ### Delaying time
 
 {{
-Instead of having JavaScript execute a function immediately, you can tell it to execute a function after a certain period of time. we coulve chosen from other more realistic examples, but the timeout's minimal api surface makes it a perfect candidate to introduce effects. Let's start with (example description) that demonstrates the gist of the idea. First, we'll import the effect we need from the `@hyperapp/time` module. Next, we'll create an action to (do that thing). Finally, we'll initialize the application and start the effect at the same time.
+Instead of having JavaScript execute a function immediately, you can tell it to execute a function after a certain period of time. We could've chosen from other more realistic examples, but the timeout's minimal api surface makes it a perfect candidate to introduce effects. Let's start with (example description) that demonstrates the gist of the idea. First, we'll import the effect we need from the `@hyperapp/time` module. Next, we'll create an action to (do that thing). Finally, we'll initialize the application and start the effect at the same time.
 }}
 
 ```jsx

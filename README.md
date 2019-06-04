@@ -6,18 +6,16 @@
 
 Hyperapp is a JavaScript micro-framework for building web interfaces.
 
-> 👋 Psst! The documentation is still a work-in-progress and may not be perfect. Please be patient as we work on it. If you think you've found a bug in Hyperapp, [create a new issue](https://github.com/jorgebucaran/hyperapp/issues/new) or [hop on Slack](https://hyperappjs.herokuapp.com) and let us know.
+- **Do more with less**—We have aggressively minimized the concepts you need to learn to be productive in no time. Views, actions, effects and subscriptions are all pretty easy to get to grips with and work together seamlessly.
+- **Write what, not how**—Immutable state, effects as data, and declarative subscriptions—we got it all. If you want to develop featureful, browser-based applications using a purely functional paradigm, Hyperapp is your choice.
+- **Batteries-included**—Hyperapp includes state management and a modern Virtual DOM engine that supports keyed updates, components & view memoization out of the box—you'll never go back to DOM traversal and manipulation.
 
-- **Minimal**—We have aggressively minimized the concepts you need to learn to be productive out of the box. Immutable state, unidirectional data-flow, effects as data and subscriptions—all combined into a single apparatus, and tiny foundation.
-- **Declarative**—Write what, not how, and Hyperapp will figure out the best way to update the DOM as your data changes. Declarative user interfaces lead to highly testable and predictable applications—you'll never go back to DOM traversal and manipulation.
-- **Standalone**—Do more with less. Hyperapp includes state management and a [state-of-the-art] Virtual DOM engine that supports keyed updates, functional components & view memoization—all without extra dependencies.
-
-[Check out the examples](#examples) and [follow Hyperapp](https://twitter.com/hyperappjs) on Twitter for news and updates. Did you know that maintaining and developing this project is a full-time effort? If you love Hyperapp, please [support me](https://patreon.com/jorgebucaran) on Patreon. If you are not comfortable with a recurring pledge, I also accept one-time donations via [PayPal](https://www.paypal.me/jorgebucaran). Thank you! 🙌
+> [Check out the examples](#examples) and [follow Hyperapp](https://twitter.com/hyperappjs) on Twitter for news and updates. Love Hyperapp? Please [support me](https://patreon.com/jorgebucaran) on Patreon. Not comfortable with a recurring pledge? I accept one-time donations via [PayPal](https://www.paypal.me/jorgebucaran) too. Thank you. ❤️
 
 ## Table of Contents
 
 - [Installation](#installation)
-- [Getting started](#getting-started)
+- [**Quickstart**](#quickstart)
 - [Help, I'm stuck!](#help-im-stuck)
 - [Fundamentals](#fundamentals)
   - [Initializing the state](#initializing-the-state)
@@ -67,34 +65,32 @@ Don't want to set up a build step? Import Hyperapp in a `<script>` tag as a modu
 
 ```html
 <script type="module">
-  import { h, app } from "https://unpkg.com/hyperapp?module"
+  import { h, app } from "https://unpkg.com/hyperapp"
 </script>
 ```
 
-Want to get a sense of what Hyperapp is like without installing anything? Try it in [this code playground].
+Want to get a sense of what Hyperapp is like without installing anything? Try it in [this code playground](#).
 
-## Getting started
+## Quickstart
 
-You want to develop feature-rich, scalable browser-based applications using a functional paradigm and thought you might give Hyperapp a go? Let's see what it can do. Along the way, we'll explain the most important principles and terminology so you'll be ready to tackle the rest of the documentation. Before we sign off, we'll even walk you through setting up a minimal build step and a local development server using a JavaScript module bundler.
+In this section, we'll walk you through your first example: a counter that can go up or down. It won't be a real-world application, but you'll get a taste of how Hyperapp works. You'll learn how to initialize your application state, wire actions to DOM events, and render HTML on the page. Before we sign off, we'll even set up a build step and a local development server using a JavaScript module bundler.
 
-Our first example is a counter that can be incremented or decremented. The goal of this tutorial is to give you a taste of how Hyperapp works, not build a real-world application. You'll learn how to initialize your application state, wire actions to user-triggered events, and render HTML on the page.
-
-Create a new `index.html` file and paste the following code in it. We'll break it down afterwards.
+First, create a new `index.html` file and paste the following code in it. 
 
 ```html
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <script type="module">
-      import { h, app } from "https://unpkg.com/hyperapp?module"
+      import { h, app } from "https://unpkg.com/hyperapp"
 
       app({
         init: () => 0,
         view: state =>
           h("div", {}, [
             h("h1", {}, state),
-            h("button", { onclick: state => state - 1 }, "-"),
-            h("button", { onclick: state => state + 1 }, "+")
+            h("button", { onClick: state => state - 1 }, "-"),
+            h("button", { onClick: state => state + 1 }, "+")
           ]),
         node: document.getElementById("app")
       })
@@ -106,7 +102,7 @@ Create a new `index.html` file and paste the following code in it. We'll break i
 </html>
 ```
 
-Let's start from the bottom and work our way up the HTML tree. First, we create an empty `<div>` in the document body. We want to take over that node and replace it with our view. Maybe your program is within a broader application, in a sidebar widget and surrounded by other elements. That's fine too. Hyperapp gives you absolute control over where the root element of your application is rendered in the DOM.
+We want to take over the empty `<div>` in the document body and replace it with our view. Maybe your program is within a broader application, in a sidebar widget and surrounded by other elements. That's fine too. Hyperapp gives you absolute control over where the root element of your application is rendered in the DOM.
 
 The application starts by dispatching the `init` action to initialize the state. Our code does not explicitly maintain any state. Instead, we define actions to transform it and a view to visualize it. The view returns a representation of the DOM known as a virtual DOM, and Hyperapp updates the actual DOM to match it.
 
@@ -179,7 +175,7 @@ Now, open the `index.html` file you created before and modify it like so.
 
 ```html
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <script defer src="index.js"></script>
@@ -247,11 +243,13 @@ There's still a lot of ground to cover, but we're off to a great start! In the f
 
 ## Help, I'm stuck!
 
-We all get stuck sometimes. If you've hit a stumbling block and need to get help, check out the community support resources. Hop on the [Hyperapp Slack Room](https://hyperappjs.herokuapp.com) to get help quickly, and if you don't receive an answer, or if you remain stuck, please file an issue, and we'll help you out.
+We all get stuck sometimes. If you've hit a stumbling block hop on the [Hyperapp Slack Room](https://hyperappjs.herokuapp.com) to get help quickly, and if you don't receive an answer, or if you remain stuck, please file an issue, and we'll try to help you out.
 
 ## Fundamentals
 
 Hyperapp applications consist of a single state tree, a view that describes a user interface, and actions that describe state transitions. Every time your application state changes, Hyperapp calls the view function to create a new virtual representation of the DOM and uses it to update the actual DOM.
+
+<!-- Immutable state, unidirectional data-flow (state transitions via actions), effects as data and declarative event streams (subscriptions). -->
 
 It may seem wasteful to throw away the old virtual DOM and recalculate it entirely on every update—not to mention the fact that at any one time, Hyperapp is keeping two virtual DOM trees in memory, but as it turns out, browsers can create hundreds of thousands of objects very quickly. On the other hand, modifying the DOM is orders of magnitude more expensive.
 
@@ -612,27 +610,27 @@ Now, how do we grab the changed value? The browser creates an [event object](htt
 const NewValue = (state, event) => ({ ...state, value: event.target.value })
 ```
 
-When writing actions, wouldn't it be better if we didn't have to think about events at all? Our current strategy may work if not involving a complex payload, but at what cost? Actions tightly coupled to events don't encourage code reusability; besides, destructuring the event object can become awkward. To tackle this problem, Hyperapp offers payload creators.
+When implementing an action, wouldn't it be better if we didn't have to think about events at all? Our current strategy may be sufficient if not involving a complex payload, but at what cost? Actions tightly coupled to events don't encourage code reusability; besides, destructuring the event object can become awkward. To tackle this problem, Hyperapp has payload creators.
 
-First, let's rewrite `NewValue` to receive the new text value as a payload instead of the event object. We'll figure out how to pass in the value in a moment.
+First, let's rewrite `NewValue` to take in the new value as a payload. We'll figure out how to pass in the value in a moment.
 
 ```jsx
 const NewValue = (state, value) => ({ ...state, value })
 ```
 
-A payload creator is a function that receives an action's default payload and returns a new payload. It acts as a filter, transforming a payload before it reaches its destination. Here's how we can grab the event's target value.
+A payload creator is a function that allows you to transform the default payload into anything you want. You can use it to filter the event object to extract the value before it reaches the action. Here's a payload creator that grabs the event's target value.
 
 ```jsx
 const targetValue = event => event.target.value
 ```
 
-We use it when dispatching the action in place of the custom payload.
+And here's how we use it when dispatching an action.
 
 ```jsx
 <input type="text" value={state.value} oninput={[NewValue, targetValue]} />
 ```
 
-Similarly, we need to handle text input for every to-do item while it's in edit mode, as well as send a custom payload with the action to identify which to-do item the user is editing. Sounds like we can use a payload creator here as well. First, let's define an action for this.
+Similarly, we need to handle text input for every to-do item while it's in edit mode, as well as send a custom payload with the action to identify which to-do item the user is editing. Sounds like a job for another payload creator.
 
 ```jsx
 const Update = (state, { id, value }) => ({

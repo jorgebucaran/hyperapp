@@ -430,10 +430,13 @@ export var app = function(props, enhance) {
   }
 
   var setState = function(newState) {
-    return (
-      state === newState || lock || defer(render, (lock = true)),
-      (state = newState)
-    )
+    if (state !== newState) {
+      if (subscriptions) {
+        subs = patchSubs(subs, batch([subscriptions(newState)]), dispatch)
+      }
+      if (!lock) defer(render, (lock = true))
+    }
+    return (state = newState)
   }
 
   var dispatch = (enhance ||
@@ -458,9 +461,6 @@ export var app = function(props, enhance) {
 
   var render = function() {
     lock = false
-    if (subscriptions) {
-      subs = patchSubs(subs, batch(subscriptions(state)), dispatch)
-    }
     if (view) {
       node = patch(
         node.parentNode,

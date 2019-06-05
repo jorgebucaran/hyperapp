@@ -472,7 +472,10 @@ export var app = function(props, enhance) {
       node.parentNode,
       node,
       vdom,
-      typeof (vdom = view(state)) === "string" ? createTextVNode(vdom) : vdom,
+      (vdom =
+        typeof (vdom = view(state)) === "string"
+          ? createTextVNode(vdom)
+          : vdom),
       listener
     )
   }

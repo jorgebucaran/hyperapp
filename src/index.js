@@ -85,7 +85,6 @@ var patchSubs = function(oldSubs, newSubs, dispatch) {
         : oldSub && oldSub[2]()
     )
   }
-  return subs
 }
 
 var patchProperty = function(node, key, oldValue, newValue, listener, isSvg) {
@@ -431,12 +430,13 @@ export var app = function(props, enhance) {
 
   var setState = function(newState) {
     if (state !== newState) {
-      if (subscriptions) {
-        subs = patchSubs(subs, batch([subscriptions(newState)]), dispatch)
-      }
+      state = newState
       if (!lock) defer(render, (lock = true))
+      if (subscriptions) {
+        patchSubs(subs, (subs = batch([subscriptions(state)])), dispatch)
+      }
     }
-    return (state = newState)
+    return state
   }
 
   var dispatch = (enhance ||

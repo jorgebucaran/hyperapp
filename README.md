@@ -6,8 +6,8 @@
 
 Hyperapp is a JavaScript micro-framework for building web interfaces.
 
-- **Do more with less**—We have aggressively minimized the concepts you need to learn to be productive in no time. Views, actions, effects and subscriptions are all pretty easy to get to grips with and work together seamlessly.
-- **Write what, not how**—Immutable state, effects as data, and declarative subscriptions—we got it all. If you want to develop featureful, browser-based applications using a purely functional paradigm, Hyperapp is your choice.
+- **Do more with less**—We have aggressively minimized the concepts you need to learn to be productive right now. Views, actions, effects and subscriptions are all pretty easy to get to grips with and work together seamlessly.
+- **Write what, not how**—Create dynamic UIs, run side effects, and subscribe to event streams in the same declarative style. Hyperapp is your tool of choice to develop purely functional, browser-based applications.
 - **Batteries-included**—Hyperapp includes state management and a modern Virtual DOM engine that supports keyed updates, components & view memoization out of the box—you'll never go back to DOM traversal and manipulation.
 
 > [Check out the examples](#examples) and [follow Hyperapp](https://twitter.com/hyperappjs) on Twitter for news and updates. Love Hyperapp? Please [support me](https://patreon.com/jorgebucaran) on Patreon. Not comfortable with a recurring pledge? I accept one-time donations via [PayPal](https://www.paypal.me/jorgebucaran) too. Thank you. ❤️
@@ -75,7 +75,7 @@ Want to get a sense of what Hyperapp is like without installing anything? Try it
 
 In this section, we'll walk you through your first example: a counter that can go up or down. It won't be a real-world application, but you'll get a taste of how Hyperapp works. You'll learn how to initialize your application state, wire actions to DOM events, and render HTML on the page. Before we sign off, we'll even set up a build step and a local development server using a JavaScript module bundler.
 
-First, create a new `index.html` file and paste the following code in it. 
+First, create a new `index.html` file and paste the following code in it.
 
 ```html
 <!DOCTYPE html>

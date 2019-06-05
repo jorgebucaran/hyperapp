@@ -431,12 +431,12 @@ export var app = function(props, enhance) {
 
   var setState = function(newState) {
     if (state !== newState) {
+      state = newState
       if (subscriptions) {
         subs = patchSubs(subs, batch([subscriptions(newState)]), dispatch)
       }
       if (!lock) defer(render, (lock = true))
-    }
-    return (state = newState)
+    } else return state
   }
 
   var dispatch = (enhance ||

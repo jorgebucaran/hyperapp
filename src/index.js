@@ -59,9 +59,11 @@ var isSameAction = function(a, b) {
 }
 
 var shouldRestart = function(a, b) {
-  for (var k in merge(a, b)) {
-    if (a[k] !== b[k] && !isSameAction(a[k], b[k])) return true
-    b[k] = a[k]
+  if (a !== b) {
+    for (var k in merge(a, b)) {
+      if (a[k] !== b[k] && !isSameAction(a[k], b[k])) return true
+      b[k] = a[k]
+    }
   }
 }
 

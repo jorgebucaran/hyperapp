@@ -3,10 +3,13 @@ var LAZY_NODE = 2
 var TEXT_NODE = 3
 var EMPTY_OBJ = {}
 var EMPTY_ARR = []
-
 var map = EMPTY_ARR.map
 var isArray = Array.isArray
-var defer = requestAnimationFrame || setTimeout
+var nextFrame = requestAnimationFrame || setTimeout
+var nextTask =
+  typeof Promise == "function"
+    ? Promise.resolve().then.bind(Promise.resolve())
+    : nextFrame
 
 var createClass = function(obj) {
   var out = ""
@@ -43,7 +46,7 @@ var batch = function(list) {
   return list.reduce(function(out, item) {
     return out.concat(
       !item || item === true
-        ? false
+        ? 0
         : typeof item[0] === "function"
         ? [item]
         : batch(item)
@@ -85,6 +88,7 @@ var patchSubs = function(oldSubs, newSubs, dispatch) {
         : oldSub && oldSub[2]()
     )
   }
+  return subs
 }
 
 var patchProperty = function(node, key, oldValue, newValue, listener, isSvg) {
@@ -164,7 +168,9 @@ var patch = function(parent, node, oldVNode, newVNode, listener, isSvg) {
       createNode((newVNode = getVNode(newVNode)), listener, isSvg),
       node
     )
-    if (oldVNode != null) parent.removeChild(oldVNode.node)
+    if (oldVNode != null) {
+      parent.removeChild(oldVNode.node)
+    }
   } else {
     var tmpVKid
     var oldVKid
@@ -430,13 +436,10 @@ export var app = function(props, enhance) {
 
   var setState = function(newState) {
     if (state !== newState) {
-      state = newState
-      if (!lock) defer(render, (lock = true))
-      if (subscriptions) {
-        patchSubs(subs, (subs = batch([subscriptions(state)])), dispatch)
-      }
+      if (subscriptions) nextTask(subscribe)
+      if (view && !lock) nextFrame(render, (lock = true))
     }
-    return state
+    return (state = newState)
   }
 
   var dispatch = (enhance ||
@@ -459,17 +462,19 @@ export var app = function(props, enhance) {
       : setState(action)
   })
 
+  var subscribe = function() {
+    subs = patchSubs(subs, batch([subscriptions(state)]), dispatch)
+  }
+
   var render = function() {
     lock = false
-    if (view) {
-      node = patch(
-        node.parentNode,
-        node,
-        vdom,
-        typeof (vdom = view(state)) === "string" ? createTextVNode(vdom) : vdom,
-        listener
-      )
-    }
+    node = patch(
+      node.parentNode,
+      node,
+      vdom,
+      typeof (vdom = view(state)) === "string" ? createTextVNode(vdom) : vdom,
+      listener
+    )
   }
 
   dispatch(props.init)

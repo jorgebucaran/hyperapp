@@ -5,11 +5,7 @@ var EMPTY_OBJ = {}
 var EMPTY_ARR = []
 var map = EMPTY_ARR.map
 var isArray = Array.isArray
-var nextFrame = requestAnimationFrame || setTimeout
-var nextTask =
-  typeof Promise == "function"
-    ? Promise.resolve().then.bind(Promise.resolve())
-    : nextFrame
+var defer = requestAnimationFrame || setTimeout
 
 var createClass = function(obj) {
   var out = ""
@@ -438,8 +434,8 @@ export var app = function(props, enhance) {
 
   var setState = function(newState) {
     if (state !== newState) {
-      if (subscriptions) nextTask(subscribe)
-      if (view && !lock) nextFrame(render, (lock = true))
+      if (subscriptions) subscribe((state = newState))
+      if (view && !lock) defer(render, (lock = true))
     }
     return (state = newState)
   }

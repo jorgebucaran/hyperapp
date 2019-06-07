@@ -434,10 +434,13 @@ export var app = function(props, enhance) {
 
   var setState = function(newState) {
     if (state !== newState) {
-      if (subscriptions) subscribe((state = newState))
+      state = newState
+      if (subscriptions) {
+        subs = patchSubs(subs, batch([subscriptions(state)]), dispatch)
+      }
       if (view && !lock) defer(render, (lock = true))
     }
-    return (state = newState)
+    return state
   }
 
   var dispatch = (enhance ||
@@ -459,10 +462,6 @@ export var app = function(props, enhance) {
           state)
       : setState(action)
   })
-
-  var subscribe = function() {
-    subs = patchSubs(subs, batch([subscriptions(state)]), dispatch)
-  }
 
   var render = function() {
     lock = false

@@ -1,0 +1,17 @@
+{
+  "name": "@hyperapp/decoders",
+  "description": "Decoders for Hyperapp",
+  "version": "0.0.0",
+  "main": "src/index.js",
+  "module": "src/index.js",
+  "license": "MIT",
+  "repository": "jorgebucaran/hyperapp/lib/decoders",
+  "files": [
+    "src"
+  ],
+  "author": "Jorge Bucaran",
+  "keywords": [
+    "hyperapp",
+    "decoders"
+  ]
+}

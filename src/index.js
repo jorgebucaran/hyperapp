@@ -458,7 +458,7 @@ export var app = function(props, enhance) {
           )
         : (batch(action.slice(1)).map(function(fx) {
             fx && fx[0](dispatch, fx[1], props)
-          }, setState(action[0])),
+          }, dispatch(action[0])),
           state)
       : setState(action)
   })

@@ -65,7 +65,7 @@ Don't want to set up a build step? Import Hyperapp in a `<script>` tag as a modu
 
 ```html
 <script type="module">
-  import { h, app } from "https://unpkg.com/hyperapp"
+  import { h, app } from "https://unpkg.com/hyperapp@beta"
 </script>
 ```
 
@@ -82,7 +82,7 @@ First, create a new `index.html` file and paste the following code in it.
 <html lang="en">
   <head>
     <script type="module">
-      import { h, app } from "https://unpkg.com/hyperapp"
+      import { h, app } from "https://unpkg.com/hyperapp@beta"
 
       app({
         init: () => 0,

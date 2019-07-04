@@ -64,6 +64,7 @@ var shouldRestart = function(a, b) {
 }
 
 var patchSubs = function(oldSubs, newSubs, dispatch) {
+  var deferredDispatch = function (action, props, obj) { setTimeout(dispatch, 0, action, props, obj); };
   for (
     var i = 0, oldSub, newSub, subs = [];
     i < oldSubs.length || i < newSubs.length;
@@ -79,7 +80,7 @@ var patchSubs = function(oldSubs, newSubs, dispatch) {
           ? [
               newSub[0],
               newSub[1],
-              newSub[0](dispatch, newSub[1]),
+              newSub[0](deferredDispatch, newSub[1]),
               oldSub && oldSub[2]()
             ]
           : oldSub

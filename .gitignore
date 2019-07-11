@@ -12,6 +12,7 @@ example*
 notes/
 node_modules
 coverage
+.nyc_output
 *.xml
 
 # Dist

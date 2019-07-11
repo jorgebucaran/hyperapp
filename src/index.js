@@ -5,7 +5,10 @@ var EMPTY_OBJ = {}
 var EMPTY_ARR = []
 var map = EMPTY_ARR.map
 var isArray = Array.isArray
-var defer = requestAnimationFrame || setTimeout
+var defer =
+  typeof requestAnimationFrame === "undefined"
+    ? setTimeout
+    : requestAnimationFrame
 
 var createClass = function(obj) {
   var out = ""
@@ -373,7 +376,7 @@ var createVNode = function(name, props, children, node, key, type) {
 }
 
 var createTextVNode = function(value, node) {
-  return createVNode(value, EMPTY_OBJ, EMPTY_ARR, node, null, TEXT_NODE)
+  return createVNode(value, EMPTY_OBJ, EMPTY_ARR, node, undefined, TEXT_NODE)
 }
 
 var recycleNode = function(node) {
@@ -384,7 +387,7 @@ var recycleNode = function(node) {
         EMPTY_OBJ,
         map.call(node.childNodes, recycleNode),
         node,
-        null,
+        undefined,
         RECYCLED_NODE
       )
 }
@@ -416,7 +419,7 @@ export var h = function(name, props) {
 
   return typeof name === "function"
     ? name(props, children)
-    : createVNode(name, props, children, null, props.key)
+    : createVNode(name, props, children, undefined, props.key)
 }
 
 export var app = function(props, enhance) {

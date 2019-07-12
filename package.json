@@ -1,6 +1,6 @@
 {
   "name": "hyperapp",
-  "description": "JavaScript micro-framework for building web interfaces.",
+  "description": "The tiny framework for building web user interfaces.",
   "version": "2.0.0-beta.22",
   "main": "src/index.js",
   "module": "src/index.js",

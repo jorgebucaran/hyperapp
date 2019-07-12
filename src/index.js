@@ -5,10 +5,7 @@ var EMPTY_OBJ = {}
 var EMPTY_ARR = []
 var map = EMPTY_ARR.map
 var isArray = Array.isArray
-var defer =
-  typeof requestAnimationFrame === "undefined"
-    ? setTimeout
-    : requestAnimationFrame
+var defer = requestAnimationFrame || setTimeout
 
 var createClass = function(obj) {
   var out = ""
@@ -449,18 +446,17 @@ export var app = function(props, enhance) {
   var dispatch = (enhance ||
     function(any) {
       return any
-    })(function(action, props, obj) {
+    })(function(action, props) {
     return typeof action === "function"
-      ? dispatch(action(state, props), obj || props)
+      ? dispatch(action(state, props))
       : isArray(action)
       ? typeof action[0] === "function"
         ? dispatch(
             action[0],
-            typeof (action = action[1]) === "function" ? action(props) : action,
-            props
+            typeof action[1] === "function" ? action[1](props) : action[1]
           )
         : (batch(action.slice(1)).map(function(fx) {
-            fx && fx[0](dispatch, fx[1], props)
+            fx && fx[0](dispatch, fx[1])
           }, setState(action[0])),
           state)
       : setState(action)

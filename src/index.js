@@ -474,4 +474,8 @@ export var app = function(props) {
   }
 
   dispatch(props.init)
+
+  return {
+    dispatch: dispatch
+  }
 }

@@ -1,3 +1,5 @@
+> <sup>👋 Psst...! The site is not ready yet, but you can find some documentation in the [docs](docs) directory.</sup>
+
 # Hyperapp [![npm](https://img.shields.io/npm/v/hyperapp.svg?label=&color=0080FF)](https://github.com/jorgebucaran/hyperapp/releases/latest)
 
 > The tiny framework for building web user interfaces.
@@ -6,7 +8,7 @@
 - **Write what, not how**—With a declarative syntax that's easy to read and natural to write, Hyperapp is your tool of choice to develop purely functional, feature-rich, browser-based applications.
 - **Hypercharged**—Hyperapp is a modern VDOM engine, state management solution, and application design pattern all-in-one. Once you learn to use it, there'll be no end to what you can do.
 
-To learn more, visit <https://hyperapp.dev> for documentation, guides, and examples.
+To learn more, go to <https://hyperapp.dev> for documentation, guides, and examples.
 
 ## Quickstart
 
@@ -40,7 +42,7 @@ Here's the first example to get you started: a counter that can go up or down. Y
       import { h, app } from "https://unpkg.com/hyperapp"
 
       app({
-        init: () => 0,
+        init: 0,
         view: state =>
           h("div", {}, [
             h("h1", {}, state),
@@ -57,7 +59,7 @@ Here's the first example to get you started: a counter that can go up or down. Y
 </html>
 ```
 
-The app starts off by calling `init` to initialize the state. Our code doesn't explicitly maintain any state. Instead, we define actions to transform it and a view to visualize it. The view returns a plain object representation of the DOM known as a virtual DOM, and Hyperapp updates the real DOM to match it whenever the state changes.
+The app starts off with `init` as the initial state. Our code doesn't explicitly maintain any state. Instead, we define actions to transform it and a view to visualize it. The view returns a plain object representation of the DOM known as a virtual DOM, and Hyperapp updates the real DOM to match it whenever the state changes.
 
 Now it's your turn! Experiment with the code a bit. Spend some time thinking about how the view reacts to changes in the state. Can you add a button that resets the counter back to zero? And for extra points, how about multiple counters?
 

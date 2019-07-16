@@ -123,34 +123,35 @@ var patchProperty = function(node, key, oldValue, newValue, listener, isSvg) {
   }
 }
 
-var createNode = function(vnode, listener, isSvg) {
+var createNode = function(vdom, listener, isSvg) {
+  var ns = "http://www.w3.org/2000/svg"
+  var props = vdom.props
   var node =
-    vnode.type === TEXT_NODE
-      ? document.createTextNode(vnode.name)
-      : (isSvg = isSvg || vnode.name === "svg")
-      ? document.createElementNS("http://www.w3.org/2000/svg", vnode.name)
-      : document.createElement(vnode.name)
-  var props = vnode.props
+    vdom.type === TEXT_NODE
+      ? document.createTextNode(vdom.name)
+      : (isSvg = isSvg || vdom.name === "svg")
+      ? document.createElementNS(ns, vdom.name, { is: props.is })
+      : document.createElement(vdom.name, { is: props.is })
 
   for (var k in props) {
     patchProperty(node, k, null, props[k], listener, isSvg)
   }
 
-  for (var i = 0, len = vnode.children.length; i < len; i++) {
+  for (var i = 0, len = vdom.children.length; i < len; i++) {
     node.appendChild(
       createNode(
-        (vnode.children[i] = getVNode(vnode.children[i])),
+        (vdom.children[i] = getVNode(vdom.children[i])),
         listener,
         isSvg
       )
     )
   }
 
-  return (vnode.node = node)
+  return (vdom.node = node)
 }
 
-var getKey = function(vnode) {
-  return vnode == null ? null : vnode.key
+var getKey = function(vdom) {
+  return vdom == null ? null : vdom.key
 }
 
 var patch = function(parent, node, oldVNode, newVNode, listener, isSvg) {
@@ -397,18 +398,18 @@ export var Lazy = function(props) {
 }
 
 export var h = function(name, props) {
-  for (var vnode, rest = [], children = [], i = arguments.length; i-- > 2; ) {
+  for (var vdom, rest = [], children = [], i = arguments.length; i-- > 2; ) {
     rest.push(arguments[i])
   }
 
   while (rest.length > 0) {
-    if (isArray((vnode = rest.pop()))) {
-      for (var i = vnode.length; i-- > 0; ) {
-        rest.push(vnode[i])
+    if (isArray((vdom = rest.pop()))) {
+      for (var i = vdom.length; i-- > 0; ) {
+        rest.push(vdom[i])
       }
-    } else if (vnode === false || vnode === true || vnode == null) {
+    } else if (vdom === false || vdom === true || vdom == null) {
     } else {
-      children.push(typeof vnode === "object" ? vnode : createTextVNode(vnode))
+      children.push(typeof vdom === "object" ? vdom : createTextVNode(vdom))
     }
   }
 

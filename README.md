@@ -1,4 +1,4 @@
-<sup>👋 Psst...! The site is not ready yet, but you can find some documentation in the [docs](docs) directory.</sup>
+<sub>👋 Psst...! The site is not ready yet, but you can find some documentation in the [docs](docs) directory.</sub>
 
 # Hyperapp [![npm](https://img.shields.io/npm/v/hyperapp.svg?label=&color=0080FF)](https://github.com/jorgebucaran/hyperapp/releases/latest)
 

@@ -419,7 +419,7 @@ export var h = function(name, props) {
     : createVNode(name, props, children, undefined, props.key)
 }
 
-export var app = function(props, enhance) {
+export var app = function(props) {
   var state = {}
   var lock = false
   var view = props.view
@@ -443,10 +443,7 @@ export var app = function(props, enhance) {
     return state
   }
 
-  var dispatch = (enhance ||
-    function(any) {
-      return any
-    })(function(action, props) {
+  var dispatch = function(action, props) {
     return typeof action === "function"
       ? dispatch(action(state, props))
       : isArray(action)
@@ -460,7 +457,7 @@ export var app = function(props, enhance) {
           }, setState(action[0])),
           state)
       : setState(action)
-  })
+  }
 
   var render = function() {
     lock = false

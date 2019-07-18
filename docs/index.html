@@ -3,18 +3,42 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="author" content="Jorge Bucaran" />
+    <meta content="#0080ff" name="theme-color" />
 
-    <meta name="description" content="Hyperapp" />
+    <link href="manifest.json" rel="manifest" />
+    <link href="favicon.png" rel="icon" type="image/png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
+    <link rel="mask-icon" href="safari-pinned-tab.svg" color="#0080ff" />
+    <meta name="msapplication-TileColor" content="#0080ff" />
+    <meta name="theme-color" content="#0080ff" />
+
+    <base href="/" />
+
+    <meta
+      name="description"
+      content="The tiny framework for building web user interfaces."
+    />
+
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Hyperapp" />
     <meta property="og:url" content="https://hyperapp.dev" />
     <meta property="og:description" content="Hyperapp" />
-    <meta property="og:image" content="https://hyperapp.dev/hyperapp.jpg" />
 
+    <meta name="author" content="Jorge Bucaran" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:site" content="@hyperappjs" />
     <meta name="twitter:creator" content="@hyperappjs" />
+    <meta name="twitter:title" content="Hyperapp" />
+    <meta
+      name="twitter:description"
+      content="The tiny framework for building web user interfaces."
+    />
+
+    <title>
+      Hyperapp \ The tiny framework for building web user interfaces
+    </title>
 
     <!-- Google Analytics -->
     <script
@@ -32,14 +56,7 @@
     </script>
     <!-- Google Analytics -->
 
-    <style>
-      html {
-        box-sizing: border-box;
-      }
-      body {
-        background: white;
-      }
-    </style>
+    <link rel="stylesheet" href="styles.css" />
 
     <script type="module">
       import { h, app } from "https://unpkg.com/hyperapp@beta"

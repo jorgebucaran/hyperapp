@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="Jorge Bucaran" />
+
+    <meta name="description" content="Hyperapp" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Hyperapp" />
+    <meta property="og:url" content="https://hyperapp.dev" />
+    <meta property="og:description" content="Hyperapp" />
+    <meta property="og:image" content="https://hyperapp.dev/hyperapp.jpg" />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@hyperappjs" />
+    <meta name="twitter:creator" content="@hyperappjs" />
+
+    <!-- Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-144105370-1"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || []
+      function gtag() {
+        dataLayer.push(arguments)
+      }
+      gtag("js", new Date())
+
+      gtag("config", "UA-144105370-1")
+    </script>
+    <!-- Google Analytics -->
+
+    <style>
+      html {
+        box-sizing: border-box;
+      }
+      body {
+        background: white;
+      }
+    </style>
+
+    <script type="module">
+      import { h, app } from "https://unpkg.com/hyperapp@beta"
+
+      app({
+        init: 0,
+        view: state =>
+          h("div", {}, [
+            h("h1", {}, state),
+            h("button", { onClick: state => state - 1 }, "-"),
+            h("button", { onClick: state => state + 1 }, "+")
+          ]),
+        node: document.getElementById("app")
+      })
+    </script>
+  </head>
+
+  <body>
+    <div id="app"></div>
+  </body>
+</html>

@@ -1,0 +1,65 @@
+/*
+-----------------------------------------------
+  site-specific styles [opinionated]
+-----------------------------------------------
+*/
+
+.theme {
+  --back:   #484a53;
+  --text:   white;
+  --flash:  #469cff;
+}
+
+body {
+  max-width: var(--site-w);
+  margin: 0 auto;
+  padding: 0 var(--side-pad);
+}
+
+main {
+  height: 100vh;
+  overflow-x: hidden;
+  text-align: center;
+  flex-direction: column;
+}
+
+h1 {
+  --h1: 3.2rem;
+  margin: -2rem 0 0 0;
+  line-height: 1.1;
+  font-weight: 300;
+}
+
+ul {
+  width: 100%;
+  margin: 0 auto;
+  padding: 3.2rem 0;
+  user-select: none;  
+  text-align: center;
+  font: 300 1.5rem/1 var(--font-ui);
+}
+
+li { display: inline }
+
+li:first-child:after,
+li:nth-child(2):after {
+  content: "\005C";
+  padding: 0 .6rem;
+  color: var(--flash);
+}
+
+a:hover, a.active {
+  color: var(--flash);
+}
+
+.bottom {
+  padding: 2.4rem 0 8rem;
+  text-align: center;
+  font-size: var(--h6);
+}
+
+.bottom .i-fill {
+  width: 6rem;
+  height: 6rem;
+  padding: 0 1rem;
+}

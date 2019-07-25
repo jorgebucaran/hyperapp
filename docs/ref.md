@@ -2,7 +2,7 @@
 
 > Technical reference for Hyperapp core APIs and packages.
 
-{{WIP}}
+Under construction.
 
 ## Index
 

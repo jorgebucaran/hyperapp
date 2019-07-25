@@ -1,0 +1,54 @@
+/*
+-----------------------------------------------
+  theme, vars
+-----------------------------------------------
+*/
+
+.theme {
+  --back:    #f0f0f0;
+  --prime:   #0080ff;
+  --second:  #5b5968;
+  --third:   #eec900;
+  --flash:   #2391ff;
+  --text:    #5e6061;
+
+  --hr-y:       8rem; /* divider height */
+  --border-w:  .3rem; /* border-width   */
+  --border-r:  .6rem; /* border-radius  */
+  --nav-h:     14rem; /* navbar-height  */
+  --side-pad: 2.4rem; /* page side-padding  */
+  --site-w:   1280px; /* max site-width  */
+
+  --unit:    .8rem;
+  --code:   1.3rem;
+  --h6:     1.5rem;
+  --h5:     1.7rem;
+  --h4:     1.8rem;
+  --h3:     2.4rem;
+  --h2:     3.2rem;
+  --h1:     5.6rem;
+  --lh:     1.44; /* base line-height */
+}
+
+@media screen and (min-width: 767px) {
+  .theme {
+    --hr-y: 14rem;
+    --side-pad: 4.8rem;
+  }
+}
+
+/*  color helpers -------------------------- */
+.white     { color: white !important }
+.black     { color: black !important }
+.prime     { color: var(--prime) !important }
+.second    { color: var(--second) !important }
+.third     { color: var(--third) !important }
+.flash     { color: var(--flash) !important }
+
+.bg-white  { background-color: white !important }
+.bg-black  { background-color: black !important }
+.bg-back   { background-color: var(--back) !important }
+.bg-prime  { background-color: var(--prime) !important }
+.bg-second { background-color: var(--second) !important }
+.bg-third  { background-color: var(--third) !important }
+.bg-flash  { background-color: var(--flash) !important }

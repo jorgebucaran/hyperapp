@@ -59,7 +59,7 @@ Here's the first example to get you started: a counter that can go up or down. Y
 
 The app starts off with `init` as the initial state. Our code doesn't explicitly maintain any state. Instead, we define actions to transform it and a view to visualize it. The view returns a plain object representation of the DOM known as a virtual DOM, and Hyperapp updates the real DOM to match it whenever the state changes.
 
-Now it's your turn! Experiment with the code a bit. Spend some time thinking about how the view reacts to changes in the state. Can you add a button that resets the counter back to zero? And for extra points, how about multiple counters?
+Now it's your turn! Experiment with the code a bit. Spend some time thinking about how the view reacts to changes in the state. Can you add a button that resets the counter back to zero? Or how about multiple counters?
 
 ## Help, I'm stuck!
 

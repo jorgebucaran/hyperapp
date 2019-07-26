@@ -1,7 +1,7 @@
 {
   "name": "hyperapp",
   "description": "The tiny framework for building web interfaces.",
-  "version": "2.0.0-beta.22",
+  "version": "2.0.0-beta.23",
   "main": "src/index.js",
   "module": "src/index.js",
   "unpkg": "src/index.js",

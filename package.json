@@ -8,7 +8,7 @@
   "browser": "src/index.js",
   "license": "MIT",
   "repository": "jorgebucaran/hyperapp",
-  "homepage": "https://github.com/jorgebucaran/hyperapp",
+  "homepage": "https://hyperapp.dev",
   "files": [
     "src",
     "dist"

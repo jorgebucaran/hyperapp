@@ -2,7 +2,7 @@
 
 > Technical reference for Hyperapp core APIs and packages.
 
-Under construction.
+Under construction. See [Examples](examples.md).
 
 ## Index
 

@@ -444,7 +444,10 @@ export var app = function(props) {
     return state
   }
 
-  var dispatch = function(action, props) {
+  var dispatch = (props.middleware ||
+    function(obj) {
+      return obj
+    })(function(action, props) {
     return typeof action === "function"
       ? dispatch(action(state, props))
       : isArray(action)
@@ -458,7 +461,7 @@ export var app = function(props) {
           }, setState(action[0])),
           state)
       : setState(action)
-  }
+  })
 
   var render = function() {
     lock = false
@@ -475,8 +478,4 @@ export var app = function(props) {
   }
 
   dispatch(props.init)
-
-  return {
-    dispatch: dispatch
-  }
 }

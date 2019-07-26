@@ -1,4 +1,4 @@
-# Hyperapp [![npm](https://img.shields.io/npm/v/hyperapp.svg?label=&color=0080FF)](https://github.com/jorgebucaran/hyperapp/releases/latest)
+# [Hyperapp](https://hyperapp.dev) [![npm](https://img.shields.io/npm/v/hyperapp.svg?label=&color=0080FF)](https://github.com/jorgebucaran/hyperapp/releases/latest)
 
 > The tiny framework for building web interfaces.
 

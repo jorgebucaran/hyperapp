@@ -1,19 +1,20 @@
 {
-    "name": "@hyperapp/events",
-    "description": "Browser and Window global events for Hyperapp.",
-    "version": "0.0.0",
-    "main": "dist/hyperappevents.js",
-    "module": "src/index.js",
-    "license": "MIT",
-    "repository": "jorgebucaran/hyperapp/lib/events",
-    "files": [
-      "src",
-      "dist"
-    ],
-    "author": "Jorge Bucaran",
-    "keywords": [
-      "hyperapp",
-      "events"
-    ]
-  }
-  
+  "name": "@hyperapp/events",
+  "description": "Global events and event utilities for Hyperapp.",
+  "version": "0.0.0",
+  "main": "src/index.js",
+  "module": "src/index.js",
+  "unpkg": "src/index.js",
+  "browser": "src/index.js",
+  "license": "MIT",
+  "repository": "jorgebucaran/hyperapp/lib/events",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "author": "Jorge Bucaran",
+  "keywords": [
+    "hyperapp",
+    "events"
+  ]
+}

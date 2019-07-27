@@ -161,3 +161,52 @@ app({
   node: document.getElementById("app")
 })
 ```
+
+## [Todo App](https://codesandbox.io/s/hyperapp-todo-app-m3ctx)
+
+```js
+import { h, app } from "hyperapp"
+import { preventDefault, targetValue } from "@hyperapp/events"
+
+const getInitialState = items => ({ items, value: "" })
+
+const newItem = value => ({
+  value,
+  lastValue: "",
+  isEditing: false,
+  id: Math.random().toString(36)
+})
+
+const NewValue = (state, value) => ({ ...state, value })
+
+const Add = state =>
+  state.value.length === 0
+    ? state
+    : {
+        ...state,
+        value: "",
+        items: state.items.concat(newItem(state.value))
+      }
+
+const TodoList = items =>
+  h("ol", {}, items.map(item => h("li", {}, item.value)))
+
+app({
+  init: getInitialState([newItem("Take out the trash")]),
+  view: state =>
+    h("div", {}, [
+      h("h1", {}, "What needs done?"),
+      TodoList(state.items),
+      h("form", { onSubmit: preventDefault(Add) }, [
+        h("label", {}, [
+          h("input", {
+            value: state.value,
+            onInput: [NewValue, targetValue]
+          })
+        ]),
+        h("button", {}, `New #${state.items.length + 1}`)
+      ])
+    ]),
+  node: document.getElementById("app")
+})
+```

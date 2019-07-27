@@ -17,7 +17,7 @@ app({
 })
 ```
 
-## [Calculator](https://codesandbox.io/s/rrl2z7nwrn)
+## [Calculator](https://codesandbox.io/s/hyperapp-calculator-v8y5h)
 
 ```js
 import { h, app } from "hyperapp"

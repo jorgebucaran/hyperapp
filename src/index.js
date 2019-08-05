@@ -5,9 +5,10 @@ var EMPTY_OBJ = {}
 var EMPTY_ARR = []
 var map = EMPTY_ARR.map
 var isArray = Array.isArray
-var defer = typeof requestAnimationFrame !== 'undefined' 
-  ? requestAnimationFrame 
-  : setTimeout
+var defer =
+  typeof requestAnimationFrame !== "undefined"
+    ? requestAnimationFrame
+    : setTimeout
 
 var createClass = function(obj) {
   var out = ""

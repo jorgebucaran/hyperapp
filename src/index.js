@@ -5,10 +5,6 @@ var EMPTY_OBJ = {}
 var EMPTY_ARR = []
 var map = EMPTY_ARR.map
 var isArray = Array.isArray
-var defer =
-  typeof requestAnimationFrame !== "undefined"
-    ? requestAnimationFrame
-    : setTimeout
 
 var createClass = function(obj) {
   var out = ""
@@ -39,57 +35,6 @@ var merge = function(a, b) {
   for (var k in b) out[k] = b[k]
 
   return out
-}
-
-var batch = function(list) {
-  return list.reduce(function(out, item) {
-    return out.concat(
-      !item || item === true
-        ? 0
-        : typeof item[0] === "function"
-        ? [item]
-        : batch(item)
-    )
-  }, EMPTY_ARR)
-}
-
-var isSameAction = function(a, b) {
-  return isArray(a) && isArray(b) && a[0] === b[0] && typeof a[0] === "function"
-}
-
-var shouldRestart = function(a, b) {
-  if (a !== b) {
-    for (var k in merge(a, b)) {
-      if (a[k] !== b[k] && !isSameAction(a[k], b[k])) return true
-      b[k] = a[k]
-    }
-  }
-}
-
-var patchSubs = function(oldSubs, newSubs, dispatch) {
-  for (
-    var i = 0, oldSub, newSub, subs = [];
-    i < oldSubs.length || i < newSubs.length;
-    i++
-  ) {
-    oldSub = oldSubs[i]
-    newSub = newSubs[i]
-    subs.push(
-      newSub
-        ? !oldSub ||
-          newSub[0] !== oldSub[0] ||
-          shouldRestart(newSub[1], oldSub[1])
-          ? [
-              newSub[0],
-              newSub[1],
-              newSub[0](dispatch, newSub[1]),
-              oldSub && oldSub[2]()
-            ]
-          : oldSub
-        : oldSub && oldSub[2]()
-    )
-  }
-  return subs
 }
 
 var patchProperty = function(node, key, oldValue, newValue, listener, isSvg) {
@@ -421,6 +366,62 @@ export var h = function(name, props) {
   return typeof name === "function"
     ? name(props, children)
     : createVNode(name, props, children, undefined, props.key)
+}
+
+var defer =
+  typeof requestAnimationFrame !== "undefined"
+    ? requestAnimationFrame
+    : setTimeout
+
+var batch = function(list) {
+  return list.reduce(function(out, item) {
+    return out.concat(
+      !item || item === true
+        ? 0
+        : typeof item[0] === "function"
+        ? [item]
+        : batch(item)
+    )
+  }, EMPTY_ARR)
+}
+
+var isSameAction = function(a, b) {
+  return isArray(a) && isArray(b) && a[0] === b[0] && typeof a[0] === "function"
+}
+
+var shouldRestart = function(a, b) {
+  if (a !== b) {
+    for (var k in merge(a, b)) {
+      if (a[k] !== b[k] && !isSameAction(a[k], b[k])) return true
+      b[k] = a[k]
+    }
+  }
+}
+
+var patchSubs = function(oldSubs, newSubs, dispatch) {
+  for (
+    var i = 0, oldSub, newSub, subs = [];
+    i < oldSubs.length || i < newSubs.length;
+    i++
+  ) {
+    oldSub = oldSubs[i]
+    newSub = newSubs[i]
+    subs.push(
+      newSub
+        ? !oldSub ||
+          newSub[0] !== oldSub[0] ||
+          shouldRestart(newSub[1], oldSub[1])
+          ? [
+              newSub[0],
+              newSub[1],
+              newSub[0](dispatch, newSub[1]),
+              oldSub && oldSub[2]()
+            ]
+          : oldSub
+        : oldSub && oldSub[2]()
+    )
+  }
+  return subs
 }
 
 export var app = function(props) {

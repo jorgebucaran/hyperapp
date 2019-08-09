@@ -1,0 +1,19 @@
+{
+    "name": "@hyperapp/random",
+    "description": "Declarative randomness for Hyperapp.",
+    "version": "0.0.0",
+    "main": "src/index.js",
+    "module": "src/index.js",
+    "license": "MIT",
+    "repository": "jorgebucaran/hyperapp/lib/random",
+    "files": [
+      "src",
+      "dist"
+    ],
+    "author": "Jorge Bucaran",
+    "keywords": [
+      "hyperapp",
+      "random"
+    ]
+  }
+  

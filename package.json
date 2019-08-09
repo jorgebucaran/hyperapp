@@ -4,14 +4,15 @@
   "version": "2.0.0-beta.12",
   "main": "dist/hyperapp.js",
   "module": "src/index.js",
+  "unpkg": "src/index.js",
+  "browser": "src/index.js",
   "typings": "hyperapp.d.ts",
   "license": "MIT",
   "repository": "jorgebucaran/hyperapp",
   "homepage": "https://github.com/jorgebucaran/hyperapp",
   "files": [
     "src",
-    "dist",
-    "hyperapp.d.ts"
+    "dist"
   ],
   "author": "Jorge Bucaran",
   "keywords": [

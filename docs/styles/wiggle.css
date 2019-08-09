@@ -1,0 +1,21 @@
+.wiggle {
+  animation: wiggle 5s infinite;
+}
+
+@keyframes wiggle {
+  0% {
+    transform: rotate(0deg);
+  }
+  2% {
+    transform: rotate(-1deg);
+  }
+  3.5% {
+    transform: rotate(1deg);
+  }
+  5% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}

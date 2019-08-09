@@ -1,8 +1,8 @@
 {
   "name": "@hyperapp/time",
   "description": "Time effects and subscriptions for Hyperapp.",
-  "version": "0.0.7",
-  "main": "dist/hyperapptime.js",
+  "version": "0.0.10",
+  "main": "src/index.js",
   "module": "src/index.js",
   "typings": "time.d.ts",
   "license": "MIT",

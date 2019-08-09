@@ -1,0 +1,104 @@
+/*
+-----------------------------------------------
+  above the fold, reset, setup
+-----------------------------------------------
+*/
+
+@font-face {
+  font-family: 'source-sans';
+  font-display: auto;
+  src: url('../fonts/source-sans-pro-v12-latin-300.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'source-sans';
+  font-display: auto;
+  src: url('../fonts/source-sans-pro-v12-latin-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'source-sans';
+  font-display: auto;
+  src: url('../fonts/source-sans-pro-v12-latin-600.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'fira-code';
+  font-display: auto;
+  src: url('../fonts/FiraCode-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/*  font vars ------------------------------ */
+body {
+  --font: sans-serif;
+  --font-alt: var(--font);
+  --font-mono: monospace;
+  --font-ui: var(--font-mono);
+}
+
+.theme body {
+  --font: source-sans, sans-serif;
+  --font-mono: fira-code, monospace;
+}
+
+/*  base reset ----------------------------- */
+html {
+  font-size: 62.5%;
+  -ms-text-size-adjust: 62.5%;
+  -webkit-text-size-adjust: 62.5%;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+  overflow-y: scroll;
+  box-sizing: border-box;
+  border-collapse: collapse;
+}
+
+* {
+  box-sizing: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+/*  links ---------------------------------- */
+a {
+  text-decoration: none;
+  cursor: pointer;
+  color: inherit;
+}
+
+a:hover { color: inherit }
+a:focus { outline: none }
+
+/*  typography ----------------------------- */
+body {
+  font: 300 var(--h4) / var(--lh) var(--font);
+  background-color: var(--back);
+  color: var(--text);
+  margin: 0 auto;
+}
+
+h1, h2, h3, h4, h5, h6, p, blockquote, dl {
+  margin-bottom: .8rem;
+}
+
+h1, h2, h3, h4, h5, h6 { font-weight: 400 }
+h6, .h6 { font-size: var(--h6) }
+h5, .h5 { font-size: var(--h5) }
+h4, .h4 { font-size: var(--h4) }
+h3, .h3 { font-size: var(--h3) }
+h2, .h2 { font-size: var(--h2) }
+h1, .h1 { font-size: var(--h1) }
+
+.b, b, strong { font-weight: 600 }
+
+::selection {
+  background: #2391ff80;
+  color: white;
+}

@@ -393,16 +393,6 @@ var recycleNode = function(node) {
       )
 }
 
-export var a = function(action, payload = undefined) {
-  if (payload === undefined) {
-    return action;
-  } else {
-    return [action, payload];
-  }
-}
-
-export var an = a; 
-
 export var Lazy = function(props) {
   return {
     lazy: props,

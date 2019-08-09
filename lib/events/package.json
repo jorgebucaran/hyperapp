@@ -4,11 +4,13 @@
     "version": "0.0.0",
     "main": "dist/hyperappevents.js",
     "module": "src/index.js",
+    "typings": "events.d.ts",
     "license": "MIT",
     "repository": "jorgebucaran/hyperapp/lib/events",
     "files": [
       "src",
-      "dist"
+      "dist",
+      "events.d.ts"
     ],
     "author": "Jorge Bucaran",
     "keywords": [

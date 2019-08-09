@@ -1,5 +1,6 @@
-export as namespace hyperapp;
+// TypeScript Version: 3.0
 
+export as namespace hyperapp;
 
 /** @namespace [VDOM] */
 
@@ -43,28 +44,27 @@ export function h<Attributes>(
 
 /** @namespace [App] */
 
-// ActionPayload<void, void>     -> void
-// ActionPayload<Event, string>  -> (string | ((data: Event) => string)) 
-//
-type ActionPayload<DPayload, CPayload> = (CPayload extends void ? void : (CPayload | ((data: DPayload) => CPayload)));
+type PayloadCreator<DPayload, CPayload> = ((data: DPayload) => CPayload);
 
 /** Usable to 1st argument of `dispatch`. Usually, This is a reference to an action to be invoked by Hyperapp, with custom payload
  *
  * @memberOf [App]
  */
-export type Dispatchable<State, DPayload, CPayload> = (
-    ([Action<State, CPayload>, ActionPayload<DPayload, CPayload>])
-    | Action<State, DPayload>  // (state, data) => ({ ... }) 
-    | Action<State, void>      // (state) => ({ ... }) 
+export type Dispatchable<State, DPayload = void, CPayload = any> = (
+      ([ActionWithEffects<State, CPayload, DPayload>, PayloadCreator<DPayload, CPayload>])
+    | ([ActionWithEffects<State, CPayload, DPayload>, CPayload])
+    | ActionWithEffects<State, DPayload, DPayload>  // (state, data) => ({ ... })  | (state, data) => ([{ ... }, effect1, ...])
+    | ActionWithEffects<State, void, DPayload>      // (state) => ({ ... }) | (state) => ([{ ... }, effect1, ...])
 );
 
 /** Usable to 1st argument of `dispatch`, make strict for `init` (state and default payload are always undefined)
  *
  * @memberOf [App]
  */
-export type DispatchableOnInit<State, CPayload> = (
+export type DispatchableOnInit<State, CPayload = void> = (
     State
-    | ([(ActionOnInit<State, CPayload>), ActionPayload<undefined, CPayload>])
+    | ([(ActionOnInit<State, CPayload>), PayloadCreator<void, CPayload>])
+    | ([(ActionOnInit<State, CPayload>), CPayload])
     | ActionOnInit<State, undefined>
 );
 
@@ -72,46 +72,50 @@ export type DispatchableOnInit<State, CPayload> = (
  * 
  * @memberOf [App]
  */
-export type Dispatch<State, AcceptPayload> = (obj: Dispatchable<State, any, any>, data: AcceptPayload) => void;
+export type Dispatch<State, NextPayload> = (obj: Dispatchable<State, NextPayload>, data: NextPayload) => void;
 
 
-/** An effect or subscription runner. It is actually invoked when effect is reflected.
+/** An effect runner. It is actually invoked when effect is reflected.
  * 
  * @memberOf [App]
  */
-export type EffectFunc<State, Props, NextPayload, Result = void> = (dispatch: Dispatch<State, NextPayload>, props: Props, payload: any) => Result;
+export type EffectFunc<State, Props, AcceptDPayload = any, NextPayload = void> = (dispatch: Dispatch<State, NextPayload>, props: Props, payload: AcceptDPayload) => void;
 
 /** An effect as the result of an action.
  * 
  * @memberOf [App]
  */
-export type Effect<State, Props, NextPayload = void> = [EffectFunc<State, Props, NextPayload>, Props];
+export type Effect<State = any, AcceptDPayload = any> = [EffectFunc<State, any, AcceptDPayload>, any];
+
+/** An subscription runner. It is actually invoked when effect is reflected.
+ * 
+ * @memberOf [App]
+ */
+export type SubscriptionFunc<State, Props, NextPayload> = (dispatch: Dispatch<State, NextPayload>, props: Props) => (() => void);
+
+/** A reference to an subscription to be managed by Hyperapp, with optional additional parameters
+ * 
+ * @memberOf [App]
+ */
+export type Subscription<State = any> = [SubscriptionFunc<State, any, any>, any];
 
 /** The result of an action.
  *
  * @memberOf [App]
  */
-export type ActionResult<State> = State | [State, ...Effect<State, any>[]];
+export type ActionResultWithEffects<State, AcceptDPayload> = State | [State, ...Effect<State, AcceptDPayload>[]];
 
 /** The interface for a single action implementation. (without effect)
  *
  * @memberOf [App]
  */
-export type PureAction<State, Payload = void> = (
-    Payload extends void
-    ? (state: State) => State
-    : (state: State, data: Payload) => State
-)
+export type Action<State, Payload = void> = (state: State, data: Payload) => State;
 
 /** The interface for a single action implementation.
  *
  * @memberOf [App]
  */
-export type Action<State, Payload = void> = (
-    Payload extends void
-    ? (state: State) => ActionResult<State>
-    : (state: State, data: Payload) => ActionResult<State>
-)
+export type ActionWithEffects<State, Payload, AcceptDPayload> = (state: State, data: Payload) => ActionResultWithEffects<State, AcceptDPayload>;
 
 /** The interface for a single action implementation, make strict for `init` (given state are always undefined)
  *
@@ -119,16 +123,9 @@ export type Action<State, Payload = void> = (
  */
 export type ActionOnInit<State, Payload = void> = (
     Payload extends void
-    ? (state: undefined) => ActionResult<State>
-    : (state: undefined, data: Payload) => ActionResult<State>
+    ? (state: undefined) => ActionResultWithEffects<State, any>
+    : (state: undefined, data: Payload) => ActionResultWithEffects<State, any>
 )
-
-/** A reference to an subscription to be managed by Hyperapp, with optional additional parameters
- * 
- * @memberOf [App]
- */
-export type Subscription<State, Props, Payload = void> = [EffectFunc<State, Props, Payload, () => void>, Props];
-
 
 /** The view function describes the application UI as a tree of VNodes.
  * @returns A VNode tree.
@@ -142,7 +139,7 @@ export interface View<State> {
  * 
  * @memberOf [App]
  */
-export type SubscriptionsResult<State> = | (Subscription<State, any> | boolean)[] | Subscription<State, any>;
+export type SubscriptionsResult<State> = | (Subscription<State> | boolean)[] | Subscription<State>;
 
 /** The subscriptions function describes the current application subscriptions.
  * @returns The current subscription(s) given the current state
@@ -171,33 +168,6 @@ export interface AppProps<State> {
  */
 export function app<State>(app: AppProps<State>): void
 
-/** Action wrapper for strict typing. (without payload)
- * 
- * @param action The action function.
- * @memberOf [App]
- */
-export function a<S, DPayload>(action: Action<S, DPayload>): Dispatchable<S, DPayload, void>;
-
-/** Action wrapper for strict typing. (with payload)
- *
- * @param action The action function.
- * @param payload The parameter passed to action function.
- * @memberOf [App]
- */
-export function a<S, DPayload, PPayload>(action: Action<S, PPayload>, payload: ActionPayload<DPayload, PPayload>): Dispatchable<S, DPayload, PPayload>;
-
-/** Alias of `a` 
- * 
- * @memberOf [App]
- */
-export function an<S, DPayload = void>(action: Action<S, DPayload>): Dispatchable<S, DPayload, void>;
-
-/** Alias of `a`
- * 
- * @memberOf [App]
- */
-export function an<S, DPayload, PPayload>(action: Action<S, PPayload>, payload: ActionPayload<DPayload, PPayload>): Dispatchable<S, DPayload, PPayload>;
-
 // e.g.) onchange, onupdate, oninput, ...
 //
 type EventKeys = keyof GlobalEventHandlers;
@@ -207,7 +177,7 @@ type EventParameterType<Key extends EventKeys> = Parameters<Exclude<GlobalEventH
 // <div onclick={A} title={B} />
 //   -> A: Dispatchable<any, MouseEvent, any>  B: any
 //
-type JSXAttribute = Partial<{ [key in EventKeys]: Dispatchable<any, EventParameterType<key>, any> }> & { [key: string]: any };
+type JSXAttribute = Partial<{ [key in EventKeys]: Dispatchable<any, EventParameterType<key>> }> & { [key: string]: any };
 
 // /** @namespace [JSX] */
 declare global {

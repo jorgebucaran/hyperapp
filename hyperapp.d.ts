@@ -63,7 +63,7 @@ export type Dispatchable<State, DPayload = void, CPayload = any> = (
  */
 export type DispatchableOnInit<State, CPayload = void> = (
     State
-    | ([(ActionOnInit<State, CPayload>), PayloadCreator<void, CPayload>])
+    | ([(ActionOnInit<State, CPayload>), PayloadCreator<undefined, CPayload>])
     | ([(ActionOnInit<State, CPayload>), CPayload])
     | ActionOnInit<State, undefined>
 );
@@ -121,11 +121,7 @@ export type ActionWithEffects<State, Payload, AcceptDPayload> = (state: State, d
  *
  * @memberOf [App]
  */
-export type ActionOnInit<State, Payload = void> = (
-    Payload extends void
-    ? (state: undefined) => ActionResultWithEffects<State, any>
-    : (state: undefined, data: Payload) => ActionResultWithEffects<State, any>
-)
+export type ActionOnInit<State, Payload = void> = (state: undefined, data: Payload) => ActionResultWithEffects<State, any>;
 
 /** The view function describes the application UI as a tree of VNodes.
  * @returns A VNode tree.

@@ -4,11 +4,13 @@
     "version": "0.0.0",
     "main": "src/index.js",
     "module": "src/index.js",
+    "typings": "random.d.ts",
     "license": "MIT",
     "repository": "jorgebucaran/hyperapp/lib/random",
     "files": [
       "src",
-      "dist"
+      "dist",
+      "random.d.ts"
     ],
     "author": "Jorge Bucaran",
     "keywords": [

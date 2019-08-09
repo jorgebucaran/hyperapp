@@ -6,6 +6,7 @@
   "module": "src/index.js",
   "unpkg": "src/index.js",
   "browser": "src/index.js",
+  "typings": "hyperapp.d.ts",
   "license": "MIT",
   "repository": "jorgebucaran/hyperapp",
   "homepage": "https://hyperapp.dev",

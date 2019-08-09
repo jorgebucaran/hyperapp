@@ -439,9 +439,6 @@ export var app = function(props) {
   var setState = function(newState) {
     if (state !== newState) {
       state = newState
-      if (subscriptions) {
-        subs = patchSubs(subs, batch([subscriptions(state)]), dispatch)
-      }
       if (view && !lock) defer(render, (lock = true))
     }
     return state
@@ -468,6 +465,9 @@ export var app = function(props) {
 
   var render = function() {
     lock = false
+    if (subscriptions) {
+      subs = patchSubs(subs, batch([subscriptions(state)]), dispatch)
+    }
     node = patch(
       node.parentNode,
       node,

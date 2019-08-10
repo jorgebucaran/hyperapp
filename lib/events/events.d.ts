@@ -1,4 +1,4 @@
-import { Subscription, Effect, Action, Dispatchable } from "hyperapp";
+import { Subscription, Effect, Action, Dispatchable, ActionWithEffects } from "hyperapp";
 
 type EventArgument<E extends keyof GlobalEventHandlers> = Parameters<NonNullable<GlobalEventHandlers[E]>>[0];
 
@@ -21,5 +21,5 @@ declare function targetChecked(e: Event): any;
 declare function targetValue(e: Event): any;
 
 declare function eventOptions<S>(props: { preventDefault?: boolean, stopPropagation?: boolean, action?: Dispatchable<S, Event> }): Effect<S, Event>;
-declare var preventDefault: Effect<any, Event>;
-declare var stopPropagation: Effect<any, Event>;
+declare function preventDefault<S, CPayload>(action: Dispatchable<S, Event>): ActionWithEffects<S, CPayload, Event>;
+declare function stopPropagation<S, CPayload>(action: Dispatchable<S, Event>): ActionWithEffects<S, CPayload, Event>;

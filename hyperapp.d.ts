@@ -50,18 +50,18 @@ type PayloadCreator<DPayload, CPayload> = ((data: DPayload) => CPayload);
  *
  * @memberOf [App]
  */
-export type Dispatchable<State, DPayload = void, CPayload = any> = (
-      ([ActionWithEffects<State, CPayload, DPayload>, PayloadCreator<DPayload, CPayload>])
+export type Dispatchable<State, DPayload = any, CPayload = any> = (
+    ([ActionWithEffects<State, CPayload, DPayload>, PayloadCreator<DPayload, CPayload>])
     | ([ActionWithEffects<State, CPayload, DPayload>, CPayload])
-    | ActionWithEffects<State, DPayload, DPayload>  // (state, data) => ({ ... })  | (state, data) => ([{ ... }, effect1, ...])
     | ActionWithEffects<State, void, DPayload>      // (state) => ({ ... }) | (state) => ([{ ... }, effect1, ...])
+    | ActionWithEffects<State, DPayload, DPayload>  // (state, data) => ({ ... })  | (state, data) => ([{ ... }, effect1, ...])
 );
 
 /** Usable to 1st argument of `dispatch`, make strict for `init` (state and default payload are always undefined)
  *
  * @memberOf [App]
  */
-export type DispatchableOnInit<State, CPayload = void> = (
+export type DispatchableOnInit<State, CPayload> = (
     State
     | ([(ActionOnInit<State, CPayload>), PayloadCreator<undefined, CPayload>])
     | ([(ActionOnInit<State, CPayload>), CPayload])
@@ -168,17 +168,15 @@ export function app<State>(app: AppProps<State>): void
 //
 type EventKeys = keyof GlobalEventHandlers;
 
-type EventParameterType<Key extends EventKeys> = Parameters<Exclude<GlobalEventHandlers[Key], null>>[0];
-
 // <div onclick={A} title={B} />
-//   -> A: Dispatchable<any, MouseEvent, any>  B: any
+//   -> A: Dispatchable<any>  B: any
 //
-type JSXAttribute = Partial<{ [key in EventKeys]: Dispatchable<any, EventParameterType<key>> }> & { [key: string]: any };
+type JSXAttribute = Partial<{ [key in EventKeys]: Dispatchable<any> }> & { [key: string]: any };
 
 // /** @namespace [JSX] */
 declare global {
     namespace JSX {
-        interface Element extends VNode<any> {}
+        interface Element extends VNode<any> { }
         interface IntrinsicElements {
             [elemName: string]: JSXAttribute;
         }

@@ -143,7 +143,16 @@ export type SubscriptionsResult<State> = | (Subscription<State> | boolean)[] | S
  */
 export type Subscriptions<State> = (state: State) => SubscriptionsResult<State>;
 
+
+/** The lazy view. {@link https://github.com/jorgebucaran/hyperapp/issues/721#issuecomment-402150041}
+ *
+ * @memberOf [App]
+ */
+export function Lazy<P extends object>(props: { view: (props: P) => VNode<object>, key?: string | number | null } & { [key in keyof P]: P[key] }): VNode<object>;
+
+
 /** The set of properties that define a Hyperapp application.
+ * 
  * @memberOf [App]
  */
 export interface AppProps<State> {
@@ -151,7 +160,26 @@ export interface AppProps<State> {
     view: View<State>;
     node: Element;
     subscriptions?: Subscriptions<State>;
+    middleware?: Middleware<State>;
 }
+
+/** The type of `app()` function. This is mainly used for middleware.
+ * 
+ * @memberOf [App]
+ */
+export type AppFunc<State> = (props: AppProps<State>) => void;
+
+/** The middleware function.
+ * 
+ * @memberOf [App]
+ */
+export type MiddlewareFunc<State = any> = (action: State | Dispatchable<State>, props: unknown) => void;
+
+/** The middleware.
+ *
+ * @memberOf [App]
+ */
+export type Middleware<State = any> = (func: MiddlewareFunc<State>) => MiddlewareFunc<State>;
 
 /** The app() call creates and renders a new application.
  *

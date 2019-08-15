@@ -481,4 +481,8 @@ export var app = function(props) {
   }
 
   dispatch(props.init)
+
+  return function () {
+    patchSubs(subs, EMPTY_ARR, dispatch = Function)
+  }
 }

@@ -79,7 +79,7 @@ export type Dispatch<State, NextPayload> = (obj: Dispatchable<State, NextPayload
  * 
  * @memberOf [App]
  */
-export type EffectFunc<State, Props, AcceptDPayload = any, NextPayload = void> = (dispatch: Dispatch<State, NextPayload>, props: Props, payload: AcceptDPayload) => void;
+export type EffectFunc<State, Props, NextPayload = void> = (dispatch: Dispatch<State, NextPayload>, props: Props) => void;
 
 /** An effect as the result of an action.
  * 
@@ -135,7 +135,7 @@ export interface View<State> {
  * 
  * @memberOf [App]
  */
-export type SubscriptionsResult<State> = | (Subscription<State> | boolean)[] | Subscription<State>;
+export type SubscriptionsResult<State> = | (Subscription<State> | boolean)[] | Subscription<State> | boolean;
 
 /** The subscriptions function describes the current application subscriptions.
  * @returns The current subscription(s) given the current state
@@ -148,7 +148,7 @@ export type Subscriptions<State> = (state: State) => SubscriptionsResult<State>;
  *
  * @memberOf [App]
  */
-export function Lazy<P extends object>(props: { view: (props: P) => VNode<object>, key?: string | number | null } & { [key in keyof P]: P[key] }): VNode<object>;
+export function Lazy<P extends object>(props: { view: (props: P) => VNode<object>, key?: string | number | null } & P): VNode<object>;
 
 
 /** The set of properties that define a Hyperapp application.

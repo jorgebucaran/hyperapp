@@ -18,6 +18,6 @@ declare function eventKey(e: Event): any;
 declare function targetChecked(e: Event): any;
 declare function targetValue(e: Event): any;
 
-declare function eventOptions<S>(props: { preventDefault?: boolean, stopPropagation?: boolean, action?: Dispatchable<S, Event> }): Effect<S, Event>;
-declare function preventDefault<S, DPayload, CPayload>(action: Dispatchable<S, DPayload>): ActionWithEffects<S, CPayload, DPayload>;
-declare function stopPropagation<S, DPayload, CPayload>(action: Dispatchable<S, DPayload>): ActionWithEffects<S, CPayload, DPayload>;
+declare function eventOptions<S>(props: { preventDefault?: boolean, stopPropagation?: boolean, action?: Dispatchable<S, Event> }): Effect<S>;
+declare function preventDefault<S, E extends Event>(action: Dispatchable<S, E>): ActionWithEffects<S, E>;
+declare function stopPropagation<S, E extends Event>(action: Dispatchable<S, E>): ActionWithEffects<S, E>;

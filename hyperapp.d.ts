@@ -51,10 +51,10 @@ type PayloadCreator<DPayload, CPayload> = ((data: DPayload) => CPayload);
  * @memberOf [App]
  */
 export type Dispatchable<State, DPayload = any, CPayload = any> = (
-    ([ActionWithEffects<State, CPayload, DPayload>, PayloadCreator<DPayload, CPayload>])
-    | ([ActionWithEffects<State, CPayload, DPayload>, CPayload])
-    | ActionWithEffects<State, void, DPayload>      // (state) => ({ ... }) | (state) => ([{ ... }, effect1, ...])
-    | ActionWithEffects<State, DPayload, DPayload>  // (state, data) => ({ ... })  | (state, data) => ([{ ... }, effect1, ...])
+    ([ActionWithEffects<State, CPayload>, PayloadCreator<DPayload, CPayload>])
+    | ([ActionWithEffects<State, CPayload>, CPayload])
+    | ActionWithEffects<State, void>      // (state) => ({ ... }) | (state) => ([{ ... }, effect1, ...])
+    | ActionWithEffects<State, DPayload>  // (state, data) => ({ ... })  | (state, data) => ([{ ... }, effect1, ...])
 );
 
 /** Usable to 1st argument of `dispatch`, make strict for `init` (state and default payload are always undefined)
@@ -85,7 +85,7 @@ export type EffectFunc<State, Props, NextPayload = void> = (dispatch: Dispatch<S
  * 
  * @memberOf [App]
  */
-export type Effect<State = any, AcceptDPayload = any> = [EffectFunc<State, any, AcceptDPayload>, any];
+export type Effect<State = any> = [EffectFunc<State, any, any>, any];
 
 /** An subscription runner. It is actually invoked when effect is reflected.
  * 
@@ -103,7 +103,7 @@ export type Subscription<State = any> = [SubscriptionFunc<State, any, any>, any]
  *
  * @memberOf [App]
  */
-export type ActionResultWithEffects<State, AcceptDPayload> = State | [State, ...Effect<State, AcceptDPayload>[]];
+export type ActionResultWithEffects<State> = State | [State, ...Effect<State>[]];
 
 /** The interface for a single action implementation. (without effect)
  *
@@ -115,13 +115,13 @@ export type Action<State, Payload = void> = (state: State, data: Payload) => Sta
  *
  * @memberOf [App]
  */
-export type ActionWithEffects<State, Payload, AcceptDPayload> = (state: State, data: Payload) => ActionResultWithEffects<State, AcceptDPayload>;
+export type ActionWithEffects<State, Payload> = (state: State, data: Payload) => ActionResultWithEffects<State>;
 
 /** The interface for a single action implementation, make strict for `init` (given state are always undefined)
  *
  * @memberOf [App]
  */
-export type ActionOnInit<State, Payload = void> = (state: undefined, data: Payload) => ActionResultWithEffects<State, any>;
+export type ActionOnInit<State, Payload = void> = (state: undefined, data: Payload) => ActionResultWithEffects<State>;
 
 /** The view function describes the application UI as a tree of VNodes.
  * @returns A VNode tree.

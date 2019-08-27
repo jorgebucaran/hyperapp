@@ -8,11 +8,14 @@ export as namespace hyperapp;
  *
  * @memberOf [VDOM]
  */
-export interface VNode<Attributes = {}> {
-    nodeName: string;
-    attributes?: Attributes;
-    children: (VNode | string)[];
-    key: string | number | null;
+export interface VNode {
+    name: unknown; // protected (internal implementation)
+    props: unknown; // protected (internal implementation)
+    children: unknown; // protected (internal implementation)
+    node: unknown; // protected (internal implementation)
+    type: unknown; // protected (internal implementation)
+    key: unknown; // protected (internal implementation)
+    lazy: unknown; // protected (internal implementation)
 }
 
 /**
@@ -25,7 +28,7 @@ export type Children = VNode | string | number | null
  * @memberOf [VDOM]
  */
 export interface Component<Attributes = {}> {
-    (attributes: Attributes, children: Children[]): VNode<Attributes>;
+    (attributes: Attributes, children: VNode[]): VNode | null;
 }
 
 /** The soft way to create a VNode.
@@ -40,7 +43,7 @@ export function h<Attributes>(
     nodeName: Component<Attributes> | string,
     attributes?: Attributes,
     ...children: (Children | Children[])[]
-): VNode<Attributes>
+): VNode
 
 /** @namespace [App] */
 
@@ -50,18 +53,18 @@ type PayloadCreator<DPayload, CPayload> = ((data: DPayload) => CPayload);
  *
  * @memberOf [App]
  */
-export type Dispatchable<State, DPayload = any, CPayload = any> = (
-    ([ActionWithEffects<State, CPayload>, PayloadCreator<DPayload, CPayload>])
-    | ([ActionWithEffects<State, CPayload>, CPayload])
-    | ActionWithEffects<State, void>      // (state) => ({ ... }) | (state) => ([{ ... }, effect1, ...])
-    | ActionWithEffects<State, DPayload>  // (state, data) => ({ ... })  | (state, data) => ([{ ... }, effect1, ...])
+export type Dispatchable<State, DPayload = void, CPayload = any> = (
+    ([Action<State, CPayload>, PayloadCreator<DPayload, CPayload>])
+    | ([Action<State, CPayload>, CPayload])
+    | Action<State, void>      // (state) => ({ ... }) | (state) => ([{ ... }, effect1, ...])
+    | Action<State, DPayload>  // (state, data) => ({ ... })  | (state, data) => ([{ ... }, effect1, ...])
 );
 
 /** Usable to 1st argument of `dispatch`, make strict for `init` (state and default payload are always undefined)
  *
  * @memberOf [App]
  */
-export type DispatchableOnInit<State, CPayload> = (
+export type DispatchableOnInit<State, CPayload = any> = (
     State
     | ([(ActionOnInit<State, CPayload>), PayloadCreator<undefined, CPayload>])
     | ([(ActionOnInit<State, CPayload>), CPayload])
@@ -72,63 +75,73 @@ export type DispatchableOnInit<State, CPayload> = (
  * 
  * @memberOf [App]
  */
-export type Dispatch<State, NextPayload> = (obj: Dispatchable<State, NextPayload>, data: NextPayload) => void;
+export type Dispatch<State, NextPayload = void> = (obj: Dispatchable<State, NextPayload>, data: NextPayload) => State;
 
 
 /** An effect runner. It is actually invoked when effect is reflected.
  * 
  * @memberOf [App]
  */
-export type EffectFunc<State, Props, NextPayload = void> = (dispatch: Dispatch<State, NextPayload>, props: Props) => void;
+export interface EffectRunner<State, NextPayload, Props> {
+    (dispatch: Dispatch<State, NextPayload>, props: Props): void;
+}
 
 /** An effect as the result of an action.
  * 
  * @memberOf [App]
  */
-export type Effect<State = any> = [EffectFunc<State, any, any>, any];
+export type Effect<State = any> = [EffectRunner<State, any, any>, any];
 
 /** An subscription runner. It is actually invoked when effect is reflected.
  * 
  * @memberOf [App]
  */
-export type SubscriptionFunc<State, Props, NextPayload> = (dispatch: Dispatch<State, NextPayload>, props: Props) => (() => void);
+export interface SubscriptionRunner<State, NextPayload, Props>{
+    (dispatch: Dispatch<State, NextPayload>, props: Props): (() => void);
+}
 
 /** A reference to an subscription to be managed by Hyperapp, with optional additional parameters
  * 
  * @memberOf [App]
  */
-export type Subscription<State = any> = [SubscriptionFunc<State, any, any>, any];
+export type Subscription<State = any> = [SubscriptionRunner<State, any, any>, any];
 
-/** The result of an action.
+/** The result of an action. It is new state, new state with effects, action or action with payload.
  *
  * @memberOf [App]
  */
-export type ActionResultWithEffects<State> = State | [State, ...Effect<State>[]];
-
-/** The interface for a single action implementation. (without effect)
- *
- * @memberOf [App]
- */
-export type Action<State, Payload = void> = (state: State, data: Payload) => State;
+export type ActionResult<State> = (State | [State, ...Effect<State>[]] | Dispatchable<State>);
 
 /** The interface for a single action implementation.
  *
  * @memberOf [App]
  */
-export type ActionWithEffects<State, Payload> = (state: State, data: Payload) => ActionResultWithEffects<State>;
+export interface Action<State, Payload = void> {
+    (state: State, data: Payload): ActionResult<State>;
+}
+
+/** The interface for a single action implementation. (return new state only, its return value is reusable and testable)
+ *
+ * @memberOf [App]
+ */
+export interface PureAction<State, Payload = void> {
+    (state: State, data: Payload): State;
+}
 
 /** The interface for a single action implementation, make strict for `init` (given state are always undefined)
  *
  * @memberOf [App]
  */
-export type ActionOnInit<State, Payload = void> = (state: undefined, data: Payload) => ActionResultWithEffects<State>;
+export interface ActionOnInit<State, Payload = void> {
+    (state: undefined, data: Payload): ActionResult<State>;
+}
 
 /** The view function describes the application UI as a tree of VNodes.
  * @returns A VNode tree.
  * @memberOf [App]
  */
 export interface View<State> {
-    (state: State): VNode<object> | null;
+    (state: State): VNode | null;
 }
 
 /** The possible response types for the subscription callback for an application
@@ -148,7 +161,7 @@ export type Subscriptions<State> = (state: State) => SubscriptionsResult<State>;
  *
  * @memberOf [App]
  */
-export function Lazy<P extends object>(props: { view: (props: P) => VNode<object>, key?: string | number | null } & P): VNode<object>;
+export function Lazy<P extends object>(props: { view: (props: P) => VNode | null, key?: string | number | null } & P): VNode;
 
 
 /** The set of properties that define a Hyperapp application.
@@ -162,12 +175,6 @@ export interface AppProps<State> {
     subscriptions?: Subscriptions<State>;
     middleware?: Middleware<State>;
 }
-
-/** The type of `app()` function. This is mainly used for middleware.
- * 
- * @memberOf [App]
- */
-export type AppFunc<State> = (props: AppProps<State>) => void;
 
 /** The middleware function.
  * 
@@ -192,19 +199,36 @@ export type Middleware<State = any> = (func: MiddlewareFunc<State>) => Middlewar
  */
 export function app<State>(app: AppProps<State>): void
 
-// e.g.) onchange, onupdate, oninput, ...
-//
-type EventKeys = keyof GlobalEventHandlers;
 
-// <div onclick={A} title={B} />
-//   -> A: Dispatchable<any>  B: any
-//
-type JSXAttribute = Partial<{ [key in EventKeys]: Dispatchable<any> }> & { [key: string]: any };
+/**
+ * The class attribute value of VNode.
+ *
+ * @memberOf [VDOM]
+ */
+export type ClassAttribute = ClassAttributeItem | null | undefined;
+
+type ClassAttributeItem = (string | { [key: string]: boolean } | ClassAttributeArray);
+
+interface ClassAttributeArray extends Array<ClassAttributeItem> { }
+
+/**
+ * The style attribute value of VNode.
+ *
+ * @memberOf [VDOM]
+ */
+export type StyleAttribute = { [key: string]: any } | null | undefined;
+
+export interface JSXAttribute {
+    key?: PropertyKey;
+    class?: ClassAttribute;
+    style?: StyleAttribute;
+    [attrName: string]: any;
+}
 
 // /** @namespace [JSX] */
 declare global {
     namespace JSX {
-        interface Element extends VNode<any> { }
+        interface Element extends VNode { }
         interface IntrinsicElements {
             [elemName: string]: JSXAttribute;
         }

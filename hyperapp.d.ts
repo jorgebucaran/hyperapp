@@ -170,7 +170,7 @@ export function Lazy<P extends object>(props: { view: (props: P) => VNode | null
  */
 export interface AppProps<State> {
     init?: DispatchableOnInit<State, any>;
-    view: View<State>;
+    view?: View<State>;
     node: Element;
     subscriptions?: Subscriptions<State>;
     middleware?: Middleware<State>;

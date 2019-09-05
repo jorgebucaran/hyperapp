@@ -218,10 +218,22 @@ interface ClassAttributeArray extends Array<ClassAttributeItem> { }
  */
 export type StyleAttribute = { [key: string]: any } | null | undefined;
 
-export interface JSXAttribute {
+// e.g.) onchange, onupdate, oninput, ...
+//
+type EventKeys = keyof GlobalEventHandlers;
+
+type EventParameterType<Key extends EventKeys> = Parameters<Exclude<GlobalEventHandlers[Key], null>>[0];
+
+// <div onclick={A} />
+//   -> A: Dispatchable<any, MouseEvent>
+//
+type EventAttributes = Partial<{ [key in EventKeys]: Dispatchable<any, EventParameterType<key>> }>;
+
+export interface JSXAttribute extends EventAttributes {
     key?: PropertyKey;
     class?: ClassAttribute;
     style?: StyleAttribute;
+
     [attrName: string]: any;
 }
 

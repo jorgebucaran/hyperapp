@@ -40,12 +40,12 @@ Here's the first example to get you started: a counter that can go up or down. Y
       import { h, app } from "https://unpkg.com/hyperapp"
 
       app({
-        init: 0,
+        init: { total: 0, increments: 0, decrements: 0 },
         view: state =>
           h("div", {}, [
-            h("h1", {}, state),
-            h("button", { onClick: state => state - 1 }, "-"),
-            h("button", { onClick: state => state + 1 }, "+")
+            h("h1", {}, `Total is ${state.total}`),
+            h("button", { onClick: state => ({ total: state.total - 1, decrements: state.decrements - 1 }) }, "-"),
+            h("button", { onClick: state => ({ total: state.total + 1, increments: state.increments - 1 }) }, "+")
           ]),
         node: document.getElementById("app")
       })

@@ -15,46 +15,44 @@ app we want to build, with this HTML:
 
 ```html
 <div id="app" class="container">
-    <div class="filter">
-        Filter:
-        <span class="filter-word">ocean</span>
-        <button>&#9998;</button>
-    </div>
-
-    <div class="stories">
-        <ul>
-            <li class="unread">
-                <p class="title">The <em>Ocean </em>is Sinking</p>
-                <p class="author">Kat Stropher</p>
-            </li>
-            <li class="reading">
-                <p class="title"><em>Ocean </em>life is brutal</p>
-                <p class="author">Surphy McBrah</p>
-            </li>
-            <li>
-                <p class="title">
-                    Family friendly fun at the
-                    <em>ocean </em>exhibit
-                </p>
-                <p class="author">Guy Prosales</p>
-            </li>
-        </ul>
-    </div>
-
-    <div class="story">
-        <h1>Ocean life is brutal</h1>
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat.
+  <div class="filter">
+    Filter:
+    <span class="filter-word">ocean</span>
+    <button>&#9998;</button>
+  </div>
+  <div class="stories">
+    <ul>
+      <li class="unread">
+        <p class="title">The <em>Ocean </em>is Sinking</p>
+        <p class="author">Kat Stropher</p>
+      </li>
+      <li class="reading">
+        <p class="title"><em>Ocean </em>life is brutal</p>
+        <p class="author">Surphy McBrah</p>
+      </li>
+      <li>
+        <p class="title">
+          Family friendly fun at the
+          <em>ocean </em>exhibit
         </p>
-        <p class="signature">Surphy McBrah</p>
-    </div>
-    
-    <div class="autoupdate">
-        Auto update: <input type="checkbox" />
-    </div>
+        <p class="author">Guy Prosales</p>
+      </li>
+    </ul>
+  </div>
+  <div class="story">
+    <h1>Ocean life is brutal</h1>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+      eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+      ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+      aliquip ex ea commodo consequat.
+    </p>
+    <p class="signature">Surphy McBrah</p>
+  </div>
+  <div class="autoupdate">
+    Auto update:
+    <input type="checkbox" />
+  </div>
 </div>
 ```
 
@@ -113,8 +111,8 @@ app({
 </html>
 ```
 
-> The sections demarked by comments are not important. They're
-> simply suggestions to help you organize the code that we'll be
+> The section structure outlined in the comments is not important. It's
+> just a suggestion for how to organize the code we'll be
 > adding throughout the tutorial.
 
 Open it in a browser, and you'll be greeted with an optimistic **Hello _World!_**.
@@ -153,8 +151,8 @@ is a virtual node, representing
 `app` is the function that runs our app. It is called with a single argument - an object
 which can take several properties. For now we're just concerned with `view` and `node. `
 
-Hyperapp calls the `view` function to find out how we want the DOM. We express it in the form of virtual nodes.
-Hyperapp creates the DOM for us accordingly, replacing the node specified in `node`.
+Hyperapp calls the `view` function which tells it the DOM structure we want, in the form
+of virtual nodes. Hyperapp proceeds to create it for us, replacing the node specified in `node`.
 
 To render the HTML we want, change the `view` to:
 
@@ -432,8 +430,9 @@ const Filter = props => h("div", {class: "filter"}, [
 ])
 ```
 
-This makes Hyperapp respond to `click` events on the button by _dispatching_ an
-action named `StartEditingFilter`. Add it to the "ACTIONS" section:
+This makes Hyperapp bind a click-event handler on the button element, so
+that when the button is clicked, an action named `StartEditingFilter` is
+_dispatched_. Create the action in the "ACTIONS" section:
 
 ```js
 const StartEditingFilter = state => ({...state, editingFilter: true})

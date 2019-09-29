@@ -207,7 +207,7 @@ export function app<State>(app: AppProps<State>): void
  */
 export type ClassAttribute = ClassAttributeItem | null | undefined;
 
-type ClassAttributeItem = (string | { [key: string]: boolean } | ClassAttributeArray);
+type ClassAttributeItem = (string | { [key: string]: any } | ClassAttributeArray);
 
 interface ClassAttributeArray extends Array<ClassAttributeItem> { }
 

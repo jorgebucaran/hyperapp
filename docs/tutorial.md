@@ -120,7 +120,7 @@ Open it in a browser, and you'll be greeted with an optimistic **Hello _World!_*
 View
 ------------------------------------
 
-Lets step through what just happened.
+Let's step through what just happened.
 
 ### Virtual Nodes
 
@@ -324,7 +324,7 @@ const Container = content => h("div", {class: "container"}, content)
 ```
 
 
-With those, the view can be written as:
+With those the view can be written as:
 
 ```js
 view: () => Container([
@@ -439,7 +439,8 @@ const StartEditingFilter = state => ({...state, editingFilter: true})
 ```
 
 Actions are just functions describing transformations of the state.
-This one keep everything the same except that it sets `editingFilter` to `true`.
+This actioin keep everything in the state the same except for `editingFilter`
+which it sets to `true`.
 
 When Hyperapp dispatches an action, it replaces the old state with the new
 one calculated using the action. Then the DOM is modified to match what the
@@ -461,7 +462,7 @@ const Filter = props => h("div", {class: "filter"}, [
 ])
 ```
 
-Now when you click the pencil button the text input appears.  But we still need to add
+Now, when you click the pencil button the text input appears.  But we still need to add
 a way to go back. We need an action to `StopEditingFilter`, and a button to dispatch it.
 
 Add the action:
@@ -666,7 +667,7 @@ be _effects_. Effects are executed by Hyperapp as part of processing the action'
 ### Effects can dispatch actions
 
 One of the options we passed to `Http` was `action: GotStories`. The way this effect works is that when the response comes
-back from the api, an action named `GotStories` (yet to be implemented) will be dispatched, with the response-body as the payload.
+back from the api, an action named `GotStories` (yet to be implemented) will be dispatched, with the response body as the payload.
 
 The response body is in json, but the payload will be a javascript object, thanks to the parsing hint `response: "json"`.  It will look like this (although the details depend on your filter of course):
 
@@ -830,7 +831,7 @@ const StoryList = props => h("div", {class: "stories"}, [
 ])
 ```
 
-When the app loads, and when you change filter, you should see the spinner appear until the stories are loaded.
+When the app loads, and when you change the filter, you should see the spinner appear until the stories are loaded.
 
 ![loading spinner](./tut7.png)
 
@@ -870,7 +871,7 @@ const ToggleAutoUpdate = state => ({...state, autoUpdate: !state.autoUpdate})
 Now we've got `autoUpdate` in the state tracking the checkbox. All we need now, is to set up `FetchStories`
 to be dispatched every five seconds when `autoUpdate` is `true`.
 
-Imoport the `interval` _subscription creator_:
+Import the `interval` _subscription creator_:
 
 ```js
 import {interval} from "https://unpkg.com/@hyperapp/time?module"

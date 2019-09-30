@@ -454,7 +454,7 @@ export var app = function(props) {
     return typeof action === "function"
       ? dispatch(action(state, props))
       : isArray(action)
-      ? typeof action[0] === "function"
+      ? typeof action[0] === "function" || isArray(action[0])
         ? dispatch(
             action[0],
             typeof action[1] === "function" ? action[1](props) : action[1]

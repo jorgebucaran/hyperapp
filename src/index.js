@@ -355,8 +355,8 @@ var propsChanged = function(a, b) {
 
 var getVNode = function(newVNode, oldVNode) {
   return newVNode.type === LAZY_NODE
-    ? ((!oldVNode || propsChanged(oldVNode.lazy, newVNode.lazy)) &&
-        ((oldVNode = newVNode.lazy.view(newVNode.lazy)).lazy = newVNode.lazy),
+    ? ((!oldVNode || !oldVNode.lazy || propsChanged(oldVNode.lazy, newVNode.lazy)) &&
+        ((oldVNode = toVNode(newVNode.lazy.view(newVNode.lazy))).lazy = newVNode.lazy),
       oldVNode)
     : newVNode
 }
@@ -374,6 +374,10 @@ var createVNode = function(name, props, children, node, key, type) {
 
 var createTextVNode = function(value, node) {
   return createVNode(value, EMPTY_OBJ, EMPTY_ARR, node, null, TEXT_NODE)
+}
+
+var toVNode = function(vnode){
+  return typeof vnode === "object" ? vnode : createTextVNode(vnode)
 }
 
 var recycleNode = function(node) {
@@ -407,9 +411,7 @@ export var h = function(name, props) {
         rest.push(vnode[i])
       }
     } else if (vnode === false || vnode === true || vnode == null) {
-    } else {
-      children.push(typeof vnode === "object" ? vnode : createTextVNode(vnode))
-    }
+    } else children.push(toVNode(vnode))
   }
 
   props = props || EMPTY_OBJ

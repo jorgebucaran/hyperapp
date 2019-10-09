@@ -42,7 +42,7 @@ Here's the first example to get you started: a counter that can go up or down. Y
       app({
         init: 0,
         view: state =>
-          h("div", {}, [
+          h("main", {}, [
             h("h1", {}, state),
             h("button", { onClick: state => state - 1 }, "-"),
             h("button", { onClick: state => state + 1 }, "+")
@@ -52,7 +52,7 @@ Here's the first example to get you started: a counter that can go up or down. Y
     </script>
   </head>
   <body>
-    <div id="app"></div>
+    <main id="app"></main>
   </body>
 </html>
 ```

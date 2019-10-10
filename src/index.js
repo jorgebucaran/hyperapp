@@ -1,3 +1,4 @@
+console.log("DEBUG MODE")
 var RECYCLED_NODE = 1
 var LAZY_NODE = 2
 var TEXT_NODE = 3
@@ -357,10 +358,17 @@ var propsChanged = function(a, b) {
   for (var k in b) if (a[k] !== b[k]) return true
 }
 
+var getTextVNode = function(node) {
+  return typeof node === "string" ? createTextVNode(node) : node
+}
+
 var getVNode = function(newVNode, oldVNode) {
   return newVNode.type === LAZY_NODE
-    ? ((!oldVNode || !oldVNode.lazy || propsChanged(oldVNode.lazy, newVNode.lazy)) &&
-        ((oldVNode = toVNode(newVNode.lazy.view(newVNode.lazy))).lazy = newVNode.lazy),
+    ? ((!oldVNode ||
+        (oldVNode.type !== LAZY_NODE ||
+          propsChanged(oldVNode.lazy, newVNode.lazy))) &&
+        ((oldVNode = getTextVNode(newVNode.lazy.view(newVNode.lazy))).lazy =
+          newVNode.lazy),
       oldVNode)
     : newVNode
 }
@@ -378,10 +386,6 @@ var createVNode = function(name, props, children, node, key, type) {
 
 var createTextVNode = function(value, node) {
   return createVNode(value, EMPTY_OBJ, EMPTY_ARR, node, undefined, TEXT_NODE)
-}
-
-var toVNode = function(vnode){
-  return typeof vnode === "object" ? vnode : createTextVNode(vnode)
 }
 
 var recycleNode = function(node) {
@@ -415,7 +419,9 @@ export var h = function(name, props) {
         rest.push(vdom[i])
       }
     } else if (vdom === false || vdom === true || vdom == null) {
-    } else children.push(toVNode(vdom))
+    } else {
+      children.push(getTextVNode(vdom))
+    }
   }
 
   props = props || EMPTY_OBJ
@@ -474,10 +480,7 @@ export var app = function(props) {
       node.parentNode,
       node,
       vdom,
-      (vdom =
-        typeof (vdom = view(state)) === "string"
-          ? createTextVNode(vdom)
-          : vdom),
+      (vdom = getTextVNode(view(state))),
       listener
     )
   }

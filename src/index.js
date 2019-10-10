@@ -5,7 +5,10 @@ var EMPTY_OBJ = {}
 var EMPTY_ARR = []
 var map = EMPTY_ARR.map
 var isArray = Array.isArray
-var defer = requestAnimationFrame || setTimeout
+var defer =
+  typeof requestAnimationFrame !== "undefined"
+    ? requestAnimationFrame
+    : setTimeout
 
 var createClass = function(obj) {
   var out = ""
@@ -123,34 +126,35 @@ var patchProperty = function(node, key, oldValue, newValue, listener, isSvg) {
   }
 }
 
-var createNode = function(vnode, listener, isSvg) {
+var createNode = function(vdom, listener, isSvg) {
+  var ns = "http://www.w3.org/2000/svg"
+  var props = vdom.props
   var node =
-    vnode.type === TEXT_NODE
-      ? document.createTextNode(vnode.name)
-      : (isSvg = isSvg || vnode.name === "svg")
-      ? document.createElementNS("http://www.w3.org/2000/svg", vnode.name)
-      : document.createElement(vnode.name)
-  var props = vnode.props
+    vdom.type === TEXT_NODE
+      ? document.createTextNode(vdom.name)
+      : (isSvg = isSvg || vdom.name === "svg")
+      ? document.createElementNS(ns, vdom.name, { is: props.is })
+      : document.createElement(vdom.name, { is: props.is })
 
   for (var k in props) {
     patchProperty(node, k, null, props[k], listener, isSvg)
   }
 
-  for (var i = 0, len = vnode.children.length; i < len; i++) {
+  for (var i = 0, len = vdom.children.length; i < len; i++) {
     node.appendChild(
       createNode(
-        (vnode.children[i] = getVNode(vnode.children[i])),
+        (vdom.children[i] = getVNode(vdom.children[i])),
         listener,
         isSvg
       )
     )
   }
 
-  return (vnode.node = node)
+  return (vdom.node = node)
 }
 
-var getKey = function(vnode) {
-  return vnode == null ? null : vnode.key
+var getKey = function(vdom) {
+  return vdom == null ? null : vdom.key
 }
 
 var patch = function(parent, node, oldVNode, newVNode, listener, isSvg) {
@@ -373,7 +377,7 @@ var createVNode = function(name, props, children, node, key, type) {
 }
 
 var createTextVNode = function(value, node) {
-  return createVNode(value, EMPTY_OBJ, EMPTY_ARR, node, null, TEXT_NODE)
+  return createVNode(value, EMPTY_OBJ, EMPTY_ARR, node, undefined, TEXT_NODE)
 }
 
 var toVNode = function(vnode){
@@ -388,7 +392,7 @@ var recycleNode = function(node) {
         EMPTY_OBJ,
         map.call(node.childNodes, recycleNode),
         node,
-        null,
+        undefined,
         RECYCLED_NODE
       )
 }
@@ -401,27 +405,27 @@ export var Lazy = function(props) {
 }
 
 export var h = function(name, props) {
-  for (var vnode, rest = [], children = [], i = arguments.length; i-- > 2; ) {
+  for (var vdom, rest = [], children = [], i = arguments.length; i-- > 2; ) {
     rest.push(arguments[i])
   }
 
   while (rest.length > 0) {
-    if (isArray((vnode = rest.pop()))) {
-      for (var i = vnode.length; i-- > 0; ) {
-        rest.push(vnode[i])
+    if (isArray((vdom = rest.pop()))) {
+      for (var i = vdom.length; i-- > 0; ) {
+        rest.push(vdom[i])
       }
-    } else if (vnode === false || vnode === true || vnode == null) {
-    } else children.push(toVNode(vnode))
+    } else if (vdom === false || vdom === true || vdom == null) {
+    } else children.push(toVNode(vdom))
   }
 
   props = props || EMPTY_OBJ
 
   return typeof name === "function"
     ? name(props, children)
-    : createVNode(name, props, children, null, props.key)
+    : createVNode(name, props, children, undefined, props.key)
 }
 
-export var app = function(props, enhance) {
+export var app = function(props) {
   var state = {}
   var lock = false
   var view = props.view
@@ -445,21 +449,20 @@ export var app = function(props, enhance) {
     return state
   }
 
-  var dispatch = (enhance ||
-    function(any) {
-      return any
-    })(function(action, props, obj) {
+  var dispatch = (props.middleware ||
+    function(obj) {
+      return obj
+    })(function(action, props) {
     return typeof action === "function"
-      ? dispatch(action(state, props), obj || props)
+      ? dispatch(action(state, props))
       : isArray(action)
       ? typeof action[0] === "function"
         ? dispatch(
             action[0],
-            typeof (action = action[1]) === "function" ? action(props) : action,
-            props
+            typeof action[1] === "function" ? action[1](props) : action[1]
           )
         : (batch(action.slice(1)).map(function(fx) {
-            fx && fx[0](dispatch, fx[1], props)
+            fx && fx[0](dispatch, fx[1])
           }, setState(action[0])),
           state)
       : setState(action)

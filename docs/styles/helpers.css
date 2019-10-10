@@ -1,0 +1,132 @@
+/*
+-----------------------------------------------
+  commonly used helpers
+-----------------------------------------------
+*/
+
+/*  dev only ------------------------------- */
+.debug * {
+  outline: 1px solid hsla(304, 37%, 53%, 0.1);
+}
+
+
+/*  lists ---------------------------------- */
+ol, ul {
+	padding: 0;
+  list-style-position: inside;
+}
+
+[reset] { list-style-type: none }
+li      { margin: 0 0 .4rem }
+
+
+/*  buttons -------------------------------- */
+.btn {
+  --bttn-h: 4rem;
+  --bttn-outline: .2rem;
+  --bttn-font: var(--font-ui);
+  --bttn-calc-h: calc(var(--bttn-h) - var(--bttn-outline) * 2);
+  --bttn-hover: linear-gradient(
+    to top, rgba(0,0,0,.05), rgba(0,0,0,.05)
+  );
+  --bttn-active: linear-gradient(
+    to top, rgba(255,255,255,.1), rgba(255,255,255,.1)
+  );
+
+  position: relative;
+  margin: 0 .8rem .8rem 0;
+  vertical-align: middle;
+  white-space: nowrap;
+  display: inline-block;
+  zoom: 1;
+  border: none transparent;
+	font: 1.3rem var(--bttn-font);
+	border-radius: var(--border-r);
+  color: currentColor;
+  letter-spacing: .03em;
+  cursor: pointer;
+}
+
+.btn:focus { outline: 0 }
+
+.btn[disabled],
+.btn:hover[disabled] {
+  opacity: .55;
+  pointer-events: none;
+  /* cursor: not-allowed; */
+}
+
+.btn > svg {
+  position: relative;
+  top: -.1rem;
+  width: 2rem !important;
+  height: 2rem !important;
+}
+
+.btn {
+  min-height: var(--bttn-h);
+  line-height: var(--bttn-h);
+  padding: 0 1.6rem;
+  transition: all .1s;
+}
+
+.btn:hover  { background-image: var(--bttn-hover) }
+.btn:active {
+	mix-blend-mode: overlay;
+	background-image: var(--bttn-active)
+}
+
+
+/*  icons ---------------------------------- */
+[class^="i-"] {
+  position: relative;
+  width: 1.3em;
+  height: 1.3em;
+  top: -0.123em;
+  overflow: hidden;
+  vertical-align: middle;
+  -o-object-fit: contain;
+  object-fit: contain;
+  -webkit-transform-origin: center center;
+  transform-origin: center center;
+}
+
+.i-fill {
+  fill: currentColor;
+  stroke: none;
+}
+
+.i-stroke {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+
+/*  grid ----------------------------------- */
+.grid {
+  --gap: 4rem;
+  --minmax: 28rem;
+
+  display: grid;
+  grid-gap: var(--gap);
+  grid-auto-flow: dense;
+  grid-template-columns: repeat(auto-fill, minmax(var(--minmax), 1fr));
+}
+
+
+/*  misc – commonly used helpers ----------- */
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.w-full {
+  width: 100vw;
+  margin-left: 50%;
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
+}

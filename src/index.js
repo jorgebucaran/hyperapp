@@ -1,4 +1,3 @@
-console.log("DEBUG MODE")
 var RECYCLED_NODE = 1
 var LAZY_NODE = 2
 var TEXT_NODE = 3

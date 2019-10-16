@@ -81,6 +81,29 @@ export default {
       ]),
       expected: { decoded: true }
     },
+    {
+      test: "chaining payload decoders",
+      assert: deepEqual,
+      actual: dispatch([
+        [
+          [
+            function action(state, payload){
+              return { ...state, ...payload }
+            },
+            function decoderC(obj){
+              return { ...obj, C: true }
+            }
+          ],
+          function decoderB(obj){
+            return { ...obj, B: true }
+          }
+        ],
+        function decoderA(){
+          return { A: true }
+        }
+      ]),
+      expected: { A: true, B: true, C: true }
+    },
   ],
   "dispatch effect(tuple)": [
     {
@@ -97,8 +120,8 @@ export default {
       assert: deepEqual,
       actual: dispatch([
         { effect: true },
-        [function effect(dsptch, props){
-          dsptch(state => ({ ...state, ...props}))
+        [function effect(dispatch, props){
+          dispatch(state => ({ ...state, ...props}))
         }, { params: true }]
       ]),
       expected: { effect: true, params: true }

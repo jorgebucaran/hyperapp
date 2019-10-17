@@ -69,20 +69,20 @@ export default {
       expected: { params: true }
     },
     {
-      test: "payload is decoded",
+      test: "payload filter",
       assert: deepEqual,
       actual: dispatch([
         function action(state, payload){
           return { ...state, ...payload }
         },
-        function decoder(){
-          return { decoded: true }
+        function filter(){
+          return { filtered: true }
         }
       ]),
-      expected: { decoded: true }
+      expected: { filtered: true }
     },
     {
-      test: "chaining payload decoders",
+      test: "chaining payload filters",
       assert: deepEqual,
       actual: dispatch([
         [
@@ -90,15 +90,15 @@ export default {
             function action(state, payload){
               return { ...state, ...payload }
             },
-            function decoderC(obj){
+            function filterC(obj){
               return { ...obj, C: true }
             }
           ],
-          function decoderB(obj){
+          function filterB(obj){
             return { ...obj, B: true }
           }
         ],
-        function decoderA(){
+        function filterA(){
           return { A: true }
         }
       ]),

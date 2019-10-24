@@ -168,14 +168,14 @@ view: () => h("div", {id: "app", class: "container"}, [
       h("li", {class: "unread"}, [
         h("p", {class: "title"}, [
           "The ",
-          h("em", {}, "Ocean"),
+          h("b", {}, "Ocean"),
           " is Sinking!"
         ]),
         h("p", {class: "author"}, "Kat Stropher")
       ]),
       h("li", {class: "reading"}, [
         h("p", {class: "title"}, [
-          h("em", {}, "Ocean"),
+          h("b", {}, "Ocean"),
           " life is brutal"
         ]),
         h("p", {class: "author"}, "Surphy McBrah"),
@@ -183,7 +183,7 @@ view: () => h("div", {id: "app", class: "container"}, [
       h("li", {}, [
         h("p", {class: "title"}, [
           "Family friendly fun at the ",
-          h("em", {}, "ocean"),
+          h("b", {}, "ocean"),
           " exhibit"
         ]),
         h("p", {class: "author"}, "Guy Prosales")
@@ -229,7 +229,7 @@ Add this function (in the "VIEWS" section):
 const emphasize = (word, string) =>
   string.split(" ").map(x => {
     if (x.toLowerCase() === word.toLowerCase()) {
-      return h("em", {}, x + " ")
+      return h("b", {}, x + " ")
     } else {
       return x + " "
     }
@@ -242,7 +242,7 @@ It lets you change this:
   ...
   h("p", {class: "title"}, [
     "The ",
-    h("em", {}, "Ocean"),
+    h("b", {}, "Ocean"),
     " is Sinking!"
   ]),
   ...

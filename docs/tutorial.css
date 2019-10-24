@@ -1,0 +1,153 @@
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu", "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  color: #121212;
+  background-color: #f7f7f7;
+}
+.container {
+  width: 90%;
+  max-width: 1024px;
+  margin: 3rem auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 2rem;
+}
+.filter {
+  display: flex;
+  align-items: center;
+  position: relative;
+  grid-column: 1;
+}
+.filter-icon {
+  position: absolute;
+  left: 1rem;
+  font-size: 0;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.filter input {
+  display: block;
+  width: 100%;
+  font-size: 2rem;
+  font-weight: bold;
+  padding: 0.5rem 1.5rem;
+  cursor: text;
+  border-radius: 2rem;
+  border: none;
+  background-color: transparent;
+}
+.filter input:hover,
+.filter.editing  input {
+  background-color: #eeeeee;
+}
+.filter input:focus {
+  outline: none;
+}
+.filter button {
+  position: absolute;
+  display: block;
+  right: 1rem;
+  font-size: 0;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-filter"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+.filter button:focus {
+  outline: none;
+}
+.filter.editing button {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>');
+}
+.stories {
+  grid-column: 1;
+}
+.stories ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 1rem;
+}
+.stories li {
+  background: #ffffff;
+  border-radius: 0.5rem;
+  box-shadow: 0 3px 6px rgba(0,0,0,.25);
+  padding: 0.4rem 2rem 0.75rem 2.15rem;
+  margin: 0;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform 100ms, box-shadow 100ms;
+  user-select: none;
+}
+.stories li::before {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  display: block;
+  content: "";
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 100%;
+}
+.stories li:hover {
+  background-color: #fafafa;
+}
+.stories li.unread {
+  background-color: #f8f5fd;
+}
+.stories li.unread:hover {
+  background-color: #f4f0fc;
+}
+.stories li.unread::before {
+  background-color: rgb(123, 22, 255);
+}
+.stories li.reading {
+  box-shadow: 0 1px 2px rgba(0,0,0,.25);
+  transform: scale(0.995);
+}
+.stories li:active {
+  box-shadow: 0 0.5px 1.5px rgba(0,0,0,.25) !important;
+  transform: scale(0.9915) !important;
+  transition: transform 10ms, box-shadow 10ms;
+}
+.stories .title {
+  margin: 0;
+  font-size: 1.2rem;
+}
+.stories .author {
+  margin: 0;
+}
+.autoupdate {
+  grid-column: 1;
+}
+.story {
+  background: #ffffff;
+  border-radius: 0.5rem;
+  box-shadow: 0 3px 6px rgba(0,0,0,.25);
+  padding: 2rem;
+}
+.story h1 {
+  margin-top: 0;
+}
+@media (min-width: 768px) {
+  .container {
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 2rem;
+  }
+  .story {
+    grid-column: 2;
+    grid-row: 1 / 4;
+  }
+}

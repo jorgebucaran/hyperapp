@@ -56,7 +56,7 @@ app we want to build, with this HTML:
 </div>
 ```
 
-...and some CSS [here](https://zaceno.github.com/hatut/style.css).
+...and some CSS [here](https://github.com/jorgebucaran/hyperapp/blob/master/docs/tutorial.md).
 
 It looks like this:
 
@@ -77,7 +77,7 @@ Create this html file:
 <!doctype html>
 <html>
   <head>
-    <link rel="stylesheet" href="https://zaceno.github.com/hatut/style.css">
+    <link rel="stylesheet" href="https://github.com/jorgebucaran/hyperapp/blob/master/docs/tutorial.md">
     <script type="module">
 
 // -- IMPORTS --
@@ -296,12 +296,22 @@ const StoryList = props => h("div", {class: "stories"}, [
   ))
 ])
 
-const Filter = props => h("div", {class: "filter"}, [
-  "Filter:",
-  h("span", {class: "filter-word"}, props.filter),
-  h("button", {}, "\u270E")
-])
-
+const Filter = props =>
+  h('div', {
+    class: {
+      filter: true,
+      editing: props.editingFilter
+    }
+  }, [
+    h('input', {
+      type: 'text',
+      value: props.filter,
+      onInput: [SetFilter, event => event.target.value], // <----
+      onClick: StartEditingFilter,
+    }),
+    h('button', { onClick: props.editingFilter ? StopEditingFilter : StartEditingFilter }, 'Go')
+  ])
+  
 const StoryDetail = props => h("div", {class: "story"}, [
   props && h("h1", {}, props.title),
   props && h("p", {}, `
@@ -403,7 +413,7 @@ as an argument, so it can be reduced to:
   view: state => Container([
     Filter(state),
     StoryList(state),
-    StoryDetail(state.reading && state.stories[state.reading]),
+    state.reading && StoryDetail(state.stories[state.reading]),
     AutoUpdate(state),
   ]),
 ```
@@ -423,11 +433,22 @@ the pencil-button, a text input with the filter word appears.
 Add an `onClick` property to the button in the filter view:
 
 ```js
-const Filter = props => h("div", {class: "filter"}, [
-  "Filter:",
-  h("span", {class: "filter-word"}, props.filter),
-  h("button", { onClick: StartEditingFilter }, "\u270E") // <---
-])
+const Filter = props =>
+  h('div', {
+    class: {
+      filter: true,
+      editing: props.editingFilter
+    }
+  }, [
+    h('input', {
+      type: 'text',
+      value: props.filter,
+      onInput: [SetFilter, event => event.target.value], // <----
+      onClick: StartEditingFilter,
+    }),
+    h('button', { onClick: props.editingFilter ? StopEditingFilter : StartEditingFilter }, 'Go')
+  ])
+  
 ```
 
 This makes Hyperapp bind a click-event handler on the button element, so
@@ -451,15 +472,22 @@ span with the filter word. We can express this in the `Filter` view using a
 ternary operator (`a ? b : c`).
 
 ```js
-const Filter = props => h("div", {class: "filter"}, [
-  "Filter:",
+const Filter = props =>
+  h('div', {
+    class: {
+      filter: true,
+      editing: props.editingFilter
+    }
+  }, [
+    h('input', {
+      type: 'text',
+      value: props.filter,
+      onInput: [SetFilter, event => event.target.value], // <----
+      onClick: StartEditingFilter,
+    }),
+    h('button', { onClick: props.editingFilter ? StopEditingFilter : StartEditingFilter }, 'Go')
+  ])
   
-  props.editingFilter                               // <---
-  ? h("input", {type: "text", value: props.filter}) // <---
-  : h("span", {class: "filter-word"}, props.filter),
-  
-  h("button", { onClick: StartEditingFilter }, "\u270E")
-])
 ```
 
 Now, when you click the pencil button the text input appears.  But we still need to add
@@ -474,17 +502,22 @@ const StopEditingFilter = state => ({...state, editingFilter: false})
 and update the `Filter` view again:
 
 ```js
-const Filter = props => h("div", {class: "filter"}, [
-  "Filter:",
-    
-  props.editingFilter
-  ? h("input", {type: "text", value: props.filter})
-  : h("span", {class: "filter-word"}, props.filter),
-
-  props.editingFilter                                      // <---
-  ? h("button", {onClick: StopEditingFilter}, "\u2713") 
-  : h("button", {onClick: StartEditingFilter}, "\u270E"),  // <---
-])
+const Filter = props =>
+  h('div', {
+    class: {
+      filter: true,
+      editing: props.editingFilter
+    }
+  }, [
+    h('input', {
+      type: 'text',
+      value: props.filter,
+      onInput: [SetFilter, event => event.target.value], // <----
+      onClick: StartEditingFilter,
+    }),
+    h('button', { onClick: props.editingFilter ? StopEditingFilter : StartEditingFilter }, 'Go')
+  ])
+  
 ```
 
 When you click the pencil button, it is replaced with a check-mark button that can take you back to the first state.
@@ -500,21 +533,22 @@ type in the box should be emphasized in the story-list.
 Update the `Filter` view yet again:
 
 ```js
-const Filter = props => h("div", {class: "filter"}, [
-  "Filter:",
-    
-  props.editingFilter
-  ? h("input", {
-    type: "text",
-    value: props.filter,
-    onInput: SetFilter,   // <----
-  })
-  : h("span", {class: "filter-word"}, props.filter),
-
-  props.editingFilter
-  ? h("button", {onClick: StopEditingFilter}, "\u2713") 
-  : h("button", {onClick: StartEditingFilter}, "\u270E"), 
-])
+const Filter = props =>
+  h('div', {
+    class: {
+      filter: true,
+      editing: props.editingFilter
+    }
+  }, [
+    h('input', {
+      type: 'text',
+      value: props.filter,
+      onInput: [SetFilter, event => event.target.value], // <----
+      onClick: StartEditingFilter,
+    }),
+    h('button', { onClick: props.editingFilter ? StopEditingFilter : StartEditingFilter }, 'Go')
+  ])
+  
 ```
 
 This will dispatch the `SetFilter` action everytime someone types in the input. Implement the action like this:
@@ -601,21 +635,22 @@ But we don't know the word beforehand, so how can we set it as a custom payload?
 again (last time - I promise!):
 
 ```js
-const Filter = props => h("div", {class: "filter"}, [
-  "Filter:",
-    
-  props.editingFilter
-  ? h("input", {
-    type: "text",
-    value: props.filter,
-    onInput: [SetFilter, event => event.target.value],   // <----
-  })
-  : h("span", {class: "filter-word"}, props.filter),
-
-  props.editingFilter
-  ? h("button", {onClick: StopEditingFilter}, "\u2713") 
-  : h("button", {onClick: StartEditingFilter}, "\u270E"), 
-])
+const Filter = props =>
+  h('div', {
+    class: {
+      filter: true,
+      editing: props.editingFilter
+    }
+  }, [
+    h('input', {
+      type: 'text',
+      value: props.filter,
+      onInput: [SetFilter, event => event.target.value], // <----
+      onClick: StartEditingFilter,
+    }),
+    h('button', { onClick: props.editingFilter ? StopEditingFilter : StartEditingFilter }, 'Go')
+  ])
+  
 ```
 
 When we give a _function_ as the custom payload, Hyperapp considers it a _payload filter_ and passes the default

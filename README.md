@@ -65,7 +65,7 @@ Here's the first example to get you started: a counter that can go up or down. Y
         },
         view: function (state) {
           return h("main", {}, [
-            h("h1", {}, state.counter),
+            h("h1", {}, `Value: ${state.counter}`),
             h("button", { onClick: decrement(state) }, "-"),
             h("button", { onClick: increment(state) }, "+")
           ])

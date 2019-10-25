@@ -39,7 +39,9 @@ Here's the first example to get you started: a counter that can go up or down. Y
     <script type="module">
       import { h, app } from "https://unpkg.com/hyperapp"
 
-      const cloneObject = (obj) => JSON.parse(JSON.stringify(obj))
+      const cloneObject = function (obj) {
+        return JSON.parse(JSON.stringify(obj))
+      }
 
       const decrement = function (state) {
         return function () {

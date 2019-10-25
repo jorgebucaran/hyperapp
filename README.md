@@ -39,14 +39,35 @@ Here's the first example to get you started: a counter that can go up or down. Y
     <script type="module">
       import { h, app } from "https://unpkg.com/hyperapp"
 
+      const cloneObject = (obj) => JSON.parse(JSON.stringify(obj))
+
+      const decrement = function (state) {
+        return function () {
+          const newState = cloneObject(state)
+          newState.counter -= 1
+          return newState
+        }
+      }
+
+      const increment = function (state) {
+        return function () {
+          const newState = cloneObject(state)
+          newState.counter += 1
+          return newState
+        }
+      }
+
       app({
-        init: 0,
-        view: state =>
-          h("main", {}, [
-            h("h1", {}, state),
-            h("button", { onClick: state => state - 1 }, "-"),
-            h("button", { onClick: state => state + 1 }, "+")
-          ]),
+        init: {
+          counter: 0
+        },
+        view: function (state) {
+          return h("main", {}, [
+            h("h1", {}, state.counter),
+            h("button", { onClick: decrement(state) }, "-"),
+            h("button", { onClick: increment(state) }, "+")
+          ])
+        },
         node: document.getElementById("app")
       })
     </script>

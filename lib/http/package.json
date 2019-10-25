@@ -1,7 +1,7 @@
 {
   "name": "@hyperapp/http",
   "description": "Make HTTP requests from Hyperapp.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "src/index.js",
   "module": "src/index.js",
   "license": "MIT",

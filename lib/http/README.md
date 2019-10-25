@@ -11,12 +11,12 @@ npm i @hyperapp/http
 ## Usage
 
 ```js
-import { get } from "@hyperapp/http"
+import { request } from "@hyperapp/http"
 
 const GotResult = (state, { result }) => ({ ...state, result })
 
 const factor = expression =>
-  get({
+  request({
     url: `https://newton.now.sh/factor/${expression}`,
     expect: "json",
     action: GotResult

@@ -111,7 +111,11 @@ var patchProperty = function(node, key, oldValue, newValue, listener, isSvg) {
     ) {
       node.removeEventListener(key, listener)
     } else if (!oldValue) {
-      node.addEventListener(key, listener)
+      if (key === "create") {
+        newValue.apply(node, [node])
+      } else {
+        node.addEventListener(key, listener)
+      }
     }
   } else if (!isSvg && key !== "list" && key in node) {
     node[key] = newValue == null ? "" : newValue

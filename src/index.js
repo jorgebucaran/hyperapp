@@ -53,6 +53,22 @@ var batch = function(list) {
   }, EMPTY_ARR)
 }
 
+var composeActionMaps = function(a, b) {
+  return b
+    ? function(x) {
+        return a(b(x))
+      }
+    : a
+}
+
+var mappedDispatch = function(dispatch, map) {
+  return map
+    ? function(action, props) {
+        return dispatch(action, props, map)
+      }
+    : dispatch
+}
+
 var isSameAction = function(a, b) {
   return isArray(a) && isArray(b) && a[0] === b[0] && typeof a[0] === "function"
 }
@@ -82,7 +98,7 @@ var patchSubs = function(oldSubs, newSubs, dispatch) {
           ? [
               newSub[0],
               newSub[1],
-              newSub[0](dispatch, newSub[1]),
+              newSub[0](mappedDispatch(dispatch, newSub[2]), newSub[1]),
               oldSub && oldSub[2]()
             ]
           : oldSub
@@ -92,7 +108,15 @@ var patchSubs = function(oldSubs, newSubs, dispatch) {
   return subs
 }
 
-var patchProperty = function(node, key, oldValue, newValue, listener, isSvg) {
+var patchProperty = function(
+  node,
+  key,
+  oldValue,
+  newValue,
+  listener,
+  actionMap,
+  isSvg
+) {
   if (key === "key") {
   } else if (key === "style") {
     for (var k in merge(oldValue, newValue)) {
@@ -111,6 +135,7 @@ var patchProperty = function(node, key, oldValue, newValue, listener, isSvg) {
     ) {
       node.removeEventListener(key, listener)
     } else if (!oldValue) {
+      node.actionMap = actionMap
       node.addEventListener(key, listener)
     }
   } else if (!isSvg && key !== "list" && key in node) {
@@ -126,7 +151,7 @@ var patchProperty = function(node, key, oldValue, newValue, listener, isSvg) {
   }
 }
 
-var createNode = function(vdom, listener, isSvg) {
+var createNode = function(vdom, listener, actionMap, isSvg) {
   var ns = "http://www.w3.org/2000/svg"
   var props = vdom.props
   var node =
@@ -137,7 +162,7 @@ var createNode = function(vdom, listener, isSvg) {
       : document.createElement(vdom.name, { is: props.is })
 
   for (var k in props) {
-    patchProperty(node, k, null, props[k], listener, isSvg)
+    patchProperty(node, k, null, props[k], listener, actionMap, isSvg)
   }
 
   for (var i = 0, len = vdom.children.length; i < len; i++) {
@@ -145,6 +170,7 @@ var createNode = function(vdom, listener, isSvg) {
       createNode(
         (vdom.children[i] = getVNode(vdom.children[i])),
         listener,
+        composeActionMaps(actionMap, vdom.children[i].actionMap),
         isSvg
       )
     )
@@ -157,7 +183,17 @@ var getKey = function(vdom) {
   return vdom == null ? null : vdom.key
 }
 
-var patch = function(parent, node, oldVNode, newVNode, listener, isSvg) {
+var patch = function(
+  parent,
+  node,
+  oldVNode,
+  newVNode,
+  listener,
+  actionMap,
+  isSvg
+) {
+  actionMap = composeActionMaps(actionMap, newVNode.actionMap)
+
   if (oldVNode === newVNode) {
   } else if (
     oldVNode != null &&
@@ -167,7 +203,7 @@ var patch = function(parent, node, oldVNode, newVNode, listener, isSvg) {
     if (oldVNode.name !== newVNode.name) node.nodeValue = newVNode.name
   } else if (oldVNode == null || oldVNode.name !== newVNode.name) {
     node = parent.insertBefore(
-      createNode((newVNode = getVNode(newVNode)), listener, isSvg),
+      createNode((newVNode = getVNode(newVNode)), listener, actionMap, isSvg),
       node
     )
     if (oldVNode != null) {
@@ -199,7 +235,15 @@ var patch = function(parent, node, oldVNode, newVNode, listener, isSvg) {
           ? node[i]
           : oldVProps[i]) !== newVProps[i]
       ) {
-        patchProperty(node, i, oldVProps[i], newVProps[i], listener, isSvg)
+        patchProperty(
+          node,
+          i,
+          oldVProps[i],
+          newVProps[i],
+          listener,
+          actionMap,
+          isSvg
+        )
       }
     }
 
@@ -220,6 +264,7 @@ var patch = function(parent, node, oldVNode, newVNode, listener, isSvg) {
           oldVKids[oldHead++]
         )),
         listener,
+        actionMap,
         isSvg
       )
     }
@@ -241,6 +286,7 @@ var patch = function(parent, node, oldVNode, newVNode, listener, isSvg) {
           oldVKids[oldTail--]
         )),
         listener,
+        actionMap,
         isSvg
       )
     }
@@ -251,6 +297,7 @@ var patch = function(parent, node, oldVNode, newVNode, listener, isSvg) {
           createNode(
             (newVKids[newHead] = getVNode(newVKids[newHead++])),
             listener,
+            actionMap,
             isSvg
           ),
           (oldVKid = oldVKids[oldHead]) && oldVKid.node
@@ -292,6 +339,7 @@ var patch = function(parent, node, oldVNode, newVNode, listener, isSvg) {
               oldVKid,
               newVKids[newHead],
               listener,
+              actionMap,
               isSvg
             )
             newHead++
@@ -305,6 +353,7 @@ var patch = function(parent, node, oldVNode, newVNode, listener, isSvg) {
               oldVKid,
               newVKids[newHead],
               listener,
+              actionMap,
               isSvg
             )
             newKeyed[newKey] = true
@@ -317,6 +366,7 @@ var patch = function(parent, node, oldVNode, newVNode, listener, isSvg) {
                 tmpVKid,
                 newVKids[newHead],
                 listener,
+                actionMap,
                 isSvg
               )
               newKeyed[newKey] = true
@@ -327,6 +377,7 @@ var patch = function(parent, node, oldVNode, newVNode, listener, isSvg) {
                 null,
                 newVKids[newHead],
                 listener,
+                actionMap,
                 isSvg
               )
             }
@@ -430,6 +481,21 @@ export var h = function(name, props) {
     : createVNode(name, props, children, undefined, props.key)
 }
 
+export var mapEvents = function(actionMap, vnode) {
+  vnode.actionMap = actionMap
+  return vnode
+}
+
+export var mapEffect = function(actionMap, effect) {
+  return [effect[0], effect[1], composeActionMaps(actionMap, effect[2])]
+}
+
+export var mapSubs = function(actionMap, subs) {
+  return subs.map(function(sub) {
+    return mapEffect(actionMap, sub)
+  })
+}
+
 export var app = function(props) {
   var state = {}
   var lock = false
@@ -440,7 +506,7 @@ export var app = function(props) {
   var subs = []
 
   var listener = function(event) {
-    dispatch(this.actions[event.type], event)
+    dispatch(this.actions[event.type], event, this.actionMap)
   }
 
   var setState = function(newState) {
@@ -457,17 +523,20 @@ export var app = function(props) {
   var dispatch = (props.middleware ||
     function(obj) {
       return obj
-    })(function(action, props) {
+    })(function(action, props, actionMap) {
     return typeof action === "function"
-      ? dispatch(action(state, props))
+      ? actionMap
+        ? dispatch(actionMap(action)(state, props), null, actionMap)
+        : dispatch(action(state, props))
       : isArray(action)
       ? typeof action[0] === "function" || isArray(action[0])
         ? dispatch(
             action[0],
-            typeof action[1] === "function" ? action[1](props) : action[1]
+            typeof action[1] === "function" ? action[1](props) : action[1],
+            actionMap
           )
         : (batch(action.slice(1)).map(function(fx) {
-            fx && fx[0](dispatch, fx[1])
+            fx && fx[0](mappedDispatch(dispatch, fx[2]), fx[1])
           }, setState(action[0])),
           state)
       : setState(action)
@@ -480,7 +549,10 @@ export var app = function(props) {
       node,
       vdom,
       (vdom = getTextVNode(view(state))),
-      listener
+      listener,
+      function(x) {
+        return x
+      }
     )
   }
 

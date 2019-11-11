@@ -3,8 +3,8 @@ var LAZY_NODE = 2
 var TEXT_NODE = 3
 var EMPTY_OBJ = {}
 var EMPTY_ARR = []
-var map = EMPTY_ARR.map
 var isArray = Array.isArray
+var isFunc = function(x) { return typeof x === "function" }
 var defer =
   typeof requestAnimationFrame !== "undefined"
     ? requestAnimationFrame
@@ -46,31 +46,59 @@ var batch = function(list) {
     return out.concat(
       !item || item === true
         ? 0
-        : typeof item[0] === "function"
+        : isFunc(item[0])
         ? [item]
         : batch(item)
     )
   }, EMPTY_ARR)
 }
 
-var composeActionMaps = function(a, b) {
-  return b
-    ? function(x) {
-        return a(b(x))
-      }
-    : a
+var compose = function(a, b) {
+  return a && b && (function(x) { return a(b(x)) }) || a || b
+}
+
+var mapEffects = function(effects, actionMap) {
+  return effects.map(function(fx) {
+    return [ fx[0], fx[1], compose(actionMap, fx[2]) ]
+  })
+}
+
+var makeActionMap = function(extract, merge) {
+  return function actionMap(action) {
+    return function(state, data) {
+      return (function resolve(x, state, data) {
+        return isFunc(x)
+          ? resolve(x(extract(state), data), state)
+          : !isArray(x)
+            ? merge(state, x)
+            : !isArray(x[0]) && !isFunc(x[0])
+              ? [merge(state, x[0])].concat(mapEffects(x.slice(1), actionMap))
+              : resolve(
+                x[0],
+                state,
+                isFunc(x[1]) ? x[1](data) : x[1]
+              )
+      })(action, state, data)
+    }
+  }
 }
 
 var mappedDispatch = function(dispatch, map) {
-  return map
-    ? function(action, props) {
-        return dispatch(action, props, map)
-      }
-    : dispatch
+  return function(action, props) {
+    dispatch(action, props, map)
+  }
+}
+
+export var map = function(extract, merge, x, actionMap = makeActionMap(extract, merge)) {
+  return isArray(x)
+    ? mapEffects(x, actionMap)
+    : isFunc(x)
+      ? actionMap(x)
+      : (x.actionMap = actionMap, x)
 }
 
 var isSameAction = function(a, b) {
-  return isArray(a) && isArray(b) && a[0] === b[0] && typeof a[0] === "function"
+  return isArray(a) && isArray(b) && a[0] === b[0] && isFunc(a[0])
 }
 
 var shouldRestart = function(a, b) {
@@ -108,15 +136,7 @@ var patchSubs = function(oldSubs, newSubs, dispatch) {
   return subs
 }
 
-var patchProperty = function(
-  node,
-  key,
-  oldValue,
-  newValue,
-  listener,
-  actionMap,
-  isSvg
-) {
+var patchProperty = function(node, key, oldValue, newValue, listener, actionMap, isSvg) {
   if (key === "key") {
   } else if (key === "style") {
     for (var k in merge(oldValue, newValue)) {
@@ -170,7 +190,7 @@ var createNode = function(vdom, listener, actionMap, isSvg) {
       createNode(
         (vdom.children[i] = getVNode(vdom.children[i])),
         listener,
-        composeActionMaps(actionMap, vdom.children[i].actionMap),
+        compose(actionMap, vdom.children[i].actionMap),
         isSvg
       )
     )
@@ -183,16 +203,8 @@ var getKey = function(vdom) {
   return vdom == null ? null : vdom.key
 }
 
-var patch = function(
-  parent,
-  node,
-  oldVNode,
-  newVNode,
-  listener,
-  actionMap,
-  isSvg
-) {
-  actionMap = composeActionMaps(actionMap, newVNode.actionMap)
+var patch = function(parent, node, oldVNode, newVNode, listener, actionMap, isSvg) {
+  actionMap = compose(actionMap, newVNode.actionMap)
 
   if (oldVNode === newVNode) {
   } else if (
@@ -235,15 +247,7 @@ var patch = function(
           ? node[i]
           : oldVProps[i]) !== newVProps[i]
       ) {
-        patchProperty(
-          node,
-          i,
-          oldVProps[i],
-          newVProps[i],
-          listener,
-          actionMap,
-          isSvg
-        )
+        patchProperty(node, i, oldVProps[i], newVProps[i], listener, actionMap, isSvg)
       }
     }
 
@@ -444,7 +448,7 @@ var recycleNode = function(node) {
     : createVNode(
         node.nodeName.toLowerCase(),
         EMPTY_OBJ,
-        map.call(node.childNodes, recycleNode),
+        EMPTY_ARR.map.call(node.childNodes, recycleNode),
         node,
         undefined,
         RECYCLED_NODE
@@ -476,24 +480,9 @@ export var h = function(name, props) {
 
   props = props || EMPTY_OBJ
 
-  return typeof name === "function"
+  return isFunc(name)
     ? name(props, children)
     : createVNode(name, props, children, undefined, props.key)
-}
-
-export var mapEvents = function(actionMap, vnode) {
-  vnode.actionMap = actionMap
-  return vnode
-}
-
-export var mapEffect = function(actionMap, effect) {
-  return [effect[0], effect[1], composeActionMaps(actionMap, effect[2])]
-}
-
-export var mapSubs = function(actionMap, subs) {
-  return subs.map(function(sub) {
-    return mapEffect(actionMap, sub)
-  })
 }
 
 export var app = function(props) {
@@ -523,24 +512,22 @@ export var app = function(props) {
   var dispatch = (props.middleware ||
     function(obj) {
       return obj
-    })(function(action, props, actionMap) {
-    return typeof action === "function"
-      ? actionMap
-        ? dispatch(actionMap(action)(state, props), null, actionMap)
-        : dispatch(action(state, props))
-      : isArray(action)
-      ? typeof action[0] === "function" || isArray(action[0])
-        ? dispatch(
-            action[0],
-            typeof action[1] === "function" ? action[1](props) : action[1],
-            actionMap
-          )
-        : (batch(action.slice(1)).map(function(fx) {
-            fx && fx[0](mappedDispatch(dispatch, fx[2]), fx[1])
-          }, setState(action[0])),
-          state)
-      : setState(action)
-  })
+    })(function(action, props, map) {
+      return isFunc(action)
+        ? dispatch((map ? map(action) : action)(state, props))
+        : isArray(action)
+          ? isFunc(action[0]) || isArray(action[0])
+            ? dispatch(
+              action[0],
+              isFunc(action[1]) ? action[1](props) : action[1],
+              map
+            )
+            : (batch(action.slice(1)).map(function(fx) {
+              fx && fx[0](mappedDispatch(dispatch, fx[2]), fx[1])
+            }, setState(action[0])),
+              state)
+          : setState(action)
+    })
 
   var render = function() {
     lock = false
@@ -549,10 +536,7 @@ export var app = function(props) {
       node,
       vdom,
       (vdom = getTextVNode(view(state))),
-      listener,
-      function(x) {
-        return x
-      }
+      listener
     )
   }
 

@@ -4,7 +4,6 @@ var TEXT_NODE = 3
 var EMPTY_OBJ = {}
 var EMPTY_ARR = []
 var isArray = Array.isArray
-var isFunc = function(x) { return typeof x === "function" }
 var defer =
   typeof requestAnimationFrame !== "undefined"
     ? requestAnimationFrame
@@ -46,7 +45,7 @@ var batch = function(list) {
     return out.concat(
       !item || item === true
         ? 0
-        : isFunc(item[0])
+        : typeof item[0] === "function"
         ? [item]
         : batch(item)
     )
@@ -67,16 +66,16 @@ var makeActionMap = function(extract, merge) {
   return function actionMap(action) {
     return function(state, data) {
       return (function resolve(x, state, data) {
-        return isFunc(x)
+        return typeof x === "function"
           ? resolve(x(extract(state), data), state)
           : !isArray(x)
             ? merge(state, x)
-            : !isArray(x[0]) && !isFunc(x[0])
+            : !isArray(x[0]) && typeof x[0] !== "function"
               ? [merge(state, x[0])].concat(mapEffects(x.slice(1), actionMap))
               : resolve(
                 x[0],
                 state,
-                isFunc(x[1]) ? x[1](data) : x[1]
+                typeof x[1] === "function" ? x[1](data) : x[1]
               )
       })(action, state, data)
     }
@@ -92,13 +91,13 @@ var mappedDispatch = function(dispatch, map) {
 export var map = function(extract, merge, x, actionMap = makeActionMap(extract, merge)) {
   return isArray(x)
     ? mapEffects(x, actionMap)
-    : isFunc(x)
+    : typeof x === "function"
       ? actionMap(x)
-      : (x.actionMap = actionMap, x)
+      : (x.actionMap = compose(actionMap, x.actionMap), x)
 }
 
 var isSameAction = function(a, b) {
-  return isArray(a) && isArray(b) && a[0] === b[0] && isFunc(a[0])
+  return isArray(a) && isArray(b) && a[0] === b[0] && typeof a[0] === "function"
 }
 
 var shouldRestart = function(a, b) {
@@ -148,6 +147,7 @@ var patchProperty = function(node, key, oldValue, newValue, listener, actionMap,
       }
     }
   } else if (key[0] === "o" && key[1] === "n") {
+    node.actionMap = actionMap
     if (
       !((node.actions || (node.actions = {}))[
         (key = key.slice(2).toLowerCase())
@@ -155,7 +155,6 @@ var patchProperty = function(node, key, oldValue, newValue, listener, actionMap,
     ) {
       node.removeEventListener(key, listener)
     } else if (!oldValue) {
-      node.actionMap = actionMap
       node.addEventListener(key, listener)
     }
   } else if (!isSvg && key !== "list" && key in node) {
@@ -480,7 +479,7 @@ export var h = function(name, props) {
 
   props = props || EMPTY_OBJ
 
-  return isFunc(name)
+  return typeof name === "function"
     ? name(props, children)
     : createVNode(name, props, children, undefined, props.key)
 }
@@ -513,13 +512,13 @@ export var app = function(props) {
     function(obj) {
       return obj
     })(function(action, props, map) {
-      return isFunc(action)
+      return typeof action === "function"
         ? dispatch((map ? map(action) : action)(state, props))
         : isArray(action)
-          ? isFunc(action[0]) || isArray(action[0])
+          ? typeof action[0] === "function" || isArray(action[0])
             ? dispatch(
               action[0],
-              isFunc(action[1]) ? action[1](props) : action[1],
+              typeof action[1] === "function" ? action[1](props) : action[1],
               map
             )
             : (batch(action.slice(1)).map(function(fx) {

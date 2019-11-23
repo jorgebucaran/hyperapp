@@ -4,6 +4,7 @@
   "version": "0.0.2",
   "main": "src/index.js",
   "module": "src/index.js",
+  "typings": "http.d.ts",
   "license": "MIT",
   "repository": "https://github.com/jorgebucaran/hyperapp/tree/master/lib/http",
   "files": [

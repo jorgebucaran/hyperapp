@@ -1,7 +1,7 @@
 {
   "name": "hyperapp",
   "description": "The tiny framework for building web interfaces.",
-  "version": "2.0.1",
+  "version": "2.0.3",
   "main": "src/index.js",
   "module": "src/index.js",
   "unpkg": "src/index.js",
@@ -37,6 +37,6 @@
     "testmatrix": "^0.1.2",
     "jsdom": "15.1.1",
     "rollup": "*",
-    "terser": "^4.1.3"
+    "terser": "^4.3.8"
   }
 }

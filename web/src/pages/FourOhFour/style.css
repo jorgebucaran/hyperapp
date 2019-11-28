@@ -1,0 +1,44 @@
+.four-oh-four-page {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 50vh;
+}
+
+.four-oh-four-page .code-background {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  opacity: 0.5;
+  z-index: -1;
+  pointer-events: none;
+  animation-duration: 5s;
+  animation-name: background-translation;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+@keyframes background-translation {
+  from {
+    transform: translateY(0%);
+  }
+
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+
+@media (min-width: 992px) {
+  .four-oh-four-page {
+    min-height: 100vh;
+    margin: -1.25rem 0 -7.25rem -1.25rem;
+  }
+  .four-oh-four-page .code-background {
+    position: absolute;
+  }
+}

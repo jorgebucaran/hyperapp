@@ -1,0 +1,32 @@
+
+footer {
+  padding: 1rem;
+}
+
+footer nav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+footer p {
+  line-height: 1;
+}
+
+@media (min-width: 992px) {
+  footer {
+    grid-column: 2;
+    padding: 1.25rem;
+    margin: 1rem 0;
+  }
+}
+
+@media (min-width: 992px) and (min-height: 768px) {
+  footer {
+    grid-column: 1;
+    grid-row: 2;
+    position: fixed;
+    bottom: 0;
+    align-self: flex-start;
+  }
+}

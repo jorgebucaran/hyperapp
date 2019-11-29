@@ -111,11 +111,11 @@
 
 @media (min-width: 992px) {
   .site-header {
+    position: fixed;
     padding: 1.25rem;
     flex-direction: column;
     justify-content: flex-start;
-    grid-column: 1;
-    grid-row: 1;
+    max-width: var(--menu-width);
   }
   .menu-toggler {
     display: none;

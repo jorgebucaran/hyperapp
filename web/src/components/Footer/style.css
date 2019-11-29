@@ -15,18 +15,15 @@ footer p {
 
 @media (min-width: 992px) {
   footer {
-    grid-column: 2;
     padding: 1.25rem;
-    margin: 1rem 0;
+    margin: 1rem 0 1rem var(--menu-width);
   }
 }
 
 @media (min-width: 992px) and (min-height: 768px) {
   footer {
-    grid-column: 1;
-    grid-row: 2;
     position: fixed;
     bottom: 0;
-    align-self: flex-start;
+    margin: 1rem 0;
   }
 }

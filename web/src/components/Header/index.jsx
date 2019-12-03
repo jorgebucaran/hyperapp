@@ -1,12 +1,7 @@
 import './style.css'
 import Link from '../Link'
 import SmartLink from '../SmartLink'
-import { Navigate } from '../../actions'
-
-const ToggleMenu = (state) => ({
-  ...state,
-  menuOpened: !state.menuOpened
-})
+import { Navigate, OpenMenu, CloseMenu } from '../../actions'
 
 const OnSearch = (state, ev) => {
   ev.preventDefault()
@@ -24,7 +19,7 @@ export default ({ menuOpened }) => {
         <img class="v2 desktop" src={require('./hyperapp-logo-v2.svg')} alt="hyperapp v2" />
         <img class="v1" src={require('./hyperapp-logo-v1.svg')} alt="hyperapp v1" />
       </Link>
-      <button class="menu-toggler" aria-expanded={menuOpened} aria-controls="menu" onclick={ToggleMenu}>
+      <button class="menu-toggler" aria-expanded={menuOpened} aria-controls="menu" onclick={menuOpened ? CloseMenu : OpenMenu}>
         Menu
         {menuOpened
           ? <img src={require('./close.svg')} alt="Close menu" />

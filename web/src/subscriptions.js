@@ -1,7 +1,7 @@
+const fx = a => b => [a, b]
 
 // WindowScrolled Subscription
-const scrolledFx = a => b => [a, b]
-export const WindowScrolled = scrolledFx((dispatch, props) => {
+export const WindowScrolled = fx((dispatch, props) => {
   const handleScroll = ev => {
     dispatch([props.action, { ev, scrollY: window.scrollY }])
   }
@@ -12,8 +12,7 @@ export const WindowScrolled = scrolledFx((dispatch, props) => {
 })
 
 // PopState Subscription
-const subFx = a => b => [a, b]
-export const PopState = subFx((dispatch, props) => {
+export const PopState = fx((dispatch, props) => {
   const handleLocationChange = () => {
     dispatch([props.action, window.location.pathname + window.location.search])
   }

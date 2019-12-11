@@ -1,5 +1,5 @@
 import { getPathInfo } from './utils'
-import { UpdateHistory } from './effects'
+import { UpdateHistory, HighLight } from './effects'
 
 export const OpenMenu = (state) => ({
   ...state,
@@ -25,5 +25,8 @@ export const ParseUrl = (state, path) => ({
 
 export const Navigate = (state, to) => [
   CloseMenu(ParseUrl(state, to)),
-  UpdateHistory({ to })
+  [
+    UpdateHistory({ to }),
+    HighLight()
+  ]
 ]

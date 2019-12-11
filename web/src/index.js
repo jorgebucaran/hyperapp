@@ -1,15 +1,10 @@
 /* eslint-disable indent */
 import { app } from 'hyperapp'
 
-import hljs from 'highlight.js/lib/highlight'
-import javascript from 'highlight.js/lib/languages/javascript'
-import xml from 'highlight.js/lib/languages/xml'
-
-import 'highlight.js/styles/github.css'
-
 // App init imports
 import { WindowScrolled, PopState } from './subscriptions'
 import { WindowScroll, ParseUrl } from './actions'
+import { HighLight } from './effects'
 
 // Components
 import Header from './components/Header'
@@ -26,16 +21,18 @@ import Api from './pages/Api'
 import FourOhFour from './pages/FourOhFour'
 import Search from './pages/Search'
 
-hljs.registerLanguage('javascript', javascript)
-hljs.registerLanguage('xml', xml)
-
 // Initialize the app on the #app div
 app({
-  init: ParseUrl({
-    menuOpened: false,
-    showPreview: false,
-    count: 0
-  }, window.location.pathname + window.location.search),
+  init: [
+    ParseUrl({
+        menuOpened: false,
+        showPreview: false,
+        count: 0
+      },
+      window.location.pathname + window.location.search
+    ),
+    HighLight()
+  ],
   view: (state) => {
     return (
       <div class={{
@@ -66,10 +63,3 @@ app({
     PopState({ action: ParseUrl })
   ]
 })
-
-// TODO: make an effect for this
-setTimeout(() => {
-  document.querySelectorAll('code').forEach((block) => {
-    hljs.highlightBlock(block)
-  })
-}, 50)

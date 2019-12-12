@@ -5,10 +5,15 @@ var EMPTY_OBJ = {}
 var EMPTY_ARR = []
 var map = EMPTY_ARR.map
 var isArray = Array.isArray
-var defer =
-  typeof requestAnimationFrame !== "undefined"
-    ? requestAnimationFrame
-    : setTimeout
+var defer =(() => {
+  if (typeof MessageChannel !== 'undefined') {
+    const channel = new MessageChannel()
+    const port = channel.port2
+    channel.port1.onmessage = render
+    return () => port.postMessage(null)
+  }
+  return () => setTimeout(render)
+})()
 
 var createClass = function(obj) {
   var out = ""
@@ -449,7 +454,7 @@ export var app = function(props) {
       if (subscriptions) {
         subs = patchSubs(subs, batch([subscriptions(state)]), dispatch)
       }
-      if (view && !lock) defer(render, (lock = true))
+      if (view && !lock) defer((lock = true))
     }
     return state
   }

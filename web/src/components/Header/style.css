@@ -73,6 +73,7 @@
   line-height: 1.2;
   color: var(--text-grey);
   text-decoration: none;
+  font-family: 'IBM Plex Sans', sans-serif;
 }
 .menu a:hover {
   color: #546067;

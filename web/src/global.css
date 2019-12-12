@@ -88,12 +88,11 @@ h1 a {
 }
 
 
-.hljs {
-  display: inline !important;
-  background-color: white !important;
+pre {
   padding: 0 !important;
 }
 
-pre .hljs {
-  display: block !important;
+code {
+  background-color: white !important;
+  padding: 0 !important;
 }

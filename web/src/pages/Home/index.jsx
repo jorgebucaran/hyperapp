@@ -99,7 +99,7 @@ export default (state) => (
       <pre class={{
         shown: !state.showPreview
       }}>
-        <code>{counterCode}</code>
+        <code class="language-js">{counterCode}</code>
       </pre>
       <div
         class={{

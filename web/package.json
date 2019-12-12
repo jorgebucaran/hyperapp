@@ -21,7 +21,6 @@
     ]
   },
   "dependencies": {
-    "highlight.js": "^9.16.2",
     "hyperapp": "^2.0.3",
     "sanitize.css": "^11.0.0"
   },

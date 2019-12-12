@@ -90,9 +90,15 @@ h1 a {
 
 pre {
   padding: 0 !important;
+  background-color: white !important;
 }
 
 code {
+  display: inline-block !important;
+  color: var(--dark-blue) !important;
+  font-family: 'Fira Code', monospace !important;
+  font-size: 1rem !important;
   background-color: white !important;
   padding: 0 !important;
 }
+

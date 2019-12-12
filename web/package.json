@@ -21,6 +21,7 @@
     ]
   },
   "dependencies": {
+    "glob": "^7.1.6",
     "hyperapp": "^2.0.3",
     "sanitize.css": "^11.0.0"
   },

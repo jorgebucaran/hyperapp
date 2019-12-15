@@ -23,6 +23,11 @@ export const ParseUrl = (state, path) => ({
   location: getPathInfo(path)
 })
 
+export const SetSearchData = (state, searchData) => ({
+  ...state,
+  searchData
+})
+
 export const Navigate = (state, to) => [
   CloseMenu(ParseUrl(state, to)),
   [

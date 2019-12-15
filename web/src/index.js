@@ -1,10 +1,12 @@
 /* eslint-disable indent */
 import { app } from 'hyperapp'
 
+import { request } from '../../lib/http/src/index'
+
 // App init imports
 import { WindowScrolled, PopState } from './subscriptions'
-import { WindowScroll, ParseUrl } from './actions'
-import { HighLight } from './effects'
+import { WindowScroll, ParseUrl, SetSearchData } from './actions'
+import { HighLight, Focus } from './effects'
 
 // Components
 import Header from './components/Header'
@@ -31,7 +33,13 @@ app({
       },
       window.location.pathname + window.location.search
     ),
-    HighLight()
+    HighLight(),
+    request({
+      url: '/pages-data.json',
+      expect: 'json',
+      action: SetSearchData
+    }),
+    window.location.search.startsWith('?q') && Focus({ selector: '#search' })
   ],
   view: (state) => {
     return (

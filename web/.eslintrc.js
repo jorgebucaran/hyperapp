@@ -6,5 +6,6 @@ module.exports = {
     'no-unused-vars': [2, { varsIgnorePattern: 'h' }],
     'react/jsx-uses-vars': 2,
     'no-undef': 0,
+    'handle-callback-err': 0
   }
 }

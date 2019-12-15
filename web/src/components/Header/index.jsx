@@ -5,10 +5,12 @@ import { Navigate, OpenMenu, CloseMenu } from '../../actions'
 
 const OnSearch = (state, ev) => {
   ev.preventDefault()
-  return [Navigate, `/search?q=${ev.target.value}`]
+  return [Navigate, `/search?q=${encodeURI(ev.target.value)}`]
 }
 
-export default ({ menuOpened }) => {
+export default ({ menuOpened, location }) => {
+  console.log(location)
+
   return (
     <header class={{
       'site-header': true,
@@ -36,7 +38,16 @@ export default ({ menuOpened }) => {
         <SmartLink to="/sponsor">sponsor</SmartLink>
         <SmartLink to="/guides">guides</SmartLink>
         <SmartLink to="/api">api</SmartLink>
-        <input required type="text" name="search" class="search-field" placeholder="search" oninput={OnSearch} />
+        <input
+          type="text"
+          id="search"
+          name="search"
+          class="search-field"
+          placeholder="search"
+          value={location.queryParams.q}
+          oninput={OnSearch}
+          required
+        />
       </nav>
     </header>
   )

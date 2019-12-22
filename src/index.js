@@ -140,25 +140,30 @@ var createNode = function(vdom, listener, isSvg) {
     patchProperty(node, k, null, props[k], listener, isSvg)
   }
 
-  for (var i = 0, len = vdom.children.length; i < len; i++) {
-    node.appendChild(
-      createNode(
-        (vdom.children[i] = getVNode(vdom.children[i])),
+  var ptcKids = vdom.children.map(child => {
+    const childPtc = createNode(
+		getVNode(child),
         listener,
         isSvg
       )
-    )
-  }
-
-  return (vdom.node = node)
+	node.appendChild(childPtc[0])
+	return childPtc
+  })
+  return [node, ptcKids, vdom]
 }
 
 var getKey = function(vdom) {
   return vdom == null ? null : vdom.key
 }
 
-var patch = function(parent, node, oldVNode, newVNode, listener, isSvg) {
+var patch = function(parent, node, oldPtc, newVNode, listener, isSvg) {
+  var oldNode = oldPtc && oldPtc[0]
+  var oldVNode = oldPtc && oldPtc[2]
+  var oldPtcKids = oldPtc && oldPtc[1]
+  
+  var ptcKids = new Array(newVNode.children.length)
   if (oldVNode === newVNode) {
+	  return oldPtc
   } else if (
     oldVNode != null &&
     oldVNode.type === TEXT_NODE &&
@@ -166,16 +171,15 @@ var patch = function(parent, node, oldVNode, newVNode, listener, isSvg) {
   ) {
     if (oldVNode.name !== newVNode.name) node.nodeValue = newVNode.name
   } else if (oldVNode == null || oldVNode.name !== newVNode.name) {
-    node = parent.insertBefore(
-      createNode((newVNode = getVNode(newVNode)), listener, isSvg),
-      node
-    )
-    if (oldVNode != null) {
-      parent.removeChild(oldVNode.node)
-    }
+	oldPtc = createNode(newVNode, listener, isSvg)
+	parent.insertBefore(oldPtc[0], node)
+	if (oldNode != null) {
+	  parent.removeChild(oldNode)
+	}
+	return oldPtc
   } else {
-    var tmpVKid
-    var oldVKid
+    var tmpPtcKid
+    var oldPtcKid
 
     var oldKey
     var newKey
@@ -183,12 +187,11 @@ var patch = function(parent, node, oldVNode, newVNode, listener, isSvg) {
     var oldVProps = oldVNode.props
     var newVProps = newVNode.props
 
-    var oldVKids = oldVNode.children
     var newVKids = newVNode.children
 
     var oldHead = 0
     var newHead = 0
-    var oldTail = oldVKids.length - 1
+    var oldTail = oldPtcKids.length - 1
     var newTail = newVKids.length - 1
 
     isSvg = isSvg || newVNode.name === "svg"
@@ -205,80 +208,86 @@ var patch = function(parent, node, oldVNode, newVNode, listener, isSvg) {
 
     while (newHead <= newTail && oldHead <= oldTail) {
       if (
-        (oldKey = getKey(oldVKids[oldHead])) == null ||
+        (oldKey = getKey(oldPtcKids[oldHead][2])) == null ||
         oldKey !== getKey(newVKids[newHead])
       ) {
         break
       }
 
-      patch(
+      ptcKids[newHead] = patch(
         node,
-        oldVKids[oldHead].node,
-        oldVKids[oldHead],
-        (newVKids[newHead] = getVNode(
-          newVKids[newHead++],
-          oldVKids[oldHead++]
-        )),
+		oldPtcKids[oldHead][0],
+        oldPtcKids[oldHead],
+        getVNode(
+          newVKids[newHead],
+          oldPtcKids[oldHead][2]
+        ),
         listener,
         isSvg
       )
+	  oldHead++
+	  newHead++
     }
 
     while (newHead <= newTail && oldHead <= oldTail) {
       if (
-        (oldKey = getKey(oldVKids[oldTail])) == null ||
-        oldKey !== getKey(newVKids[newTail])
+        (oldKey = getKey(oldPtcKids[oldTail][2])) == null ||
+        oldKey !== getKey(newVKids[newTail]) 
       ) {
         break
       }
 
-      patch(
+      ptcKids[newTail] = patch(
         node,
-        oldVKids[oldTail].node,
-        oldVKids[oldTail],
-        (newVKids[newTail] = getVNode(
-          newVKids[newTail--],
-          oldVKids[oldTail--]
-        )),
+        oldPtcKids[oldTail][0],
+        oldPtcKids[oldTail],
+        getVNode(
+          newVKids[newTail], 
+          oldPtcKids[oldTail][2]
+        ),
         listener,
         isSvg
       )
+	  newTail--
+	  oldTail--
     }
 
     if (oldHead > oldTail) {
       while (newHead <= newTail) {
         node.insertBefore(
-          createNode(
-            (newVKids[newHead] = getVNode(newVKids[newHead++])),
+          (ptcKids[newHead] = createNode(
+            getVNode(newVKids[newHead]),
             listener,
             isSvg
-          ),
-          (oldVKid = oldVKids[oldHead]) && oldVKid.node
+          ))[0],
+          (oldPtcKid = oldPtcKids[oldHead]) && oldPtcKid[0]
         )
+		newHead++
       }
     } else if (newHead > newTail) {
       while (oldHead <= oldTail) {
-        node.removeChild(oldVKids[oldHead++].node)
+        node.removeChild(oldPtcKids[oldHead++][0])
       }
     } else {
       for (var i = oldHead, keyed = {}, newKeyed = {}; i <= oldTail; i++) {
-        if ((oldKey = oldVKids[i].key) != null) {
-          keyed[oldKey] = oldVKids[i]
+        if ((oldKey = oldPtcKids[i][2].key) != null) {
+          keyed[oldKey] = oldPtcKids[i]
         }
       }
 
       while (newHead <= newTail) {
-        oldKey = getKey((oldVKid = oldVKids[oldHead]))
-        newKey = getKey(
-          (newVKids[newHead] = getVNode(newVKids[newHead], oldVKid))
-        )
+		oldPtcKid = oldPtcKids[oldHead]
+        oldKey = getKey(oldPtcKid && oldPtcKid[2])
+        newKey = getKey(newVKids[newHead])
+		  //(ptcKids[newHead] = getVNode(, oldPtcKid))[2] // todo
+        //)
 
         if (
           newKeyed[oldKey] ||
-          (newKey != null && newKey === getKey(oldVKids[oldHead + 1]))
+          (newKey != null && newKey === getKey(oldPtcKids[oldHead + 1][2]))
         ) {
           if (oldKey == null) {
-            node.removeChild(oldVKid.node)
+            node.removeChild(oldPtcKid[0])
           }
           oldHead++
           continue
@@ -286,10 +295,10 @@ var patch = function(parent, node, oldVNode, newVNode, listener, isSvg) {
 
         if (newKey == null || oldVNode.type === RECYCLED_NODE) {
           if (oldKey == null) {
-            patch(
+            ptcKids[newHead] = patch(
               node,
-              oldVKid && oldVKid.node,
-              oldVKid,
+              oldPtcKid && oldPtcKid[0],
+              oldPtcKid,
               newVKids[newHead],
               listener,
               isSvg
@@ -299,10 +308,10 @@ var patch = function(parent, node, oldVNode, newVNode, listener, isSvg) {
           oldHead++
         } else {
           if (oldKey === newKey) {
-            patch(
+			ptcKids[newHead] = patch(
               node,
-              oldVKid.node,
-              oldVKid,
+              oldPtcKid[0],
+              oldPtcKid,
               newVKids[newHead],
               listener,
               isSvg
@@ -310,20 +319,20 @@ var patch = function(parent, node, oldVNode, newVNode, listener, isSvg) {
             newKeyed[newKey] = true
             oldHead++
           } else {
-            if ((tmpVKid = keyed[newKey]) != null) {
-              patch(
+            if ((tmpPtcKid = keyed[newKey]) != null) {
+              ptcKids[newHead] = patch(
                 node,
-                node.insertBefore(tmpVKid.node, oldVKid && oldVKid.node),
-                tmpVKid,
+                node.insertBefore(tmpPtcKid[0], oldPtcKid && oldPtcKid[0]),
+                tmpPtcKid,
                 newVKids[newHead],
                 listener,
                 isSvg
               )
               newKeyed[newKey] = true
             } else {
-              patch(
+              ptcKids[newHead] = patch(
                 node,
-                oldVKid && oldVKid.node,
+                oldPtcKid && oldPtcKid[0],
                 null,
                 newVKids[newHead],
                 listener,
@@ -336,20 +345,19 @@ var patch = function(parent, node, oldVNode, newVNode, listener, isSvg) {
       }
 
       while (oldHead <= oldTail) {
-        if (getKey((oldVKid = oldVKids[oldHead++])) == null) {
-          node.removeChild(oldVKid.node)
+        if (getKey((oldPtcKid = oldPtcKids[oldHead++])[2]) == null) {
+          node.removeChild(oldPtcKid[0])
         }
       }
 
       for (var i in keyed) {
         if (newKeyed[i] == null) {
-          node.removeChild(keyed[i].node)
+          node.removeChild(keyed[i][0])
         }
       }
     }
   }
-
-  return (newVNode.node = node)
+  return [node, ptcKids, newVNode]
 }
 
 var propsChanged = function(a, b) {
@@ -362,29 +370,28 @@ var getTextVNode = function(node) {
 }
 
 var getVNode = function(newVNode, oldVNode) {
-  return newVNode.type === LAZY_NODE
+	return newVNode.type === LAZY_NODE
     ? ((!oldVNode ||
         (oldVNode.type !== LAZY_NODE ||
           propsChanged(oldVNode.lazy, newVNode.lazy))) &&
         ((oldVNode = getTextVNode(newVNode.lazy.view(newVNode.lazy))).lazy =
           newVNode.lazy),
       oldVNode)
-    : newVNode
+    : newVNode;
 }
 
-var createVNode = function(name, props, children, node, key, type) {
+var createVNode = function(name, props, children, key, type) {
   return {
     name: name,
     props: props,
     children: children,
-    node: node,
     type: type,
     key: key
   }
 }
 
-var createTextVNode = function(value, node) {
-  return createVNode(value, EMPTY_OBJ, EMPTY_ARR, node, undefined, TEXT_NODE)
+var createTextVNode = function(value) {
+  return createVNode(value, EMPTY_OBJ, EMPTY_ARR, undefined, TEXT_NODE)
 }
 
 var recycleNode = function(node) {
@@ -394,7 +401,6 @@ var recycleNode = function(node) {
         node.nodeName.toLowerCase(),
         EMPTY_OBJ,
         map.call(node.childNodes, recycleNode),
-        node,
         undefined,
         RECYCLED_NODE
       )
@@ -427,17 +433,18 @@ export var h = function(name, props) {
 
   return typeof name === "function"
     ? name(props, children)
-    : createVNode(name, props, children, undefined, props.key)
+    : createVNode(name, props, children, props.key)
 }
 
 export var app = function(props) {
   var state = {}
   var lock = false
   var view = props.view
-  var node = props.node
-  var vdom = node && recycleNode(node)
+  var node = props.node 
+  var ptc = [node, [], node && recycleNode(node)]
   var subscriptions = props.subscriptions
   var subs = []
+
 
   var listener = function(event) {
     dispatch(this.actions[event.type], event)
@@ -475,11 +482,11 @@ export var app = function(props) {
 
   var render = function() {
     lock = false
-    node = patch(
+    ptc = patch(
       node.parentNode,
       node,
-      vdom,
-      (vdom = getTextVNode(view(state))),
+      ptc,
+      getTextVNode(view(state)),
       listener
     )
   }

@@ -179,6 +179,7 @@ var patch = function(parent, node, oldPtc, newVNode, listener, isSvg) {
 	return oldPtc
   } else {
     var tmpPtcKid
+    var tmpVKid
     var oldPtcKid
 
     var oldKey
@@ -276,11 +277,9 @@ var patch = function(parent, node, oldPtc, newVNode, listener, isSvg) {
       }
 
       while (newHead <= newTail) {
-		oldPtcKid = oldPtcKids[oldHead]
+        oldPtcKid = oldPtcKids[oldHead]
         oldKey = getKey(oldPtcKid && oldPtcKid[2])
-        newKey = getKey(newVKids[newHead])
-		  //(ptcKids[newHead] = getVNode(, oldPtcKid))[2] // todo
-        //)
+        newKey = getKey(tmpVKid = getVNode(newVKids[newHead], oldPtcKid && oldPtcKid[2]))
 
         if (
           newKeyed[oldKey] ||
@@ -299,7 +298,7 @@ var patch = function(parent, node, oldPtc, newVNode, listener, isSvg) {
               node,
               oldPtcKid && oldPtcKid[0],
               oldPtcKid,
-              newVKids[newHead],
+              tmpVKid,
               listener,
               isSvg
             )
@@ -312,7 +311,7 @@ var patch = function(parent, node, oldPtc, newVNode, listener, isSvg) {
               node,
               oldPtcKid[0],
               oldPtcKid,
-              newVKids[newHead],
+              tmpVKid,
               listener,
               isSvg
             )
@@ -370,15 +369,15 @@ var getTextVNode = function(node) {
 }
 
 var getVNode = function(newVNode, oldVNode) {
-	return newVNode.type === LAZY_NODE
-    ? ((!oldVNode ||
-        (oldVNode.type !== LAZY_NODE ||
-          propsChanged(oldVNode.lazy, newVNode.lazy))) &&
-        ((oldVNode = getTextVNode(newVNode.lazy.view(newVNode.lazy))).lazy =
-          newVNode.lazy),
-      oldVNode)
-    : newVNode;
-}
+    return newVNode.type === LAZY_NODE
+      ? ((!oldVNode ||
+          (oldVNode.type !== LAZY_NODE ||
+            propsChanged(oldVNode.lazy, newVNode.lazy))) &&
+          ((oldVNode = getTextVNode(newVNode.lazy.view(newVNode.lazy))).lazy =
+            newVNode.lazy),
+        oldVNode)
+      : newVNode
+  }
 
 var createVNode = function(name, props, children, key, type) {
   return {
@@ -395,15 +394,19 @@ var createTextVNode = function(value) {
 }
 
 var recycleNode = function(node) {
-  return node.nodeType === TEXT_NODE
-    ? createTextVNode(node.nodeValue, node)
-    : createVNode(
-        node.nodeName.toLowerCase(),
-        EMPTY_OBJ,
-        map.call(node.childNodes, recycleNode),
-        undefined,
-        RECYCLED_NODE
-      )
+  if (node.nodeType === TEXT_NODE)
+    return [node, null, createTextVNode(node.nodeValue, node)]
+  else {
+    var ptcKids = map.call(node.childNodes, recycleNode)
+    var vdom = createVNode(
+      node.nodeName.toLowerCase(),
+      EMPTY_OBJ,
+      ptcKids.map(k => k[2]),
+      undefined,
+      RECYCLED_NODE
+    )
+    return [node, ptcKids, vdom]
+  }
 }
 
 export var Lazy = function(props) {
@@ -441,7 +444,7 @@ export var app = function(props) {
   var lock = false
   var view = props.view
   var node = props.node 
-  var ptc = [node, [], node && recycleNode(node)]
+  var ptc = recycleNode(node)
   var subscriptions = props.subscriptions
   var subs = []
 

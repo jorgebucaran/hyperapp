@@ -363,10 +363,8 @@ var getTextVNode = function(node) {
 
 var getVNode = function(newVNode, oldVNode) {
   return newVNode.type === LAZY_NODE
-    ? ((!oldVNode ||
-        (oldVNode.type !== LAZY_NODE ||
-          propsChanged(oldVNode.lazy, newVNode.lazy))) &&
-        ((oldVNode = getTextVNode(newVNode.lazy.view(newVNode.lazy))).lazy =
+    ? ((!oldVNode || !oldVNode.lazy || propsChanged(oldVNode.lazy, newVNode.lazy))
+        && ((oldVNode = getTextVNode(newVNode.lazy.view(newVNode.lazy))).lazy =
           newVNode.lazy),
       oldVNode)
     : newVNode

@@ -664,7 +664,7 @@ be _effects_. Effects are executed by Hyperapp as part of processing the action'
 
 > Hyperapp provides effect creators for many common situations. If you've got an unusual case or are working
 > with less common APIs you may need to implement your own effects. Don't worry - it's easy! See the 
-> [API reference]() for more information.
+> [API reference](./ref.md) for more information.
 
 ### Effects can dispatch actions
 
@@ -897,7 +897,7 @@ will start when we check the auto update box, and stop when it is unchecked.
 ![auto updating](./tut8.png)
 
 > As with effects, Hyperapp offers subscriptions for the most common cases, but you
-> may need to implement your own. Refer to the [API reference](). Again, 
+> may need to implement your own. Refer to the [API reference](./ref.md). Again, 
 > it is no big deal - just not in scope for this tutorial.
 
 If you'd like to see a working example of the final code, have a look [here](https://codesandbox.io/s/hyperapp-tutorial-step-4-8u9q8)

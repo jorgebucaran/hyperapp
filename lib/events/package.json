@@ -1,7 +1,7 @@
 {
   "name": "@hyperapp/events",
   "description": "Global events and event utilities for Hyperapp.",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": "src/index.js",
   "module": "src/index.js",
   "unpkg": "src/index.js",

@@ -408,7 +408,7 @@ as an argument, so it can be reduced to:
   ]),
 ```
 
-Visually, everything is _still_ the same. If you'd like to see a working example of the code so far, have a look [here](https://codesandbox.io/s/hyperapp-tutorial-step-1-gq662)
+Visually, everything is _still_ the same. If you'd like to see a working example of the code so far, have a look [here](https://codesandbox.io/s/hyperapp-tutorial-step-1-gq662).
 
 Actions
 ---------------------
@@ -623,7 +623,7 @@ payload through it, providing the returned value as payload to the action.
 
 > Payload filters are also useful when you need a payload that is a combination of custom data and event data
 
-If you'd like to see a working example of the code so far, have a look [here](https://codesandbox.io/s/hyperapp-tutorial-step-2-5yv34)
+If you'd like to see a working example of the code so far, have a look [here](https://codesandbox.io/s/hyperapp-tutorial-step-2-5yv34).
 
 Effects
 ----------------------------
@@ -637,7 +637,7 @@ for stories matching the filter to be dynamically loaded. When we click the chec
 Add this import (to the "IMPORTS" section):
 
 ```js
-import {Http} from "https:/unpkg.com/hyperapp-fx@next?module"
+import {Http} from "https://unpkg.com/hyperapp-fx@next?module"
 ```
 
 Use the imported `Http` in the `StopEditingFilter` action like this:
@@ -840,7 +840,7 @@ When the app loads, and when you change the filter, you should see the spinner a
 > If you aren't seeing the spinner, it might just be happening too fast. Try choking your network speed. In the Chrome
 > browser you can set your network speed to "slow 3g" under the network tab in the developer tools.
 
-If you'd like to see a working example of the code so far, have a look [here](https://codesandbox.io/s/hyperapp-tutorial-step-3-2mmug)
+If you'd like to see a working example of the code so far, have a look [here](https://codesandbox.io/s/hyperapp-tutorial-step-3-2mmug).
 
 Subscriptions
 -------------------------------------------------------------------
@@ -900,7 +900,7 @@ will start when we check the auto update box, and stop when it is unchecked.
 > may need to implement your own. Refer to the [API reference](./ref.md). Again, 
 > it is no big deal - just not in scope for this tutorial.
 
-If you'd like to see a working example of the final code, have a look [here](https://codesandbox.io/s/hyperapp-tutorial-step-4-8u9q8)
+If you'd like to see a working example of the final code, have a look [here](https://codesandbox.io/s/hyperapp-tutorial-step-4-8u9q8).
 
 Conclusion
 ------------------

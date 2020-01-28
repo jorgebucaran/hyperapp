@@ -1,0 +1,34 @@
+<h1 id="api">api</h1><blockquote>
+<p>The tiny framework for building web interfaces.</p>
+</blockquote><ul>
+<li><strong>Do more with less</strong>—We have minimized the concepts you need to learn to be productive. Views, actions, effects, and subscriptions are all pretty easy to get to grips with and work together seamlessly.</li>
+<li><strong>Write what, not how</strong>—With a declarative syntax that&#39;s easy to read and natural to write, Hyperapp is your tool of choice to develop purely functional, feature-rich, browser-based applications.</li>
+<li><strong>Hypercharged</strong>—Hyperapp is a modern VDOM engine, state management solution, and application design pattern all-in-one. Once you learn to use it, there&#39;ll be no end to what you can do.</li>
+</ul><p>To learn more, go to <a href="https://hyperapp.dev">https://hyperapp.dev</a> for documentation, guides, and examples.</p><h2 id="quickstart">Quickstart</h2><p>Install Hyperapp with npm or Yarn:</p><pre><code class="language-console">npm i hyperapp</code></pre><p>Then with a module bundler like <a href="https://parceljs.org">Parcel</a> or <a href="https://webpack.js.org">Webpack</a> import it in your application and get right down to business.</p><pre><code class="language-js">import { h, app } from &quot;hyperapp&quot;</code></pre><p>Don&#39;t want to set up a build step? Import Hyperapp in a <code>&lt;script&gt;</code> tag as a module. Don&#39;t worry; modules are supported in all evergreen, self-updating desktop, and mobile browsers.</p><pre><code class="language-html">&lt;script type=&quot;module&quot;&gt;
+  import { h, app } from &quot;https://unpkg.com/hyperapp&quot;
+&lt;/script&gt;</code></pre><p>Here&#39;s the first example to get you started: a counter that can go up or down. You can try it online <a href="https://codesandbox.io/s/hyperapp-playground-fwjlo">here</a>.</p><pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;script type=&quot;module&quot;&gt;
+      import { h, app } from &quot;https://unpkg.com/hyperapp&quot;
+
+      app({
+        init: 0,
+        view: state =&gt;
+          h(&quot;main&quot;, {}, [
+            h(&quot;h1&quot;, {}, state),
+            h(&quot;button&quot;, { onClick: state =&gt; state - 1 }, &quot;-&quot;),
+            h(&quot;button&quot;, { onClick: state =&gt; state + 1 }, &quot;+&quot;)
+          ]),
+        node: document.getElementById(&quot;app&quot;)
+      })
+    &lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;main id=&quot;app&quot;&gt;&lt;/main&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre><p>The app starts off with <code>init</code> as the initial state. Our code doesn&#39;t explicitly maintain any state. Instead, we define actions to transform it and a view to visualize it. The view returns a plain object representation of the DOM known as a virtual DOM, and Hyperapp updates the real DOM to match it whenever the state changes.</p><p>Now it&#39;s your turn! Experiment with the code a bit. Spend some time thinking about how the view reacts to changes in the state. Can you add a button that resets the counter back to zero? Or how about multiple counters?</p><h2 id="help-im-stuck">Help, I&#39;m stuck!</h2><p>We love to talk JavaScript and Hyperapp. If you&#39;ve hit a stumbling block, hop on the <a href="https://hyperappjs.herokuapp.com">Hyperapp Slack</a> or drop by <a href="https://spectrum.chat/hyperapp">Spectrum</a> to get support, and if you don&#39;t receive an answer, or if you remain stuck, please file an issue, and we&#39;ll try to help you out.</p><p>Is anything wrong, unclear, missing? Help us <a href="https://github.com/jorgebucaran/hyperapp/fork">improve this page</a>.</p><h2 id="stay-in-the-loop">Stay in the loop</h2><ul>
+<li><a href="https://twitter.com/hyperappjs">Twitter</a></li>
+<li><a href="https://github.com/jorgebucaran/awesome-hyperapp">Awesome</a></li>
+<li><a href="https://www.reddit.com/r/hyperapp">/r/hyperapp</a></li>
+</ul><h2 id="license">License</h2>

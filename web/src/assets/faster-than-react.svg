@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="220px" height="77px" viewBox="0 0 220 77" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 59.1 (86144) - https://sketch.com -->
+    <title>FasterThanReact</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="100%" y1="50%" x2="1.56777872%" y2="50%" id="linearGradient-1">
+            <stop stop-color="#091226" offset="0%"></stop>
+            <stop stop-color="#FFFFFF" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="100%" y1="50%" x2="0%" y2="50%" id="linearGradient-2">
+            <stop stop-color="#1661EE" offset="0%"></stop>
+            <stop stop-color="#FFFFFF" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="FasterThanReact" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Rectangle" fill="url(#linearGradient-1)" x="0" y="0" width="110" height="51" rx="25.5"></rect>
+        <rect id="Rectangle" fill="#091226" x="59" y="0" width="51" height="51" rx="25.5"></rect>
+        <rect id="Rectangle" fill="url(#linearGradient-2)" x="0" y="26" width="220" height="51"></rect>
+        <rect id="Rectangle" fill="#1661EE" x="169" y="26" width="51" height="51"></rect>
+    </g>
+</svg>

@@ -1,4 +1,5 @@
-Tutorial
+# tutorial
+
 ===================================
 
 Welcome! If you're new to Hyperapp, you've found the perfect place to start learning.
@@ -60,7 +61,6 @@ app we want to build, with this HTML:
 
 It looks like this:
 
-![Initial static mockup](./tut1.png)
 
 We'll start by making Hyperapp render the HTML for us. Then we will
 add dynamic behavior to all the widgets, including text input and 
@@ -408,7 +408,7 @@ as an argument, so it can be reduced to:
   ]),
 ```
 
-Visually, everything is _still_ the same. If you'd like to see a working example of the code so far, have a look [here](https://codesandbox.io/s/hyperapp-tutorial-step-1-gq662).
+Visually, everything is _still_ the same. If you'd like to see a working example of the code so far, have a look [here](https://codesandbox.io/s/hyperapp-tutorial-step-1-gq662)
 
 Actions
 ---------------------
@@ -489,7 +489,7 @@ const Filter = props => h("div", {class: "filter"}, [
 
 When you click the pencil button, it is replaced with a check-mark button that can take you back to the first state.
 
-![Filter in edit mode](./tut2.png)
+
 
 
 ### Capturing event-data in actions
@@ -529,7 +529,7 @@ dispatched in response to an events on DOM elements receive the [event object](h
 
 Now see what happens when you erase "ocean" and type "friendly" instead:
 
-![filtering other words](tut3.png)
+
 
 
 ### Actions with custom payloads
@@ -585,7 +585,7 @@ const SelectStory = (state, id) => ({
 Now, when you select a blue-edged story it turns yellow because it is selected, and when you select something else,
 the edge turns gray to indicate you've read the story.
 
-![all stories read](./tut4.png)
+
 
 
 ### Payload filters
@@ -623,7 +623,7 @@ payload through it, providing the returned value as payload to the action.
 
 > Payload filters are also useful when you need a payload that is a combination of custom data and event data
 
-If you'd like to see a working example of the code so far, have a look [here](https://codesandbox.io/s/hyperapp-tutorial-step-2-5yv34).
+If you'd like to see a working example of the code so far, have a look [here](https://codesandbox.io/s/hyperapp-tutorial-step-2-5yv34)
 
 Effects
 ----------------------------
@@ -637,7 +637,7 @@ for stories matching the filter to be dynamically loaded. When we click the chec
 Add this import (to the "IMPORTS" section):
 
 ```js
-import {Http} from "https://unpkg.com/hyperapp-fx@next?module"
+import {Http} from "https:/unpkg.com/hyperapp-fx@next?module"
 ```
 
 Use the imported `Http` in the `StopEditingFilter` action like this:
@@ -664,7 +664,7 @@ be _effects_. Effects are executed by Hyperapp as part of processing the action'
 
 > Hyperapp provides effect creators for many common situations. If you've got an unusual case or are working
 > with less common APIs you may need to implement your own effects. Don't worry - it's easy! See the 
-> [API reference](./ref.md) for more information.
+> [API reference]() for more information.
 
 ### Effects can dispatch actions
 
@@ -716,7 +716,7 @@ Try it out! Enter "life" in the filter input. When you click the check-mark butt
 stories are loaded – all with blue edges except for "Ocean life is brutal" because it is
 still selected.
 
-![loaded other stories](./tut5.png)
+
 
 
 
@@ -746,7 +746,7 @@ The next obvious step is to load the _initial_ stories from the API as well. Cha
 Hyperapp treats the init-value the same way as it treats return values from actions. By adding the `Http` effect
 in `init`, the app will fire the API request immediately, so we don't need the stories in the state from the start.
 
-![stories loaded from start](./tut6.png)
+
 
 
 ### Tracking state for asynchronous effects
@@ -835,12 +835,12 @@ const StoryList = props => h("div", {class: "stories"}, [
 
 When the app loads, and when you change the filter, you should see the spinner appear until the stories are loaded.
 
-![loading spinner](./tut7.png)
+
 
 > If you aren't seeing the spinner, it might just be happening too fast. Try choking your network speed. In the Chrome
 > browser you can set your network speed to "slow 3g" under the network tab in the developer tools.
 
-If you'd like to see a working example of the code so far, have a look [here](https://codesandbox.io/s/hyperapp-tutorial-step-3-2mmug).
+If you'd like to see a working example of the code so far, have a look [here](https://codesandbox.io/s/hyperapp-tutorial-step-3-2mmug)
 
 Subscriptions
 -------------------------------------------------------------------
@@ -894,13 +894,13 @@ new subscription, it will be started, or if one has been removed it will be stop
 The options we passed to the `interval` subscription state that `FetchStories` should be dispatched every five seconds. It
 will start when we check the auto update box, and stop when it is unchecked.
 
-![auto updating](./tut8.png)
+
 
 > As with effects, Hyperapp offers subscriptions for the most common cases, but you
-> may need to implement your own. Refer to the [API reference](./ref.md). Again, 
+> may need to implement your own. Refer to the [API reference](). Again, 
 > it is no big deal - just not in scope for this tutorial.
 
-If you'd like to see a working example of the final code, have a look [here](https://codesandbox.io/s/hyperapp-tutorial-step-4-8u9q8).
+If you'd like to see a working example of the final code, have a look [here](https://codesandbox.io/s/hyperapp-tutorial-step-4-8u9q8)
 
 Conclusion
 ------------------
@@ -911,5 +911,4 @@ Along the way you've familiarized yourself with
 the core concepts: _view_, _state_, _actions_, _effects_ & _subscriptions_. And that's really all you need to
 build any web application.
 
-So now, go build your dream app, or browse our [Examples](./examples.md) for more
-inspiration.
+

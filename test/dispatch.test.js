@@ -1,14 +1,8 @@
 import { app } from ".."
 import { deepEqual } from "testmatrix"
 
-const dispatch = action => {
-  let state
-  app({
-    init: action,
-    subscriptions: s => (state = s, [])
-  })
-  return state
-}
+const dispatch = init => done =>
+  app({ init, subscriptions: done })
 
 export default {
   "dispatch state(object)": [
@@ -52,7 +46,7 @@ export default {
       actual: done => dispatch(state => [
         { ...state },
         [function effect(){ done({ effect: true }) }, {}]
-      ]),
+      ])(),
       expected: { effect: true }
     }
   ],
@@ -118,12 +112,12 @@ export default {
     {
       test: "runs effect with params",
       assert: deepEqual,
-      actual: dispatch([
+      actual: done => dispatch([
         { effect: true },
         [function effect(dispatch, props){
-          dispatch(state => ({ ...state, ...props}))
+          dispatch(state => done({ ...state, ...props }))
         }, { params: true }]
-      ]),
+      ])(),
       expected: { effect: true, params: true }
     }
   ]

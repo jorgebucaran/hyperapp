@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "start": "parcel src/index.html --open",
-    "build": "npm install && node generate-search-data.js && parcel build ./src/index.html --no-source-maps --detailed-report --out-dir ../docs"
+    "build": "npm install && node generate-search-data.js && parcel build ./src/index.html --no-source-maps --detailed-report --out-dir ./dist"
   },
   "babel": {
     "plugins": [

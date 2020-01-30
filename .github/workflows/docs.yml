@@ -1,4 +1,4 @@
-name: Build GH Docs
+name: Build Docs
 on:
   push:
     branches:

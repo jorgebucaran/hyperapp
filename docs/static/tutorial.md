@@ -60,10 +60,10 @@ app we want to build, with this HTML:
 
 It looks like this:
 
-![Initial static mockup](./tut1.png)
+![Initial static mockup](https://user-images.githubusercontent.com/6243887/73389558-15d97580-42dd-11ea-90fa-f79a2c351fe8.png)
 
 We'll start by making Hyperapp render the HTML for us. Then we will
-add dynamic behavior to all the widgets, including text input and 
+add dynamic behavior to all the widgets, including text input and
 dynamically fetching stories.
 
 First, let's begin with the traditional "Hello World!"
@@ -85,26 +85,26 @@ Create this html file:
 import {h, app} from "https://unpkg.com/hyperapp?module"
 
 
-        
+
 // -- ACTIONS --
 
 
-                
+
 // -- VIEWS ---
 
-        
-        
+
+
 // -- RUN --
 
 app({
   node: document.getElementById("app"),
   view: () => h("h1", {}, [
-      "Hello ", 
+      "Hello ",
       h("i", {}, "World!")
   ])
 })
     </script>
-  </head> 
+  </head>
   <body>
     <div id="app"></div>
   </body>
@@ -128,11 +128,11 @@ Hyperapp exports the `app` and `h` functions.
 `h` is for creating _virtual nodes_, which is to say: plain javascript objects
 which _represent_ DOM nodes.
 
-The result of  
+The result of
 
 ```js
 h("h1", {}, [
-  "Hello ", 
+  "Hello ",
   h("i", {}, "World!")
 ])
 ```
@@ -141,7 +141,7 @@ is a virtual node, representing
 
 ```html
 <h1>
-  Hello 
+  Hello
   <i>World!</i>
 </h1>
 ```
@@ -212,7 +212,7 @@ Try it out to confirm that the result matches the screenshot above.
 
 > In many frameworks it is common to write your views/templates
 > using syntax that looks like HTML. This is possible with Hyperapp as well.
-> [JSX](https://babeljs.io/docs/en/babel-plugin-transform-react-jsx) 
+> [JSX](https://babeljs.io/docs/en/babel-plugin-transform-react-jsx)
 > can compile a HTML-like syntax into `h` calls at build-time. If you'd rather
 > not use a build system, [htm](https://github.com/developit/htm) does the same at run-time.
 >
@@ -233,10 +233,10 @@ const emphasize = (word, string) =>
     } else {
       return x + " "
     }
-  }) 
+  })
 ```
 
-It lets you change this: 
+It lets you change this:
 
 ```js
   ...
@@ -446,18 +446,18 @@ When Hyperapp dispatches an action, it replaces the old state with the new
 one calculated using the action. Then the DOM is modified to match what the
 view returns for this new state.
 
-When `editingFilter` is true, we want to have a text input instead of a 
+When `editingFilter` is true, we want to have a text input instead of a
 span with the filter word. We can express this in the `Filter` view using a
 ternary operator (`a ? b : c`).
 
 ```js
 const Filter = props => h("div", {class: "filter"}, [
   "Filter:",
-  
+
   props.editingFilter                               // <---
   ? h("input", {type: "text", value: props.filter}) // <---
   : h("span", {class: "filter-word"}, props.filter),
-  
+
   h("button", { onClick: StartEditingFilter }, "\u270E")
 ])
 ```
@@ -476,20 +476,20 @@ and update the `Filter` view again:
 ```js
 const Filter = props => h("div", {class: "filter"}, [
   "Filter:",
-    
+
   props.editingFilter
   ? h("input", {type: "text", value: props.filter})
   : h("span", {class: "filter-word"}, props.filter),
 
   props.editingFilter                                      // <---
-  ? h("button", {onClick: StopEditingFilter}, "\u2713") 
+  ? h("button", {onClick: StopEditingFilter}, "\u2713")
   : h("button", {onClick: StartEditingFilter}, "\u270E"),  // <---
 ])
 ```
 
 When you click the pencil button, it is replaced with a check-mark button that can take you back to the first state.
 
-![Filter in edit mode](./tut2.png)
+![Filter in edit mode](https://user-images.githubusercontent.com/6243887/73389562-1a059300-42dd-11ea-80ea-631c999d5f62.png)
 
 
 ### Capturing event-data in actions
@@ -502,7 +502,7 @@ Update the `Filter` view yet again:
 ```js
 const Filter = props => h("div", {class: "filter"}, [
   "Filter:",
-    
+
   props.editingFilter
   ? h("input", {
     type: "text",
@@ -512,8 +512,8 @@ const Filter = props => h("div", {class: "filter"}, [
   : h("span", {class: "filter-word"}, props.filter),
 
   props.editingFilter
-  ? h("button", {onClick: StopEditingFilter}, "\u2713") 
-  : h("button", {onClick: StartEditingFilter}, "\u270E"), 
+  ? h("button", {onClick: StopEditingFilter}, "\u2713")
+  : h("button", {onClick: StartEditingFilter}, "\u270E"),
 ])
 ```
 
@@ -529,7 +529,7 @@ dispatched in response to an events on DOM elements receive the [event object](h
 
 Now see what happens when you erase "ocean" and type "friendly" instead:
 
-![filtering other words](tut3.png)
+![filtering other words](https://user-images.githubusercontent.com/6243887/73389567-1d991a00-42dd-11ea-9bf1-b1fc6b85b635.png)
 
 
 ### Actions with custom payloads
@@ -549,7 +549,7 @@ story was clicked. How are actions dispatched with custom payloads? – Like th
 
 const StoryThumbnail = props => h(
   "li",
-  { 
+  {
     onClick: [SelectStory, props.id], // <----
     class: {
       unread: props.unread,
@@ -585,25 +585,25 @@ const SelectStory = (state, id) => ({
 Now, when you select a blue-edged story it turns yellow because it is selected, and when you select something else,
 the edge turns gray to indicate you've read the story.
 
-![all stories read](./tut4.png)
+![all stories read](https://user-images.githubusercontent.com/6243887/73389573-20940a80-42dd-11ea-9b26-ebdad474b169.png)
 
 
 ### Payload filters
 
-There's one little thing we should fix about `SetFilter`. See how it's dependent on the complex `event` object? 
+There's one little thing we should fix about `SetFilter`. See how it's dependent on the complex `event` object?
 It would be easier to test and reuse if it were simply:
 
 ```js
 const SetFilter = (state, word) => ({...state, filter: word})
 ```
 
-But we don't know the word beforehand, so how can we set it as a custom payload? Change the `Filter` view 
+But we don't know the word beforehand, so how can we set it as a custom payload? Change the `Filter` view
 again (last time - I promise!):
 
 ```js
 const Filter = props => h("div", {class: "filter"}, [
   "Filter:",
-    
+
   props.editingFilter
   ? h("input", {
     type: "text",
@@ -613,8 +613,8 @@ const Filter = props => h("div", {class: "filter"}, [
   : h("span", {class: "filter-word"}, props.filter),
 
   props.editingFilter
-  ? h("button", {onClick: StopEditingFilter}, "\u2713") 
-  : h("button", {onClick: StartEditingFilter}, "\u270E"), 
+  ? h("button", {onClick: StopEditingFilter}, "\u2713")
+  : h("button", {onClick: StartEditingFilter}, "\u270E"),
 ])
 ```
 
@@ -642,7 +642,7 @@ import {Http} from "https://unpkg.com/hyperapp-fx@next?module"
 
 Use the imported `Http` in the `StopEditingFilter` action like this:
 
-```js 
+```js
 const StopEditingFilter = state => [
   {
     ...state,
@@ -652,18 +652,18 @@ const StopEditingFilter = state => [
     url: `https://zaceno.github.io/hatut/data/${state.filter.toLowerCase()}.json`,  // <---
     response: "json",                                                               // <---
     action: GotStories,                                                             // <---
-  })    
+  })
 ]
 ```
 
 The call to `Http(...)` does _not_ immediately execute the API request. `Http` is an _effect creator_. It returns
-an _effect_ bound to the options we provided.  
+an _effect_ bound to the options we provided.
 
 When Hyperapp sees an action return an array, it takes the first element of the array to be the new state, and the rest to
 be _effects_. Effects are executed by Hyperapp as part of processing the action's return value.
 
 > Hyperapp provides effect creators for many common situations. If you've got an unusual case or are working
-> with less common APIs you may need to implement your own effects. Don't worry - it's easy! See the 
+> with less common APIs you may need to implement your own effects. Don't worry - it's easy! See the
 > [API reference](./ref.md) for more information.
 
 ### Effects can dispatch actions
@@ -716,7 +716,7 @@ Try it out! Enter "life" in the filter input. When you click the check-mark butt
 stories are loaded – all with blue edges except for "Ocean life is brutal" because it is
 still selected.
 
-![loaded other stories](./tut5.png)
+![loaded other stories](https://user-images.githubusercontent.com/6243887/73389577-24279180-42dd-11ea-8b4a-b231f1c811c8.png)
 
 
 
@@ -746,7 +746,7 @@ The next obvious step is to load the _initial_ stories from the API as well. Cha
 Hyperapp treats the init-value the same way as it treats return values from actions. By adding the `Http` effect
 in `init`, the app will fire the API request immediately, so we don't need the stories in the state from the start.
 
-![stories loaded from start](./tut6.png)
+![stories loaded from start](https://user-images.githubusercontent.com/6243887/73389586-2a1d7280-42dd-11ea-8642-f994c028a74f.png)
 
 
 ### Tracking state for asynchronous effects
@@ -755,7 +755,7 @@ If we could display a spinner while we wait for stories to load, it would make f
 do that, we will need a new state property to tell us if we're waiting for a repsonse - and
 consequently wether or not to render the spinner.
 
-Create this action: 
+Create this action:
 
 ```js
 const FetchStories = state => [
@@ -770,7 +770,7 @@ const FetchStories = state => [
 
 Instead of dispatching this action, we will use it to simplify `StopEditingFilter`:
 
-```js 
+```js
 const StopEditingFilter = state => FetchStories({...state, editingFilter: false})
 ```
 
@@ -819,10 +819,10 @@ const StoryList = props => h("div", {class: "stories"}, [
   props.fetching && h("div", {class: "loadscreen"}, [  // <---
     h("div", {class: "spinner"})                       // <---
   ]),                                                  // <---
-  
-  h("ul", {}, Object.keys(props.stories).map(id => 
+
+  h("ul", {}, Object.keys(props.stories).map(id =>
     StoryThumbnail({
-      id,    
+      id,
       title: props.stories[id].title,
       author: props.stories[id].author,
       unread: !props.stories[id].seen,
@@ -835,7 +835,7 @@ const StoryList = props => h("div", {class: "stories"}, [
 
 When the app loads, and when you change the filter, you should see the spinner appear until the stories are loaded.
 
-![loading spinner](./tut7.png)
+![loading spinner](https://user-images.githubusercontent.com/6243887/73389594-2db0f980-42dd-11ea-8bf8-95b96e7337b1.png)
 
 > If you aren't seeing the spinner, it might just be happening too fast. Try choking your network speed. In the Chrome
 > browser you can set your network speed to "slow 3g" under the network tab in the developer tools.
@@ -847,10 +847,10 @@ Subscriptions
 
 The last feature we'll add is to make our app periodically check for new stories matching the filter. There won't actually
 be any because it's not a real service, but you'll know it's happening when you see the spinner pop up every five
-seconds. 
+seconds.
 
 However, we want to make it opt-in. That's what the auto update checkbox at the bottom is for. We need a
-property in the state to track wether the box is checked or not. 
+property in the state to track wether the box is checked or not.
 
 Change the `AutoUpdate` view:
 
@@ -894,10 +894,10 @@ new subscription, it will be started, or if one has been removed it will be stop
 The options we passed to the `interval` subscription state that `FetchStories` should be dispatched every five seconds. It
 will start when we check the auto update box, and stop when it is unchecked.
 
-![auto updating](./tut8.png)
+![auto updating](https://user-images.githubusercontent.com/6243887/73389603-3275ad80-42dd-11ea-9270-bc8be471db8b.png)
 
 > As with effects, Hyperapp offers subscriptions for the most common cases, but you
-> may need to implement your own. Refer to the [API reference](./ref.md). Again, 
+> may need to implement your own. Refer to the [API reference](./ref.md). Again,
 > it is no big deal - just not in scope for this tutorial.
 
 If you'd like to see a working example of the final code, have a look [here](https://codesandbox.io/s/hyperapp-tutorial-step-4-8u9q8).

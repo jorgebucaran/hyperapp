@@ -1,4 +1,4 @@
-name: Build Docs
+name: Build Site
 on:
   push:
     branches:

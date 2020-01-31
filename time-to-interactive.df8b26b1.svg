@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="77px" height="77px" viewBox="0 0 77 77" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 59.1 (86144) - https://sketch.com -->
+    <title>TimeToInteractive</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="50%" y1="14.9928291%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#1661EE" stop-opacity="0.75" offset="0%"></stop>
+            <stop stop-color="#1661EE" stop-opacity="0.5" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="85.1803174%" x2="50%" y2="3.061617e-15%" id="linearGradient-2">
+            <stop stop-color="#1661EE" stop-opacity="0.25" offset="0%"></stop>
+            <stop stop-color="#FFFFFF" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="100%" y1="50%" x2="14.6349205%" y2="50%" id="linearGradient-3">
+            <stop stop-color="#1661EE" stop-opacity="0.25" offset="0%"></stop>
+            <stop stop-color="#1661EE" stop-opacity="0.5" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="-1.11022302e-14%" y1="50%" x2="100%" y2="50%" id="linearGradient-4">
+            <stop stop-color="#1661EE" stop-opacity="0.75" offset="0%"></stop>
+            <stop stop-color="#1661EE" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="TimeToInteractive" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Rectangle" fill="url(#linearGradient-1)" x="0" y="0" width="10" height="67"></rect>
+        <rect id="Rectangle" fill="url(#linearGradient-2)" x="67" y="10" width="10" height="67"></rect>
+        <rect id="Rectangle" fill="url(#linearGradient-3)" x="0" y="67" width="67" height="10"></rect>
+        <rect id="Rectangle" fill="url(#linearGradient-4)" x="10" y="0" width="67" height="10"></rect>
+    </g>
+</svg>

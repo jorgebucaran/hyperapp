@@ -1,6 +1,4 @@
-<h1 align="center">
-  Hyperapp official website developer guide
-</h1>
+# Hyperapp official website developer guide
 
 [Live website](https://hyperapp.dev/)
 
@@ -8,7 +6,7 @@
 
 Run these commands to get a local copy running:
 
-```
+```console
 # Clone hyperapp repo
 git clone https://github.com/jorgebucaran/hyperapp.git
 
@@ -19,7 +17,7 @@ npm i           # Install dependencies
 npm start       # Dev server + live reload
 ```
 
-```
+```console
 npm run build   # Build site
 ```
 

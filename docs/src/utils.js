@@ -1,3 +1,17 @@
+export const entries = (params) => {
+  if (typeof Object.fromEntries === 'function') {
+    return Object.fromEntries(params)
+  }
+
+  const obj = {}
+
+  params.forEach(([key, val]) => {
+    obj[key] = val
+  })
+
+  return obj
+}
+
 
 export const getPathInfo = (path) => {
   const url = new URL(path, 'http://localhost')
@@ -9,6 +23,6 @@ export const getPathInfo = (path) => {
   return {
     path: withoutTrailingSlash,
     query: search,
-    queryParams: Object.fromEntries(searchParams.entries())
+    queryParams: entries(searchParams.entries())
   }
 }

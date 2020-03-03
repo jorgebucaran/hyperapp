@@ -5,9 +5,9 @@ export const entries = (params) => {
 
   const obj = {}
 
-  params.forEach(([key, val]) => {
+  for (const [key, val] of params) {
     obj[key] = val
-  })
+  }
 
   return obj
 }

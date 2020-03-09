@@ -1,11 +1,11 @@
 export const entries = (params) => {
   if (typeof Object.fromEntries === 'function') {
-    return Object.fromEntries(params)
+    return Object.fromEntries(params.entries())
   }
 
   const obj = {}
 
-  params.forEach(([key, val]) => {
+  params.forEach((val, key) => {
     obj[key] = val
   })
 
@@ -23,6 +23,6 @@ export const getPathInfo = (path) => {
   return {
     path: withoutTrailingSlash,
     query: search,
-    queryParams: entries(searchParams.entries())
+    queryParams: entries(searchParams)
   }
 }

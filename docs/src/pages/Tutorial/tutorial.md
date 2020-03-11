@@ -80,7 +80,7 @@ app we want to build, with this HTML:
 
 It looks like this:
 
-![what it looks like](./tut1.png)
+![what it looks like](https://github.com/jorgebucaran/hyperapp/blob/1fd42319051e686adb9819b7e154f764fa3b0d29/docs/src/pages/Tutorial/tut1.png?raw=true)
 
 We'll start by making Hyperapp render the HTML for us. Then we will
 add dynamic behavior to all the widgets, including text input and
@@ -511,7 +511,7 @@ const filterView = props =>
 
 When you click the pencil button, it is replaced with a check-mark button that can take you back to the first state.
 
-![editing filter word](./tut2.png)
+![editing filter word](https://github.com/jorgebucaran/hyperapp/blob/1fd42319051e686adb9819b7e154f764fa3b0d29/docs/src/pages/Tutorial/tut2.png?raw=true)
 
 ### Capturing event-data in actions <a name="eventdata"></a>
 
@@ -551,7 +551,7 @@ dispatched in response to an events on DOM elements receive the [event object](h
 
 Now see what happens when you erase "ocean" and type "friendly" instead:
 
-![typed friendly in filter](tut3.png)
+![typed friendly in filter](https://github.com/jorgebucaran/hyperapp/blob/1fd42319051e686adb9819b7e154f764fa3b0d29/docs/src/pages/Tutorial/tut3.png?raw=true)
 
 ### Actions with custom payloads <a name="custompayloads"></a>
 
@@ -606,7 +606,7 @@ const SelectStory = (state, id) => ({
 Now, when you select a blue-edged story it turns yellow because it is selected, and when you select something else,
 the edge turns gray to indicate you've read the story.
 
-![read stories are gray](tut4.png)
+![read stories are gray](https://github.com/jorgebucaran/hyperapp/blob/1fd42319051e686adb9819b7e154f764fa3b0d29/docs/src/pages/Tutorial/tut4.png?raw=true)
 
 ### Payload filters <a name="payloadfilters"></a>
 
@@ -752,7 +752,7 @@ Now, go ahead and try it out! Enter "life" in the filter input. When you click t
 stories are loaded – all with blue edges except for "Ocean life is brutal" because it is
 still selected.
 
-![fetched life stories](tut5.png)
+![fetched life stories](https://github.com/jorgebucaran/hyperapp/blob/1fd42319051e686adb9819b7e154f764fa3b0d29/docs/src/pages/Tutorial/tut5.png?raw=true)
 
 ### Running effects on initialization <a name="effectsoninit"></a>
 
@@ -782,7 +782,7 @@ calling effects when it is given as an array. If you reload the page you'll see
 (after a moment) that all the same stories appear, despite them not existing in
 the state initially.
 
-![fresh stories on init](tut6.png)
+![fresh stories on init](https://github.com/jorgebucaran/hyperapp/blob/1fd42319051e686adb9819b7e154f764fa3b0d29/docs/src/pages/Tutorial/tut6.png?raw=true)
 
 ### Effect creators <a name="effectcreators"></a>
 
@@ -890,7 +890,7 @@ const storyList = props =>
 
 When the app loads, and when you change the filter, you should see the spinner appear until the stories are loaded.
 
-![spinner](tut7.png)
+![spinner](https://github.com/jorgebucaran/hyperapp/blob/1fd42319051e686adb9819b7e154f764fa3b0d29/docs/src/pages/Tutorial/tut7.png?raw=true)
 
 > If you aren't seeing the spinner, it might just be happening too fast. Try choking your network speed. In the Chrome
 > browser you can set your network speed to "slow 3g" under the network tab in the developer tools.
@@ -967,7 +967,7 @@ Just like for `view`, hyperapp will run `subscriptions` with the new state every
 a list of subscription-declarations that should be active. In our case, whenever the Auto Update checkbox is
 checked and we are _not_ busy editing the filter, our interval subscription will be active.
 
-![auto update](tut8.png)
+![auto update](https://github.com/jorgebucaran/hyperapp/blob/1fd42319051e686adb9819b7e154f764fa3b0d29/docs/src/pages/Tutorial/tut8.png?raw=true)
 
 Hyperapp will only stop or start subscriptions when the declaration changes
 from one state to the next. Subscriptions are _not_ stopped and started _every_ time the state changes.

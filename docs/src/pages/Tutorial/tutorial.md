@@ -101,7 +101,7 @@ Create this html file:
       href="https://hyperapp.dev/tutorial-assets/style.css"
     />
     <script type="module">
-      import { h, app } from "https://unpkg.com/hyperapp";
+      import { h, app } from "https://unpkg.com/hyperapp"
 
       // -- EFFECTS & SUBSCRIPTIONS --
 
@@ -112,8 +112,8 @@ Create this html file:
       // -- RUN --
       app({
         node: document.getElementById("app"),
-        view: () => h("h1", {}, ["Hello ", h("i", {}, "World!")])
-      });
+        view: () => h("h1", {}, ["Hello ", h("i", {}, "World!")]),
+      })
     </script>
   </head>
   <body>
@@ -141,7 +141,7 @@ which _represent_ DOM nodes.
 The result of
 
 ```js
-h("h1", {}, ["Hello ", h("i", {}, "World!")]);
+h("h1", {}, ["Hello ", h("i", {}, "World!")])
 ```
 
 is a virtual node, representing
@@ -236,11 +236,11 @@ Add this function (in the "VIEWS" section):
 const emphasize = (word, string) =>
   string.split(" ").map(x => {
     if (x.toLowerCase() === word.toLowerCase()) {
-      return h("em", {}, x + " ");
+      return h("em", {}, x + " ")
     } else {
-      return x + " ";
+      return x + " "
     }
-  });
+  })
 ```
 
 It lets you change this:
@@ -275,14 +275,14 @@ const storyThumbnail = props =>
     {
       class: {
         unread: props.unread,
-        reading: props.reading
-      }
+        reading: props.reading,
+      },
     },
     [
       h("p", { class: "title" }, emphasize(props.filter, props.title)),
-      h("p", { class: "author" }, props.author)
+      h("p", { class: "author" }, props.author),
     ]
-  );
+  )
 ```
 
 > The last example demonstrates a helpful feature of the `class` property. When
@@ -304,18 +304,18 @@ const storyList = props =>
           author: props.stories[id].author,
           unread: !props.stories[id].seen,
           reading: props.reading === id,
-          filter: props.filter
+          filter: props.filter,
         })
       )
-    )
-  ]);
+    ),
+  ])
 
 const filterView = props =>
   h("div", { class: "filter" }, [
     "Filter:",
     h("span", { class: "filter-word" }, props.filter),
-    h("button", {}, "\u270E")
-  ]);
+    h("button", {}, "\u270E"),
+  ])
 
 const storyDetail = props =>
   h("div", { class: "story" }, [
@@ -332,16 +332,16 @@ const storyDetail = props =>
     ex ea commodo consequat.
   `
       ),
-    props && h("p", { class: "signature" }, props.author)
-  ]);
+    props && h("p", { class: "signature" }, props.author),
+  ])
 
 const autoUpdateView = props =>
   h("div", { class: "autoupdate" }, [
     "Auto update: ",
-    h("input", { type: "checkbox" })
-  ]);
+    h("input", { type: "checkbox" }),
+  ])
 
-const container = content => h("div", { class: "container" }, content);
+const container = content => h("div", { class: "container" }, content)
 ```
 
 With those the view can be written as:
@@ -350,35 +350,35 @@ With those the view can be written as:
 view: () =>
   container([
     filterView({
-      filter: "ocean"
+      filter: "ocean",
     }),
     storyList({
       stories: {
         "112": {
           title: "The Ocean is Sinking",
           author: "Kat Stropher",
-          seen: false
+          seen: false,
         },
         "113": {
           title: "Ocean life is brutal",
           author: "Surphy McBrah",
-          seen: true
+          seen: true,
         },
         "114": {
           title: "Family friendly fun at the ocean exhibit",
           author: "Guy Prosales",
-          seen: true
-        }
+          seen: true,
+        },
       },
       reading: "113",
-      filter: "ocean"
+      filter: "ocean",
     }),
     storyDetail({
       title: "Ocean life is brutal",
-      author: "Surphy McBrah"
+      author: "Surphy McBrah",
     }),
-    autoUpdateView()
-  ]);
+    autoUpdateView(),
+  ])
 ```
 
 What you see on the page should be exactly the same as before, because we haven't
@@ -446,8 +446,8 @@ const filterView = props =>
   h("div", { class: "filter" }, [
     "Filter:",
     h("span", { class: "filter-word" }, props.filter),
-    h("button", { onclick: StartEditingFilter }, "\u270E") // <---
-  ]);
+    h("button", { onclick: StartEditingFilter }, "\u270E"), // <---
+  ])
 ```
 
 This makes Hyperapp bind a click-event handler on the button element, so
@@ -455,7 +455,7 @@ that when the button is clicked, an action named `StartEditingFilter` is
 _dispatched_. Create the action in the "ACTIONS" section:
 
 ```js
-const StartEditingFilter = state => ({ ...state, editingFilter: true });
+const StartEditingFilter = state => ({ ...state, editingFilter: true })
 ```
 
 Actions are just functions describing transformations of the state.
@@ -479,8 +479,8 @@ const filterView = props =>
       ? h("input", { type: "text", value: props.filter }) // <---
       : h("span", { class: "filter-word" }, props.filter),
 
-    h("button", { onclick: StartEditingFilter }, "\u270E")
-  ]);
+    h("button", { onclick: StartEditingFilter }, "\u270E"),
+  ])
 ```
 
 Now, when you click the pencil button the text input appears. But we still need to add
@@ -489,7 +489,7 @@ a way to go back. We need an action to `StopEditingFilter`, and a button to disp
 Add the action:
 
 ```js
-const StopEditingFilter = state => ({ ...state, editingFilter: false });
+const StopEditingFilter = state => ({ ...state, editingFilter: false })
 ```
 
 and update `filterView` again:
@@ -505,8 +505,8 @@ const filterView = props =>
 
     props.editingFilter // <---
       ? h("button", { onclick: StopEditingFilter }, "\u2713")
-      : h("button", { onclick: StartEditingFilter }, "\u270E") // <---
-  ]);
+      : h("button", { onclick: StartEditingFilter }, "\u270E"), // <---
+  ])
 ```
 
 When you click the pencil button, it is replaced with a check-mark button that can take you back to the first state.
@@ -529,20 +529,20 @@ const filterView = props =>
       ? h("input", {
           type: "text",
           value: props.filter,
-          oninput: SetFilter // <----
+          oninput: SetFilter, // <----
         })
       : h("span", { class: "filter-word" }, props.filter),
 
     props.editingFilter
       ? h("button", { onclick: StopEditingFilter }, "\u2713")
-      : h("button", { onclick: StartEditingFilter }, "\u270E")
-  ]);
+      : h("button", { onclick: StartEditingFilter }, "\u270E"),
+  ])
 ```
 
 This will dispatch the `SetFilter` action everytime someone types in the input. Implement the action like this:
 
 ```js
-const SetFilter = (state, event) => ({ ...state, filter: event.target.value });
+const SetFilter = (state, event) => ({ ...state, filter: event.target.value })
 ```
 
 The second argument to an action is known as the _payload_. Actions
@@ -560,7 +560,7 @@ Next up: selecting stories by clicking them in the list.
 The following action sets the `reading` property in the state to a story-id, which amounts to "selecting" the story:
 
 ```js
-const SelectStory = (state, id) => ({ ...state, reading: id });
+const SelectStory = (state, id) => ({ ...state, reading: id })
 ```
 
 It has a payload, but it's not an event object. It's a custom value telling us which
@@ -574,14 +574,14 @@ const storyThumbnail = props =>
       onclick: [SelectStory, props.id], // <----
       class: {
         unread: props.unread,
-        reading: props.reading
-      }
+        reading: props.reading,
+      },
     },
     [
       h("p", { class: "title" }, emphasize(props.filter, props.title)),
-      h("p", { class: "author" }, props.author)
+      h("p", { class: "author" }, props.author),
     ]
-  );
+  )
 ```
 
 Instead of just specifying the action, we give a length-2 array with the action first and the custom payload second.
@@ -597,10 +597,10 @@ const SelectStory = (state, id) => ({
     ...state.stories, //keep stories the same, except for:
     [id]: {
       ...state.stories[id], //keep this story the same, except for:
-      seen: true
-    }
-  }
-});
+      seen: true,
+    },
+  },
+})
 ```
 
 Now, when you select a blue-edged story it turns yellow because it is selected, and when you select something else,
@@ -614,7 +614,7 @@ There's one little thing we should fix about `SetFilter`. See how it's dependent
 It would be easier to test and reuse if it were simply:
 
 ```js
-const SetFilter = (state, word) => ({ ...state, filter: word });
+const SetFilter = (state, word) => ({ ...state, filter: word })
 ```
 
 But we don't know the word beforehand, so how can we set it as a custom payload? Change the `Filter` view
@@ -629,14 +629,14 @@ const filterView = props =>
       ? h("input", {
           type: "text",
           value: props.filter,
-          oninput: [SetFilter, event => event.target.value] // <----
+          oninput: [SetFilter, event => event.target.value], // <----
         })
       : h("span", { class: "filter-word" }, props.filter),
 
     props.editingFilter
       ? h("button", { onclick: StopEditingFilter }, "\u2713")
-      : h("button", { onclick: StartEditingFilter }, "\u270E")
-  ]);
+      : h("button", { onclick: StartEditingFilter }, "\u270E"),
+  ])
 ```
 
 When we give a _function_ as the custom payload, Hyperapp considers it a _payload filter_ and passes the default
@@ -666,15 +666,15 @@ const GotStories = (state, stories) => ({
       id,
       {
         ...stories[id],
-        seen: state.stories[id] && state.stories[id].seen
-      }
+        seen: state.stories[id] && state.stories[id].seen,
+      },
     ])
     .reduce((o, [id, story]) => ((o[id] = story), o), {}),
 
   // in case the current story is in the new list as well,
   // keep it selected, Otherwise select nothing
-  reading: stories[state.reading] ? state.reading : null
-});
+  reading: stories[state.reading] ? state.reading : null,
+})
 ```
 
 ### Declaring effects in actions <a name="declaringeffects"></a>
@@ -688,11 +688,11 @@ with `StopEditingFilter`, make it return an array like this:
 const StopEditingFilter = state => [
   {
     ...state,
-    editingFilter: false
-  }
+    editingFilter: false,
+  },
 
   // effect declarations go here: //
-];
+]
 ```
 
 When an action returns an array, Hyperapp understands that the first item is the new state we want, and
@@ -705,7 +705,7 @@ Add this effect declaration:
 const StopEditingFilter = state => [
   {
     ...state,
-    editingFilter: false
+    editingFilter: false,
   },
 
   // effect declarations go here: //
@@ -713,10 +713,10 @@ const StopEditingFilter = state => [
     fetchJSONData,
     {
       url: `https://hyperapp.dev/tutorial-assets/stories/${state.filter.toLowerCase()}.json`,
-      onresponse: GotStories
-    }
-  ]
-];
+      onresponse: GotStories,
+    },
+  ],
+]
 ```
 
 The first item in an effect declaration – here `fetchJSONData` – is the
@@ -734,7 +734,7 @@ const fetchJSONData = (dispatch, options) =>
   fetch(options.url)
     .then(response => response.json())
     .then(data => dispatch(options.onresponse, data))
-    .catch(() => dispatch(options.onresponse, {}));
+    .catch(() => dispatch(options.onresponse, {}))
 ```
 
 > It's a good practice to write your effect functions generically like this, rather than
@@ -794,9 +794,9 @@ const storyLoader = searchWord => [
   fetchJSONData,
   {
     url: `https://hyperapp.dev/tutorial-assets/stories/${searchWord.toLowerCase()}.json`,
-    onresponse: GotStories
-  }
-];
+    onresponse: GotStories,
+  },
+]
 ```
 
 Now we can simplify `StopEditingFilter` like this:
@@ -805,10 +805,10 @@ Now we can simplify `StopEditingFilter` like this:
 const StopEditingFilter = state => [
   {
     ...state,
-    editingFilter: false
+    editingFilter: false,
   },
-  storyLoader(state.filter)
-];
+  storyLoader(state.filter),
+]
 ```
 
 ... and `init:` like this:
@@ -831,7 +831,7 @@ const StopEditingFilter = state => [
 If we could display a spinner while we wait for stories to load, it would make for a smoother user experience. We'll need a state property to tell us wether or not we're currently `fetching`, and we'll use this action to keep track of it:
 
 ```js
-const SetFetching = (state, fetching) => ({ ...state, fetching });
+const SetFetching = (state, fetching) => ({ ...state, fetching })
 ```
 
 Update `storyLoader` to tell `fetchJSONData` about `SetFetching`
@@ -843,22 +843,22 @@ const storyLoader = searchWord => [
     url: `https://hyperapp.dev/tutorial-assets/stories/${searchWord.toLowerCase()}.json`,
     onresponse: GotStories,
     onstart: [SetFetching, true], // <----
-    onfinish: [SetFetching, false] // <----
-  }
-];
+    onfinish: [SetFetching, false], // <----
+  },
+]
 ```
 
 Finally update `fetchJSONData` to use the new `onstart` and `onfinish` options to notify when fetches start and end:
 
 ```js
 const fetchJSONData = (dispatch, options) => {
-  dispatch(options.onstart); // <---
+  dispatch(options.onstart) // <---
   fetch(options.url)
     .then(response => response.json())
     .then(data => dispatch(options.onresponse, data))
     .catch(() => dispatch(options.onresponse, {}))
-    .finally(() => dispatch(options.onfinish)); // <---
-};
+    .finally(() => dispatch(options.onfinish)) // <---
+}
 ```
 
 With that, our state prop `fetching` will always tell us wether or not we are fetching.
@@ -881,11 +881,11 @@ const storyList = props =>
           author: props.stories[id].author,
           unread: !props.stories[id].seen,
           reading: props.reading === id,
-          filter: props.filter
+          filter: props.filter,
         })
       )
-    )
-  ]);
+    ),
+  ])
 ```
 
 When the app loads, and when you change the filter, you should see the spinner appear until the stories are loaded.
@@ -906,7 +906,7 @@ but you'll know it's happening when you see the spinner pop up every five second
 First let's keep track of wether or not the user wants this auto-update feature on. Create a new action:
 
 ```js
-const ToggleAutoUpdate = state => ({ ...state, autoUpdate: !state.autoUpdate });
+const ToggleAutoUpdate = state => ({ ...state, autoUpdate: !state.autoUpdate })
 ```
 
 Dispatch it in response to checking the checkbox in `autoUpdateView`:
@@ -918,9 +918,9 @@ const autoUpdateView = props =>
     h("input", {
       type: "checkbox",
       checked: props.autoUpdate, // <---
-      oninput: ToggleAutoUpdate // <---
-    })
-  ]);
+      oninput: ToggleAutoUpdate, // <---
+    }),
+  ])
 ```
 
 With that, the state property `autoUpdate` will tell us wether or not the Auto-update checkbox is checked.
@@ -932,9 +932,9 @@ We need a _subscription function_ capable of dispatching actions at a given inte
 
 ```js
 const intervalSubscription = (dispatch, options) => {
-  const interval = setInterval(() => dispatch(options.action), options.time);
-  return () => clearInterval(interval);
-};
+  const interval = setInterval(() => dispatch(options.action), options.time)
+  return () => clearInterval(interval)
+}
 ```
 
 Just like an effect function, this function will be called by Hyperapp with `dispatch` and given options. It
@@ -957,10 +957,10 @@ subscriptions: state => [
       intervalSubscription,
       {
         time: 5000, //milliseconds,
-        action: StopEditingFilter
-      }
-    ]
-];
+        action: StopEditingFilter,
+      },
+    ],
+]
 ```
 
 Just like for `view`, hyperapp will run `subscriptions` with the new state every time it changes, to get

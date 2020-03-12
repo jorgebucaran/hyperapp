@@ -1,0 +1,591 @@
+<p>Welcome! If you&#39;re new to Hyperapp, you&#39;ve found the perfect place to start learning.</p><p>Table of contents</p><ul>
+<li><a href="#setup">The Set-up</a></li>
+<li><a href="#helloworld">Hello World</a></li>
+<li><a href="#view">View</a><ul>
+<li><a href="#virtualnodes">Virtual Nodes</a></li>
+<li><a href="#rendertodom">Rendering to the DOM</a></li>
+<li><a href="#composingview">Composing the view with reusable functions</a></li>
+</ul>
+</li>
+<li><a href="#state">State</a></li>
+<li><a href="#actions">Actions</a><ul>
+<li><a href="#reacting">Reacting to events in the DOM</a></li>
+<li><a href="#eventdata">Capturing event-data in actions</a></li>
+<li><a href="#custompayloads">Actions with custom payloads</a></li>
+<li><a href="#payloadfilters">Payload filters</a></li>
+</ul>
+</li>
+<li><a href="#effects">Effects</a><ul>
+<li><a href="#declaringeffects">Declaring effects in actions</a></li>
+<li><a href="#effectfunctions">Effect functions and <code>dispatch</code></a></li>
+<li><a href="#effectsoninit">Running effects on initialization</a></li>
+<li><a href="#effectcreators">Effect creators</a></li>
+<li><a href="#trackingasync">Tracking state for ansynchronous effects</a></li>
+</ul>
+</li>
+<li><a href="#subscriptions">Subscriptions</a><ul>
+<li><a href="#subscriptionfunctions">Subscription functions</a></li>
+<li><a href="#subscribing">Subscribing</a></li>
+</ul>
+</li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul><h2 id="the-set-up-a-namesetupa">The Set-up <a name="setup"></a></h2><p>Together we&#39;ll build a simple newsreader-like application. As we do, we&#39;ll work
+our way through the five core concepts: view, state, actions, effects and subscriptions.</p><p>To move things along, let&#39;s imagine we&#39;ve already made a static version of the
+app we want to build, with this HTML:</p><pre><code class="language-html">&lt;div id=&quot;app&quot; class=&quot;container&quot;&gt;
+  &lt;div class=&quot;filter&quot;&gt;
+    Filter:
+    &lt;span class=&quot;filter-word&quot;&gt;ocean&lt;/span&gt;
+    &lt;button&gt;&amp;#9998;&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;stories&quot;&gt;
+    &lt;ul&gt;
+      &lt;li class=&quot;unread&quot;&gt;
+        &lt;p class=&quot;title&quot;&gt;The &lt;em&gt;Ocean &lt;/em&gt;is Sinking&lt;/p&gt;
+        &lt;p class=&quot;author&quot;&gt;Kat Stropher&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li class=&quot;reading&quot;&gt;
+        &lt;p class=&quot;title&quot;&gt;&lt;em&gt;Ocean &lt;/em&gt;life is brutal&lt;/p&gt;
+        &lt;p class=&quot;author&quot;&gt;Surphy McBrah&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p class=&quot;title&quot;&gt;
+          Family friendly fun at the
+          &lt;em&gt;ocean &lt;/em&gt;exhibit
+        &lt;/p&gt;
+        &lt;p class=&quot;author&quot;&gt;Guy Prosales&lt;/p&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;story&quot;&gt;
+    &lt;h1&gt;Ocean life is brutal&lt;/h1&gt;
+    &lt;p&gt;
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+      commodo consequat.
+    &lt;/p&gt;
+    &lt;p class=&quot;signature&quot;&gt;Surphy McBrah&lt;/p&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;autoupdate&quot;&gt;
+    Auto update:
+    &lt;input type=&quot;checkbox&quot; /&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre><p>...and some CSS <a href="https://hyperapp.dev/tutorial-assets/style.css">here</a>.</p><p>It looks like this:</p><p><img src="https://raw.githubusercontent.com/jorgebucaran/hyperapp/1fd42319051e686adb9819b7e154f764fa3b0d29/docs/src/pages/Tutorial/tut1.png" alt="what it looks like"></p><p>We&#39;ll start by making Hyperapp render the HTML for us. Then we will
+add dynamic behavior to all the widgets, including text input and
+dynamically fetching stories.</p><p>First, let&#39;s begin with the traditional &quot;Hello World!&quot;</p><h2 id="hello-world-a-namehelloworlda">Hello World <a name="helloworld"></a></h2><p>Create this html file:</p><pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;link
+      rel=&quot;stylesheet&quot;
+      href=&quot;https://hyperapp.dev/tutorial-assets/style.css&quot;
+    /&gt;
+    &lt;script type=&quot;module&quot;&gt;
+      import { h, app } from &quot;https://unpkg.com/hyperapp&quot;
+
+      // -- EFFECTS &amp; SUBSCRIPTIONS --
+
+      // -- ACTIONS --
+
+      // -- VIEWS ---
+
+      // -- RUN --
+      app({
+        node: document.getElementById(&quot;app&quot;),
+        view: () =&gt; h(&quot;h1&quot;, {}, [&quot;Hello &quot;, h(&quot;i&quot;, {}, &quot;World!&quot;)]),
+      })
+    &lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div id=&quot;app&quot;&gt;&lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre><blockquote>
+<p>The section structure outlined in the comments is not important. It&#39;s
+just a suggestion for how to organize the code we&#39;ll be
+adding throughout the tutorial.</p>
+</blockquote><p>Open it in a browser, and you&#39;ll be greeted with an optimistic <strong>Hello <em>World!</em></strong>.</p><h2 id="view-a-nameviewa">View <a name="view"></a></h2><p>Let&#39;s step through what just happened.</p><h3 id="virtual-nodes-a-namevirtualnodesa">Virtual Nodes <a name="virtualnodes"></a></h3><p>Hyperapp exports the <code>app</code> and <code>h</code> functions.
+<code>h</code> is for creating <em>virtual nodes</em>, which is to say: plain javascript objects
+which <em>represent</em> DOM nodes.</p><p>The result of</p><pre><code class="language-js">h(&quot;h1&quot;, {}, [&quot;Hello &quot;, h(&quot;i&quot;, {}, &quot;World!&quot;)])</code></pre><p>is a virtual node, representing</p><pre><code class="language-html">&lt;h1&gt;
+  Hello
+  &lt;i&gt;World!&lt;/i&gt;
+&lt;/h1&gt;</code></pre><h3 id="rendering-to-the-dom-a-namerendertodoma">Rendering to the DOM <a name="rendertodom"></a></h3><p><code>app</code> is the function that runs our app. It is called with a single argument - an object
+which can take several properties. For now we&#39;re just concerned with <code>view</code> and <code>node.</code></p><p>Hyperapp calls the <code>view</code> function which tells it the DOM structure we want, in the form
+of virtual nodes. Hyperapp proceeds to create it for us, replacing the node specified in <code>node</code>.</p><p>To render the HTML we want, change the <code>view</code> to:</p><pre><code class="language-js">view: () =&gt; h(&quot;div&quot;, {id: &quot;app&quot;, class: &quot;container&quot;}, [
+  h(&quot;div&quot;, {class: &quot;filter&quot;}, [
+    &quot; Filter: &quot;,
+    h(&quot;span&quot;, {class: &quot;filter-word&quot;}, &quot;ocean&quot;),
+    h(&quot;button&quot;, {}, &quot;\u270E&quot;)
+  ]),
+  h(&quot;div&quot;, {class: &quot;stories&quot;}, [
+    h(&quot;ul&quot;, {}, [
+      h(&quot;li&quot;, {class: &quot;unread&quot;}, [
+        h(&quot;p&quot;, {class: &quot;title&quot;}, [
+          &quot;The &quot;,
+          h(&quot;em&quot;, {}, &quot;Ocean&quot;),
+          &quot; is Sinking!&quot;
+        ]),
+        h(&quot;p&quot;, {class: &quot;author&quot;}, &quot;Kat Stropher&quot;)
+      ]),
+      h(&quot;li&quot;, {class: &quot;reading&quot;}, [
+        h(&quot;p&quot;, {class: &quot;title&quot;}, [
+          h(&quot;em&quot;, {}, &quot;Ocean&quot;),
+          &quot; life is brutal&quot;
+        ]),
+        h(&quot;p&quot;, {class: &quot;author&quot;}, &quot;Surphy McBrah&quot;),
+      ]),
+      h(&quot;li&quot;, {}, [
+        h(&quot;p&quot;, {class: &quot;title&quot;}, [
+          &quot;Family friendly fun at the &quot;,
+          h(&quot;em&quot;, {}, &quot;ocean&quot;),
+          &quot; exhibit&quot;
+        ]),
+        h(&quot;p&quot;, {class: &quot;author&quot;}, &quot;Guy Prosales&quot;)
+      ])
+    ])
+  ]),
+  h(&quot;div&quot;, {class: &quot;story&quot;}, [
+    h(&quot;h1&quot;, {}, &quot;Ocean life is brutal&quot;),
+    h(&quot;p&quot;, {}, `
+      Lorem ipsum dolor sit amet, consectetur adipiscing
+      elit, sed do eiusmod tempor incididunt ut labore et
+      dolore magna aliqua. Ut enim ad minim veniam, quis
+      nostrud exercitation ullamco laboris nisi ut aliquip
+      ex ea commodo consequat.
+    `),
+    h(&quot;p&quot;, {class: &quot;signature&quot;}, &quot;Surphy McBrah&quot;)
+  ]),
+  h(&quot;div&quot;, {class: &quot;autoupdate&quot;}, [
+    &quot;Auto update: &quot;,
+    h(&quot;input&quot;, {type: &quot;checkbox&quot;})
+  ])
+]),</code></pre><p>Try it out to confirm that the result matches the screenshot above.</p><blockquote>
+<p>In many frameworks it is common to write your views/templates
+using syntax that looks like HTML. This is possible with Hyperapp as well.
+<a href="https://babeljs.io/docs/en/babel-plugin-transform-react-jsx">JSX</a>
+can compile a HTML-like syntax into <code>h</code> calls at build-time. If you&#39;d rather
+not use a build system, <a href="https://github.com/developit/htm">htm</a> does the same at run-time.</p>
+<p>In this tutorial we&#39;ll stick with <code>h</code> to keep it simple and close to the metal.</p>
+</blockquote><h3 id="composing-the-view-with-reusable-functions-a-namecomposingviewa">Composing the view with reusable functions <a name="composingview"></a></h3><p>The great thing about using plain functions to build up our virtual DOM
+is that we can break out repetitive or complicated parts into their own functions.</p><p>Add this function (in the &quot;VIEWS&quot; section):</p><pre><code class="language-js">const emphasize = (word, string) =&gt;
+  string.split(&quot; &quot;).map(x =&gt; {
+    if (x.toLowerCase() === word.toLowerCase()) {
+      return h(&quot;em&quot;, {}, x + &quot; &quot;)
+    } else {
+      return x + &quot; &quot;
+    }
+  })</code></pre><p>It lets you change this:</p><pre><code class="language-js">  ...
+  h(&quot;p&quot;, {class: &quot;title&quot;}, [
+    &quot;The &quot;,
+    h(&quot;em&quot;, {}, &quot;Ocean&quot;),
+    &quot; is Sinking!&quot;
+  ]),
+  ...</code></pre><p>into this:</p><pre><code class="language-js">  ...
+  h(&quot;p&quot;, {class: &quot;title&quot;}, emphasize(&quot;ocean&quot;,
+    &quot;The Ocean is Sinking&quot;
+  ))
+  ...</code></pre><p>Story thumbnails are repeated several times, so encapsulate
+them in their own function:</p><pre><code class="language-js">const storyThumbnail = props =&gt;
+  h(
+    &quot;li&quot;,
+    {
+      class: {
+        unread: props.unread,
+        reading: props.reading,
+      },
+    },
+    [
+      h(&quot;p&quot;, { class: &quot;title&quot; }, emphasize(props.filter, props.title)),
+      h(&quot;p&quot;, { class: &quot;author&quot; }, props.author),
+    ]
+  )</code></pre><blockquote>
+<p>The last example demonstrates a helpful feature of the <code>class</code> property. When
+you set it to an object rather than a string, each key with a truthy value
+will become a class in the class list.</p>
+</blockquote><p>Continue by creating functions for each section of the view:</p><pre><code class="language-js">const storyList = props =&gt;
+  h(&quot;div&quot;, { class: &quot;stories&quot; }, [
+    h(
+      &quot;ul&quot;,
+      {},
+      Object.keys(props.stories).map(id =&gt;
+        storyThumbnail({
+          id,
+          title: props.stories[id].title,
+          author: props.stories[id].author,
+          unread: !props.stories[id].seen,
+          reading: props.reading === id,
+          filter: props.filter,
+        })
+      )
+    ),
+  ])
+
+const filterView = props =&gt;
+  h(&quot;div&quot;, { class: &quot;filter&quot; }, [
+    &quot;Filter:&quot;,
+    h(&quot;span&quot;, { class: &quot;filter-word&quot; }, props.filter),
+    h(&quot;button&quot;, {}, &quot;\u270E&quot;),
+  ])
+
+const storyDetail = props =&gt;
+  h(&quot;div&quot;, { class: &quot;story&quot; }, [
+    props &amp;&amp; h(&quot;h1&quot;, {}, props.title),
+    props &amp;&amp;
+      h(
+        &quot;p&quot;,
+        {},
+        `
+    Lorem ipsum dolor sit amet, consectetur adipiscing
+    elit, sed do eiusmod tempor incididunt ut labore et
+    dolore magna aliqua. Ut enim ad minim veniam, qui
+    nostrud exercitation ullamco laboris nisi ut aliquip
+    ex ea commodo consequat.
+  `
+      ),
+    props &amp;&amp; h(&quot;p&quot;, { class: &quot;signature&quot; }, props.author),
+  ])
+
+const autoUpdateView = props =&gt;
+  h(&quot;div&quot;, { class: &quot;autoupdate&quot; }, [
+    &quot;Auto update: &quot;,
+    h(&quot;input&quot;, { type: &quot;checkbox&quot; }),
+  ])
+
+const container = content =&gt; h(&quot;div&quot;, { class: &quot;container&quot; }, content)</code></pre><p>With those the view can be written as:</p><pre><code class="language-js">view: () =&gt;
+  container([
+    filterView({
+      filter: &quot;ocean&quot;,
+    }),
+    storyList({
+      stories: {
+        &quot;112&quot;: {
+          title: &quot;The Ocean is Sinking&quot;,
+          author: &quot;Kat Stropher&quot;,
+          seen: false,
+        },
+        &quot;113&quot;: {
+          title: &quot;Ocean life is brutal&quot;,
+          author: &quot;Surphy McBrah&quot;,
+          seen: true,
+        },
+        &quot;114&quot;: {
+          title: &quot;Family friendly fun at the ocean exhibit&quot;,
+          author: &quot;Guy Prosales&quot;,
+          seen: true,
+        },
+      },
+      reading: &quot;113&quot;,
+      filter: &quot;ocean&quot;,
+    }),
+    storyDetail({
+      title: &quot;Ocean life is brutal&quot;,
+      author: &quot;Surphy McBrah&quot;,
+    }),
+    autoUpdateView(),
+  ])</code></pre><p>What you see on the page should be exactly the same as before, because we haven&#39;t
+changed what <code>view</code> returns. Using basic functional composition, we were able to make
+the code a bit more manageable, and that&#39;s the only difference.</p><h2 id="state-a-namestatea">State <a name="state"></a></h2><p>With all that view logic broken out in separate functions, <code>view</code> is starting to look like
+plain <em>data</em>. The next step is to fully separate data from the view.</p><p>Add an <code>init</code> property to your app, with this pure data:</p><pre><code class="language-js">  init: {
+    filter: &quot;ocean&quot;,
+    reading: &quot;113&quot;,
+    stories: {
+      &quot;112&quot;: {
+        title: &quot;The Ocean is Sinking&quot;,
+        author: &quot;Kat Stropher&quot;,
+        seen: false,
+      },
+      &quot;113&quot;: {
+        title: &quot;Ocean life is brutal&quot;,
+        author: &quot;Surphy McBrah&quot;,
+        seen: true,
+      },
+      &quot;114&quot;: {
+        title: &quot;Family friendly fun at the ocean exhibit&quot;,
+        author: &quot;Guy Prosales&quot;,
+        seen: true,
+      }
+    }
+  },</code></pre><p>The value of <code>init</code> becomes the app&#39;s <em>state</em>. Hyperapp calls <code>view</code> with the state
+as an argument, so it can be reduced to:</p><pre><code class="language-js">  view: state =&gt; container([
+    filterView(state),
+    storyList(state),
+    storyDetail(state.reading &amp;&amp; state.stories[state.reading]),
+    autoUpdateView(state),
+  ]),</code></pre><p>Visually, everything is <em>still</em> the same. If you&#39;d like to see a working example of the code so far, have a look <a href="https://codesandbox.io/s/hyperapp-tutorial-step-1-gq662">here</a></p><h2 id="actions-a-nameactionsa">Actions <a name="actions"></a></h2><p>Now that we know all about rendering views, it&#39;s finally time for some <em>action</em>!</p><h3 id="reacting-to-events-in-the-dom-a-namereactinga">Reacting to events in the DOM <a name="reacting"></a></h3><p>The first bit of dynamic behavior we will add is so that when you click
+the pencil-button, a text input with the filter word appears.</p><p>Add an <code>onclick</code> property to the button in <code>filterView</code>:</p><pre><code class="language-js">const filterView = props =&gt;
+  h(&quot;div&quot;, { class: &quot;filter&quot; }, [
+    &quot;Filter:&quot;,
+    h(&quot;span&quot;, { class: &quot;filter-word&quot; }, props.filter),
+    h(&quot;button&quot;, { onclick: StartEditingFilter }, &quot;\u270E&quot;), // &lt;---
+  ])</code></pre><p>This makes Hyperapp bind a click-event handler on the button element, so
+that when the button is clicked, an action named <code>StartEditingFilter</code> is
+<em>dispatched</em>. Create the action in the &quot;ACTIONS&quot; section:</p><pre><code class="language-js">const StartEditingFilter = state =&gt; ({ ...state, editingFilter: true })</code></pre><p>Actions are just functions describing transformations of the state.
+This action keeps everything in the state the same except for <code>editingFilter</code>
+which it sets to <code>true</code>.</p><p>When Hyperapp dispatches an action, it replaces the old state with the new
+one calculated using the action. Then the DOM is modified to match what the
+view returns for this new state.</p><p>When <code>editingFilter</code> is true, we want to have a text input instead of a
+span with the filter word. We can express this in <code>filterView</code> using a
+ternary operator (<code>a ? b : c</code>).</p><pre><code class="language-js">const filterView = props =&gt;
+  h(&quot;div&quot;, { class: &quot;filter&quot; }, [
+    &quot;Filter:&quot;,
+
+    props.editingFilter // &lt;---
+      ? h(&quot;input&quot;, { type: &quot;text&quot;, value: props.filter }) // &lt;---
+      : h(&quot;span&quot;, { class: &quot;filter-word&quot; }, props.filter),
+
+    h(&quot;button&quot;, { onclick: StartEditingFilter }, &quot;\u270E&quot;),
+  ])</code></pre><p>Now, when you click the pencil button the text input appears. But we still need to add
+a way to go back. We need an action to <code>StopEditingFilter</code>, and a button to dispatch it.</p><p>Add the action:</p><pre><code class="language-js">const StopEditingFilter = state =&gt; ({ ...state, editingFilter: false })</code></pre><p>and update <code>filterView</code> again:</p><pre><code class="language-js">const filterView = props =&gt;
+  h(&quot;div&quot;, { class: &quot;filter&quot; }, [
+    &quot;Filter:&quot;,
+
+    props.editingFilter
+      ? h(&quot;input&quot;, { type: &quot;text&quot;, value: props.filter })
+      : h(&quot;span&quot;, { class: &quot;filter-word&quot; }, props.filter),
+
+    props.editingFilter // &lt;---
+      ? h(&quot;button&quot;, { onclick: StopEditingFilter }, &quot;\u2713&quot;)
+      : h(&quot;button&quot;, { onclick: StartEditingFilter }, &quot;\u270E&quot;), // &lt;---
+  ])</code></pre><p>When you click the pencil button, it is replaced with a check-mark button that can take you back to the first state.</p><p><img src="https://raw.githubusercontent.com/jorgebucaran/hyperapp/1fd42319051e686adb9819b7e154f764fa3b0d29/docs/src/pages/Tutorial/tut2.png" alt="editing filter word"></p><h3 id="capturing-event-data-in-actions-a-nameeventdataa">Capturing event-data in actions <a name="eventdata"></a></h3><p>The next step is to use the input for editing the filter word. Whatever we
+type in the box should be emphasized in the story-list.</p><p>Update <code>filterView</code> yet again:</p><pre><code class="language-js">const filterView = props =&gt;
+  h(&quot;div&quot;, { class: &quot;filter&quot; }, [
+    &quot;Filter:&quot;,
+
+    props.editingFilter
+      ? h(&quot;input&quot;, {
+          type: &quot;text&quot;,
+          value: props.filter,
+          oninput: SetFilter, // &lt;----
+        })
+      : h(&quot;span&quot;, { class: &quot;filter-word&quot; }, props.filter),
+
+    props.editingFilter
+      ? h(&quot;button&quot;, { onclick: StopEditingFilter }, &quot;\u2713&quot;)
+      : h(&quot;button&quot;, { onclick: StartEditingFilter }, &quot;\u270E&quot;),
+  ])</code></pre><p>This will dispatch the <code>SetFilter</code> action everytime someone types in the input. Implement the action like this:</p><pre><code class="language-js">const SetFilter = (state, event) =&gt; ({ ...state, filter: event.target.value })</code></pre><p>The second argument to an action is known as the <em>payload</em>. Actions
+dispatched in response to an events on DOM elements receive the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Event">event object</a> for a payload. <code>event.target</code> refers to the input element in the DOM, and
+<code>event.target.value</code> refers to the current value entered into it.</p><p>Now see what happens when you erase &quot;ocean&quot; and type &quot;friendly&quot; instead:</p><p><img src="https://raw.githubusercontent.com/jorgebucaran/hyperapp/1fd42319051e686adb9819b7e154f764fa3b0d29/docs/src/pages/Tutorial/tut3.png" alt="typed friendly in filter"></p><h3 id="actions-with-custom-payloads-a-namecustompayloadsa">Actions with custom payloads <a name="custompayloads"></a></h3><p>Next up: selecting stories by clicking them in the list.</p><p>The following action sets the <code>reading</code> property in the state to a story-id, which amounts to &quot;selecting&quot; the story:</p><pre><code class="language-js">const SelectStory = (state, id) =&gt; ({ ...state, reading: id })</code></pre><p>It has a payload, but it&#39;s not an event object. It&#39;s a custom value telling us which
+story was clicked. How are actions dispatched with custom payloads? – Like this:</p><pre><code class="language-js">const storyThumbnail = props =&gt;
+  h(
+    &quot;li&quot;,
+    {
+      onclick: [SelectStory, props.id], // &lt;----
+      class: {
+        unread: props.unread,
+        reading: props.reading,
+      },
+    },
+    [
+      h(&quot;p&quot;, { class: &quot;title&quot; }, emphasize(props.filter, props.title)),
+      h(&quot;p&quot;, { class: &quot;author&quot; }, props.author),
+    ]
+  )</code></pre><p>Instead of just specifying the action, we give a length-2 array with the action first and the custom payload second.</p><p>Selecting stories works now, but the feature is not quite done. When a story is selected,
+we need to set its <code>seen</code> property to <code>true</code>, so we can highlight which stories the user has yet to read. Update the <code>SelectStory</code> action:</p><pre><code class="language-js">const SelectStory = (state, id) =&gt; ({
+  ...state, // keep all state the same, except for the following:
+  reading: id,
+  stories: {
+    ...state.stories, //keep stories the same, except for:
+    [id]: {
+      ...state.stories[id], //keep this story the same, except for:
+      seen: true,
+    },
+  },
+})</code></pre><p>Now, when you select a blue-edged story it turns yellow because it is selected, and when you select something else,
+the edge turns gray to indicate you&#39;ve read the story.</p><p><img src="https://raw.githubusercontent.com/jorgebucaran/hyperapp/1fd42319051e686adb9819b7e154f764fa3b0d29/docs/src/pages/Tutorial/tut4.png" alt="read stories are gray"></p><h3 id="payload-filters-a-namepayloadfiltersa">Payload filters <a name="payloadfilters"></a></h3><p>There&#39;s one little thing we should fix about <code>SetFilter</code>. See how it&#39;s dependent on the complex <code>event</code> object?
+It would be easier to test and reuse if it were simply:</p><pre><code class="language-js">const SetFilter = (state, word) =&gt; ({ ...state, filter: word })</code></pre><p>But we don&#39;t know the word beforehand, so how can we set it as a custom payload? Change the <code>Filter</code> view
+again (last time - I promise!):</p><pre><code class="language-js">const filterView = props =&gt;
+  h(&quot;div&quot;, { class: &quot;filter&quot; }, [
+    &quot;Filter:&quot;,
+
+    props.editingFilter
+      ? h(&quot;input&quot;, {
+          type: &quot;text&quot;,
+          value: props.filter,
+          oninput: [SetFilter, event =&gt; event.target.value], // &lt;----
+        })
+      : h(&quot;span&quot;, { class: &quot;filter-word&quot; }, props.filter),
+
+    props.editingFilter
+      ? h(&quot;button&quot;, { onclick: StopEditingFilter }, &quot;\u2713&quot;)
+      : h(&quot;button&quot;, { onclick: StartEditingFilter }, &quot;\u270E&quot;),
+  ])</code></pre><p>When we give a <em>function</em> as the custom payload, Hyperapp considers it a <em>payload filter</em> and passes the default
+payload through it, providing the returned value as payload to the action.</p><blockquote>
+<p>Payload filters are also useful when you need a payload that is a combination of custom data and event data</p>
+</blockquote><p>If you&#39;d like to see a working example of the code so far, have a look <a href="https://codesandbox.io/s/hyperapp-tutorial-step-2-5yv34">here</a></p><h2 id="effects-a-nameeffectsa">Effects <a name="effects"></a></h2><p>So far, the list of stories has been defined in the state and doesn&#39;t change. What we really want is
+when we&#39;re done changing the filter-word, stories matching it should be loaded.</p><p>Before looking at how we make the request for new stories, one thing is for sure: when new stories
+come back they need to go into the state, and the only way to modify the state is through an action.
+So we&#39;re definitely going to need the following action:</p><pre><code class="language-js">const GotStories = (state, stories) =&gt; ({
+  ...state,
+
+  // replace old stories with new,
+  // but keep the &#39;seen&#39; value if it exists
+  stories: Object.keys(stories)
+    .map(id =&gt; [
+      id,
+      {
+        ...stories[id],
+        seen: state.stories[id] &amp;&amp; state.stories[id].seen,
+      },
+    ])
+    .reduce((o, [id, story]) =&gt; ((o[id] = story), o), {}),
+
+  // in case the current story is in the new list as well,
+  // keep it selected, Otherwise select nothing
+  reading: stories[state.reading] ? state.reading : null,
+})</code></pre><h3 id="declaring-effects-in-actions-a-namedeclaringeffectsa">Declaring effects in actions <a name="declaringeffects"></a></h3><p>Our request for new stories should go out once we&#39;re done editing the filter, which is to say: when we click
+the check-mark button and <code>StopEditingFilter</code> is dispatched. When an action needs to do something
+besides transforming the state, that &quot;something&quot; is called an <em>effect</em>. To associate an effect
+with <code>StopEditingFilter</code>, make it return an array like this:</p><pre><code class="language-js">const StopEditingFilter = state =&gt; [
+  {
+    ...state,
+    editingFilter: false,
+  },
+
+  // effect declarations go here: //
+]</code></pre><p>When an action returns an array, Hyperapp understands that the first item is the new state we want, and
+the rest are <em>effect declarations</em>. Hyperapp takes care of running all declared effects once the state
+has been updated.</p><p>Add this effect declaration:</p><pre><code class="language-js">const StopEditingFilter = state =&gt; [
+  {
+    ...state,
+    editingFilter: false,
+  },
+
+  // effect declarations go here: //
+  [
+    fetchJSONData,
+    {
+      url: `https://hyperapp.dev/tutorial-assets/stories/${state.filter.toLowerCase()}.json`,
+      onresponse: GotStories,
+    },
+  ],
+]</code></pre><p>The first item in an effect declaration – here <code>fetchJSONData</code> – is the
+<em>effect function</em> that we want Hyperapp to call. The second item contains
+the options we want passed to effect function when it&#39;s called. Here, we are
+telling <code>fetchJSONData</code> where the stories for the current filter are, and
+to dispatch them as payload to <code>GotStories</code>, on response.</p><h3 id="effect-functions-and-dispatch-a-nameeffectfunctionsa">Effect functions and <code>dispatch</code> <a name="effectfunctions"></a></h3><p>Now we just need to implement <code>fetchJSONData</code>. Type this in the &quot;EFFECTS &amp; SUBSCRIPTIONS&quot; section:</p><pre><code class="language-js">const fetchJSONData = (dispatch, options) =&gt;
+  fetch(options.url)
+    .then(response =&gt; response.json())
+    .then(data =&gt; dispatch(options.onresponse, data))
+    .catch(() =&gt; dispatch(options.onresponse, {}))</code></pre><blockquote>
+<p>It&#39;s a good practice to write your effect functions generically like this, rather than
+hardcoding options. That way it can be used for multiple situations, even by others
+if you chose to publish it.</p>
+<p>...speaking of which: make sure to check out the available effects published by members of the
+Hyperapp community, and perhaps save yourself some trouble implementing everything yourself.</p>
+</blockquote><p>When Hyperapp calls an effect function, it passes the <code>dispatch</code> function to it as the first
+argument. <code>dispatch</code> is how effect functions are able to &quot;report back&quot; to the app, by dispatching
+actions (first argument) with payloads (second argument)</p><p>Now, go ahead and try it out! Enter &quot;life&quot; in the filter input. When you click the check-mark button some new
+stories are loaded – all with blue edges except for &quot;Ocean life is brutal&quot; because it is
+still selected.</p><p><img src="https://raw.githubusercontent.com/jorgebucaran/hyperapp/1fd42319051e686adb9819b7e154f764fa3b0d29/docs/src/pages/Tutorial/tut5.png" alt="fetched life stories"></p><h3 id="running-effects-on-initialization-a-nameeffectsoninita">Running effects on initialization <a name="effectsoninit"></a></h3><p>The next obvious step is to load the <em>initial</em> stories from the API as well. Change init to this:</p><pre><code class="language-js">  init: [
+    {
+      editingFilter: false,
+      autoUpdate: false,
+      filter: &quot;ocean&quot;,
+      reading: null,
+      stories: {},                                                       // &lt;---
+    },
+    [                                                                    // &lt;---
+      fetchJSONData,                                                     // &lt;---
+      {                                                                  // &lt;---
+        url: `https://hyperapp.dev/tutorial-assets/stories/ocean.json`,  // &lt;---
+        onresponse: GotStories                                           // &lt;---
+      }                                                                  // &lt;---
+    ]                                                                    // &lt;---
+  ],</code></pre><p>The point here is that init works just like the return value of an action, including
+calling effects when it is given as an array. If you reload the page you&#39;ll see
+(after a moment) that all the same stories appear, despite them not existing in
+the state initially.</p><p><img src="https://raw.githubusercontent.com/jorgebucaran/hyperapp/1fd42319051e686adb9819b7e154f764fa3b0d29/docs/src/pages/Tutorial/tut6.png" alt="fresh stories on init"></p><h3 id="effect-creators-a-nameeffectcreatorsa">Effect creators <a name="effectcreators"></a></h3><p>However, repeating the effect declaration in all its gory detail like this
+is not ideal, so lets add this <em>effect creator</em></p><pre><code class="language-js">const storyLoader = searchWord =&gt; [
+  fetchJSONData,
+  {
+    url: `https://hyperapp.dev/tutorial-assets/stories/${searchWord.toLowerCase()}.json`,
+    onresponse: GotStories,
+  },
+]</code></pre><p>Now we can simplify <code>StopEditingFilter</code> like this:</p><pre><code class="language-js">const StopEditingFilter = state =&gt; [
+  {
+    ...state,
+    editingFilter: false,
+  },
+  storyLoader(state.filter),
+]</code></pre><p>... and <code>init:</code> like this:</p><pre><code class="language-js">  init: [
+    {
+      editingFilter: false,
+      autoUpdate: false,
+      filter: &quot;ocean&quot;,
+      reading: null,
+      stories: {},
+    },
+    storyLoader(&quot;ocean&quot;)
+  ],</code></pre><h3 id="tracking-state-for-asynchronous-effects-a-nametrackingasynca">Tracking state for asynchronous effects <a name="trackingasync"></a></h3><p>If we could display a spinner while we wait for stories to load, it would make for a smoother user experience. We&#39;ll need a state property to tell us wether or not we&#39;re currently <code>fetching</code>, and we&#39;ll use this action to keep track of it:</p><pre><code class="language-js">const SetFetching = (state, fetching) =&gt; ({ ...state, fetching })</code></pre><p>Update <code>storyLoader</code> to tell <code>fetchJSONData</code> about <code>SetFetching</code></p><pre><code class="language-js">const storyLoader = searchWord =&gt; [
+  fetchJSONData,
+  {
+    url: `https://hyperapp.dev/tutorial-assets/stories/${searchWord.toLowerCase()}.json`,
+    onresponse: GotStories,
+    onstart: [SetFetching, true], // &lt;----
+    onfinish: [SetFetching, false], // &lt;----
+  },
+]</code></pre><p>Finally update <code>fetchJSONData</code> to use the new <code>onstart</code> and <code>onfinish</code> options to notify when fetches start and end:</p><pre><code class="language-js">const fetchJSONData = (dispatch, options) =&gt; {
+  dispatch(options.onstart) // &lt;---
+  fetch(options.url)
+    .then(response =&gt; response.json())
+    .then(data =&gt; dispatch(options.onresponse, data))
+    .catch(() =&gt; dispatch(options.onresponse, {}))
+    .finally(() =&gt; dispatch(options.onfinish)) // &lt;---
+}</code></pre><p>With that, our state prop <code>fetching</code> will always tell us wether or not we are fetching.
+Use that to show a spinner when we are fetching, in <code>storyList</code>:</p><pre><code class="language-js">const storyList = props =&gt;
+  h(&quot;div&quot;, { class: &quot;stories&quot; }, [
+    // show spinner overlay if fetching
+    props.fetching &amp;&amp;
+      h(&quot;div&quot;, { class: &quot;loadscreen&quot; }, [h(&quot;div&quot;, { class: &quot;spinner&quot; })]),
+
+    h(
+      &quot;ul&quot;,
+      {},
+      Object.keys(props.stories).map(id =&gt;
+        storyThumbnail({
+          id,
+          title: props.stories[id].title,
+          author: props.stories[id].author,
+          unread: !props.stories[id].seen,
+          reading: props.reading === id,
+          filter: props.filter,
+        })
+      )
+    ),
+  ])</code></pre><p>When the app loads, and when you change the filter, you should see the spinner appear until the stories are loaded.</p><p><img src="https://raw.githubusercontent.com/jorgebucaran/hyperapp/1fd42319051e686adb9819b7e154f764fa3b0d29/docs/src/pages/Tutorial/tut7.png" alt="spinner"></p><blockquote>
+<p>If you aren&#39;t seeing the spinner, it might just be happening too fast. Try choking your network speed. In the Chrome
+browser you can set your network speed to &quot;slow 3g&quot; under the network tab in the developer tools.</p>
+</blockquote><p>If you&#39;d like to see a working example of the code so far, have a look <a href="https://codesandbox.io/s/hyperapp-tutorial-step-3-2mmug">here</a></p><h2 id="subscriptions-a-namesubscriptionsa">Subscriptions <a name="subscriptions"></a></h2><p>The last feature we&#39;ll add is one where the user can opt in to have the app check every five seconds for new
+stories matching the current filter. (There won&#39;t actually be any new stories, because it&#39;s not a real service,
+but you&#39;ll know it&#39;s happening when you see the spinner pop up every five seconds.)</p><p>First let&#39;s keep track of wether or not the user wants this auto-update feature on. Create a new action:</p><pre><code class="language-js">const ToggleAutoUpdate = state =&gt; ({ ...state, autoUpdate: !state.autoUpdate })</code></pre><p>Dispatch it in response to checking the checkbox in <code>autoUpdateView</code>:</p><pre><code class="language-js">const autoUpdateView = props =&gt;
+  h(&quot;div&quot;, { class: &quot;autoupdate&quot; }, [
+    &quot;Auto update: &quot;,
+    h(&quot;input&quot;, {
+      type: &quot;checkbox&quot;,
+      checked: props.autoUpdate, // &lt;---
+      oninput: ToggleAutoUpdate, // &lt;---
+    }),
+  ])</code></pre><p>With that, the state property <code>autoUpdate</code> will tell us wether or not the Auto-update checkbox is checked.</p><h3 id="subscription-functions-a-namesubscriptionfunctionsa">Subscription functions <a name="subscriptionfunctions"></a></h3><p>We need a <em>subscription function</em> capable of dispatching actions at a given interval. Implement
+<code>intervalSubscription</code> in the &quot;EFFECTS &amp; SUBSCRIPTIONS&quot; section:</p><pre><code class="language-js">const intervalSubscription = (dispatch, options) =&gt; {
+  const interval = setInterval(() =&gt; dispatch(options.action), options.time)
+  return () =&gt; clearInterval(interval)
+}</code></pre><p>Just like an effect function, this function will be called by Hyperapp with <code>dispatch</code> and given options. It
+will start an interval listener, and every <code>options.time</code> milliseconds, it will dispatch the given action. The
+main difference to an effect function is that a subscription function returns a function so hyperapp knows
+how to stop the subscription.</p><blockquote>
+<p>As with effects, you may find a suitable subscription already published
+in the Hyperapp community.</p>
+</blockquote><h3 id="subscribing-a-namesubscribinga">Subscribing <a name="subscribing"></a></h3><p>We could create a new action for updating stories, but since <code>StopEditingFilter</code> already does what we want, we&#39;ll
+use it here too. Add a <code>subscription</code> property to the app:</p><pre><code class="language-js">subscriptions: state =&gt; [
+  state.autoUpdate &amp;&amp;
+    !state.editingFilter &amp;&amp; [
+      intervalSubscription,
+      {
+        time: 5000, //milliseconds,
+        action: StopEditingFilter,
+      },
+    ],
+]</code></pre><p>Just like for <code>view</code>, hyperapp will run <code>subscriptions</code> with the new state every time it changes, to get
+a list of subscription-declarations that should be active. In our case, whenever the Auto Update checkbox is
+checked and we are <em>not</em> busy editing the filter, our interval subscription will be active.</p><p><img src="https://raw.githubusercontent.com/jorgebucaran/hyperapp/1fd42319051e686adb9819b7e154f764fa3b0d29/docs/src/pages/Tutorial/tut8.png" alt="auto update"></p><p>Hyperapp will only stop or start subscriptions when the declaration changes
+from one state to the next. Subscriptions are <em>not</em> stopped and started <em>every</em> time the state changes.</p><p>If you&#39;d like to see a working example of the final code, have a look <a href="https://codesandbox.io/s/hyperapp-tutorial-step-4-8u9q8">here</a></p><h2 id="conclusion-a-nameconclusiona">Conclusion <a name="conclusion"></a></h2><p>Congratulations on completing this Hyperapp tutorial!</p><p>Along the way you&#39;ve familiarized yourself with
+the core concepts: <em>view</em>, <em>state</em>, <em>actions</em>, <em>effects</em> &amp; <em>subscriptions</em>. And that&#39;s really all you need to
+build any web application.</p>

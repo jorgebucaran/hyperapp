@@ -1,0 +1,202 @@
+.container {
+  font-family: sans-serif;
+  color: #666;
+  background-color: #ccc;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 10px 340px 10px auto 10px;
+  grid-template-rows: 10px 30px 10px 250px 10px 20px 10px;
+}
+
+.filter {
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+  position: relative;
+  line-height: 30px;
+  padding-top: 1px;
+}
+
+.stories {
+  grid-column: 2 / 3;
+  grid-row: 4 / 5;
+  position: relative;
+}
+
+.autoupdate {
+  grid-column: 2/3;
+  grid-row: 6/7;
+}
+
+.story {
+  grid-column: 4 / 5;
+  grid-row: 2 / 7;
+  position: relative;
+}
+
+.filter .filter-word {
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 16px;
+  margin-left: 15px;
+}
+.filter input[type="text"] {
+  position: absolute;
+  box-sizing: border-box;
+  border: none;
+  top: 0;
+  left: 50px;
+  height: 30px;
+  width: 245px;
+  padding: 0;
+  padding-left: 5px;
+  padding-top: 2px;
+  font-size: 16px;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-family: sans-serif;
+}
+
+.filter button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  box-sizing: border-box;
+  width: 30px;
+  height: 30px;
+  font-size: 20px;
+  border-radius: 4px;
+  background: #ddd;
+  border: 1px gray solid;
+  box-shadow: 0px 0px 4px #888;
+}
+.filter button:hover {
+  background: lemonchiffon;
+}
+.filter button:active {
+  color: #666;
+  box-shadow: none;
+}
+
+.stories {
+  height: 100%;
+}
+
+.stories ul {
+  margin: 0;
+  padding: 10px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  list-style-type: none;
+  background-color: #fff;
+  box-shadow: inset 0px 0px 5px #333;
+  border-radius: 4px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.stories li {
+  border: solid 1px #ccc;
+  border-radius: 6px;
+  border-left-width: 7px;
+  box-shadow: 0px 0px 5px #ccc;
+  margin-bottom: 10px;
+}
+
+.stories li.reading {
+  background-color: lemonchiffon;
+  border-left-color: orange;
+}
+
+.stories li.unread {
+  border-left-color: cornflowerblue;
+}
+
+.stories li:hover {
+  background-color: lemonchiffon;
+}
+.stories p.title {
+  margin: 10px 10px 0px 10px;
+}
+.stories em {
+  font-weight: bold;
+  font-style: normal;
+}
+.stories p.author {
+  margin: 0px 10px 10px 20px;
+  font-style: italic;
+  font-family: serif;
+}
+.stories .loadscreen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  background-color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+}
+
+.spinner {
+  display: inline-block;
+  width: 64px;
+  height: 64px;
+  position: absolute;
+  top: 40%;
+  margin-left: -32px;
+}
+
+.spinner:after {
+  content: " ";
+  display: block;
+  width: 46px;
+  height: 46px;
+  margin: 1px;
+  border-radius: 50%;
+  border: 5px solid #fff;
+  border-color: #ccc transparent #ccc transparent;
+  animation: spinner 1.2s linear infinite;
+}
+
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.autoupdate {
+  text-align: center;
+}
+
+.story {
+  background: #fff;
+  padding: 50px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  box-shadow: inset 0px 0px 5px #444;
+}
+
+.story h1 {
+  background-color: limegreen;
+  color: #fff;
+  margin: -40px -40px 40px -40px;
+  padding: 50px 50px 20px 50px;
+}
+
+.story p {
+  text-align: justify;
+  font-family: serif;
+  line-height: 1.4em;
+}
+
+.story p.signature {
+  text-align: right;
+  font-style: italic;
+  font-size: 1.1em;
+}

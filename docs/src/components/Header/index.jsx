@@ -5,12 +5,16 @@ import { Navigate, OpenMenu, CloseMenu } from '../../actions'
 
 const OnSearch = (state, ev) => {
   ev.preventDefault()
-  return [Navigate, `/search?q=${encodeURI(ev.target.value)}`]
+  ev.target.search.select()
+  return [Navigate, `/search?q=${encodeURI(ev.target.search.value)}`]
+}
+
+const OnFocus = (state, ev) => {
+  ev.target.select()
+  return state
 }
 
 export default ({ menuOpened, location }) => {
-  console.log(location)
-
   return (
     <header class={{
       'site-header': true,
@@ -38,16 +42,21 @@ export default ({ menuOpened, location }) => {
         <SmartLink to="/sponsor">sponsor</SmartLink>
         <SmartLink to="/guides">guides</SmartLink>
         <SmartLink to="/api">api</SmartLink>
-        <input
-          type="text"
-          id="search"
-          name="search"
-          class="search-field"
-          placeholder="search"
-          value={location.queryParams.q}
-          oninput={OnSearch}
-          required
-        />
+        <form
+          class="search-form"
+          onsubmit={OnSearch}
+        >
+          <input
+            type="text"
+            id="search"
+            name="search"
+            class="search-field"
+            placeholder="search"
+            value={location.queryParams.q}
+            onfocus={OnFocus}
+            required
+          />
+        </form>
       </nav>
     </header>
   )

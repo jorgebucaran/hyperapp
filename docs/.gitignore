@@ -80,7 +80,7 @@ $RECYCLE.BIN/
 ssl
 .idea
 nbproject
-
+.prettierrc
 
 ############################
 # Node.js

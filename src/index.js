@@ -106,7 +106,7 @@ var patchProperty = function(node, key, oldValue, newValue, listener, isSvg) {
   } else if (key[0] === "o" && key[1] === "n") {
     if (
       !((node.actions || (node.actions = {}))[
-        (key = key.slice(2).toLowerCase())
+        (key = key.slice(2))
       ] = newValue)
     ) {
       node.removeEventListener(key, listener)

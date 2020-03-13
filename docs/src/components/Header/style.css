@@ -17,6 +17,7 @@
   z-index: 15;
   display: flex;
   align-items: center;
+  width: 100%;
 }
 .logo .v2.mobile {
   height: 2rem;

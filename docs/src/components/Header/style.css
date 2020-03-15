@@ -1,0 +1,143 @@
+
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+
+
+.logo {
+  position: relative;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.logo .v2.mobile {
+  height: 2rem;
+}
+.logo .v2.desktop {
+  display: none;
+}
+
+.logo .v1 {
+  display: none;
+}
+.logo:hover .v2 {
+  display: none !important;
+}
+.logo:hover .v1 {
+  display: block;
+}
+
+
+.menu-toggler {
+  position: relative;
+  z-index: 15;
+  font-size: 0;
+  padding: 0;
+  border: none;
+}
+.menu-toggler img {
+  width: 2.5rem;
+}
+.menu-toggler:focus {
+  background-color: transparent;
+}
+
+
+.menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: white;
+  width: 100%;
+  z-index: 10;
+  min-height: 100vh;
+  padding: 5rem 1rem 1rem 1rem;
+  display: none;
+}
+.menu.opened {
+  display: block;
+}
+.menu a,
+.menu .search-field {
+  display: block;
+  font-size: 3.375rem;
+  font-weight: 300;
+  line-height: 1.2;
+  color: var(--text-grey);
+  text-decoration: none;
+  font-family: 'IBM Plex Sans', sans-serif;
+}
+.menu a:hover {
+  color: #546067;
+}
+.menu a.active {
+  color: var(--dark-blue);
+}
+
+
+.search-field {
+  max-width: 100%;
+  width: 100%;
+  padding: 0;
+  color: #3d434e !important;
+}
+
+.search-field:focus {
+  outline: none;
+}
+.search-field:valid  {
+  color: var(--dark-blue);
+}
+
+
+@media (min-width: 640px) {
+  .site-header {
+    padding: 1rem 1.25rem 1rem 1.25rem;
+  }
+  .menu {
+    padding: 6rem 1.25rem 2rem 1.25rem;
+  }
+}
+
+
+
+
+@media (min-width: 992px) {
+  .site-header {
+    position: fixed;
+    padding: 1.25rem;
+    flex-direction: column;
+    justify-content: flex-start;
+    max-width: var(--menu-width);
+  }
+  .menu-toggler {
+    display: none;
+  }
+  .menu {
+    position: relative;
+    display: block;
+    width: var(--menu-width);
+    background: none;
+    padding: 0;
+    min-height: auto;
+    margin: 0.5rem 0;
+  }
+  .logo .v2.mobile {
+    display: none;
+    height: 2.5rem;
+  }
+  .logo .v2.desktop {
+    display: block;
+    height: 2.5rem;
+  }
+}
+

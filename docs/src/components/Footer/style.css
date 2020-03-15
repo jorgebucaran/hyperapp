@@ -1,0 +1,29 @@
+
+footer {
+  padding: 1rem;
+}
+
+footer nav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+footer p {
+  line-height: 1;
+}
+
+@media (min-width: 992px) {
+  footer {
+    padding: 1.25rem;
+    margin: 1rem 0 1rem var(--menu-width);
+  }
+}
+
+@media (min-width: 992px) and (min-height: 768px) {
+  footer {
+    position: fixed;
+    bottom: 0;
+    margin: 1rem 0;
+  }
+}

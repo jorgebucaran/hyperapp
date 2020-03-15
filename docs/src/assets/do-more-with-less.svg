@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="237px" height="57px" viewBox="0 0 237 57" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 59.1 (86144) - https://sketch.com -->
+    <title>DoMoreWithLess</title>
+    <desc>Created with Sketch.</desc>
+    <g id="DoMoreWithLess" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M29.5,1.99859856 L0.866836421,51.5 L58.1331636,51.5 L29.5,1.99859856 Z" id="Triangle" stroke="#091226"></path>
+        <rect id="Rectangle" fill="#1661EE" x="186" y="1" width="51" height="51"></rect>
+        <circle id="Oval" stroke="#091226" cx="86.5" cy="26.5" r="25"></circle>
+        <path d="M148.5,0.618033989 L121.982675,19.8839987 L132.111392,51.0569843 L164.888608,51.0569843 L175.017325,19.8839987 L148.5,0.618033989 Z" id="Polygon" stroke="#091226"></path>
+        <line x1="0" y1="11" x2="175" y2="42" id="Path-2" stroke="#091226"></line>
+    </g>
+</svg>

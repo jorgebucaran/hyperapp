@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="102px" height="100px" viewBox="0 0 102 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 59.1 (86144) - https://sketch.com -->
+    <title>WriteWhatNotHow</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="49" width="51" height="51"></rect>
+        <mask id="mask-2" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="51" height="51" fill="white">
+            <use xlink:href="#path-1"></use>
+        </mask>
+    </defs>
+    <g id="WriteWhatNotHow" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <use id="Rectangle" stroke="#1661EE" mask="url(#mask-2)" stroke-width="2" stroke-dasharray="1,2" xlink:href="#path-1"></use>
+        <rect id="Rectangle" fill="#A5C4FF" x="25" y="26" width="51" height="51"></rect>
+        <rect id="Rectangle" fill="#1661EE" x="51" y="0" width="51" height="51"></rect>
+    </g>
+</svg>

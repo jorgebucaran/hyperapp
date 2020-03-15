@@ -106,7 +106,7 @@ var patchProperty = function(node, key, oldValue, newValue, listener, isSvg) {
   } else if (key[0] === "o" && key[1] === "n") {
     if (
       !((node.actions || (node.actions = {}))[
-        (key = key.slice(2).toLowerCase())
+        (key = key.slice(2))
       ] = newValue)
     ) {
       node.removeEventListener(key, listener)
@@ -363,10 +363,8 @@ var getTextVNode = function(node) {
 
 var getVNode = function(newVNode, oldVNode) {
   return newVNode.type === LAZY_NODE
-    ? ((!oldVNode ||
-        (oldVNode.type !== LAZY_NODE ||
-          propsChanged(oldVNode.lazy, newVNode.lazy))) &&
-        ((oldVNode = getTextVNode(newVNode.lazy.view(newVNode.lazy))).lazy =
+    ? ((!oldVNode || !oldVNode.lazy || propsChanged(oldVNode.lazy, newVNode.lazy))
+        && ((oldVNode = getTextVNode(newVNode.lazy.view(newVNode.lazy))).lazy =
           newVNode.lazy),
       oldVNode)
     : newVNode

@@ -1,0 +1,46 @@
+{
+  "version": "1.0.0",
+  "name": "hyperapp-official-site",
+  "description": "The tiny framework for building web interfaces.",
+  "author": "Alexandre Lotte",
+  "license": "MIT",
+  "scripts": {
+    "start": "parcel src/index.html --open",
+    "build": "npm install && node generate-search-data.js && parcel build ./src/index.html --no-source-maps --detailed-report --out-dir ./dist"
+  },
+  "babel": {
+    "plugins": [
+      [
+        "babel-plugin-jsx-pragmatic",
+        {
+          "module": "hyperapp",
+          "import": "h",
+          "export": "h"
+        }
+      ]
+    ]
+  },
+  "dependencies": {
+    "@hyperapp/http": "0.0.2",
+    "glob": "^7.1.6",
+    "hyperapp": "^2.0.3",
+    "sanitize.css": "^11.0.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^9.7.1",
+    "babel-core": "^7.0.0-0",
+    "babel-eslint": "^10.0.3",
+    "babel-plugin-jsx-pragmatic": "^1.0.2",
+    "eslint": "^5.16.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^9.2.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.16.0",
+    "eslint-plugin-standard": "^4.0.1",
+    "marked": "^0.7.0",
+    "parcel-bundler": "^1.12.4",
+    "parcel-plugin-static-files-copy": "^2.2.1",
+    "rimraf": "^2.7.1"
+  }
+}

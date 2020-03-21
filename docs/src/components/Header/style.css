@@ -83,7 +83,6 @@
   color: var(--dark-blue);
 }
 
-
 .search-field {
   max-width: 100%;
   width: 100%;
@@ -96,6 +95,23 @@
 }
 .search-field:valid  {
   color: var(--dark-blue);
+}
+
+
+
+@media (max-width: 991px) {
+  .search-form:focus-within {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.25rem;
+    background-color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    z-index: 20;
+  }
 }
 
 
@@ -125,7 +141,6 @@
   .menu {
     position: relative;
     display: block;
-    width: var(--menu-width);
     background: none;
     padding: 0;
     min-height: auto;

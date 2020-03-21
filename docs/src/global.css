@@ -1,7 +1,7 @@
 @import './styleguide/hyperapp.css';
 
 body {
-  --menu-width: 18rem;
+  --menu-width: 19rem;
 }
 
 .app {

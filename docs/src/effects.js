@@ -26,3 +26,12 @@ const focusFx = (_dispatch, { selector }) => {
 }
 
 export const Focus = ({ selector }) => [focusFx, { selector }]
+
+const selectFx = (_dispatch, { selector }) => {
+  const el = document.querySelector(selector)
+  if (el) {
+    el.select()
+  }
+}
+
+export const Select = ({ selector }) => [selectFx, { selector }]

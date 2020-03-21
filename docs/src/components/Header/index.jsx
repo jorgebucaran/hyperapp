@@ -2,16 +2,22 @@ import './style.css'
 import Link from '../Link'
 import SmartLink from '../SmartLink'
 import { Navigate, OpenMenu, CloseMenu } from '../../actions'
+import { Select } from '../../effects'
 
 const OnSearch = (state, ev) => {
   ev.preventDefault()
-  ev.target.search.select()
-  return [Navigate, `/search?q=${encodeURI(ev.target.search.value)}`]
+  return Navigate(
+    state,
+    `/search?q=${encodeURI(ev.target.search.value)}`,
+    Select({selector: '#search'})
+  )
 }
 
 const OnFocus = (state, ev) => {
-  ev.target.select()
-  return state
+  return [
+    state,
+    Select({selector: '#search'})
+  ]
 }
 
 export default ({ menuOpened, location }) => {

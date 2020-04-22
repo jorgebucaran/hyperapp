@@ -1,7 +1,7 @@
 /* eslint-disable indent */
 import { app } from 'hyperapp'
 
-import { request } from '../../lib/http/src/index'
+import { request } from './fx/http'
 
 // App init imports
 import { WindowScrolled, PopState } from './subscriptions'
@@ -29,6 +29,7 @@ app({
     ParseUrl({
         menuOpened: false,
         showPreview: false,
+        searchText: "",
         count: 0
       },
       window.location.pathname + window.location.search
@@ -53,10 +54,9 @@ app({
             state.location.path === '/' ? <Home {...state} />
             : state.location.path === '/page' ? <Page />
             : state.location.path === '/tutorial' ? <Tutorial />
-            : state.location.path === '/ecosystem' ? <Ecosystem />
-            : state.location.path === '/sponsor' ? <Sponsor />
-            : state.location.path === '/guides' ? <Guides />
             : state.location.path === '/api' ? <Api />
+            : state.location.path === '/guides' ? <Guides />
+            : state.location.path === '/ecosystem' ? <Ecosystem />
             : state.location.path === '/search' ? <Search {...state} />
             : <FourOhFour />
           }

@@ -17,7 +17,7 @@ export const getPathInfo = (path) => {
   const url = new URL(path, 'http://localhost')
   const { search, pathname, searchParams } = url
 
-  // Ignore trailing slashes EXPEPT for home page
+  // Ignore trailing slashes except for home page
   const withoutTrailingSlash = pathname !== '/' ? pathname.replace(/\/$/, '') : pathname
 
   return {

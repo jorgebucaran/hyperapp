@@ -123,7 +123,7 @@ export default (state) => (
 
     <form id="join-us" class="join-us" method="post" onsubmit={OnSubmit}>
       <h2>join us</h2>
-      <p class="join-us-text">We love to talk javascript and hyperapp. if you've hit a stumbling block or got stuck, hop on the hyperapp slack to get help.</p>
+      <p class="join-us-text">We love to talk JavaScript and Hyperapp. If you've hit a stumbling block or got stuck, hop on the hyperapp slack to get help.</p>
       <div class={{
         'nice-input': true,
         error: !!state.joinFormError

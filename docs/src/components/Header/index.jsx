@@ -44,10 +44,11 @@ export default ({ menuOpened, location }) => {
       }}>
         <SmartLink to="/">hyperapp</SmartLink>
         <SmartLink to="/tutorial">tutorial</SmartLink>
-        <SmartLink to="/ecosystem">ecosystem</SmartLink>
-        <SmartLink to="/sponsor">sponsor</SmartLink>
-        <SmartLink to="/guides">guides</SmartLink>
         <SmartLink to="/api">api</SmartLink>
+        <SmartLink to="/guides">guides</SmartLink>
+        <SmartLink to="/ecosystem">ecosystem</SmartLink>
+        {/* <SmartLink to="/examples">examples</SmartLink> */}
+
         <form
           class="search-form"
           onsubmit={OnSearch}

@@ -113,7 +113,7 @@ var patchProperty = function(node, key, oldValue, newValue, listener, isSvg) {
     } else if (!oldValue) {
       node.addEventListener(key, listener)
     }
-  } else if (!isSvg && key !== "list" && key in node) {
+  } else if (!isSvg && key !== "list" && key !== "form" && key in node) {
     node[key] = newValue == null ? "" : newValue
   } else if (
     newValue == null ||

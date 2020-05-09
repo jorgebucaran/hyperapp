@@ -874,24 +874,24 @@ const ToggleAutoUpdate = state => ({...state, autoUpdate: !state.autoUpdate})
 Now we've got `autoUpdate` in the state tracking the checkbox. All we need now, is to set up `FetchStories`
 to be dispatched every five seconds when `autoUpdate` is `true`.
 
-Import the `interval` _subscription creator_:
+Import the `Interval` _subscription creator_:
 
 ```js
-import {interval} from "https://unpkg.com/@hyperapp/time?module"
+import {Http, Interval} from "https://unpkg.com/hyperapp-fx@next?module"
 ```
 
-Add a `subscriptions` property to your app, with a conditional declaration of `interval` like this:
+Add a `subscriptions` property to your app, with a conditional declaration of `Interval` like this:
 
 ```js
   subscriptions: state => [
-    state.autoUpdate && interval(FetchStories, {delay: 5000})
+    state.autoUpdate && Interval({every: 5000, action: FetchStories})
   ]
 ```
 
 Hyperapp will call `subscriptions` every time the state changes. If it notices a
 new subscription, it will be started, or if one has been removed it will be stopped.
 
-The options we passed to the `interval` subscription state that `FetchStories` should be dispatched every five seconds. It
+The options we passed to the `Interval` subscription state that `FetchStories` should be dispatched every five seconds. It
 will start when we check the auto update box, and stop when it is unchecked.
 
 ![auto updating](https://user-images.githubusercontent.com/6243887/73389603-3275ad80-42dd-11ea-9270-bc8be471db8b.png)

@@ -10,7 +10,7 @@ var defer =
     ? requestAnimationFrame
     : setTimeout
 
-var createClass = function(obj) {
+var createClass = function (obj) {
   var out = ""
 
   if (typeof obj === "string") return obj
@@ -32,7 +32,7 @@ var createClass = function(obj) {
   return out
 }
 
-var merge = function(a, b) {
+var merge = function (a, b) {
   var out = {}
 
   for (var k in a) out[k] = a[k]
@@ -41,8 +41,8 @@ var merge = function(a, b) {
   return out
 }
 
-var batch = function(list) {
-  return list.reduce(function(out, item) {
+var batch = function (list) {
+  return list.reduce(function (out, item) {
     return out.concat(
       !item || item === true
         ? 0
@@ -53,11 +53,11 @@ var batch = function(list) {
   }, EMPTY_ARR)
 }
 
-var isSameAction = function(a, b) {
+var isSameAction = function (a, b) {
   return isArray(a) && isArray(b) && a[0] === b[0] && typeof a[0] === "function"
 }
 
-var shouldRestart = function(a, b) {
+var shouldRestart = function (a, b) {
   if (a !== b) {
     for (var k in merge(a, b)) {
       if (a[k] !== b[k] && !isSameAction(a[k], b[k])) return true
@@ -66,7 +66,7 @@ var shouldRestart = function(a, b) {
   }
 }
 
-var patchSubs = function(oldSubs, newSubs, dispatch) {
+var patchSubs = function (oldSubs, newSubs, dispatch) {
   for (
     var i = 0, oldSub, newSub, subs = [];
     i < oldSubs.length || i < newSubs.length;
@@ -83,7 +83,7 @@ var patchSubs = function(oldSubs, newSubs, dispatch) {
               newSub[0],
               newSub[1],
               newSub[0](dispatch, newSub[1]),
-              oldSub && oldSub[2]()
+              oldSub && oldSub[2](),
             ]
           : oldSub
         : oldSub && oldSub[2]()
@@ -92,7 +92,7 @@ var patchSubs = function(oldSubs, newSubs, dispatch) {
   return subs
 }
 
-var patchProperty = function(node, key, oldValue, newValue, listener, isSvg) {
+var patchProperty = function (node, key, oldValue, newValue, listener, isSvg) {
   if (key === "key") {
   } else if (key === "style") {
     for (var k in merge(oldValue, newValue)) {
@@ -105,9 +105,7 @@ var patchProperty = function(node, key, oldValue, newValue, listener, isSvg) {
     }
   } else if (key[0] === "o" && key[1] === "n") {
     if (
-      !((node.actions || (node.actions = {}))[
-        (key = key.slice(2))
-      ] = newValue)
+      !((node.actions || (node.actions = {}))[(key = key.slice(2))] = newValue)
     ) {
       node.removeEventListener(key, listener)
     } else if (!oldValue) {
@@ -126,7 +124,7 @@ var patchProperty = function(node, key, oldValue, newValue, listener, isSvg) {
   }
 }
 
-var createNode = function(vdom, listener, isSvg) {
+var createNode = function (vdom, listener, isSvg) {
   var ns = "http://www.w3.org/2000/svg"
   var props = vdom.props
   var node =
@@ -153,11 +151,11 @@ var createNode = function(vdom, listener, isSvg) {
   return (vdom.node = node)
 }
 
-var getKey = function(vdom) {
+var getKey = function (vdom) {
   return vdom == null ? null : vdom.key
 }
 
-var patch = function(parent, node, oldVNode, newVNode, listener, isSvg) {
+var patch = function (parent, node, oldVNode, newVNode, listener, isSvg) {
   if (oldVNode === newVNode) {
   } else if (
     oldVNode != null &&
@@ -352,40 +350,42 @@ var patch = function(parent, node, oldVNode, newVNode, listener, isSvg) {
   return (newVNode.node = node)
 }
 
-var propsChanged = function(a, b) {
+var propsChanged = function (a, b) {
   for (var k in a) if (a[k] !== b[k]) return true
   for (var k in b) if (a[k] !== b[k]) return true
 }
 
-var getTextVNode = function(node) {
+var getTextVNode = function (node) {
   return typeof node === "object" ? node : createTextVNode(node)
 }
 
-var getVNode = function(newVNode, oldVNode) {
+var getVNode = function (newVNode, oldVNode) {
   return newVNode.type === LAZY_NODE
-    ? ((!oldVNode || !oldVNode.lazy || propsChanged(oldVNode.lazy, newVNode.lazy))
-        && ((oldVNode = getTextVNode(newVNode.lazy.view(newVNode.lazy))).lazy =
+    ? ((!oldVNode ||
+        !oldVNode.lazy ||
+        propsChanged(oldVNode.lazy, newVNode.lazy)) &&
+        ((oldVNode = getTextVNode(newVNode.lazy.view(newVNode.lazy))).lazy =
           newVNode.lazy),
       oldVNode)
     : newVNode
 }
 
-var createVNode = function(name, props, children, node, key, type) {
+var createVNode = function (name, props, children, node, key, type) {
   return {
     name: name,
     props: props,
     children: children,
     node: node,
     type: type,
-    key: key
+    key: key,
   }
 }
 
-var createTextVNode = function(value, node) {
+var createTextVNode = function (value, node) {
   return createVNode(value, EMPTY_OBJ, EMPTY_ARR, node, undefined, TEXT_NODE)
 }
 
-var recycleNode = function(node) {
+var recycleNode = function (node) {
   return node.nodeType === TEXT_NODE
     ? createTextVNode(node.nodeValue, node)
     : createVNode(
@@ -398,14 +398,14 @@ var recycleNode = function(node) {
       )
 }
 
-export var Lazy = function(props) {
+export var Lazy = function (props) {
   return {
     lazy: props,
-    type: LAZY_NODE
+    type: LAZY_NODE,
   }
 }
 
-export var h = function(name, props) {
+export var h = function (name, props) {
   for (var vdom, rest = [], children = [], i = arguments.length; i-- > 2; ) {
     rest.push(arguments[i])
   }
@@ -428,7 +428,7 @@ export var h = function(name, props) {
     : createVNode(name, props, children, undefined, props.key)
 }
 
-export var app = function(props) {
+export var app = function (props) {
   var state = {}
   var lock = false
   var view = props.view
@@ -437,11 +437,11 @@ export var app = function(props) {
   var subscriptions = props.subscriptions
   var subs = []
 
-  var listener = function(event) {
+  var listener = function (event) {
     dispatch(this.actions[event.type], event)
   }
 
-  var setState = function(newState) {
+  var setState = function (newState) {
     if (state !== newState) {
       state = newState
       if (subscriptions) {
@@ -452,10 +452,12 @@ export var app = function(props) {
     return state
   }
 
-  var dispatch = (props.middleware ||
-    function(obj) {
+  var dispatch = (
+    props.middleware ||
+    function (obj) {
       return obj
-    })(function(action, props) {
+    }
+  )(function (action, props) {
     return typeof action === "function"
       ? dispatch(action(state, props))
       : isArray(action)
@@ -464,14 +466,14 @@ export var app = function(props) {
             action[0],
             typeof action[1] === "function" ? action[1](props) : action[1]
           )
-        : (batch(action.slice(1)).map(function(fx) {
+        : (batch(action.slice(1)).map(function (fx) {
             fx && fx[0](dispatch, fx[1])
           }, setState(action[0])),
           state)
       : setState(action)
   })
 
-  var render = function() {
+  var render = function () {
     lock = false
     node = patch(
       node.parentNode,

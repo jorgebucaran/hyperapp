@@ -458,11 +458,8 @@ export var app = function (props) {
     return typeof action === "function"
       ? dispatch(action(state, props))
       : isArray(action)
-      ? typeof action[0] === "function" || isArray(action[0])
-        ? dispatch(
-            action[0],
-            typeof action[1] === "function" ? action[1](props) : action[1]
-          )
+      ? typeof action[0] === "function"
+        ? dispatch(action[0], action[1])
         : (batch(action.slice(1)).map(function (fx) {
             fx && fx[0](dispatch, fx[1])
           }, setState(action[0])),

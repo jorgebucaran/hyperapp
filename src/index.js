@@ -101,9 +101,7 @@ var patchProperty = function (node, key, oldValue, newValue, listener, isSvg) {
       }
     }
   } else if (key[0] === "o" && key[1] === "n") {
-    if (
-      !((node.actions || (node.actions = {}))[(key = key.slice(2))] = newValue)
-    ) {
+    if (!((node.$ || (node.$ = {}))[(key = key.slice(2))] = newValue)) {
       node.removeEventListener(key, listener)
     } else if (!oldValue) {
       node.addEventListener(key, listener)
@@ -435,7 +433,7 @@ export var app = function (props) {
   var subs = []
 
   var listener = function (event) {
-    dispatch(this.actions[event.type], event)
+    dispatch(this.$[event.type], event)
   }
 
   var setState = function (newState) {

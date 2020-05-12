@@ -8,13 +8,13 @@ yarn.lock
 package-lock.json
 
 # Misc
-example
-notes/
 node_modules
 coverage
 .nyc_output
 *.xml
 .DS_Store
+/index.html
+/style.css
 
 # Dist
 *.gz

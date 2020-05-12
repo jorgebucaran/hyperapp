@@ -3,9 +3,6 @@
   "description": "The tiny framework for building web interfaces.",
   "version": "2.0.4",
   "main": "src/index.js",
-  "module": "src/index.js",
-  "unpkg": "src/index.js",
-  "browser": "src/index.js",
   "license": "MIT",
   "repository": "jorgebucaran/hyperapp",
   "homepage": "https://hyperapp.dev",
@@ -21,21 +18,17 @@
     "virtual dom",
     "vdom"
   ],
-  "scripts": { 
-    "test": "nyc -i esm -r lcov testmatrix test/*.test.js && nyc report",
+  "scripts": {
+    "test": "echo 0",
     "build": "export pkg=$npm_package_name; npm run bundle && npm run minify",
-    "bundle": "rollup -i $npm_package_module -o dist/$pkg.js --no-esModule -mf iife -n $pkg",
+    "bundle": "rollup -i $npm_package_main -o dist/$pkg.js --no-esModule -mf iife -n $pkg",
     "minify": "terser dist/$pkg.js -o dist/$pkg.js -mc --source-map includeSources,url=$pkg.js.map",
     "create": "npm run build && git commit -am $msg && git tag -s $msg -m $msg && git push && git push --tags",
     "release": "env msg=$npm_package_version npm run create && npm publish",
     "build-site": "cd docs && npm run build"
   },
   "devDependencies": {
-    "esm": "^3.2.25",
-    "nyc": "^14.1.1",
-    "testmatrix": "^0.1.2",
-    "jsdom": "15.1.1",
     "rollup": "*",
-    "terser": "^4.3.8"
+    "terser": "^4.6.13"
   }
 }

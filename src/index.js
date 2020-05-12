@@ -12,7 +12,7 @@ var createClass = function (obj) {
 
   if (typeof obj === "string") return obj
 
-  if (isArray(obj) && obj.length > 0) {
+  if (isArray(obj) && obj.length) {
     for (var k = 0, tmp; k < obj.length; k++) {
       if ((tmp = createClass(obj[k])) !== "") {
         out += (out && " ") + tmp

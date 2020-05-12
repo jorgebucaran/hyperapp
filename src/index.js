@@ -422,15 +422,14 @@ export var h = function (name, props) {
     ? name(props, children)
     : createVNode(name, props, children, undefined, props.key)
 }
-
 export var app = function (props) {
-  var state = {}
-  var lock = false
   var view = props.view
   var node = props.node
-  var vdom = node && recycleNode(node)
   var subscriptions = props.subscriptions
+  var vdom = node && recycleNode(node)
   var subs = []
+  var wait
+  var state
 
   var listener = function (event) {
     dispatch(this.$[event.type], event)
@@ -442,7 +441,7 @@ export var app = function (props) {
       if (subscriptions) {
         subs = patchSubs(subs, batch([subscriptions(state)]), dispatch)
       }
-      if (view && !lock) defer(render, (lock = true))
+      if (view && !wait) defer(render, (wait = true))
     }
     return state
   }
@@ -466,7 +465,7 @@ export var app = function (props) {
   })
 
   var render = function () {
-    lock = false
+    wait = false
     node = patch(
       node.parentNode,
       node,

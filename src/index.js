@@ -445,7 +445,6 @@ export var app = function (props) {
       }
       if (view && !doing) enqueue(render, (doing = true))
     }
-    return state
   }
 
   var dispatch = (
@@ -454,15 +453,14 @@ export var app = function (props) {
       return obj
     }
   )(function (action, props) {
-    return typeof action === "function"
+    typeof action === "function"
       ? dispatch(action(state, props))
       : isArray(action)
       ? typeof action[0] === "function"
         ? dispatch(action[0], action[1])
-        : (batch(action.slice(1)).map(function (fx) {
+        : batch(action.slice(1)).map(function (fx) {
             fx && fx[0](dispatch, fx[1])
-          }, setState(action[0])),
-          state)
+          }, setState(action[0]))
       : setState(action)
   })
 

@@ -5,7 +5,7 @@ var EMPTY_OBJ = {}
 var EMPTY_ARR = []
 var map = EMPTY_ARR.map
 var isArray = Array.isArray
-var defer =
+var enqueue =
   typeof requestAnimationFrame !== "undefined"
     ? requestAnimationFrame
     : setTimeout
@@ -40,15 +40,16 @@ var merge = function (a, b) {
 }
 
 var batch = function (list) {
-  return list.reduce(function (out, item) {
-    return out.concat(
-      !item || item === true
+  for (var out = [], i = 0, item; i < list.length; i++) {
+    out = out.concat(
+      !(item = list[i]) || item === true
         ? 0
         : typeof item[0] === "function"
         ? [item]
         : batch(item)
     )
-  }, EMPTY_ARR)
+  }
+  return out
 }
 
 var isSameAction = function (a, b) {
@@ -429,7 +430,7 @@ export var app = function (props) {
   var subscriptions = props.subscriptions
   var vdom = node && recycleNode(node)
   var subs = []
-  var wait
+  var doing
   var state
 
   var listener = function (event) {
@@ -442,7 +443,7 @@ export var app = function (props) {
       if (subscriptions) {
         subs = patchSubs(subs, batch([subscriptions(state)]), dispatch)
       }
-      if (view && !wait) defer(render, (wait = true))
+      if (view && !doing) enqueue(render, (doing = true))
     }
     return state
   }
@@ -466,7 +467,7 @@ export var app = function (props) {
   })
 
   var render = function () {
-    wait = false
+    doing = false
     node = patch(
       node.parentNode,
       node,

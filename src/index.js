@@ -5,7 +5,10 @@ var EMPTY_OBJ = {}
 var EMPTY_ARR = []
 var map = EMPTY_ARR.map
 var isArray = Array.isArray
-var defer = requestAnimationFrame || setTimeout
+var defer =
+  typeof requestAnimationFrame !== "undefined"
+    ? requestAnimationFrame
+    : setTimeout
 
 var createClass = function (obj) {
   var out = ""
@@ -400,10 +403,9 @@ export var Lazy = function (props) {
   }
 }
 
-export var h = function (name, props) {
-  for (var vdom, rest = [], children = [], i = arguments.length; i-- > 2; ) {
-    rest.push(arguments[i])
-  }
+export var h = function (name, props, ...rest) {
+  var vdom,
+    children = []
 
   while (rest.length > 0) {
     if (isArray((vdom = rest.pop()))) {
@@ -422,6 +424,7 @@ export var h = function (name, props) {
     ? name(props, children)
     : createVNode(name, props, children, undefined, props.key)
 }
+
 export var app = function (props) {
   var view = props.view
   var node = props.node

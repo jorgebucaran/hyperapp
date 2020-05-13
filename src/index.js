@@ -15,7 +15,7 @@ var createClass = function (obj) {
 
   if (typeof obj === "string") return obj
 
-  if (isArray(obj) && obj.length) {
+  if (isArray(obj)) {
     for (var k = 0, tmp; k < obj.length; k++) {
       if ((tmp = createClass(obj[k])) !== "") {
         out += (out && " ") + tmp
@@ -23,9 +23,7 @@ var createClass = function (obj) {
     }
   } else {
     for (var k in obj) {
-      if (obj[k]) {
-        out += (out && " ") + k
-      }
+      if (obj[k]) out += (out && " ") + k
     }
   }
 

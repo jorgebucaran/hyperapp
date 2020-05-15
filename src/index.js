@@ -352,7 +352,7 @@ var propsChanged = function (a, b) {
   for (var k in b) if (a[k] !== b[k]) return true
 }
 
-var resolveVNode = function (node) {
+var maybeTextNode = function (node) {
   return typeof node !== "object" ? createTextVNode(node) : node
 }
 
@@ -361,7 +361,7 @@ var getVNode = function (newVNode, oldVNode) {
     ? ((!oldVNode ||
         !oldVNode.lazy ||
         propsChanged(oldVNode.lazy, newVNode.lazy)) &&
-        ((oldVNode = resolveVNode(newVNode.lazy.view(newVNode.lazy))).lazy =
+        ((oldVNode = maybeTextNode(newVNode.lazy.view(newVNode.lazy))).lazy =
           newVNode.lazy),
       oldVNode)
     : newVNode
@@ -402,9 +402,10 @@ export var Lazy = function (props) {
   }
 }
 
-export var h = function (name, props, ...rest) {
-  var vdom,
-    children = []
+export var h = function (name, props) {
+  for (var vdom, rest = [], children = [], i = arguments.length; i-- > 2; ) {
+    rest.push(arguments[i])
+  }
 
   while (rest.length > 0) {
     if (isArray((vdom = rest.pop()))) {
@@ -413,7 +414,7 @@ export var h = function (name, props, ...rest) {
       }
     } else if (vdom === false || vdom === true || vdom == null) {
     } else {
-      children.push(resolveVNode(vdom))
+      children.push(maybeTextNode(vdom))
     }
   }
 
@@ -470,7 +471,7 @@ export var app = function (props) {
       node.parentNode,
       node,
       vdom,
-      (vdom = resolveVNode(view(state))),
+      (vdom = maybeTextNode(view(state))),
       listener
     )
   }

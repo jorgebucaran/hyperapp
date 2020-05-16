@@ -39,10 +39,19 @@ var merge = function (a, b) {
   return out
 }
 
-var batch = function (list) {
-  for (var out = [], i = 0, item; i < list.length; i++) {
+var filter = function (args) {
+  for (var out = [], i = 0, k = 0, item; i < args.length; i++) {
+    if ((item = args[i]) && item !== true) {
+      out[k++] = item
+    }
+  }
+  return out
+}
+
+var batch = function (args) {
+  for (var out = [], i = 0, item; i < args.length; i++) {
     out = out.concat(
-      !(item = list[i]) || item === true
+      !(item = args[i]) || item === true
         ? 0
         : typeof item[0] === "function"
         ? [item]
@@ -67,7 +76,7 @@ var shouldRestart = function (a, b) {
 
 var patchSubs = function (oldSubs, newSubs, dispatch) {
   for (
-    var i = 0, oldSub, newSub, subs = [];
+    var subs = [], i = 0, oldSub, newSub;
     i < oldSubs.length || i < newSubs.length;
     i++
   ) {
@@ -256,7 +265,7 @@ var patch = function (parent, node, oldVNode, newVNode, listener, isSvg) {
         node.removeChild(oldVKids[oldHead++].node)
       }
     } else {
-      for (var i = oldHead, keyed = {}, newKeyed = {}; i <= oldTail; i++) {
+      for (var keyed = {}, newKeyed = {}, i = oldHead; i <= oldTail; i++) {
         if ((oldKey = oldVKids[i].key) != null) {
           keyed[oldKey] = oldVKids[i]
         }
@@ -397,20 +406,14 @@ export var text = function (value, node) {
   return createVNode(value, EMPTY_OBJ, EMPTY_ARR, node, null, TEXT_NODE)
 }
 
-export var h = function (name, props, rest) {
-  var children = []
-
-  if (isArray(rest)) {
-    for (var i = 0, k = 0, len = rest.length, vdom; i < len; i++) {
-      if ((vdom = rest[i]) !== true && vdom !== false) {
-        children[k++] = vdom
-      }
-    }
-  } else if (rest != null) {
-    children = [rest]
-  }
-
-  return createVNode(name, props, children, null, props.key)
+export var h = function (name, props, children) {
+  return createVNode(
+    name,
+    props,
+    isArray(children) ? filter(children) : children ? [children] : EMPTY_ARR,
+    null,
+    props.key
+  )
 }
 
 export var app = function (props) {

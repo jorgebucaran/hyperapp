@@ -352,17 +352,12 @@ var propsChanged = function (a, b) {
   for (var k in b) if (a[k] !== b[k]) return true
 }
 
-var maybeTextNode = function (node) {
-  return typeof node !== "object" ? createTextVNode(node) : node
-}
-
 var getVNode = function (newVNode, oldVNode) {
   return newVNode.type === LAZY_NODE
     ? ((!oldVNode ||
         !oldVNode.lazy ||
         propsChanged(oldVNode.lazy, newVNode.lazy)) &&
-        ((oldVNode = maybeTextNode(newVNode.lazy.view(newVNode.lazy))).lazy =
-          newVNode.lazy),
+        ((oldVNode = newVNode.lazy.view(newVNode.lazy)).lazy = newVNode.lazy),
       oldVNode)
     : newVNode
 }
@@ -378,19 +373,15 @@ var createVNode = function (name, props, children, node, key, type) {
   }
 }
 
-var createTextVNode = function (value, node) {
-  return createVNode(value, EMPTY_OBJ, EMPTY_ARR, node, undefined, TEXT_NODE)
-}
-
 var recycleNode = function (node) {
   return node.nodeType === TEXT_NODE
-    ? createTextVNode(node.nodeValue, node)
+    ? text(node.nodeValue, node)
     : createVNode(
         node.nodeName.toLowerCase(),
         EMPTY_OBJ,
         map.call(node.childNodes, recycleNode),
         node,
-        undefined,
+        null,
         RECYCLED_NODE
       )
 }
@@ -402,27 +393,24 @@ export var Lazy = function (props) {
   }
 }
 
-export var h = function (name, props) {
-  for (var vdom, rest = [], children = [], i = arguments.length; i-- > 2; ) {
-    rest.push(arguments[i])
-  }
+export var text = function (value, node) {
+  return createVNode(value, EMPTY_OBJ, EMPTY_ARR, node, null, TEXT_NODE)
+}
 
-  while (rest.length > 0) {
-    if (isArray((vdom = rest.pop()))) {
-      for (var i = vdom.length; i-- > 0; ) {
-        rest.push(vdom[i])
+export var h = function (name, props, rest) {
+  var children = []
+
+  if (isArray(rest)) {
+    for (var i = 0, k = 0, len = rest.length, vdom; i < len; i++) {
+      if ((vdom = rest[i]) !== true && vdom !== false) {
+        children[k++] = vdom
       }
-    } else if (vdom === false || vdom === true || vdom == null) {
-    } else {
-      children.push(maybeTextNode(vdom))
     }
+  } else if (rest != null) {
+    children = [rest]
   }
 
-  props = props || EMPTY_OBJ
-
-  return typeof name === "function"
-    ? name(props, children)
-    : createVNode(name, props, children, undefined, props.key)
+  return createVNode(name, props, children, null, props.key)
 }
 
 export var app = function (props) {
@@ -467,13 +455,7 @@ export var app = function (props) {
 
   var render = function () {
     doing = false
-    node = patch(
-      node.parentNode,
-      node,
-      vdom,
-      (vdom = maybeTextNode(view(state))),
-      listener
-    )
+    node = patch(node.parentNode, node, vdom, (vdom = view(state)), listener)
   }
 
   dispatch(props.init)

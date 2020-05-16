@@ -454,8 +454,14 @@ export var app = function (props) {
   })
 
   var render = function () {
-    doing = false
-    node = patch(node.parentNode, node, vdom, (vdom = view(state)), listener)
+    node = patch(
+      node.parentNode,
+      node,
+      vdom,
+      (vdom = view(state)),
+      listener,
+      (doing = false)
+    )
   }
 
   return dispatch(props.init), dispatch

@@ -1,20 +1,13 @@
-# IDE
 .idea/
 .vscode/
 
-# Logs
+.*
 *.log*
-yarn.lock
-package-lock.json
-
-# Misc
-node_modules
-coverage
-.nyc_output
 *.xml
-.DS_Store
-/index*
+index*
+node_modules
+package-lock.json
+coverage
 
-# Dist
 *.gz
 dist/

@@ -458,5 +458,5 @@ export var app = function (props) {
     node = patch(node.parentNode, node, vdom, (vdom = view(state)), listener)
   }
 
-  dispatch(props.init)
+  return dispatch(props.init), dispatch
 }

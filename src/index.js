@@ -395,7 +395,7 @@ var recycleNode = function (node) {
       )
 }
 
-export var Lazy = function (props) {
+export var lazy = function (props) {
   return {
     lazy: props,
     type: LAZY_NODE,

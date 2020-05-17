@@ -1,0 +1,23 @@
+{
+  "name": "@hyperapp/time",
+  "description": "Hyperapp time effects and subscriptions.",
+  "version": "0.0.10",
+  "type": "module",
+  "main": "src/index.js",
+  "unpkg": "dist/index.js",
+  "license": "MIT",
+  "repository": "https://github.com/jorgebucaran/hyperapp/tree/master/lib/time",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "author": "Jorge Bucaran",
+  "keywords": [
+    "hyperapp",
+    "effects",
+    "subscriptions",
+    "interval",
+    "time",
+    "every"
+  ]
+}

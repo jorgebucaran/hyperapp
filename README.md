@@ -1,10 +1,10 @@
-# [Hyperapp](https://hyperapp.dev) [![npm](https://img.shields.io/npm/v/hyperapp.svg?label=&color=2a64e6)](https://github.com/jorgebucaran/hyperapp/releases/latest)
+# Hyperapp [![npm](https://img.shields.io/npm/v/hyperapp.svg?label=&color=2a64e6)](https://github.com/jorgebucaran/hyperapp/releases/latest)
 
-> The tiny framework for building web interfaces.
+> The tiny framework for building hypertext applications.
 
 - **Do more with less**—We have minimized the concepts you need to learn to get stuff done. Views, actions, effects, and subscriptions are all pretty easy to get to grips with and work together seamlessly.
-- **Write what, not how**—With a declarative syntax that's easy to read and fun to write, Hyperapp is the coolest way to create purely functional, feature-rich, browser-based apps using pure idiomatic JavaScript.
-- **1.7 kB**—Hyperapp is an ultra-lightweight Virtual DOM engine, state management library, and one-size-fits-all application design pattern. Get inspired, have fun and unleash your creativity~!
+- **Write what, not how**—With a declarative syntax that's easy to read and fun to write, Hyperapp is the best way to create purely functional, feature-rich, browser-based apps in JavaScript.
+- **1 kB**—Hyperapp is an ultra-lightweight Virtual DOM implementation, state management library, and one-size-fits-all application design pattern. Get inspired, have fun and unleash your creativity~!
 
 To learn more, go to <https://hyperapp.dev> for documentation, guides, and examples.
 

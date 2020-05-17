@@ -41,19 +41,19 @@ var merge = function (a, b) {
   return out
 }
 
-var filter = function (args) {
-  for (var out = [], i = 0, k = 0, item; i < args.length; i++) {
-    if ((item = args[i]) && item !== true) {
+var filter = function (list) {
+  for (var out = [], i = 0, k = 0, item; i < list.length; i++) {
+    if ((item = list[i]) && item !== true) {
       out[k++] = item
     }
   }
   return out
 }
 
-var batch = function (args) {
-  for (var out = [], i = 0, item; i < args.length; i++) {
+var batch = function (list) {
+  for (var out = [], i = 0, item; i < list.length; i++) {
     out = out.concat(
-      !(item = args[i]) || item === true
+      !(item = list[i]) || item === true
         ? 0
         : typeof item[0] === "function"
         ? [item]

@@ -145,7 +145,7 @@ var createNode = function (vdom, listener, isSvg) {
     patchProperty(node, k, null, props[k], listener, isSvg)
   }
 
-  for (var i = 0, len = vdom.children.length; i < len; i++) {
+  for (var i = 0; i < vdom.children.length; i++) {
     node.appendChild(
       createNode(
         (vdom.children[i] = getVNode(vdom.children[i])),

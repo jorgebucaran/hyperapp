@@ -3,7 +3,7 @@
 > The tiny framework for building web interfaces.
 
 - **Do more with less**—We have minimized the concepts you need to learn to get stuff done. Views, actions, effects, and subscriptions are all pretty easy to get to grips with and work together seamlessly.
-- **Write what, not how**—With a declarative syntax that's easy to read and fun to write, Hyperapp is the coolest way to create purely functional, feature-rich, browser-based apps using pure idiomatic JavaScript. 
+- **Write what, not how**—With a declarative syntax that's easy to read and fun to write, Hyperapp is the coolest way to create purely functional, feature-rich, browser-based apps using pure idiomatic JavaScript.
 - **1.7 kB**—Hyperapp is an ultra-lightweight Virtual DOM engine, state management library, and one-size-fits-all application design pattern. Get inspired, have fun and unleash your creativity~!
 
 To learn more, go to <https://hyperapp.dev> for documentation, guides, and examples.
@@ -19,14 +19,14 @@ npm i hyperapp
 Then with a module bundler like [Parcel](https://parceljs.org) or [Webpack](https://webpack.js.org) import it in your application and get right down to business.
 
 ```js
-import { app } from "hyperapp"
+import { h, text, app } from "hyperapp"
 ```
 
 Don't want to set up a build step? Import Hyperapp in a `<script>` tag as a module. Don't worry; modules are supported in all evergreen, self-updating desktop, and mobile browsers.
 
 ```html
 <script type="module">
-  import { app } from "https://unpkg.com/hyperapp"
+  import { h, text, app } from "https://unpkg.com/hyperapp"
 </script>
 ```
 

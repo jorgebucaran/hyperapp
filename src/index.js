@@ -396,18 +396,18 @@ var recycleNode = function (node) {
       )
 }
 
-export var lazy = function (props) {
+var lazy = function (props) {
   return {
     lazy: props,
     type: LAZY_NODE,
   }
 }
 
-export var text = function (value, node) {
+var text = function (value, node) {
   return createVNode(value, EMPTY_OBJ, EMPTY_ARR, node, null, TEXT_NODE)
 }
 
-export var h = function (name, props, children) {
+var h = function (name, props, children) {
   return createVNode(
     name,
     props,
@@ -417,7 +417,7 @@ export var h = function (name, props, children) {
   )
 }
 
-export var app = function (props) {
+var app = function (props) {
   var view = props.view
   var node = props.node
   var subscriptions = props.subscriptions
@@ -470,3 +470,5 @@ export var app = function (props) {
 
   return dispatch(props.init), dispatch
 }
+
+export { lazy, h, text, app }

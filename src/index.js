@@ -3,6 +3,8 @@ var LAZY_NODE = 2
 var TEXT_NODE = 3
 var EMPTY_OBJ = {}
 var EMPTY_ARR = []
+var SVG_NS = "http://www.w3.org/2000/svg"
+
 var map = EMPTY_ARR.map
 var isArray = Array.isArray
 var enqueue =
@@ -131,13 +133,12 @@ var patchProperty = function (node, key, oldValue, newValue, listener, isSvg) {
 }
 
 var createNode = function (vdom, listener, isSvg) {
-  var ns = "http://www.w3.org/2000/svg"
   var props = vdom.props
   var node =
     vdom.type === TEXT_NODE
       ? document.createTextNode(vdom.name)
       : (isSvg = isSvg || vdom.name === "svg")
-      ? document.createElementNS(ns, vdom.name, { is: props.is })
+      ? document.createElementNS(SVG_NS, vdom.name, { is: props.is })
       : document.createElement(vdom.name, { is: props.is })
 
   for (var k in props) {

@@ -41,15 +41,6 @@ var merge = function (a, b) {
   return out
 }
 
-var filter = function (list) {
-  for (var out = [], i = 0, k = 0, item; i < list.length; i++) {
-    if ((item = list[i]) && item !== true) {
-      out[k++] = item
-    }
-  }
-  return out
-}
-
 var batch = function (list) {
   for (var out = [], i = 0, item; i < list.length; i++) {
     out = out.concat(
@@ -363,13 +354,15 @@ var propsChanged = function (a, b) {
 }
 
 var getVNode = function (newVNode, oldVNode) {
-  return newVNode.type === LAZY_NODE
-    ? ((!oldVNode ||
-        !oldVNode.lazy ||
-        propsChanged(oldVNode.lazy, newVNode.lazy)) &&
-        ((oldVNode = newVNode.lazy.view(newVNode.lazy)).lazy = newVNode.lazy),
-      oldVNode)
-    : newVNode
+  return newVNode !== true && newVNode !== false && newVNode
+    ? newVNode.type === LAZY_NODE
+      ? ((!oldVNode ||
+          oldVNode.lazy == null ||
+          propsChanged(oldVNode.lazy, newVNode.lazy)) &&
+          ((oldVNode = newVNode.lazy.view(newVNode.lazy)).lazy = newVNode.lazy),
+        oldVNode)
+      : newVNode
+    : text("")
 }
 
 var createVNode = function (name, props, children, node, key, type) {
@@ -411,7 +404,7 @@ var h = function (name, props, children) {
   return createVNode(
     name,
     props,
-    isArray(children) ? filter(children) : children ? [children] : EMPTY_ARR,
+    isArray(children) ? children : children == null ? EMPTY_ARR : [children],
     null,
     props.key
   )

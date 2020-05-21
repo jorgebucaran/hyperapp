@@ -1,5 +1,4 @@
-var RECYCLED_NODE = 1
-var LAZY_NODE = 2
+var RECYCLED = 1
 var TEXT_NODE = 3
 var EMPTY_OBJ = {}
 var EMPTY_ARR = []
@@ -126,11 +125,11 @@ var patchProperty = function (node, key, oldValue, newValue, listener, isSvg) {
 var createNode = function (vdom, listener, isSvg) {
   var props = vdom.props
   var node =
-    vdom.type === TEXT_NODE
-      ? document.createTextNode(vdom.name)
-      : (isSvg = isSvg || vdom.name === "svg")
-      ? document.createElementNS(SVG_NS, vdom.name, { is: props.is })
-      : document.createElement(vdom.name, { is: props.is })
+    vdom.tag === TEXT_NODE
+      ? document.createTextNode(vdom.type)
+      : (isSvg = isSvg || vdom.type === "svg")
+      ? document.createElementNS(SVG_NS, vdom.type, { is: props.is })
+      : document.createElement(vdom.type, { is: props.is })
 
   for (var k in props) {
     patchProperty(node, k, null, props[k], listener, isSvg)
@@ -157,11 +156,11 @@ var patch = function (parent, node, oldVNode, newVNode, listener, isSvg) {
   if (oldVNode === newVNode) {
   } else if (
     oldVNode != null &&
-    oldVNode.type === TEXT_NODE &&
-    newVNode.type === TEXT_NODE
+    oldVNode.tag === TEXT_NODE &&
+    newVNode.tag === TEXT_NODE
   ) {
-    if (oldVNode.name !== newVNode.name) node.nodeValue = newVNode.name
-  } else if (oldVNode == null || oldVNode.name !== newVNode.name) {
+    if (oldVNode.type !== newVNode.type) node.nodeValue = newVNode.type
+  } else if (oldVNode == null || oldVNode.type !== newVNode.type) {
     node = parent.insertBefore(
       createNode((newVNode = getVNode(newVNode)), listener, isSvg),
       node
@@ -187,7 +186,7 @@ var patch = function (parent, node, oldVNode, newVNode, listener, isSvg) {
     var oldTail = oldVKids.length - 1
     var newTail = newVKids.length - 1
 
-    isSvg = isSvg || newVNode.name === "svg"
+    isSvg = isSvg || newVNode.type === "svg"
 
     for (var i in merge(oldVProps, newVProps)) {
       if (
@@ -280,7 +279,7 @@ var patch = function (parent, node, oldVNode, newVNode, listener, isSvg) {
           continue
         }
 
-        if (newKey == null || oldVNode.type === RECYCLED_NODE) {
+        if (newKey == null || oldVNode.tag === RECYCLED) {
           if (oldKey == null) {
             patch(
               node,
@@ -355,23 +354,23 @@ var propsChanged = function (a, b) {
 
 var getVNode = function (newVNode, oldVNode) {
   return newVNode !== true && newVNode !== false && newVNode
-    ? newVNode.type === LAZY_NODE
+    ? typeof newVNode.tag === "function"
       ? ((!oldVNode ||
           oldVNode.lazy == null ||
           propsChanged(oldVNode.lazy, newVNode.lazy)) &&
-          ((oldVNode = newVNode.lazy.view(newVNode.lazy)).lazy = newVNode.lazy),
+          ((oldVNode = newVNode.tag(newVNode.lazy)).lazy = newVNode.lazy),
         oldVNode)
       : newVNode
     : text("")
 }
 
-var createVNode = function (name, props, children, node, key, type) {
+var createVNode = function (type, props, children, node, key, tag) {
   return {
-    name: name,
+    type: type,
     props: props,
     children: children,
     node: node,
-    type: type,
+    tag: tag,
     key: key,
   }
 }
@@ -385,24 +384,21 @@ var recycleNode = function (node) {
         map.call(node.childNodes, recycleNode),
         node,
         null,
-        RECYCLED_NODE
+        RECYCLED
       )
 }
 
-var lazy = function (props) {
-  return {
-    lazy: props,
-    type: LAZY_NODE,
-  }
+var lazy = function (view, props) {
+  return { lazy: props, tag: view }
 }
 
 var text = function (value, node) {
   return createVNode(value, EMPTY_OBJ, EMPTY_ARR, node, null, TEXT_NODE)
 }
 
-var h = function (name, props, children) {
+var h = function (type, props, children) {
   return createVNode(
-    name,
+    type,
     props,
     isArray(children) ? children : children == null ? EMPTY_ARR : [children],
     null,

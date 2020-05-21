@@ -138,7 +138,7 @@ var createNode = function (vdom, listener, isSvg) {
   for (var i = 0; i < vdom.children.length; i++) {
     node.appendChild(
       createNode(
-        (vdom.children[i] = getVNode(vdom.children[i])),
+        (vdom.children[i] = maybeVNode(vdom.children[i])),
         listener,
         isSvg
       )
@@ -162,7 +162,7 @@ var patch = function (parent, node, oldVNode, newVNode, listener, isSvg) {
     if (oldVNode.type !== newVNode.type) node.nodeValue = newVNode.type
   } else if (oldVNode == null || oldVNode.type !== newVNode.type) {
     node = parent.insertBefore(
-      createNode((newVNode = getVNode(newVNode)), listener, isSvg),
+      createNode((newVNode = maybeVNode(newVNode)), listener, isSvg),
       node
     )
     if (oldVNode != null) {
@@ -210,7 +210,7 @@ var patch = function (parent, node, oldVNode, newVNode, listener, isSvg) {
         node,
         oldVKids[oldHead].node,
         oldVKids[oldHead],
-        (newVKids[newHead] = getVNode(
+        (newVKids[newHead] = maybeVNode(
           newVKids[newHead++],
           oldVKids[oldHead++]
         )),
@@ -231,7 +231,7 @@ var patch = function (parent, node, oldVNode, newVNode, listener, isSvg) {
         node,
         oldVKids[oldTail].node,
         oldVKids[oldTail],
-        (newVKids[newTail] = getVNode(
+        (newVKids[newTail] = maybeVNode(
           newVKids[newTail--],
           oldVKids[oldTail--]
         )),
@@ -244,7 +244,7 @@ var patch = function (parent, node, oldVNode, newVNode, listener, isSvg) {
       while (newHead <= newTail) {
         node.insertBefore(
           createNode(
-            (newVKids[newHead] = getVNode(newVKids[newHead++])),
+            (newVKids[newHead] = maybeVNode(newVKids[newHead++])),
             listener,
             isSvg
           ),
@@ -265,7 +265,7 @@ var patch = function (parent, node, oldVNode, newVNode, listener, isSvg) {
       while (newHead <= newTail) {
         oldKey = getKey((oldVKid = oldVKids[oldHead]))
         newKey = getKey(
-          (newVKids[newHead] = getVNode(newVKids[newHead], oldVKid))
+          (newVKids[newHead] = maybeVNode(newVKids[newHead], oldVKid))
         )
 
         if (
@@ -352,13 +352,13 @@ var propsChanged = function (a, b) {
   for (var k in b) if (a[k] !== b[k]) return true
 }
 
-var getVNode = function (newVNode, oldVNode) {
+var maybeVNode = function (newVNode, oldVNode) {
   return newVNode !== true && newVNode !== false && newVNode
     ? typeof newVNode.tag === "function"
       ? ((!oldVNode ||
-          oldVNode.lazy == null ||
-          propsChanged(oldVNode.lazy, newVNode.lazy)) &&
-          ((oldVNode = newVNode.tag(newVNode.lazy)).lazy = newVNode.lazy),
+          oldVNode.memo == null ||
+          propsChanged(oldVNode.memo, newVNode.memo)) &&
+          ((oldVNode = newVNode.tag(newVNode.memo)).memo = newVNode.memo),
         oldVNode)
       : newVNode
     : text("")
@@ -388,8 +388,8 @@ var recycleNode = function (node) {
       )
 }
 
-var lazy = function (view, props) {
-  return { lazy: props, tag: view }
+var memo = function (view, props) {
+  return { memo: props, tag: view }
 }
 
 var text = function (value, node) {
@@ -460,4 +460,4 @@ var app = function (props) {
   return dispatch(props.init), dispatch
 }
 
-export { lazy, h, text, app }
+export { memo, h, text, app }

@@ -11,6 +11,15 @@ var enqueue =
     ? requestAnimationFrame
     : setTimeout
 
+var merge = function (a, b) {
+  var out = {}
+
+  for (var k in a) out[k] = a[k]
+  for (var k in b) out[k] = b[k]
+
+  return out
+}
+
 var createClass = function (obj) {
   var out = ""
 
@@ -28,28 +37,6 @@ var createClass = function (obj) {
     }
   }
 
-  return out
-}
-
-var merge = function (a, b) {
-  var out = {}
-
-  for (var k in a) out[k] = a[k]
-  for (var k in b) out[k] = b[k]
-
-  return out
-}
-
-var batch = function (list) {
-  for (var out = [], i = 0, item; i < list.length; i++) {
-    out = out.concat(
-      !(item = list[i]) || item === true
-        ? 0
-        : typeof item[0] === "function"
-        ? [item]
-        : batch(item)
-    )
-  }
   return out
 }
 
@@ -74,8 +61,9 @@ var patchSubs = function (oldSubs, newSubs, dispatch) {
   ) {
     oldSub = oldSubs[i]
     newSub = newSubs[i]
+
     subs.push(
-      newSub
+      newSub && newSub !== true
         ? !oldSub ||
           newSub[0] !== oldSub[0] ||
           shouldRestart(newSub[1], oldSub[1])
@@ -423,7 +411,7 @@ var app = function (props) {
     if (state !== newState) {
       state = newState
       if (subscriptions) {
-        subs = patchSubs(subs, batch([subscriptions(state)]), dispatch)
+        subs = patchSubs(subs, subscriptions(state), dispatch)
       }
       if (view && !doing) enqueue(render, (doing = true))
     }
@@ -440,8 +428,8 @@ var app = function (props) {
       : isArray(action)
       ? typeof action[0] === "function"
         ? dispatch(action[0], action[1])
-        : batch(action.slice(1)).map(function (fx) {
-            fx && fx[0](dispatch, fx[1])
+        : action.slice(1).map(function (fx) {
+            fx && fx !== true && fx[0](dispatch, fx[1])
           }, setState(action[0]))
       : setState(action)
   })

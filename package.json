@@ -18,7 +18,8 @@
     "frontend",
     "framework",
     "virtual dom",
-    "vdom"
+    "vdom",
+    "ui"
   ],
   "scripts": {
     "test": "echo 0",

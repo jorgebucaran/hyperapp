@@ -11,49 +11,39 @@ var enqueue =
     ? requestAnimationFrame
     : setTimeout
 
-var merge = function (a, b) {
-  var out = {}
-
-  for (var k in a) out[k] = a[k]
-  for (var k in b) out[k] = b[k]
-
-  return out
-}
-
-var createClass = function (obj) {
+var createClass = (str) => {
   var out = ""
 
-  if (typeof obj === "string") return obj
+  if (typeof str === "string") return str
 
-  if (isArray(obj)) {
-    for (var k = 0, tmp; k < obj.length; k++) {
-      if ((tmp = createClass(obj[k])) !== "") {
+  if (isArray(str)) {
+    for (var k = 0, tmp; k < str.length; k++) {
+      if ((tmp = createClass(str[k])) !== "") {
         out += (out && " ") + tmp
       }
     }
   } else {
-    for (var k in obj) {
-      if (obj[k]) out += (out && " ") + k
+    for (var k in str) {
+      if (str[k]) out += (out && " ") + k
     }
   }
 
   return out
 }
 
-var isSameAction = function (a, b) {
-  return isArray(a) && isArray(b) && a[0] === b[0] && typeof a[0] === "function"
-}
+var isSameAction = (a, b) =>
+  isArray(a) && isArray(b) && a[0] === b[0] && typeof a[0] === "function"
 
-var shouldRestart = function (a, b) {
+var shouldRestart = (a, b) => {
   if (a !== b) {
-    for (var k in merge(a, b)) {
+    for (var k in { ...a, ...b }) {
       if (a[k] !== b[k] && !isSameAction(a[k], b[k])) return true
       b[k] = a[k]
     }
   }
 }
 
-var patchSubs = function (oldSubs, newSubs, dispatch) {
+var patchSubs = (oldSubs, newSubs, dispatch) => {
   for (
     var subs = [], i = 0, oldSub, newSub;
     i < oldSubs.length || i < newSubs.length;
@@ -80,10 +70,10 @@ var patchSubs = function (oldSubs, newSubs, dispatch) {
   return subs
 }
 
-var patchProperty = function (node, key, oldValue, newValue, listener, isSvg) {
+var patchProperty = (node, key, oldValue, newValue, listener, isSvg) => {
   if (key === "key") {
   } else if (key === "style") {
-    for (var k in merge(oldValue, newValue)) {
+    for (var k in { ...oldValue, ...newValue }) {
       oldValue = newValue == null || newValue[k] == null ? "" : newValue[k]
       if (k[0] === "-") {
         node[key].setProperty(k, oldValue)
@@ -110,7 +100,7 @@ var patchProperty = function (node, key, oldValue, newValue, listener, isSvg) {
   }
 }
 
-var createNode = function (vdom, listener, isSvg) {
+var createNode = (vdom, listener, isSvg) => {
   var props = vdom.props
   var node =
     vdom.tag === TEXT_NODE
@@ -136,11 +126,9 @@ var createNode = function (vdom, listener, isSvg) {
   return (vdom.node = node)
 }
 
-var getKey = function (vdom) {
-  return vdom == null ? null : vdom.key
-}
+var getKey = (vdom) => (vdom == null ? null : vdom.key)
 
-var patch = function (parent, node, oldVNode, newVNode, listener, isSvg) {
+var patch = (parent, node, oldVNode, newVNode, listener, isSvg) => {
   if (oldVNode === newVNode) {
   } else if (
     oldVNode != null &&
@@ -163,8 +151,8 @@ var patch = function (parent, node, oldVNode, newVNode, listener, isSvg) {
     var oldKey
     var newKey
 
-    var oldVProps = oldVNode.props
-    var newVProps = newVNode.props
+    var oldProps = oldVNode.props
+    var newProps = newVNode.props
 
     var oldVKids = oldVNode.children
     var newVKids = newVNode.children
@@ -176,13 +164,13 @@ var patch = function (parent, node, oldVNode, newVNode, listener, isSvg) {
 
     isSvg = isSvg || newVNode.type === "svg"
 
-    for (var i in merge(oldVProps, newVProps)) {
+    for (var i in { ...oldProps, ...newProps }) {
       if (
         (i === "value" || i === "selected" || i === "checked"
           ? node[i]
-          : oldVProps[i]) !== newVProps[i]
+          : oldProps[i]) !== newProps[i]
       ) {
-        patchProperty(node, i, oldVProps[i], newVProps[i], listener, isSvg)
+        patchProperty(node, i, oldProps[i], newProps[i], listener, isSvg)
       }
     }
 
@@ -335,13 +323,13 @@ var patch = function (parent, node, oldVNode, newVNode, listener, isSvg) {
   return (newVNode.node = node)
 }
 
-var propsChanged = function (a, b) {
+var propsChanged = (a, b) => {
   for (var k in a) if (a[k] !== b[k]) return true
   for (var k in b) if (a[k] !== b[k]) return true
 }
 
-var maybeVNode = function (newVNode, oldVNode) {
-  return newVNode !== true && newVNode !== false && newVNode
+var maybeVNode = (newVNode, oldVNode) =>
+  newVNode !== true && newVNode !== false && newVNode
     ? typeof newVNode.tag === "function"
       ? ((!oldVNode ||
           oldVNode.memo == null ||
@@ -350,21 +338,18 @@ var maybeVNode = function (newVNode, oldVNode) {
         oldVNode)
       : newVNode
     : text("")
-}
 
-var createVNode = function (type, props, children, node, key, tag) {
-  return {
-    type: type,
-    props: props,
-    children: children,
-    node: node,
-    tag: tag,
-    key: key,
-  }
-}
+var createVNode = (type, props, children, node, key, tag) => ({
+  type: type,
+  props: props,
+  children: children,
+  node: node,
+  tag: tag,
+  key: key,
+})
 
-var recycleNode = function (node) {
-  return node.nodeType === TEXT_NODE
+var recycleNode = (node) =>
+  node.nodeType === TEXT_NODE
     ? text(node.nodeValue, node)
     : createVNode(
         node.nodeName.toLowerCase(),
@@ -374,27 +359,22 @@ var recycleNode = function (node) {
         null,
         RECYCLED
       )
-}
 
-var memo = function (view, props) {
-  return { memo: props, tag: view }
-}
+var memo = (view, props) => ({ memo: props, tag: view })
 
-var text = function (value, node) {
-  return createVNode(value, EMPTY_OBJ, EMPTY_ARR, node, null, TEXT_NODE)
-}
+var text = (value, node) =>
+  createVNode(value, EMPTY_OBJ, EMPTY_ARR, node, null, TEXT_NODE)
 
-var h = function (type, props, children) {
-  return createVNode(
+var h = (type, props, children) =>
+  createVNode(
     type,
     props,
     isArray(children) ? children : children == null ? EMPTY_ARR : [children],
     null,
     props.key
   )
-}
 
-var app = function (props) {
+var app = (props) => {
   var view = props.view
   var node = props.node
   var subscriptions = props.subscriptions
@@ -407,7 +387,7 @@ var app = function (props) {
     dispatch(this.tag[event.type], event)
   }
 
-  var setState = function (newState) {
+  var setState = (newState) => {
     if (state !== newState) {
       state = newState
       if (subscriptions) {
@@ -417,33 +397,30 @@ var app = function (props) {
     }
   }
 
-  var dispatch = (
-    props.middleware ||
-    function (obj) {
-      return obj
-    }
-  )(function (action, props) {
+  var dispatch = (props.middleware || ((f) => f))((action, props) =>
     typeof action === "function"
       ? dispatch(action(state, props))
       : isArray(action)
       ? typeof action[0] === "function"
         ? dispatch(action[0], action[1])
-        : action.slice(1).map(function (fx) {
-            fx && fx !== true && fx[0](dispatch, fx[1])
-          }, setState(action[0]))
+        : action
+            .slice(1)
+            .map(
+              (fx) => fx && fx !== true && fx[0](dispatch, fx[1]),
+              setState(action[0])
+            )
       : setState(action)
-  })
+  )
 
-  var render = function () {
-    node = patch(
+  var render = () =>
+    (node = patch(
       node.parentNode,
       node,
       vdom,
       (vdom = view(state)),
       listener,
       (doing = false)
-    )
-  }
+    ))
 
   return dispatch(props.init), dispatch
 }

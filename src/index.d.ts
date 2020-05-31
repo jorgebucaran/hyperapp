@@ -87,9 +87,8 @@ declare module "hyperapp" {
 
   // A virtual DOM node's tag has metadata relevant to it.
   type Tag
-    = Record<string, any>
     // Virtual DOM nodes are tagged by their type to assist rendering.
-    | VDOMNodeType
+    = VDOMNodeType
     // Only memoized virtual DOM nodes are tagged with a view.
     | View
 

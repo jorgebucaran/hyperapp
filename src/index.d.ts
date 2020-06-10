@@ -25,7 +25,7 @@ declare module "hyperapp" {
   type Unsubscribe = () => void
 
   // Middleware allows for custom processing during dispatching.
-  type Middleware = (f: Dispatch) => Dispatch
+  type Middleware = (dispatch: Dispatch) => Dispatch
 
   // -----------------------------------------------------------------------------
 

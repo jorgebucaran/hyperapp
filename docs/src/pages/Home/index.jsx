@@ -116,7 +116,7 @@ export default (state) => (
         }}
       >
         <h1>{state.count}</h1>
-        <button class="primary-button" onclick={Down}>substract</button>
+        <button class="primary-button" onclick={Down}>subtract</button>
         <button class="primary-button" onclick={Up}>add</button>
       </div>
     </div>

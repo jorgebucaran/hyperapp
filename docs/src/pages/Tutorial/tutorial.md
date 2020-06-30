@@ -164,55 +164,57 @@ of virtual nodes. Hyperapp proceeds to create it for us, replacing the node spec
 To render the HTML we want, change the `view` to:
 
 ```js
-view: () => h("div", {id: "app", class: "container"}, [
-  h("div", {class: "filter"}, [
-    " Filter: ",
-    h("span", {class: "filter-word"}, "ocean"),
-    h("button", {}, "\u270E")
-  ]),
-  h("div", {class: "stories"}, [
-    h("ul", {}, [
-      h("li", {class: "unread"}, [
-        h("p", {class: "title"}, [
-          "The ",
-          h("em", {}, "Ocean"),
-          " is Sinking!"
+view: () =>
+  h("div", { id: "app", class: "container" }, [
+    h("div", { class: "filter" }, [
+      " Filter: ",
+      h("span", { class: "filter-word" }, "ocean"),
+      h("button", {}, "\u270E"),
+    ]),
+    h("div", { class: "stories" }, [
+      h("ul", {}, [
+        h("li", { class: "unread" }, [
+          h("p", { class: "title" }, [
+            "The ",
+            h("em", {}, "Ocean"),
+            " is Sinking!",
+          ]),
+          h("p", { class: "author" }, "Kat Stropher"),
         ]),
-        h("p", {class: "author"}, "Kat Stropher")
+        h("li", { class: "reading" }, [
+          h("p", { class: "title" }, [h("em", {}, "Ocean"), " life is brutal"]),
+          h("p", { class: "author" }, "Surphy McBrah"),
+        ]),
+        h("li", {}, [
+          h("p", { class: "title" }, [
+            "Family friendly fun at the ",
+            h("em", {}, "ocean"),
+            " exhibit",
+          ]),
+          h("p", { class: "author" }, "Guy Prosales"),
+        ]),
       ]),
-      h("li", {class: "reading"}, [
-        h("p", {class: "title"}, [
-          h("em", {}, "Ocean"),
-          " life is brutal"
-        ]),
-        h("p", {class: "author"}, "Surphy McBrah"),
-      ]),
-      h("li", {}, [
-        h("p", {class: "title"}, [
-          "Family friendly fun at the ",
-          h("em", {}, "ocean"),
-          " exhibit"
-        ]),
-        h("p", {class: "author"}, "Guy Prosales")
-      ])
-    ])
-  ]),
-  h("div", {class: "story"}, [
-    h("h1", {}, "Ocean life is brutal"),
-    h("p", {}, `
+    ]),
+    h("div", { class: "story" }, [
+      h("h1", {}, "Ocean life is brutal"),
+      h(
+        "p",
+        {},
+        `
       Lorem ipsum dolor sit amet, consectetur adipiscing
       elit, sed do eiusmod tempor incididunt ut labore et
       dolore magna aliqua. Ut enim ad minim veniam, quis
       nostrud exercitation ullamco laboris nisi ut aliquip
       ex ea commodo consequat.
-    `),
-    h("p", {class: "signature"}, "Surphy McBrah")
-  ]),
-  h("div", {class: "autoupdate"}, [
-    "Auto update: ",
-    h("input", {type: "checkbox"})
+    `
+      ),
+      h("p", { class: "signature" }, "Surphy McBrah"),
+    ]),
+    h("div", { class: "autoupdate" }, [
+      "Auto update: ",
+      h("input", { type: "checkbox" }),
+    ]),
   ])
-]),
 ```
 
 Try it out to confirm that the result matches the screenshot above.
@@ -234,13 +236,11 @@ Add this function (in the "VIEWS" section):
 
 ```js
 const emphasize = (word, string) =>
-  string.split(" ").map(x => {
-    if (x.toLowerCase() === word.toLowerCase()) {
-      return h("em", {}, x + " ")
-    } else {
-      return x + " "
-    }
-  })
+  string
+    .split(" ")
+    .map((x) =>
+      x.toLowerCase() === word.toLowerCase() ? h("em", {}, x + " ") : x + " "
+    )
 ```
 
 It lets you change this:
@@ -269,7 +269,7 @@ Story thumbnails are repeated several times, so encapsulate
 them in their own function:
 
 ```js
-const storyThumbnail = props =>
+const storyThumbnail = (props) =>
   h(
     "li",
     {
@@ -292,12 +292,12 @@ const storyThumbnail = props =>
 Continue by creating functions for each section of the view:
 
 ```js
-const storyList = props =>
+const storyList = (props) =>
   h("div", { class: "stories" }, [
     h(
       "ul",
       {},
-      Object.keys(props.stories).map(id =>
+      Object.keys(props.stories).map((id) =>
         storyThumbnail({
           id,
           title: props.stories[id].title,
@@ -310,14 +310,14 @@ const storyList = props =>
     ),
   ])
 
-const filterView = props =>
+const filterView = (props) =>
   h("div", { class: "filter" }, [
     "Filter:",
     h("span", { class: "filter-word" }, props.filter),
     h("button", {}, "\u270E"),
   ])
 
-const storyDetail = props =>
+const storyDetail = (props) =>
   h("div", { class: "story" }, [
     props && h("h1", {}, props.title),
     props &&
@@ -335,13 +335,13 @@ const storyDetail = props =>
     props && h("p", { class: "signature" }, props.author),
   ])
 
-const autoUpdateView = props =>
+const autoUpdateView = (props) =>
   h("div", { class: "autoupdate" }, [
     "Auto update: ",
     h("input", { type: "checkbox" }),
   ])
 
-const container = content => h("div", { class: "container" }, content)
+const container = (content) => h("div", { class: "container" }, content)
 ```
 
 With those the view can be written as:
@@ -442,7 +442,7 @@ the pencil-button, a text input with the filter word appears.
 Add an `onclick` property to the button in `filterView`:
 
 ```js
-const filterView = props =>
+const filterView = (props) =>
   h("div", { class: "filter" }, [
     "Filter:",
     h("span", { class: "filter-word" }, props.filter),
@@ -455,7 +455,7 @@ that when the button is clicked, an action named `StartEditingFilter` is
 _dispatched_. Create the action in the "ACTIONS" section:
 
 ```js
-const StartEditingFilter = state => ({ ...state, editingFilter: true })
+const StartEditingFilter = (state) => ({ ...state, editingFilter: true })
 ```
 
 Actions are just functions describing transformations of the state.
@@ -471,7 +471,7 @@ span with the filter word. We can express this in `filterView` using a
 ternary operator (`a ? b : c`).
 
 ```js
-const filterView = props =>
+const filterView = (props) =>
   h("div", { class: "filter" }, [
     "Filter:",
 
@@ -489,13 +489,13 @@ a way to go back. We need an action to `StopEditingFilter`, and a button to disp
 Add the action:
 
 ```js
-const StopEditingFilter = state => ({ ...state, editingFilter: false })
+const StopEditingFilter = (state) => ({ ...state, editingFilter: false })
 ```
 
 and update `filterView` again:
 
 ```js
-const filterView = props =>
+const filterView = (props) =>
   h("div", { class: "filter" }, [
     "Filter:",
 
@@ -521,7 +521,7 @@ type in the box should be emphasized in the story-list.
 Update `filterView` yet again:
 
 ```js
-const filterView = props =>
+const filterView = (props) =>
   h("div", { class: "filter" }, [
     "Filter:",
 
@@ -567,7 +567,7 @@ It has a payload, but it's not an event object. It's a custom value telling us w
 story was clicked. How are actions dispatched with custom payloads? – Like this:
 
 ```js
-const storyThumbnail = props =>
+const storyThumbnail = (props) =>
   h(
     "li",
     {
@@ -621,7 +621,7 @@ But we don't know the word beforehand, so how can we set it as a custom payload?
 again (last time - I promise!):
 
 ```js
-const filterView = props =>
+const filterView = (props) =>
   h("div", { class: "filter" }, [
     "Filter:",
 
@@ -629,7 +629,7 @@ const filterView = props =>
       ? h("input", {
           type: "text",
           value: props.filter,
-          oninput: [SetFilter, event => event.target.value], // <----
+          oninput: [SetFilter, (event) => event.target.value], // <----
         })
       : h("span", { class: "filter-word" }, props.filter),
 
@@ -662,7 +662,7 @@ const GotStories = (state, stories) => ({
   // replace old stories with new,
   // but keep the 'seen' value if it exists
   stories: Object.keys(stories)
-    .map(id => [
+    .map((id) => [
       id,
       {
         ...stories[id],
@@ -685,7 +685,7 @@ besides transforming the state, that "something" is called an _effect_. To assoc
 with `StopEditingFilter`, make it return an array like this:
 
 ```js
-const StopEditingFilter = state => [
+const StopEditingFilter = (state) => [
   {
     ...state,
     editingFilter: false,
@@ -702,7 +702,7 @@ has been updated.
 Add this effect declaration:
 
 ```js
-const StopEditingFilter = state => [
+const StopEditingFilter = (state) => [
   {
     ...state,
     editingFilter: false,
@@ -732,8 +732,8 @@ Now we just need to implement `fetchJSONData`. Type this in the "EFFECTS & SUBSC
 ```js
 const fetchJSONData = (dispatch, options) =>
   fetch(options.url)
-    .then(response => response.json())
-    .then(data => dispatch(options.onresponse, data))
+    .then((response) => response.json())
+    .then((data) => dispatch(options.onresponse, data))
     .catch(() => dispatch(options.onresponse, {}))
 ```
 
@@ -790,7 +790,7 @@ However, repeating the effect declaration in all its gory detail like this
 is not ideal, so lets add this _effect creator_
 
 ```js
-const storyLoader = searchWord => [
+const storyLoader = (searchWord) => [
   fetchJSONData,
   {
     url: `https://hyperapp.dev/tutorial-assets/stories/${searchWord.toLowerCase()}.json`,
@@ -802,7 +802,7 @@ const storyLoader = searchWord => [
 Now we can simplify `StopEditingFilter` like this:
 
 ```js
-const StopEditingFilter = state => [
+const StopEditingFilter = (state) => [
   {
     ...state,
     editingFilter: false,
@@ -837,7 +837,7 @@ const SetFetching = (state, fetching) => ({ ...state, fetching })
 Update `storyLoader` to tell `fetchJSONData` about `SetFetching`
 
 ```js
-const storyLoader = searchWord => [
+const storyLoader = (searchWord) => [
   fetchJSONData,
   {
     url: `https://hyperapp.dev/tutorial-assets/stories/${searchWord.toLowerCase()}.json`,
@@ -854,8 +854,8 @@ Finally update `fetchJSONData` to use the new `onstart` and `onfinish` options t
 const fetchJSONData = (dispatch, options) => {
   dispatch(options.onstart) // <---
   fetch(options.url)
-    .then(response => response.json())
-    .then(data => dispatch(options.onresponse, data))
+    .then((response) => response.json())
+    .then((data) => dispatch(options.onresponse, data))
     .catch(() => dispatch(options.onresponse, {}))
     .finally(() => dispatch(options.onfinish)) // <---
 }
@@ -865,7 +865,7 @@ With that, our state prop `fetching` will always tell us wether or not we are fe
 Use that to show a spinner when we are fetching, in `storyList`:
 
 ```js
-const storyList = props =>
+const storyList = (props) =>
   h("div", { class: "stories" }, [
     // show spinner overlay if fetching
     props.fetching &&
@@ -874,7 +874,7 @@ const storyList = props =>
     h(
       "ul",
       {},
-      Object.keys(props.stories).map(id =>
+      Object.keys(props.stories).map((id) =>
         storyThumbnail({
           id,
           title: props.stories[id].title,
@@ -906,13 +906,16 @@ but you'll know it's happening when you see the spinner pop up every five second
 First let's keep track of wether or not the user wants this auto-update feature on. Create a new action:
 
 ```js
-const ToggleAutoUpdate = state => ({ ...state, autoUpdate: !state.autoUpdate })
+const ToggleAutoUpdate = (state) => ({
+  ...state,
+  autoUpdate: !state.autoUpdate,
+})
 ```
 
 Dispatch it in response to checking the checkbox in `autoUpdateView`:
 
 ```js
-const autoUpdateView = props =>
+const autoUpdateView = (props) =>
   h("div", { class: "autoupdate" }, [
     "Auto update: ",
     h("input", {
@@ -928,17 +931,17 @@ With that, the state property `autoUpdate` will tell us wether or not the Auto-u
 ### Subscription functions <a name="subscriptionfunctions"></a>
 
 We need a _subscription function_ capable of dispatching actions at a given interval. Implement
-`intervalSubscription` in the "EFFECTS & SUBSCRIPTIONS" section:
+`intervalSub` in the Effects & Subscriptions section:
 
 ```js
-const intervalSubscription = (dispatch, options) => {
-  const interval = setInterval(() => dispatch(options.action), options.time)
+const intervalSub = (dispatch, props) => {
+  const interval = setInterval(() => dispatch(props.action), props.time)
   return () => clearInterval(interval)
 }
 ```
 
-Just like an effect function, this function will be called by Hyperapp with `dispatch` and given options. It
-will start an interval listener, and every `options.time` milliseconds, it will dispatch the given action. The
+Just like an effect function, this function will be called by Hyperapp with `dispatch` and given props. It
+will start an interval listener, and every `props.time` milliseconds, it will dispatch the given action. The
 main difference to an effect function is that a subscription function returns a function so hyperapp knows
 how to stop the subscription.
 
@@ -951,10 +954,10 @@ We could create a new action for updating stories, but since `StopEditingFilter`
 use it here too. Add a `subscription` property to the app:
 
 ```js
-subscriptions: state => [
+subscriptions: (state) => [
   state.autoUpdate &&
     !state.editingFilter && [
-      intervalSubscription,
+      intervalSub,
       {
         time: 5000, //milliseconds,
         action: StopEditingFilter,
@@ -978,6 +981,4 @@ If you'd like to see a working example of the final code, have a look [here](htt
 
 Congratulations on completing this Hyperapp tutorial!
 
-Along the way you've familiarized yourself with
-the core concepts: _view_, _state_, _actions_, _effects_ & _subscriptions_. And that's really all you need to
-build any web application.
+Along the way you've familiarized yourself with the core concepts: _view_, _state_, _actions_, _effects_ & _subscriptions_. And that's really all you need to build any web application.

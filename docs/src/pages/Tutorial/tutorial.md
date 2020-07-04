@@ -828,7 +828,7 @@ const StopEditingFilter = (state) => [
 
 ### Tracking state for asynchronous effects <a name="trackingasync"></a>
 
-If we could display a spinner while we wait for stories to load, it would make for a smoother user experience. We'll need a state property to tell us wether or not we're currently `fetching`, and we'll use this action to keep track of it:
+If we could display a spinner while we wait for stories to load, it would make for a smoother user experience. We'll need a state property to tell us whether or not we're currently `fetching`, and we'll use this action to keep track of it:
 
 ```js
 const SetFetching = (state, fetching) => ({ ...state, fetching })
@@ -861,7 +861,7 @@ const fetchJSONData = (dispatch, options) => {
 }
 ```
 
-With that, our state prop `fetching` will always tell us wether or not we are fetching.
+With that, our state prop `fetching` will always tell us whether or not we are fetching.
 Use that to show a spinner when we are fetching, in `storyList`:
 
 ```js
@@ -903,7 +903,7 @@ The last feature we'll add is one where the user can opt in to have the app chec
 stories matching the current filter. (There won't actually be any new stories, because it's not a real service,
 but you'll know it's happening when you see the spinner pop up every five seconds.)
 
-First let's keep track of wether or not the user wants this auto-update feature on. Create a new action:
+First let's keep track of whether or not the user wants this auto-update feature on. Create a new action:
 
 ```js
 const ToggleAutoUpdate = (state) => ({
@@ -926,7 +926,7 @@ const autoUpdateView = (props) =>
   ])
 ```
 
-With that, the state property `autoUpdate` will tell us wether or not the Auto-update checkbox is checked.
+With that, the state property `autoUpdate` will tell us whether or not the Auto-update checkbox is checked.
 
 ### Subscription functions <a name="subscriptionfunctions"></a>
 

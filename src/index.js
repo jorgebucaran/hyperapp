@@ -31,14 +31,11 @@ var createClass = (str) => {
   return out
 }
 
-var isSameAction = (a, b) =>
-  isArray(a) && isArray(b) && a[0] === b[0] && typeof a[0] === "function"
-
 var shouldRestart = (a, b) => {
   if (a !== b) {
     for (var k in { ...a, ...b }) {
-      if (a[k] !== b[k] && !isSameAction(a[k], b[k])) return true
-      b[k] = a[k]
+      if (typeof (isArray((b[k] = a[k])) ? b[k][0] : b[k]) === "function") {
+      } else if (a[k] !== b[k]) return true
     }
   }
 }

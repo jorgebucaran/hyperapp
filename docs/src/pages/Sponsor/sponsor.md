@@ -1,4 +1,0 @@
-# sponsor
-lorem lorem lorem
-
-In urna ex, finibus sit amet laoreet id, pharetra placerat lorem. Suspendisse laoreet pulvinar nunc, sed tristique ex venenatis tristique. Quisque non vulputate enim, vitae facilisis sapien. Nunc sagittis vel mi et tristique. In ornare leo et lectus ornare, vel pretium odio vulputate. Nam rhoncus quam vel neque rhoncus rutrum. Quisque posuere, purus sit amet ornare blandit, massa ligula sagittis magna, ut interdum purus neque et nisl. Integer eros sapien, faucibus at est vel, rhoncus gravida arcu. In volutpat sapien neque, vel malesuada sapien aliquam at.

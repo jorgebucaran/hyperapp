@@ -6,7 +6,7 @@
 - **Write what, not how**—With a declarative syntax that's easy to read and fun to write, Hyperapp is the best way to create purely functional, feature-rich, browser-based apps in JavaScript.
 - **1 kB**—Hyperapp is an ultra-lightweight Virtual DOM implementation, state management library, and one-size-fits-all application design pattern. Get inspired, have fun and unleash your creativity~!
 
-To learn more, go to <https://hyperapp.dev> for documentation, guides, and examples.
+To learn more, [visit the documentation]() for APIs, guides, and examples.
 
 ## Quickstart
 
@@ -70,7 +70,7 @@ Is anything wrong, unclear, missing? Help us [improve this page](https://github.
 ## Stay in the loop
 
 - [Twitter](https://twitter.com/hyperappjs)
-- [Awesome](https://github.com/jorgebucaran/awesome-hyperapp)
+- [Awesome](https://github.com/jorgebucaran/hyperawesome)
 - [/r/hyperapp](https://www.reddit.com/r/hyperapp)
 
 ## License

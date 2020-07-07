@@ -1,12 +1,12 @@
-# Hyperapp [![npm](https://img.shields.io/npm/v/hyperapp.svg?label=&color=1661EE)](https://github.com/jorgebucaran/hyperapp/releases/latest) 
+# Hyperapp [![npm](https://img.shields.io/npm/v/hyperapp.svg?label=&color=1661EE)](https://github.com/jorgebucaran/hyperapp/releases/latest)
 
-> The 1 kB framework for building hypertext applications.
+> The tiny framework for creating hypertext applications.
 
 - **Do more with less**—We have minimized the concepts you need to learn to get stuff done. Views, actions, effects, and subscriptions are all pretty easy to get to grips with and work together seamlessly.
-- **Write what, not how**—With a declarative syntax that's easy to read and fun to write, Hyperapp is the finest way to create purely functional, feature-rich, browser-based apps in JavaScript.
-- **Smaller than a favicon**—Hyperapp is an ultra-lightweight Virtual DOM, highly-optimized diff algorithm, and state management library obsessed with minimalism.
+- **Write what, not how**—With a declarative API that's easy to read and fun to write, Hyperapp is the best way to create purely functional, feature-rich, browser-based apps in JavaScript.
+- **Smaller than a favicon**—1 kB, give or take. Hyperapp is an ultra-lightweight Virtual DOM, highly-optimized diff algorithm, and state management library obsessed with minimalism.
 
-Here's the first example to get you started: a mini todo app. You can [try it online here](https://codesandbox.io/s/hyperapp-playground-fwjlo).
+Here's the first example to get you started. You can try it live [here](https://codesandbox.io/s/hyperapp-playground-fwjlo).
 
 <!-- prettier-ignore -->
 ```html
@@ -21,7 +21,7 @@ Here's the first example to get you started: a mini todo app. You can [try it on
         todos: state.todos.concat(state.value),
       })
 
-      const FieldChanged = (state, event) => ({
+      const NewValue = (state, event) => ({
         ...state,
         value: event.target.value,
       })
@@ -31,7 +31,7 @@ Here's the first example to get you started: a mini todo app. You can [try it on
         view: ({ todos, value }) =>
           h("main", {}, [
             h("h1", {}, text("My Todos")),
-            h("input", { type: "text", oninput: FieldChanged, value }),
+            h("input", { type: "text", oninput: NewValue, value }),
             h("button", { onclick: Add }, text("Add Todo")),
             h("ul", {},
               todos.map((todo) => h("li", {}, text(todo)))
@@ -47,9 +47,9 @@ Here's the first example to get you started: a mini todo app. You can [try it on
 </html>
 ```
 
-The app starts off with `init` where we set the initial state. The `view` returns a plain object representation of how we want the DOM to look (the virtual DOM) and Hyperapp takes care of modifying the real DOM to match this specification whenever the state changes. That's the gist of it.
+The app starts off with `init` where we set the initial state. The `view` returns a plain object representation of how we want the DOM to look (the virtual DOM) and Hyperapp takes care of modifying the real DOM to match this specification whenever the state changes. That's really all there is to it.
 
-To learn more about Hyperapp, [work through the tutorial](docs/tutorial.md), or visit the [API reference](docs/reference.md).
+Ready to dive in? We recommend working through the [tutorial](docs/tutorial.md) first. For other docs, visit the [API reference](docs/reference.md).
 
 ## Installation
 
@@ -73,31 +73,28 @@ Don't want to set up a build step? Import Hyperapp in a `<script>` tag as a modu
 </script>
 ```
 
-## Examples
+## Packages
 
-- [7GUI]() - A GUI Programming Benchmark
-  - [Counter]()
-  - [Temperature converter]()
-  - [Flight booker]()
-  - [Timer]()
-  - [CRUD]()
-  - [Circle drawer]()
-  - [Spreadsheet]()
-- [TodoMVC]() - Helping your select an MV\* framework
-- [HNPWA]() - Hacker News reader as a progressive web application
-- [RealWorld]() - Fullstack Medium-like clone
+These packages provide access to the [Web Platform](https://platform.html5.org) and aim to ensure that the APIs are exposed in a way that makes sense for Hyperapp and the underlying code is stable. We haven't covered everything yet, but we're getting there. If you believe a package should be in this table, [let us know](https://github.com/jorgebucaran/hyperapp/issues/new).
+
+| Package                             | Version                                                                                                                         | About                                                                |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| [`@hyperapp/dom`](/lib/time)        | [![npm](https://img.shields.io/npm/v/@hyperapp/time.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/time)     | Time effects and subscriptions for Hyperapp                          |
+| [`@hyperapp/html`](/lib/html)       | [![npm](https://img.shields.io/npm/v/@hyperapp/html.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/html)     | Write HTML using functions in Hyperapp                               |
+| [`@hyperapp/time`](/lib/time)       | [![npm](https://img.shields.io/npm/v/@hyperapp/time.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/time)     | Time effects and subscriptions for Hyperapp                          |
+| [`@hyperapp/http`](/lib/http)       | [![npm](https://img.shields.io/npm/v/@hyperapp/http.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/http)     | Make HTTP requests in Hyperapp                                       |
+| [`@hyperapp/events`](/lib/events)   | [![npm](https://img.shields.io/npm/v/@hyperapp/events.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/events) | Subscribe to event listeners: animation frames, keyboard, mouse, etc |
+| [`@hyperapp/random`](/lib/time)     | [![npm](https://img.shields.io/npm/v/@hyperapp/time.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/time)     | Time effects and subscriptions for Hyperapp                          |
 
 ## Help, I'm stuck!
 
-We love to talk JavaScript and Hyperapp. If you've hit a stumbling block, hop on the [Hyperapp Slack](https://hyperappjs.herokuapp.com) to get help, and if you don't receive an answer, or if you remain stuck, please file an issue, and we'll figure it out together.
+Don't panic! If you've hit a stumbling block, hop on the [Hyperapp Slack](https://join.slack.com/t/hyperapp/shared_invite/zt-frxjw3hc-TB4MgH4t74iPrY05KF9Jcg) to get help, and if you don't receive an answer, or if you remain stuck, [please file an issue](https://github.com/jorgebucaran/hyperapp/issues/new), and we'll figure it out together.
 
-Is anything wrong, unclear, missing? Help us [improve this page](https://github.com/jorgebucaran/hyperapp/fork).
+## Contributing
 
-## Stay in the loop
+Hyperapp is free and open source software. If you love Hyperapp, becoming a contributor or [sponsoring](https://github.com/sponsors/jorgebucaran) is the best way to give back. Thank you to everyone who already contributed to Hyperapp!
 
-- [Twitter](https://twitter.com/hyperappjs)
-- [Awesome](https://github.com/jorgebucaran/hyperawesome)
-- [/r/hyperapp](https://www.reddit.com/r/hyperapp)
+[![](https://opencollective.com/hyperapp/contributors.svg?width=1024&button=false)](https://github.com/jorgebucaran/hyperapp/graphs/contributors)
 
 ## License
 

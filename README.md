@@ -1,6 +1,6 @@
 # Hyperapp [![npm](https://img.shields.io/npm/v/hyperapp.svg?label=&color=1661EE)](https://github.com/jorgebucaran/hyperapp/releases/latest)
 
-> The tiny framework for creating hypertext applications.
+> The tiny framework for building hypertext applications.
 
 - **Do more with less**—We have minimized the concepts you need to learn to get stuff done. Views, actions, effects, and subscriptions are all pretty easy to get to grips with and work together seamlessly.
 - **Write what, not how**—With a declarative API that's easy to read and fun to write, Hyperapp is the best way to create purely functional, feature-rich, browser-based apps in JavaScript.
@@ -10,7 +10,6 @@ Here's the first example to get you started. You can try it live [here](https://
 
 <!-- prettier-ignore -->
 ```html
-<!DOCTYPE html>
 <html lang="en">
   <head>
     <script type="module">
@@ -49,7 +48,7 @@ Here's the first example to get you started. You can try it live [here](https://
 
 The app starts off with `init` where we set the initial state. The `view` returns a plain object representation of how we want the DOM to look (the virtual DOM) and Hyperapp takes care of modifying the real DOM to match this specification whenever the state changes. That's really all there is to it.
 
-Ready to dive in? We recommend working through the [tutorial](docs/tutorial.md) first. For other docs, visit the [API reference](docs/reference.md).
+Ready to dive in? We recommend reading through the [tutorial](docs/tutorial.md) first. For other docs, see the [API reference](docs/reference.md).
 
 ## Installation
 
@@ -75,16 +74,16 @@ Don't want to set up a build step? Import Hyperapp in a `<script>` tag as a modu
 
 ## Packages
 
-These packages provide access to the [Web Platform](https://platform.html5.org) and aim to ensure that the APIs are exposed in a way that makes sense for Hyperapp and the underlying code is stable. We haven't covered everything yet, but we're getting there. If you believe a package should be in this table, [let us know](https://github.com/jorgebucaran/hyperapp/issues/new).
+These packages provide access to the [web platform](https://platform.html5.org) and aim to ensure that the APIs are exposed in a way that makes sense for Hyperapp, and the underlying code is stable. Browse more packages [here](https://github.com/jorgebucaran/hyperawesome).
 
-| Package                             | Version                                                                                                                         | About                                                                |
-| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| [`@hyperapp/dom`](/lib/time)        | [![npm](https://img.shields.io/npm/v/@hyperapp/time.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/time)     | Time effects and subscriptions for Hyperapp                          |
-| [`@hyperapp/html`](/lib/html)       | [![npm](https://img.shields.io/npm/v/@hyperapp/html.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/html)     | Write HTML using functions in Hyperapp                               |
-| [`@hyperapp/time`](/lib/time)       | [![npm](https://img.shields.io/npm/v/@hyperapp/time.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/time)     | Time effects and subscriptions for Hyperapp                          |
-| [`@hyperapp/http`](/lib/http)       | [![npm](https://img.shields.io/npm/v/@hyperapp/http.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/http)     | Make HTTP requests in Hyperapp                                       |
-| [`@hyperapp/events`](/lib/events)   | [![npm](https://img.shields.io/npm/v/@hyperapp/events.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/events) | Subscribe to event listeners: animation frames, keyboard, mouse, etc |
-| [`@hyperapp/random`](/lib/time)     | [![npm](https://img.shields.io/npm/v/@hyperapp/time.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/time)     | Time effects and subscriptions for Hyperapp                          |
+| Package                           | Version                                                                                                                         | About                                                            |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| [`@hyperapp/dom`](/pkg/dom)       | [![npm](https://img.shields.io/badge/-in%20progress-ee4816)](https://www.npmjs.com/package/@hyperapp/dom)                       | Manipulate the DOM: focus/blur, measure elements                 |
+| [`@hyperapp/html`](/pkg/html)     | [![npm](https://img.shields.io/npm/v/@hyperapp/html.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/html)     | Write HTML using functions                                       |
+| [`@hyperapp/time`](/pkg/time)     | [![npm](https://img.shields.io/npm/v/@hyperapp/time.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/time)     | Subscribe to intervals, get the time                             |
+| [`@hyperapp/http`](/pkg/http)     | [![npm](https://img.shields.io/npm/v/@hyperapp/http.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/http)     | Make HTTP requests                                               |
+| [`@hyperapp/events`](/pkg/events) | [![npm](https://img.shields.io/npm/v/@hyperapp/events.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/events) | Subscribe to event listeners: animation, keyboard, mouse, window |
+| [`@hyperapp/random`](/pkg/random) | [![npm](https://img.shields.io/badge/-in%20progress-ee4816)](https://www.npmjs.com/package/@hyperapp/random)                    | Generate random numbers and values declaratively                 |
 
 ## Help, I'm stuck!
 

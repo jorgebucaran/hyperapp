@@ -1,61 +1,28 @@
 # Reference
 
-Below is a consice recap of Hyperapp's core APIs and packages. It's geared towards developers who already have some level of understanding about the framework and want to look something up quickly. If you're just getting started, we recommend [working through the tutorial](tutorial.md) first.
+Below is a consice recap of Hyperapp's core APIs and packages. It's geared towards developers who already have some level of understanding about the framework and want to look up something quickly. If you're just getting started, we recommend [working through the tutorial](tutorial.md) first.
 
-### Packages
-<!-- 
-| Package                           | Size   | Version                                                                                                                         | About                                                              |
-| --------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| [`hyperapp`](.)                   | 1.6 kB | [![npm](https://img.shields.io/npm/v/hyperapp.svg?label=&color=1661ee)](https://www.npmjs.com/package/hyperapp)                 | Hyperapp                                                           |
-| [`@hyperapp/html`](/lib/html)     | 0.4 kB | [![npm](https://img.shields.io/npm/v/@hyperapp/html.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/html)     | Write HTML using functions in Hyperapp                             |
-| [`@hyperapp/events`](/lib/events) | 0.5 kB | [![npm](https://img.shields.io/npm/v/@hyperapp/events.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/events) | Work with event listeners: animation, keyboard, mouse, and window. |
-| [`@hyperapp/http`](/lib/http)     | 0.5 kB | [![npm](https://img.shields.io/npm/v/@hyperapp/http.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/http)     | Make HTTP requests in Hyperapp                                     |
-| [`@hyperapp/time`](/lib/time)     | 0.2 kB | [![npm](https://img.shields.io/npm/v/@hyperapp/time.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/time)     | Time effects and subscriptions for Hyperapp                        |
-| [`@hyperapp/dom`](/lib/time)      | 0.1 kB | [![npm](https://img.shields.io/npm/v/@hyperapp/time.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/time)     | Time effects and subscriptions for Hyperapp                        |
-| [`@hyperapp/random`](/lib/time)   | 0.3 kB | [![npm](https://img.shields.io/npm/v/@hyperapp/time.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/time)     | Time effects and subscriptions for Hyperapp                        |
-| [`@hyperapp/ws`](/lib/time)       | 0.3 kB | [![npm](https://img.shields.io/npm/v/@hyperapp/time.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/time)     | Time effects and subscriptions for Hyperapp                        |
-| [`@hyperapp/canvas`](/lib/time)   | 0.1 kB | [![npm](https://img.shields.io/npm/v/@hyperapp/time.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/time)     | Time effects and subscriptions for Hyperapp                        |
-| [`@hyperapp/webgl`](/lib/time)    | 0.7 kB | [![npm](https://img.shields.io/npm/v/@hyperapp/time.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/time)     | Time effects and subscriptions for Hyperapp                        |
-| [`@hyperapp/webgl`](/lib/time)    | 0.6 kB | [![npm](https://img.shields.io/npm/v/@hyperapp/time.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/time)     | Time effects and subscriptions for Hyperapp                        |
-| [`@hyperapp/webgl`](/lib/time)    | 1.3 kB | [![npm](https://img.shields.io/npm/v/@hyperapp/time.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/time)     | Time effects and subscriptions for Hyperapp                        | 
--->
+- [`h()`](#h)
+  - [on<i>event</i>](#onevent-props)
+  - [key](#key-prop)
+  - [style](#style-prop)
+  - [class](#class-prop)
+- [`text()`](#text)
+- [`app()`](#app)
+  - [init](#init-prop)
+  - [view](#view-prop)
+  - [subscriptions](#subscriptions-prop)
+  - [node](#node-prop)
+  - [middleware](#middleware-prop)
+- [`memo()`](#memo)
+- [actions](#actions)
+  - [Simple](#simple-action-state--nextstate)
+  - [Complex](#complex-action-state-params--nextstate)
+  - [With side-effects](#action-with-side-effects-state--nextstate-effects)
+- [effects](#effects)
+- [subscriptions](#subscriptions)
 
-- [`@hyperapp/html`](/lib/html) Write HTML using functions in Hyperapp
-- [`@hyperapp/events`](/lib/events) Work with event listeners: animation, keyboard, mouse, and window.
-- [`@hyperapp/http`](/lib/http) Make HTTP requests in Hyperapp
-- [`@hyperapp/time`](/lib/time) Time effects and subscriptions for Hyperapp
-- [`@hyperapp/dom`](/lib/time) Time effects and subscriptions for Hyperapp
-- [`@hyperapp/random`](/lib/time) Time effects and subscriptions for Hyperapp
-- [`@hyperapp/ws`](/lib/time) Time effects and subscriptions for Hyperapp
-- [`@hyperapp/canvas`](/lib/time) Time effects and subscriptions for Hyperapp
-- [`@hyperapp/webgl`](/lib/time) Time effects and subscriptions for Hyperapp
-- [`@hyperapp/webgl`](/lib/time) Time effects and subscriptions for Hyperapp
-- [`@hyperapp/webgl`](/lib/time) Time effects and subscriptions for Hyperapp
-
-- [hyperapp](.)
-  - [`h()`](#h)
-    - [on<i>event</i>](#onevent-props)
-    - [key](#key-prop)
-    - [style](#style-prop)
-    - [class](#class-prop)
-  - [`text()`](#text)
-  - [`app()`](#app)
-    - [init](#init-prop)
-    - [view](#view-prop)
-    - [subscriptions](#subscriptions-prop)
-    - [node](#node-prop)
-    - [middleware](#middleware-prop)
-  - [`memo()`](#memo)
-  - [actions](#actions)
-    - [Simple](#simple-action-state--nextstate)
-    - [Complex](#complex-action-state-params--nextstate)
-    - [With side-effects](#action-with-side-effects-state--nextstate-effects)
-  - [effects](#effects)
-  - [subscriptions](#subscriptions)
-
-## `hyperapp`
-
-### h()
+## h()
 
 ```javascript
 h(type, props, ...children)
@@ -127,9 +94,9 @@ const AccordionComponent = ({ title, description, isOpened }) => (
 )
 ```
 
-#### Special props
+### Special props
 
-###### On<i>event</i> props
+#### On<i>event</i> props
 
 <code><a href="https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Event_handlers" target="_blank">on<i>event</i></a></code> props such as onclick, onsubmit, onblur, etc. dispatch [actions](#actions) directly to hyperapp. In the action tuple, the second element can be a function that processes the events before passing the params to the action.
 
@@ -141,7 +108,7 @@ const AccordionComponent = ({ title, description, isOpened }) => (
 />
 ```
 
-###### Key prop
+#### Key prop
 
 The `key` is a unique string per VNode that help hyperapp track if VNodes are changed, added or removed in situations where it can't, such as in arrays.
 
@@ -155,7 +122,7 @@ const Items = ({ items }) => (
 )
 ```
 
-###### Style prop
+#### Style prop
 
 The `style` prop can be either a string of CSS or an object of styles
 
@@ -172,7 +139,7 @@ The `style` prop can be either a string of CSS or an object of styles
 </div>
 ```
 
-###### Class prop
+#### Class prop
 
 The `class` prop can be either a string of classes or an object of classes. For the object, the keys are the names of the classes to add and the values are booleans for toggling the classes.
 
@@ -191,7 +158,7 @@ const VariableProfileBox = ({ user, useBorders, variant }) => (
 )
 ```
 
-### app()
+## app()
 
 ```javascript
 app({ init, view, node, subscriptions, middleware })
@@ -217,7 +184,7 @@ app({
 });
 ```
 
-###### init prop
+#### init prop
 
 [Action](#actions) to initialize the app.
 
@@ -260,7 +227,7 @@ app({
 });
 ```
 
-###### view prop
+#### view prop
 
 ```javascript
 ;(state) => virtualDOM
@@ -272,13 +239,13 @@ It maps your state to a UI that hyperapp uses for rendering the app.
 
 Every time the state of you application changes, this function will be called again to render the UI based on the new state, using the logic you've defined inside of it.
 
-###### node prop
+#### node prop
 
 DOM element to render the virtual DOM on. Also known as the application container or the mount node.
 
 Hyperapp supports hydration out of the box. This means that, if the mount node you specify is already populated with DOM elements, hyperapp will recycle and use these existing elements instead of throwing them away and create them again. You can use this for doing SSR or pre-rendering of your applications, which will give you SEO and performance benifits.
 
-###### subscriptions prop
+#### subscriptions prop
 
 ```javascript
 state => subscriptions[]
@@ -288,7 +255,7 @@ Function that returns an array of [subscriptions](#subscriptions) for a given st
 
 In a similar fashion to how the view function is used to dynamically add and remove DOM elements based on the state, this subscriptions function is used for dynamically adding and removing [subscriptions](#subscriptions) to the app.
 
-###### middleware prop
+#### middleware prop
 
 ```javascript
 ;(dispatch) => newDispatch
@@ -296,7 +263,7 @@ In a similar fashion to how the view function is used to dynamically add and rem
 
 Higher order functions that changes the `dispatch` that hyperapp will use. They are used for wrapping all actions that the app will dispatch with extended behavior.
 
-### memo()
+## memo()
 
 ```javascript
 memo({ render, ...props })
@@ -324,7 +291,7 @@ const LazyFoo = (props) =>
   })
 ```
 
-### actions
+## actions
 
 ```javascript
 ;(state, params?) => nextState
@@ -336,7 +303,7 @@ They are the only way to change the state of your Hyperapp app.
 
 Actions are pure, deterministic functions that produce no side-effects and return the next state. They are dispatched by either DOM events in your app, [effects](#effects) or by [subscriptions](#subscriptions). They come in multiple forms:
 
-###### Simple action: `state => nextState`
+#### Simple action: `state => nextState`
 
 No parameters, next state is determined entirely on the previous state.
 
@@ -348,7 +315,7 @@ const Increment = (state) => state + 1
 <button onclick={Increment}>+</button>
 ```
 
-###### Complex action: `(state, params) => nextState`
+#### Complex action: `(state, params) => nextState`
 
 Action with parameters along with the previous state.
 
@@ -360,7 +327,7 @@ const IncrementBy = (state, by) => state + by
 <button onclick={[IncrementBy, 5]}>+5</button>
 ```
 
-###### Action with side-effects: `(state) => [nextState, ...effects]`
+#### Action with side-effects: `(state) => [nextState, ...effects]`
 
 Action that returns [effects](#effects) to run along with the next state.
 
@@ -382,7 +349,7 @@ const GetPizzas = (state) => [
 
 Actions with side-effects can also take in params, just like a complex action. If so, it will be dispatched in the same way using an "action tuple".
 
-### effects
+## effects
 
 ```javascript
 ;[fx, params]
@@ -395,7 +362,7 @@ Effects are only descriptions of work that needs to be executed, they do not do 
 - **fx** - Effect runner.
 - **params** Data to be passed to the effect runner.
 
-###### Effect runner `(dispatch, params) => void`
+#### Effect runner `(dispatch, params) => void`
 
 Encapsulates the implementation of side effects to run outside of hyperapp and can dispatch an [action](#actions) when it completes.
 
@@ -425,7 +392,7 @@ const GetPizzas = (state) => [
 <button onclick={GetPizzas}>Get pizzas</button>
 ```
 
-### subscriptions
+## subscriptions
 
 ```javascript
 ;[sub, params]
@@ -440,7 +407,7 @@ They are used for both adding and removing connections to events outside hyperap
 - **sub** - Subscription configurator.
 - **params** - Data to be passed to the configurator.
 
-###### Subscription configurator `(dispatch, params) => cleanupFunction`
+#### Subscription configurator `(dispatch, params) => cleanupFunction`
 
 Binds **dispatch** to an external event. Returns a cleanup function that removes the binding.
 

@@ -1,7 +1,6 @@
 .idea/
 .vscode/
 
-.*
 *.log*
 *.xml
 index.html
@@ -11,3 +10,4 @@ coverage
 
 *.gz
 dist/
+.DS_STORE

@@ -1,0 +1,20 @@
+{
+  "name": "@hyperapp/dom",
+  "description": "Manipulate the DOM, focus, blur, and measure elements.",
+  "version": "0.0.0",
+  "type": "module",
+  "main": "src/index.js",
+  "unpkg": "dist/index.js",
+  "license": "MIT",
+  "repository": "https://github.com/jorgebucaran/hyperapp/tree/master/lib/dom",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "author": "Jorge Bucaran",
+  "keywords": [
+    "hyperapp",
+    "effects",
+    "dom"
+  ]
+}

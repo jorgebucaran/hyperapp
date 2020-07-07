@@ -1,6 +1,6 @@
 {
   "name": "@hyperapp/time",
-  "description": "Hyperapp time effects and subscriptions.",
+  "description": "Subscribe to intervals, get the time.",
   "version": "0.0.10",
   "type": "module",
   "main": "src/index.js",
@@ -14,10 +14,7 @@
   "author": "Jorge Bucaran",
   "keywords": [
     "hyperapp",
-    "effects",
-    "subscriptions",
     "interval",
-    "time",
-    "every"
+    "time"
   ]
 }

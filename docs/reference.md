@@ -1,6 +1,6 @@
 # Reference
 
-Below is a consice recap of Hyperapp's core APIs and packages. It's geared towards developers who already have some level of understanding about the framework and want to look up something quickly. If you're just getting started, we recommend [working through the tutorial](tutorial.md) first.
+Below is a consice recap of Hyperapp's core APIs and packages. It's geared towards developers who already have some familiarity with Hyperapp and want to look up something quickly. If you're just getting started, we recommend [working through the tutorial](tutorial.md) first.
 
 - [`h()`](#h)
   - [on<i>event</i>](#onevent-props)

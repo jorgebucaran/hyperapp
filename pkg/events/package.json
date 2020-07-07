@@ -1,0 +1,23 @@
+{
+  "name": "@hyperapp/events",
+  "description": "Subscribe to event listeners: animation, keyboard, mouse, window.",
+  "version": "0.0.0",
+  "type": "module",
+  "main": "src/index.js",
+  "unpkg": "dist/index.js",
+  "license": "MIT",
+  "repository": "https://github.com/jorgebucaran/hyperapp/tree/master/lib/events",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "author": "Jorge Bucaran",
+  "keywords": [
+    "hyperapp",
+    "animation",
+    "keyboard",
+    "mouse",
+    "window",
+    "events"
+  ]
+}

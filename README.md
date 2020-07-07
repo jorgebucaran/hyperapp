@@ -29,7 +29,6 @@ Here's the first example to get you started. You can try it live [here](https://
         init: { todos: [], value: "" },
         view: ({ todos, value }) =>
           h("main", {}, [
-            h("h1", {}, text("My Todos")),
             h("input", { type: "text", oninput: NewValue, value }),
             h("button", { onclick: Add }, text("Add Todo")),
             h("ul", {},
@@ -48,7 +47,7 @@ Here's the first example to get you started. You can try it live [here](https://
 
 The app starts off with `init` where we set the initial state. The `view` returns a plain object representation of how we want the DOM to look (the virtual DOM) and Hyperapp takes care of modifying the real DOM to match this specification whenever the state changes. That's really all there is to it.
 
-Ready to dive in? We recommend reading through the [tutorial](docs/tutorial.md) first. For other docs, see the [API reference](docs/reference.md).
+Ready to dive in? We recommend following the [tutorial](docs/tutorial.md) or reading through the [API reference](docs/reference.md).
 
 ## Installation
 
@@ -74,16 +73,15 @@ Don't want to set up a build step? Import Hyperapp in a `<script>` tag as a modu
 
 ## Packages
 
-These packages provide access to the [web platform](https://platform.html5.org) and aim to ensure that the APIs are exposed in a way that makes sense for Hyperapp, and the underlying code is stable. Browse more packages [here](https://github.com/jorgebucaran/hyperawesome).
+These packages provide access to the [web platform](https://platform.html5.org) and aim to ensure that the APIs are exposed in a way that makes sense for Hyperapp, and the underlying code is stable. Browse more packages from the community [here](https://github.com/jorgebucaran/hyperawesome).
 
 | Package                           | Version                                                                                                                         | About                                                            |
 | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| [`@hyperapp/dom`](/pkg/dom)       | [![npm](https://img.shields.io/badge/-in%20progress-ee4816)](https://www.npmjs.com/package/@hyperapp/dom)                       | Manipulate the DOM: focus/blur, measure elements                 |
+| [`@hyperapp/dom`](/pkg/dom)       | [![npm](https://img.shields.io/npm/v/@hyperapp/dom.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/dom)       | Manipulate the DOM, focus, blur, and measure elements                 |
 | [`@hyperapp/html`](/pkg/html)     | [![npm](https://img.shields.io/npm/v/@hyperapp/html.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/html)     | Write HTML using functions                                       |
 | [`@hyperapp/time`](/pkg/time)     | [![npm](https://img.shields.io/npm/v/@hyperapp/time.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/time)     | Subscribe to intervals, get the time                             |
-| [`@hyperapp/http`](/pkg/http)     | [![npm](https://img.shields.io/npm/v/@hyperapp/http.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/http)     | Make HTTP requests                                               |
+| [`@hyperapp/http`](/pkg/http)     | [![npm](https://img.shields.io/npm/v/@hyperapp/http.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/http)     | Talk to servers, make HTTP requests                                               |
 | [`@hyperapp/events`](/pkg/events) | [![npm](https://img.shields.io/npm/v/@hyperapp/events.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/events) | Subscribe to event listeners: animation, keyboard, mouse, window |
-| [`@hyperapp/random`](/pkg/random) | [![npm](https://img.shields.io/badge/-in%20progress-ee4816)](https://www.npmjs.com/package/@hyperapp/random)                    | Generate random numbers and values declaratively                 |
 
 ## Help, I'm stuck!
 

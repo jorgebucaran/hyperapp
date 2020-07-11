@@ -1,21 +1,22 @@
-# Hyperapp [![npm](https://img.shields.io/npm/v/hyperapp.svg?label=&color=1661EE)](https://github.com/jorgebucaran/hyperapp/releases/latest)
+# Hyperapp
 
 > The tiny framework for building hypertext applications.
 
 - **Do more with less**—We have minimized the concepts you need to learn to get stuff done. Views, actions, effects, and subscriptions are all pretty easy to get to grips with and work together seamlessly.
-- **Write what, not how**—With a declarative API that's easy to read and fun to write, Hyperapp is the best way to create purely functional, feature-rich, browser-based apps in JavaScript.
+- **Write what, not how**—With a declarative API that's easy to read and fun to write, Hyperapp is the best way to build purely functional, feature-rich, browser-based apps in JavaScript.
 - **Smaller than a favicon**—1 kB, give or take. Hyperapp is an ultra-lightweight Virtual DOM, highly-optimized diff algorithm, and state management library obsessed with minimalism.
 
-Here's the first example to get you started. You can try it live [here](https://codesandbox.io/s/hyperapp-playground-fwjlo).
+Here's the first example to get you started—no bundlers or compilers. [Try it yourself](https://hyperapp.glitch.me/).
 
 <!-- prettier-ignore -->
 ```html
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <script type="module">
       import { h, text, app } from "https://unpkg.com/hyperapp"
 
-      const Add = (state) => ({
+      const AddTodo = (state) => ({
         ...state,
         todos: state.todos.concat(state.value),
       })
@@ -30,7 +31,7 @@ Here's the first example to get you started. You can try it live [here](https://
         view: ({ todos, value }) =>
           h("main", {}, [
             h("input", { type: "text", oninput: NewValue, value }),
-            h("button", { onclick: Add }, text("Add Todo")),
+            h("button", { onclick: AddTodo }, text("Add")),
             h("ul", {},
               todos.map((todo) => h("li", {}, text(todo)))
             ),
@@ -45,9 +46,9 @@ Here's the first example to get you started. You can try it live [here](https://
 </html>
 ```
 
-The app starts off with `init` where we set the initial state. The `view` returns a plain object representation of how we want the DOM to look (the virtual DOM) and Hyperapp takes care of modifying the real DOM to match this specification whenever the state changes. That's really all there is to it.
+Now that you have poked around the code a bit, you may have some questions. What is `init` and `view`, and how do they fit together? The app starts off with `init`, where we set the initial state. The `view` returns a plain object that represents how we want the DOM to look (the virtual DOM) and Hyperapp takes care of modifying the actual DOM to match this specification whenever the state changes. That's really all there is to it.
 
-Ready to dive in? We recommend following the [tutorial](docs/tutorial.md) or reading through the [API reference](docs/reference.md).
+Ready to dive in? Learn the basics in the [tutorial](docs/tutorial.md) or visit the [API reference](docs/reference.md) for more documentation. If you prefer to learn by studying real-world examples, you can browse our [awesome list of resources](https://github.com/jorgebucaran/hyperawesome) too.
 
 ## Installation
 
@@ -73,15 +74,16 @@ Don't want to set up a build step? Import Hyperapp in a `<script>` tag as a modu
 
 ## Packages
 
-These packages provide access to the [web platform](https://platform.html5.org) and aim to ensure that the APIs are exposed in a way that makes sense for Hyperapp, and the underlying code is stable. Browse more packages from the community [here](https://github.com/jorgebucaran/hyperawesome).
+Official packages provide access to [The Web Platform](https://platform.html5.org), and ensure that the APIs are exposed in a way that makes sense for Hyperapp, and the underlying code is stable. We already cover a decent amount of features, but you can always [create your own effects and subscriptions](docs/reference.md) if something is not available yet.
 
-| Package                           | Version                                                                                                                         | About                                                            |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| [`@hyperapp/dom`](/pkg/dom)       | [![npm](https://img.shields.io/npm/v/@hyperapp/dom.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/dom)       | Manipulate the DOM, focus, blur, and measure elements                 |
-| [`@hyperapp/html`](/pkg/html)     | [![npm](https://img.shields.io/npm/v/@hyperapp/html.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/html)     | Write HTML using functions                                       |
-| [`@hyperapp/time`](/pkg/time)     | [![npm](https://img.shields.io/npm/v/@hyperapp/time.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/time)     | Subscribe to intervals, get the time                             |
-| [`@hyperapp/http`](/pkg/http)     | [![npm](https://img.shields.io/npm/v/@hyperapp/http.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/http)     | Talk to servers, make HTTP requests                                               |
-| [`@hyperapp/events`](/pkg/events) | [![npm](https://img.shields.io/npm/v/@hyperapp/events.svg?label=&color=1661ee)](https://www.npmjs.com/package/@hyperapp/events) | Subscribe to event listeners: animation, keyboard, mouse, window |
+| Package                           | Status                                                                                                                                              | About                                                                 |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| [`@hyperapp/dom`](/pkg/dom)       | [![npm](https://img.shields.io/badge/-planned-6a737d?style=for-the-badge&label=)](https://www.npmjs.com/package/@hyperapp/dom)                      | Manipulate the DOM, focus, blur, and measure elements                 |
+| [`@hyperapp/html`](/pkg/html)     | [![npm](https://img.shields.io/npm/v/@hyperapp/html.svg?style=for-the-badge&color=0366d6&label=)](https://www.npmjs.com/package/@hyperapp/html)     | Write HTML using functions                                            |
+| [`@hyperapp/time`](/pkg/time)     | [![npm](https://img.shields.io/npm/v/@hyperapp/time.svg?style=for-the-badge&color=0366d6&label=)](https://www.npmjs.com/package/@hyperapp/time)     | Subscribe to intervals, get the time                                  |
+| [`@hyperapp/http`](/pkg/http)     | [![npm](https://img.shields.io/npm/v/@hyperapp/http.svg?style=for-the-badge&color=0366d6&label=)](https://www.npmjs.com/package/@hyperapp/http)     | Talk to servers, make HTTP requests                                   |
+| [`@hyperapp/events`](/pkg/events) | [![npm](https://img.shields.io/npm/v/@hyperapp/events.svg?style=for-the-badge&color=0366d6&label=)](https://www.npmjs.com/package/@hyperapp/events) | Listen to events: animation frames, keyboard, mouse, window, and more |
+| [`@hyperapp/random`](/pkg/random) | [![npm](https://img.shields.io/badge/-planned-6a737d?style=for-the-badge&label=)](https://www.npmjs.com/package/@hyperapp/random)                   | Declarative random numbers and values                                 |
 
 ## Help, I'm stuck!
 

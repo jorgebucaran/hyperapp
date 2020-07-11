@@ -1,9 +1,10 @@
-var RECYCLED = 1
+var SSR_NODE = 1
 var TEXT_NODE = 3
 var EMPTY_OBJ = {}
 var EMPTY_ARR = []
 var SVG_NS = "http://www.w3.org/2000/svg"
 
+var id = (a) => a
 var map = EMPTY_ARR.map
 var isArray = Array.isArray
 var enqueue =
@@ -11,20 +12,20 @@ var enqueue =
     ? requestAnimationFrame
     : setTimeout
 
-var createClass = (str) => {
+var createClass = (obj) => {
   var out = ""
 
-  if (typeof str === "string") return str
+  if (typeof obj === "string") return obj
 
-  if (isArray(str)) {
-    for (var k = 0, tmp; k < str.length; k++) {
-      if ((tmp = createClass(str[k])) !== "") {
+  if (isArray(obj)) {
+    for (var k = 0, tmp; k < obj.length; k++) {
+      if ((tmp = createClass(obj[k]))) {
         out += (out && " ") + tmp
       }
     }
   } else {
-    for (var k in str) {
-      if (str[k]) out += (out && " ") + k
+    for (var k in obj) {
+      if (obj[k]) out += (out && " ") + k
     }
   }
 
@@ -32,11 +33,9 @@ var createClass = (str) => {
 }
 
 var shouldRestart = (a, b) => {
-  if (a !== b) {
-    for (var k in { ...a, ...b }) {
-      if (typeof (isArray((b[k] = a[k])) ? b[k][0] : b[k]) === "function") {
-      } else if (a[k] !== b[k]) return true
-    }
+  for (var k in { ...a, ...b }) {
+    if (typeof (isArray((b[k] = a[k])) ? b[k][0] : b[k]) === "function") {
+    } else if (a[k] !== b[k]) return true
   }
 }
 
@@ -66,6 +65,8 @@ var patchSubs = (oldSubs, newSubs, dispatch) => {
   }
   return subs
 }
+
+var getKey = (vdom) => (vdom == null ? vdom : vdom.key)
 
 var patchProperty = (node, key, oldValue, newValue, listener, isSvg) => {
   if (key === "key") {
@@ -122,8 +123,6 @@ var createNode = (vdom, listener, isSvg) => {
 
   return (vdom.node = node)
 }
-
-var getKey = (vdom) => (vdom == null ? null : vdom.key)
 
 var patch = (parent, node, oldVNode, newVNode, listener, isSvg) => {
   if (oldVNode === newVNode) {
@@ -252,7 +251,7 @@ var patch = (parent, node, oldVNode, newVNode, listener, isSvg) => {
           continue
         }
 
-        if (newKey == null || oldVNode.tag === RECYCLED) {
+        if (newKey == null || oldVNode.tag === SSR_NODE) {
           if (oldKey == null) {
             patch(
               node,
@@ -336,15 +335,6 @@ var maybeVNode = (newVNode, oldVNode) =>
       : newVNode
     : text("")
 
-var createVNode = (type, props, children, node, key, tag) => ({
-  type: type,
-  props: props,
-  children: children,
-  node: node,
-  tag: tag,
-  key: key,
-})
-
 var recycleNode = (node) =>
   node.nodeType === TEXT_NODE
     ? text(node.nodeValue, node)
@@ -354,15 +344,24 @@ var recycleNode = (node) =>
         map.call(node.childNodes, recycleNode),
         node,
         null,
-        RECYCLED
+        SSR_NODE
       )
 
-var memo = (view, props) => ({ memo: props, tag: view })
+var createVNode = (type, props, children, node, key, tag) => ({
+  type,
+  props,
+  children,
+  node,
+  key,
+  tag,
+})
 
-var text = (value, node) =>
+export var memo = (tag, memo) => ({ tag, memo })
+
+export var text = (value, node) =>
   createVNode(value, EMPTY_OBJ, EMPTY_ARR, node, null, TEXT_NODE)
 
-var h = (type, props, children) =>
+export var h = (type, props, children) =>
   createVNode(
     type,
     props,
@@ -371,7 +370,7 @@ var h = (type, props, children) =>
     props.key
   )
 
-var app = (props) => {
+export var app = (props) => {
   var view = props.view
   var node = props.node
   var subscriptions = props.subscriptions
@@ -379,10 +378,6 @@ var app = (props) => {
   var subs = []
   var doing
   var state
-
-  var listener = function (event) {
-    dispatch(this.tag[event.type], event)
-  }
 
   var setState = (newState) => {
     if (state !== newState) {
@@ -394,7 +389,7 @@ var app = (props) => {
     }
   }
 
-  var dispatch = (props.middleware || ((f) => f))((action, props) =>
+  var dispatch = (props.middleware || id)((action, props) =>
     typeof action === "function"
       ? dispatch(action(state, props))
       : isArray(action)
@@ -409,6 +404,10 @@ var app = (props) => {
       : setState(action)
   )
 
+  var listener = function (event) {
+    dispatch(this.tag[event.type], event)
+  }
+
   var render = () =>
     (node = patch(
       node.parentNode,
@@ -419,7 +418,5 @@ var app = (props) => {
       (doing = false)
     ))
 
-  return dispatch(props.init), dispatch
+  dispatch(props.init)
 }
-
-export { memo, h, text, app }

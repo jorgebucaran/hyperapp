@@ -1,6 +1,6 @@
 # Tutorial
 
-Welcome! If you're new to Hyperapp, you've found the perfect place to start learning.
+Welcome! If you're new to Hyperapp, you've found the perfect place to start learning. This tutorial will guide you through your first steps with Hyperapp as we build a simple app. 
 
 - [The Set-up](#setup)
 - [Hello World](#helloworld)

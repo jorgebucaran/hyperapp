@@ -1,7 +1,7 @@
 {
   "name": "hyperapp",
   "description": "The tiny framework for building hypertext applications",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "type": "module",
   "main": "src/index.js",
   "unpkg": "dist/index.js",

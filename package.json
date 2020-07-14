@@ -1,11 +1,10 @@
 {
   "name": "hyperapp",
-  "description": "The tiny framework for building web interfaces.",
+  "description": "The tiny framework for building hypertext applications",
   "version": "2.0.4",
+  "type": "module",
   "main": "src/index.js",
-  "module": "src/index.js",
-  "unpkg": "src/index.js",
-  "browser": "src/index.js",
+  "unpkg": "dist/index.js",
   "license": "MIT",
   "repository": "jorgebucaran/hyperapp",
   "homepage": "https://hyperapp.dev",
@@ -18,24 +17,27 @@
     "hyperapp",
     "frontend",
     "framework",
-    "virtual dom",
-    "vdom"
+    "vdom",
+    "web",
+    "app",
+    "ui"
   ],
-  "scripts": { 
-    "test": "nyc -i esm -r lcov testmatrix test/*.test.js && nyc report",
-    "build": "export pkg=$npm_package_name; npm run bundle && npm run minify",
-    "bundle": "rollup -i $npm_package_module -o dist/$pkg.js --no-esModule -mf iife -n $pkg",
-    "minify": "terser dist/$pkg.js -o dist/$pkg.js -mc --source-map includeSources,url=$pkg.js.map",
+  "scripts": {
+    "test": "c8 twist test/*.js",
+    "docs": "cd docs && npm run build",
+    "build": "export dir=${p:+pkg/$p/} p=$npm_package_name$p; npm run bundle && npm run minify && npm run unpkg",
+    "unpkg": "terser ${dir}$npm_package_main -o ${dir}$npm_package_unpkg -mc --source-map includeSources,url=$npm_package_main.map --module",
+    "minify": "terser ${dir}dist/$p.js -o ${dir}dist/$p.js -mc --source-map includeSources,url=$p.js.map",
+    "bundle": "rollup -i ${dir}$npm_package_main -o ${dir}dist/$p.js --no-strict -mf iife -n $p",
     "create": "npm run build && git commit -am $msg && git tag -s $msg -m $msg && git push && git push --tags",
-    "release": "env msg=$npm_package_version npm run create && npm publish",
-    "build-site": "cd docs && npm run build"
+    "release": "env msg=$(npm run -s message) npm run create && cd ./${p:+pkg/$p} && npm publish --access public",
+    "message": "echo ${p:+@$npm_package_name/$p@}$(node -p \"require('./${p:+pkg/$p/}package').version\")",
+    "postinstall": "echo \"Love Hyperapp? Please support me on GitHub <https://github.com/sponsors/jorgebucaran>\""
   },
   "devDependencies": {
-    "esm": "^3.2.25",
-    "nyc": "^14.1.1",
-    "testmatrix": "^0.1.2",
-    "jsdom": "15.1.1",
+    "c8": "*",
+    "twist": "*",
     "rollup": "*",
-    "terser": "^4.3.8"
+    "terser": "*"
   }
 }

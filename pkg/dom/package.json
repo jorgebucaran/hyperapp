@@ -3,13 +3,11 @@
   "description": "Manipulate the DOM, focus, blur, and measure elements.",
   "version": "0.0.0",
   "type": "module",
-  "main": "src/index.js",
-  "unpkg": "dist/index.js",
+  "main": "index.js",
   "license": "MIT",
-  "repository": "https://github.com/jorgebucaran/hyperapp/tree/master/lib/dom",
+  "repository": "https://github.com/jorgebucaran/hyperapp/tree/master/pkg/dom",
   "files": [
-    "src",
-    "dist"
+    "*.js*"
   ],
   "author": "Jorge Bucaran",
   "keywords": [

@@ -1,15 +1,13 @@
 {
   "name": "@hyperapp/time",
-  "description": "Subscribe to intervals, get the time.",
+  "description": "Subscribe to intervals, get the time now.",
   "version": "0.0.10",
   "type": "module",
-  "main": "src/index.js",
-  "unpkg": "dist/index.js",
+  "main": "index.js",
   "license": "MIT",
   "repository": "https://github.com/jorgebucaran/hyperapp/tree/master/lib/time",
   "files": [
-    "src",
-    "dist"
+    "*.js*"
   ],
   "author": "Jorge Bucaran",
   "keywords": [

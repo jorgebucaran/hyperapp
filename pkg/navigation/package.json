@@ -1,0 +1,19 @@
+{
+  "name": "@hyperapp/navigation",
+  "description": "Subscribe and manage the browser URL history.",
+  "version": "0.0.0",
+  "type": "module",
+  "main": "index.js",
+  "license": "MIT",
+  "repository": "https://github.com/jorgebucaran/hyperapp/tree/master/pkg/navigation",
+  "files": [
+    "*.js*"
+  ],
+  "author": "Jorge Bucaran",
+  "keywords": [
+    "hyperapp",
+    "navigation",
+    "routing",
+    "spa"
+  ]
+}

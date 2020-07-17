@@ -3,10 +3,9 @@
   "description": "Subscribe to event listeners: animation, keyboard, mouse, window.",
   "version": "0.0.0",
   "type": "module",
-  "main": "src/index.js",
-  "unpkg": "dist/index.js",
+  "main": "index.js",
   "license": "MIT",
-  "repository": "https://github.com/jorgebucaran/hyperapp/tree/master/lib/events",
+  "repository": "https://github.com/jorgebucaran/hyperapp/tree/master/pkg/events",
   "files": [
     "src",
     "dist"

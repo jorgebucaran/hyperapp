@@ -1,6 +1,10 @@
 .idea/
 .vscode/
 
+*.gz
+*.br
+*.map
+hyperapp*
 *.log*
 *.xml
 index.html
@@ -8,6 +12,4 @@ node_modules
 package-lock.json
 coverage
 
-*.gz
-dist/
 .DS_STORE

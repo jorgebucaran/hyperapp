@@ -3,13 +3,11 @@
   "description": "Hyperapp HTML helper functions.",
   "version": "1.2.0",
   "type": "module",
-  "main": "src/index.js",
-  "unpkg": "dist/index.js",
+  "main": "index.js",
   "license": "MIT",
-  "repository": "https://github.com/jorgebucaran/hyperapp/tree/master/lib/html",
+  "repository": "https://github.com/jorgebucaran/hyperapp/tree/master/pkg/html",
   "files": [
-    "src",
-    "dist"
+    "*.js*"
   ],
   "author": "Jorge Bucaran",
   "keywords": [

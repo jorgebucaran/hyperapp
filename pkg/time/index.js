@@ -1,24 +1,18 @@
-var timeout = function (dispatch, props) {
-  setTimeout(function () {
-    dispatch(props.action)
-  }, props.delay)
-}
+const timeout = (dispatch, props) =>
+  setTimeout(() => dispatch(props.action), props.delay)
 
-var interval = function (dispatch, props) {
-  var id = setInterval(function () {
+const interval = (dispatch, props) => {
+  const id = setInterval(() => {
     dispatch(props.action, Date.now())
   }, props.delay)
-  return function () {
-    clearInterval(id)
-  }
+  return () => clearInterval(id)
 }
 
-var getTime = function (dispatch, props) {
-  dispatch(props.action, Date.now())
-}
+const getTime = (dispatch, props) => dispatch(props.action, Date.now())
 
 /** 
  * @example
+ * 
   app({
     subscriptions: (state) => [
       // Dispatch RequestResource every delayInMilliseconds 
@@ -26,24 +20,16 @@ var getTime = function (dispatch, props) {
     ],
   })
  */
-var every = function (delay, action) {
-  return [interval, { delay: delay, action: action }]
-}
+export const every = (delay, action) => [interval, { delay, action }]
 
 /** 
  * @example
   const SlowClap = (state, ms = 1200) => [state, delay(ms, Clap)]
  */
-var delay = function (delay, action) {
-  return [timeout, { delay: delay, action: action }]
-}
+export const delay = (delay, action) => [timeout, { delay, action }]
 
 /** 
  * @example
   now(NewTime)
  */
-var now = function (action) {
-  return [getTime, { action: action }]
-}
-
-export { every, delay, now }
+export const now = (action) => [getTime, { action }]

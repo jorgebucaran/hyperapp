@@ -1,7 +1,7 @@
 {
   "name": "@hyperapp/html",
   "description": "Write HTML using plain functions.",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "type": "module",
   "main": "hyperapp.html.js",
   "license": "MIT",

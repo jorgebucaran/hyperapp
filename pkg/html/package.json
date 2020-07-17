@@ -1,9 +1,9 @@
 {
   "name": "@hyperapp/html",
-  "description": "Hyperapp HTML helper functions.",
-  "version": "1.2.0",
+  "description": "Write HTML using plain functions.",
+  "version": "1.1.1",
   "type": "module",
-  "main": "index.js",
+  "main": "hyperapp.html.js",
   "license": "MIT",
   "repository": "https://github.com/jorgebucaran/hyperapp/tree/master/pkg/html",
   "files": [

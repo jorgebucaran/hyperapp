@@ -1,6 +1,6 @@
 {
   "name": "@hyperapp/events",
-  "description": "Subscribe to event listeners: animation, keyboard, mouse, window.",
+  "description": "Subscribe animation frames, keyboard, mouse, window, and more.",
   "version": "0.0.0",
   "type": "module",
   "main": "index.js",

@@ -1,6 +1,6 @@
 const EMPTY_ARR = []
 
-const h = (type) => (props, children = EMPTY_ARR) => ({
+const h = (type) => (props, children = EMPTY_ARR, node, tag) => ({
   type,
   props,
   children: Array.isArray(children) ? children : [children],

@@ -1,6 +1,6 @@
 {
   "name": "@hyperapp/html",
-  "description": "Write HTML using plain functions.",
+  "description": "Write HTML with plain functions.",
   "version": "1.2.0",
   "type": "module",
   "main": "hyperapp.html.js",

@@ -27,7 +27,7 @@ Go ahead and [try it in your browser](https://hyperapp-html.glitch.me)—it just
             button({ onclick: Subtract }, text("-")),
             button({ onclick: Add }, text("+")),
           ]),
-        node,
+        node: document.getElementById("app"),
       })
     </script>
   </head>

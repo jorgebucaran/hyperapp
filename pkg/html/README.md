@@ -1,8 +1,12 @@
 # @hyperapp/html
 
-Write HTML using plain functions. This package is an alternative to JSX and template literals in idiomatic JavaScript for [Hyperapp](../../).
+> Write HTML with plain functions.
 
-Here's an example you [try in your browser]()—it just works.
+@hyperapp/html is a no-bells-or-whistles alternative to JSX and template literals for [Hyperapp](https://github.com/jorgebucaran/hyperapp).
+
+Hyperapp's baked-in hyperscript function can go a long way, but sooner or later you'll find yourself implementing the same set of functions in all projects: `a`, `input`, `form`, etc., so we've done it for you.
+
+Go ahead and [try it in your browser](https://hyperapp-html.glitch.me)—it just works!
 
 ```html
 <!DOCTYPE html>
@@ -33,11 +37,7 @@ Here's an example you [try in your browser]()—it just works.
 </html>
 ```
 
-Hyperapp's baked-in hyperscript function can go a long way, but sooner or later you'll find yourself implementing these set of functions from scratch. We've done it so you don't have to.
-
 ## Installation
-
-Install @hyperapp/html with npm or Yarn:
 
 ```console
 npm i @hyperapp/html

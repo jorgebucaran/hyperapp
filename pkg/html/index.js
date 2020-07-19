@@ -1,6 +1,4 @@
-const EMPTY_ARR = []
-
-const h = (type) => (props, children = EMPTY_ARR, node, tag) => ({
+const h = (type) => (props, children = [], node, tag) => ({
   type,
   props,
   children: Array.isArray(children) ? children : [children],
@@ -9,104 +7,106 @@ const h = (type) => (props, children = EMPTY_ARR, node, tag) => ({
   tag,
 })
 
-export const a = h("a")
-export const b = h("b")
-export const i = h("i")
-export const p = h("p")
-export const q = h("q")
-export const s = h("s")
-export const u = h("u")
-export const br = h("br")
-export const dd = h("dd")
-export const dl = h("dl")
-export const dt = h("dt")
-export const em = h("em")
-export const h1 = h("h1")
-export const h2 = h("h2")
-export const h3 = h("h3")
-export const h4 = h("h4")
-export const h5 = h("h5")
-export const h6 = h("h6")
-export const hr = h("hr")
-export const li = h("li")
-export const ol = h("ol")
-export const rp = h("rp")
-export const rt = h("rt")
-export const td = h("td")
-export const th = h("th")
-export const tr = h("tr")
-export const ul = h("ul")
-export const bdi = h("bdi")
-export const bdo = h("bdo")
-export const col = h("col")
-export const del = h("del")
-export const dfn = h("dfn")
-export const div = h("div")
-export const img = h("img")
-export const ins = h("ins")
-export const kbd = h("kbd")
-export const map = h("map")
-export const nav = h("nav")
-export const pre = h("pre")
-export const rtc = h("rtc")
-export const sub = h("sub")
-export const sup = h("sup")
-export const svg = h("svg")
-export const wbr = h("wbr")
-export const abbr = h("abbr")
-export const area = h("area")
-export const cite = h("cite")
-export const code = h("code")
-export const data = h("data")
-export const form = h("form")
-export const main = h("main")
-export const mark = h("mark")
-export const menu = h("menu")
-export const ruby = h("ruby")
-export const samp = h("samp")
-export const span = h("span")
-export const time = h("time")
-export const aside = h("aside")
-export const audio = h("audio")
-export const embed = h("embed")
-export const input = h("input")
-export const label = h("label")
-export const meter = h("meter")
-export const param = h("param")
-export const small = h("small")
-export const table = h("table")
-export const tbody = h("tbody")
-export const tfoot = h("tfoot")
-export const thead = h("thead")
-export const track = h("track")
-export const video = h("video")
-export const button = h("button")
-export const canvas = h("canvas")
-export const dialog = h("dialog")
-export const figure = h("figure")
-export const footer = h("footer")
-export const header = h("header")
-export const iframe = h("iframe")
-export const legend = h("legend")
-export const object = h("object")
-export const option = h("option")
-export const output = h("output")
-export const select = h("select")
-export const source = h("source")
-export const strong = h("strong")
-export const address = h("address")
-export const article = h("article")
-export const caption = h("caption")
-export const details = h("details")
-export const section = h("section")
-export const summary = h("summary")
-export const picture = h("picture")
-export const colgroup = h("colgroup")
-export const datalist = h("datalist")
-export const fieldset = h("fieldset")
-export const menuitem = h("menuitem")
-export const optgroup = h("optgroup")
-export const progress = h("progress")
-export const textarea = h("textarea")
-export const blockquote = h("blockquote")
-export const figcaption = h("figcaption")
+export default {
+  a: h("a"),
+  b: h("b"),
+  i: h("i"),
+  p: h("p"),
+  q: h("q"),
+  s: h("s"),
+  u: h("u"),
+  br: h("br"),
+  dd: h("dd"),
+  dl: h("dl"),
+  dt: h("dt"),
+  em: h("em"),
+  h1: h("h1"),
+  h2: h("h2"),
+  h3: h("h3"),
+  h4: h("h4"),
+  h5: h("h5"),
+  h6: h("h6"),
+  hr: h("hr"),
+  li: h("li"),
+  ol: h("ol"),
+  rp: h("rp"),
+  rt: h("rt"),
+  td: h("td"),
+  th: h("th"),
+  tr: h("tr"),
+  ul: h("ul"),
+  bdi: h("bdi"),
+  bdo: h("bdo"),
+  col: h("col"),
+  del: h("del"),
+  dfn: h("dfn"),
+  div: h("div"),
+  img: h("img"),
+  ins: h("ins"),
+  kbd: h("kbd"),
+  map: h("map"),
+  nav: h("nav"),
+  pre: h("pre"),
+  rtc: h("rtc"),
+  sub: h("sub"),
+  sup: h("sup"),
+  svg: h("svg"),
+  wbr: h("wbr"),
+  abbr: h("abbr"),
+  area: h("area"),
+  cite: h("cite"),
+  code: h("code"),
+  data: h("data"),
+  form: h("form"),
+  main: h("main"),
+  mark: h("mark"),
+  menu: h("menu"),
+  ruby: h("ruby"),
+  samp: h("samp"),
+  span: h("span"),
+  time: h("time"),
+  aside: h("aside"),
+  audio: h("audio"),
+  embed: h("embed"),
+  input: h("input"),
+  label: h("label"),
+  meter: h("meter"),
+  param: h("param"),
+  small: h("small"),
+  table: h("table"),
+  tbody: h("tbody"),
+  tfoot: h("tfoot"),
+  thead: h("thead"),
+  track: h("track"),
+  video: h("video"),
+  button: h("button"),
+  canvas: h("canvas"),
+  dialog: h("dialog"),
+  figure: h("figure"),
+  footer: h("footer"),
+  header: h("header"),
+  iframe: h("iframe"),
+  legend: h("legend"),
+  object: h("object"),
+  option: h("option"),
+  output: h("output"),
+  select: h("select"),
+  source: h("source"),
+  strong: h("strong"),
+  address: h("address"),
+  article: h("article"),
+  caption: h("caption"),
+  details: h("details"),
+  section: h("section"),
+  summary: h("summary"),
+  picture: h("picture"),
+  colgroup: h("colgroup"),
+  datalist: h("datalist"),
+  fieldset: h("fieldset"),
+  menuitem: h("menuitem"),
+  optgroup: h("optgroup"),
+  progress: h("progress"),
+  textarea: h("textarea"),
+  blockquote: h("blockquote"),
+  figcaption: h("figcaption")
+}

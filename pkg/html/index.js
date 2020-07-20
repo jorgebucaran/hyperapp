@@ -1,12 +1,12 @@
 const EMPTY_ARR = []
 
-const h = (type) => (props, children = EMPTY_ARR, node, tag) => ({
+const h = (type) => (props, children = EMPTY_ARR) => ({
   type,
   props,
   children: Array.isArray(children) ? children : [children],
-  node,
+  node: undefined,
   key: props.key,
-  tag,
+  tag: undefined,
 })
 
 export const a = h("a")
@@ -15,7 +15,6 @@ export const i = h("i")
 export const p = h("p")
 export const q = h("q")
 export const s = h("s")
-export const u = h("u")
 export const br = h("br")
 export const dd = h("dd")
 export const dl = h("dl")
@@ -61,14 +60,12 @@ export const data = h("data")
 export const form = h("form")
 export const main = h("main")
 export const mark = h("mark")
-export const menu = h("menu")
 export const ruby = h("ruby")
 export const samp = h("samp")
 export const span = h("span")
 export const time = h("time")
 export const aside = h("aside")
 export const audio = h("audio")
-export const embed = h("embed")
 export const input = h("input")
 export const label = h("label")
 export const meter = h("meter")

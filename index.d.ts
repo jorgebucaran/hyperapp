@@ -92,7 +92,7 @@ declare module "hyperapp" {
   type StyleProp = Record<string, null | number | string>
 
   // A virtual node is a convenience layer over a virtual DOM node.
-  type VNode = null | undefined | VDOM
+  type VNode = boolean | null | undefined | VDOM
 
   // Actual DOM nodes will be manipulated depending on how property patching goes.
   type MaybeNode = null | undefined | Node

@@ -1,6 +1,6 @@
 # Tutorial
 
-Welcome! If you're new to Hyperapp, you've found the perfect place to start learning. This tutorial will guide you through your first steps with Hyperapp as we build a simple app. 
+Welcome! If you're new to Hyperapp, you've found the perfect place to start learning. This tutorial will guide you through your first steps with Hyperapp as we build a simple app.
 
 - [The Set-up](#setup)
 - [Hello World](#helloworld)
@@ -101,7 +101,7 @@ Create this html file:
       href="https://hyperapp.dev/tutorial-assets/style.css"
     />
     <script type="module">
-      import { h, app } from "https://unpkg.com/hyperapp"
+      import { h, text, app } from "https://unpkg.com/hyperapp"
 
       // -- EFFECTS & SUBSCRIPTIONS --
 
@@ -112,7 +112,7 @@ Create this html file:
       // -- RUN --
       app({
         node: document.getElementById("app"),
-        view: () => h("h1", {}, ["Hello ", h("i", {}, "World!")]),
+        view: () => h("h1", {}, [text("Hello "), h("i", {}, text("World!"))]),
       })
     </script>
   </head>
@@ -167,51 +167,51 @@ To render the HTML we want, change the `view` to:
 view: () =>
   h("div", { id: "app", class: "container" }, [
     h("div", { class: "filter" }, [
-      " Filter: ",
-      h("span", { class: "filter-word" }, "ocean"),
-      h("button", {}, "\u270E"),
+      text(" Filter: "),
+      h("span", { class: "filter-word" }, text("ocean")),
+      h("button", {}, text("\u270E")),
     ]),
     h("div", { class: "stories" }, [
       h("ul", {}, [
         h("li", { class: "unread" }, [
           h("p", { class: "title" }, [
-            "The ",
-            h("em", {}, "Ocean"),
-            " is Sinking!",
+            text("The "),
+            h("em", {}, text("Ocean")),
+            text(" is Sinking!"),
           ]),
-          h("p", { class: "author" }, "Kat Stropher"),
+          h("p", { class: "author" }, text("Kat Stropher")),
         ]),
         h("li", { class: "reading" }, [
-          h("p", { class: "title" }, [h("em", {}, "Ocean"), " life is brutal"]),
-          h("p", { class: "author" }, "Surphy McBrah"),
+          h("p", { class: "title" }, [h("em", {}, text("Ocean")), text(" life is brutal")]),
+          h("p", { class: "author" }, text("Surphy McBrah")),
         ]),
         h("li", {}, [
           h("p", { class: "title" }, [
-            "Family friendly fun at the ",
-            h("em", {}, "ocean"),
-            " exhibit",
+            text("Family friendly fun at the "),
+            h("em", {}, text("ocean")),
+            text(" exhibit"),
           ]),
-          h("p", { class: "author" }, "Guy Prosales"),
+          h("p", { class: "author" }, text("Guy Prosales")),
         ]),
       ]),
     ]),
     h("div", { class: "story" }, [
-      h("h1", {}, "Ocean life is brutal"),
+      h("h1", {}, text("Ocean life is brutal")),
       h(
         "p",
         {},
-        `
+        text(`
       Lorem ipsum dolor sit amet, consectetur adipiscing
       elit, sed do eiusmod tempor incididunt ut labore et
       dolore magna aliqua. Ut enim ad minim veniam, quis
       nostrud exercitation ullamco laboris nisi ut aliquip
       ex ea commodo consequat.
-    `
+    `)
       ),
-      h("p", { class: "signature" }, "Surphy McBrah"),
+      h("p", { class: "signature" }, text("Surphy McBrah")),
     ]),
     h("div", { class: "autoupdate" }, [
-      "Auto update: ",
+      text("Auto update: "),
       h("input", { type: "checkbox" }),
     ]),
   ])
@@ -239,7 +239,7 @@ const emphasize = (word, string) =>
   string
     .split(" ")
     .map((x) =>
-      x.toLowerCase() === word.toLowerCase() ? h("em", {}, x + " ") : x + " "
+      x.toLowerCase() === word.toLowerCase() ? h("em", {}, text(x + " ")) : text(x + " ")
     )
 ```
 
@@ -248,9 +248,9 @@ It lets you change this:
 ```js
   ...
   h("p", {class: "title"}, [
-    "The ",
-    h("em", {}, "Ocean"),
-    " is Sinking!"
+    text("The "),
+    h("em", {}, text("Ocean")),
+    text(" is Sinking!")
   ]),
   ...
 ```
@@ -280,7 +280,7 @@ const storyThumbnail = (props) =>
     },
     [
       h("p", { class: "title" }, emphasize(props.filter, props.title)),
-      h("p", { class: "author" }, props.author),
+      h("p", { class: "author" }, text(props.author)),
     ]
   )
 ```
@@ -312,32 +312,32 @@ const storyList = (props) =>
 
 const filterView = (props) =>
   h("div", { class: "filter" }, [
-    "Filter:",
-    h("span", { class: "filter-word" }, props.filter),
-    h("button", {}, "\u270E"),
+    text("Filter:"),
+    h("span", { class: "filter-word" }, text(props.filter)),
+    h("button", {}, text("\u270E")),
   ])
 
 const storyDetail = (props) =>
   h("div", { class: "story" }, [
-    props && h("h1", {}, props.title),
+    props && h("h1", {}, text(props.title)),
     props &&
-      h(
-        "p",
-        {},
-        `
+    h(
+      "p",
+      {},
+      text(`
     Lorem ipsum dolor sit amet, consectetur adipiscing
     elit, sed do eiusmod tempor incididunt ut labore et
     dolore magna aliqua. Ut enim ad minim veniam, qui
     nostrud exercitation ullamco laboris nisi ut aliquip
     ex ea commodo consequat.
-  `
-      ),
-    props && h("p", { class: "signature" }, props.author),
+      `)
+    ),
+    props && h("p", { class: "signature" }, text(props.author)),
   ])
 
 const autoUpdateView = (props) =>
   h("div", { class: "autoupdate" }, [
-    "Auto update: ",
+    text("Auto update: "),
     h("input", { type: "checkbox" }),
   ])
 
@@ -444,9 +444,9 @@ Add an `onclick` property to the button in `filterView`:
 ```js
 const filterView = (props) =>
   h("div", { class: "filter" }, [
-    "Filter:",
-    h("span", { class: "filter-word" }, props.filter),
-    h("button", { onclick: StartEditingFilter }, "\u270E"), // <---
+    text("Filter:"),
+    h("span", { class: "filter-word" }, text(props.filter)),
+    h("button", { onclick: StartEditingFilter }, text("\u270E")), // <---
   ])
 ```
 
@@ -477,9 +477,9 @@ const filterView = (props) =>
 
     props.editingFilter // <---
       ? h("input", { type: "text", value: props.filter }) // <---
-      : h("span", { class: "filter-word" }, props.filter),
+      : h("span", { class: "filter-word" }, text(props.filter)),
 
-    h("button", { onclick: StartEditingFilter }, "\u270E"),
+    h("button", { onclick: StartEditingFilter }, text("\u270E")),
   ])
 ```
 
@@ -501,11 +501,11 @@ const filterView = (props) =>
 
     props.editingFilter
       ? h("input", { type: "text", value: props.filter })
-      : h("span", { class: "filter-word" }, props.filter),
+      : h("span", { class: "filter-word" }, text(props.filter)),
 
     props.editingFilter // <---
-      ? h("button", { onclick: StopEditingFilter }, "\u2713")
-      : h("button", { onclick: StartEditingFilter }, "\u270E"), // <---
+      ? h("button", { onclick: StopEditingFilter }, text("\u2713"))
+      : h("button", { onclick: StartEditingFilter }, text("\u270E")), // <---
   ])
 ```
 
@@ -531,11 +531,11 @@ const filterView = (props) =>
           value: props.filter,
           oninput: SetFilter, // <----
         })
-      : h("span", { class: "filter-word" }, props.filter),
+      : h("span", { class: "filter-word" }, text(props.filter)),
 
     props.editingFilter
-      ? h("button", { onclick: StopEditingFilter }, "\u2713")
-      : h("button", { onclick: StartEditingFilter }, "\u270E"),
+      ? h("button", { onclick: StopEditingFilter }, text("\u2713"))
+      : h("button", { onclick: StartEditingFilter }, text("\u270E")),
   ])
 ```
 
@@ -579,7 +579,7 @@ const storyThumbnail = (props) =>
     },
     [
       h("p", { class: "title" }, emphasize(props.filter, props.title)),
-      h("p", { class: "author" }, props.author),
+      h("p", { class: "author" }, text(props.author)),
     ]
   )
 ```
@@ -631,11 +631,11 @@ const filterView = (props) =>
           value: props.filter,
           oninput: [SetFilter, (event) => event.target.value], // <----
         })
-      : h("span", { class: "filter-word" }, props.filter),
+      : h("span", { class: "filter-word" }, text(props.filter)),
 
     props.editingFilter
-      ? h("button", { onclick: StopEditingFilter }, "\u2713")
-      : h("button", { onclick: StartEditingFilter }, "\u270E"),
+      ? h("button", { onclick: StopEditingFilter }, text("\u2713"))
+      : h("button", { onclick: StartEditingFilter }, text("\u270E")),
   ])
 ```
 
@@ -917,7 +917,7 @@ Dispatch it in response to checking the checkbox in `autoUpdateView`:
 ```js
 const autoUpdateView = (props) =>
   h("div", { class: "autoupdate" }, [
-    "Auto update: ",
+    text("Auto update: "),
     h("input", {
       type: "checkbox",
       checked: props.autoUpdate, // <---

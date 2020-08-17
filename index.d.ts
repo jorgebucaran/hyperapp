@@ -86,7 +86,7 @@ declare module "hyperapp" {
   type Key = null | string | undefined
 
   // The `class` property represents an HTML class attribute string.
-  type ClassProp = string | Record<string, boolean> | ClassProp[]
+  type ClassProp = false | string | Record<string, boolean> | ClassProp[]
 
   // The `style` property represents inline CSS.
   type StyleProp = Record<string, null | number | string>

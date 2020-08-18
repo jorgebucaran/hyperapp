@@ -2,24 +2,25 @@ declare module "hyperapp" {
   // A Hyperapp application instance has an initial state and a base view.
   // It must also be mounted over an available DOM element.
   type App<S, P, D> = Readonly<{
-    init: Initiator<S, P, D>;
+    init: Transition<S, P, D>;
     view: View;
     node: Node;
     subscriptions?: Subscription;
     middleware?: Middleware;
   }>
 
-  // Initially, a state is set with any effects to run, or an action is taken.
-  type Initiator<S, P, D>
-    = State<S>
-    | [State<S>, ...EffectDescriptor<D>[]]
-    | Action<S, P, D>
-
-  // A view builds a virtual DOM node representation of the application state.
-  type View = <S>(state: State<S>) => VDOM
+  // A transition is either a state transformation with any effects to run, or
+  // an action to take.
+  type Transition<S, P, D> = State<S> | StateWithEffects<S, D> | Action<S, P, D>
 
   // Application state is accessible in every view, action, and subscription.
   type State<S> = S
+
+  // Transformed state can be paired with a list of effects to run.
+  type StateWithEffects<S, D> = [State<S>, ...EffectDescriptor<D>[]]
+
+  // A view builds a virtual DOM node representation of the application state.
+  type View = <S>(state: State<S>) => VDOM
 
   // A subscription is a set of recurring effects.
   type Subscription = <S>(state: State<S>) => Subscriber[]
@@ -38,14 +39,10 @@ declare module "hyperapp" {
   // A dispatched action handles an event in the context of the current state.
   type Dispatch = <S, P, D>(action: Action<S, P, D>, props?: Payload<P>) => void
 
-  // An action transforms existing state while possibly invoking effects and it
-  // can be wrapped by another action.
+  // An action transforms existing state and can be wrapped by another action.
   type Action<S, P, D>
     = [Action<S, P, D>, Payload<P>]
-    | ((state: State<S>, props?: Payload<P>)
-      => State<S>
-      | [State<S>, ...EffectDescriptor<D>[]]
-      | Action<S, P, D>)
+    | ((state: State<S>, props?: Payload<P>) => Transition<S, P, D>)
 
   // A payload is data external to state that is given to a dispatched action.
   type Payload<P> = P

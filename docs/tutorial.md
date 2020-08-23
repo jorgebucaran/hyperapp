@@ -111,6 +111,7 @@ Create this html file:
 
       // -- RUN --
       app({
+        init: {},
         node: document.getElementById("app"),
         view: () => h("h1", {}, [text("Hello "), h("i", {}, text("World!"))]),
       })
@@ -141,7 +142,7 @@ which _represent_ DOM nodes.
 The result of
 
 ```js
-h("h1", {}, ["Hello ", h("i", {}, "World!")])
+h("h1", {}, [text("Hello "), h("i", {}, text("World!"))])
 ```
 
 is a virtual node, representing
@@ -261,7 +262,7 @@ into this:
   ...
   h("p", {class: "title"}, emphasize("ocean",
     "The Ocean is Sinking"
-  ))
+  )),
   ...
 ```
 
@@ -473,7 +474,7 @@ ternary operator (`a ? b : c`).
 ```js
 const filterView = (props) =>
   h("div", { class: "filter" }, [
-    "Filter:",
+    text("Filter:"),
 
     props.editingFilter // <---
       ? h("input", { type: "text", value: props.filter }) // <---
@@ -497,7 +498,7 @@ and update `filterView` again:
 ```js
 const filterView = (props) =>
   h("div", { class: "filter" }, [
-    "Filter:",
+    text("Filter:"),
 
     props.editingFilter
       ? h("input", { type: "text", value: props.filter })
@@ -523,7 +524,7 @@ Update `filterView` yet again:
 ```js
 const filterView = (props) =>
   h("div", { class: "filter" }, [
-    "Filter:",
+    text("Filter:"),
 
     props.editingFilter
       ? h("input", {
@@ -629,7 +630,7 @@ const filterView = (props) =>
       ? h("input", {
           type: "text",
           value: props.filter,
-          oninput: [SetFilter, (event) => event.target.value], // <----
+          oninput: (state, event) => SetFilter(state, event.target.value), // <----
         })
       : h("span", { class: "filter-word" }, text(props.filter)),
 
@@ -638,11 +639,6 @@ const filterView = (props) =>
       : h("button", { onclick: StartEditingFilter }, text("\u270E")),
   ])
 ```
-
-When we give a _function_ as the custom payload, Hyperapp considers it a _payload filter_ and passes the default
-payload through it, providing the returned value as payload to the action.
-
-> Payload filters are also useful when you need a payload that is a combination of custom data and event data
 
 If you'd like to see a working example of the code so far, have a look [here](https://codesandbox.io/s/hyperapp-tutorial-step-2-5yv34)
 

@@ -2,11 +2,11 @@ declare module "hyperapp" {
   // A Hyperapp application instance has an initial state and a base view.
   // It must also be mounted over an available DOM element.
   type App<S, P, D> = Readonly<{
-    init: Transition<S, P, D>;
-    view: View;
-    node: Node;
-    subscriptions?: Subscription;
-    middleware?: Middleware;
+    init: Transition<S, P, D>
+    view: View
+    node: Node
+    subscriptions?: Subscription
+    middleware?: Middleware
   }>
 
   // A transition is either a state transformation with any effects to run, or
@@ -62,22 +62,22 @@ declare module "hyperapp" {
 
   // A virtual DOM node represents an actual DOM element.
   type VDOM = {
-    readonly type: string;
-    readonly props: PropList;
-    readonly children: VNode[];
-    node: MaybeNode;
-    readonly tag?: Tag;
-    readonly key: Key;
-    memo?: PropList;
+    readonly type: string
+    readonly props: PropList
+    readonly children: VNode[]
+    node: MaybeNode
+    readonly tag?: Tag
+    readonly key: Key
+    memo?: PropList
   }
 
   // Virtual DOM properties will often correspond to HTML attributes.
   type Prop = bigint | boolean | null | number | string | symbol | undefined | Function | ClassProp | StyleProp
   type PropList = Readonly<ElementCreationOptions & {
-    [k: string]: Prop;
-    class?: ClassProp;
-    key?: Key;
-    style?: StyleProp;
+    [k: string]: Prop
+    class?: ClassProp
+    key?: Key
+    style?: StyleProp
   }>
 
   // A key can uniquely associate a virtual DOM node with a certain DOM element.

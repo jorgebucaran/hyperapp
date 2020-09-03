@@ -75,12 +75,16 @@ declare module "hyperapp" {
 
   // Virtual DOM properties will often correspond to HTML attributes.
   type Prop = bigint | boolean | number | string | symbol | null | undefined | Function | ClassProp | StyleProp
-  type PropList = Readonly<ElementCreationOptions & {
+  type PropList = Readonly<ElementCreationOptions & EventActions & {
     [_: string]: Prop
     class?: ClassProp
     key?: Key
     style?: StyleProp
   }>
+
+  // Actions are used as event handlers.
+  type EventActions = { [K in keyof EventsMap]?: Action<EventsMap[K]> }
+  type EventsMap = OnHTMLElementEventMap & OnWindowEventMap & { onsearch: Event }
 
   // A key can uniquely associate a virtual DOM node with a certain DOM element.
   type Key = string | null | undefined
@@ -119,4 +123,233 @@ declare module "hyperapp" {
 
   // The `text` function creates a virtual DOM node representing plain text.
   function text(value: number | string, node?: Node): VDOM
+
+  // ---------------------------------------------------------------------------
+
+  // Due to current limitations with TypeScript (which should get resolved in
+  // the future: https://github.com/microsoft/TypeScript/pull/40336), here is
+  // a collection of modified copies of relevant event maps from TypeScript's
+  // "lib.dom.d.ts" definition file to assist with defining `EventActions`:
+
+  type OnElementEventMap = {
+    "onfullscreenchange": Event
+    "onfullscreenerror": Event
+  }
+
+  type OnGlobalEventHandlersEventMap = {
+    "onabort": UIEvent
+    "onanimationcancel": AnimationEvent
+    "onanimationend": AnimationEvent
+    "onanimationiteration": AnimationEvent
+    "onanimationstart": AnimationEvent
+    "onauxclick": MouseEvent
+    "onblur": FocusEvent
+    "oncancel": Event
+    "oncanplay": Event
+    "oncanplaythrough": Event
+    "onchange": Event
+    "onclick": MouseEvent
+    "onclose": Event
+    "oncontextmenu": MouseEvent
+    "oncuechange": Event
+    "ondblclick": MouseEvent
+    "ondrag": DragEvent
+    "ondragend": DragEvent
+    "ondragenter": DragEvent
+    "ondragexit": Event
+    "ondragleave": DragEvent
+    "ondragover": DragEvent
+    "ondragstart": DragEvent
+    "ondrop": DragEvent
+    "ondurationchange": Event
+    "onemptied": Event
+    "onended": Event
+    "onerror": ErrorEvent
+    "onfocus": FocusEvent
+    "onfocusin": FocusEvent
+    "onfocusout": FocusEvent
+    "ongotpointercapture": PointerEvent
+    "oninput": Event
+    "oninvalid": Event
+    "onkeydown": KeyboardEvent
+    "onkeypress": KeyboardEvent
+    "onkeyup": KeyboardEvent
+    "onload": Event
+    "onloadeddata": Event
+    "onloadedmetadata": Event
+    "onloadstart": Event
+    "onlostpointercapture": PointerEvent
+    "onmousedown": MouseEvent
+    "onmouseenter": MouseEvent
+    "onmouseleave": MouseEvent
+    "onmousemove": MouseEvent
+    "onmouseout": MouseEvent
+    "onmouseover": MouseEvent
+    "onmouseup": MouseEvent
+    "onpause": Event
+    "onplay": Event
+    "onplaying": Event
+    "onpointercancel": PointerEvent
+    "onpointerdown": PointerEvent
+    "onpointerenter": PointerEvent
+    "onpointerleave": PointerEvent
+    "onpointermove": PointerEvent
+    "onpointerout": PointerEvent
+    "onpointerover": PointerEvent
+    "onpointerup": PointerEvent
+    "onprogress": ProgressEvent
+    "onratechange": Event
+    "onreset": Event
+    "onresize": UIEvent
+    "onscroll": Event
+    "onsecuritypolicyviolation": SecurityPolicyViolationEvent
+    "onseeked": Event
+    "onseeking": Event
+    "onselect": Event
+    "onselectionchange": Event
+    "onselectstart": Event
+    "onstalled": Event
+    "onsubmit": Event
+    "onsuspend": Event
+    "ontimeupdate": Event
+    "ontoggle": Event
+    "ontouchcancel": TouchEvent
+    "ontouchend": TouchEvent
+    "ontouchmove": TouchEvent
+    "ontouchstart": TouchEvent
+    "ontransitioncancel": TransitionEvent
+    "ontransitionend": TransitionEvent
+    "ontransitionrun": TransitionEvent
+    "ontransitionstart": TransitionEvent
+    "onvolumechange": Event
+    "onwaiting": Event
+    "onwheel": WheelEvent
+  }
+
+  type OnDocumentAndElementEventHandlersEventMap = {
+    "oncopy": ClipboardEvent
+    "oncut": ClipboardEvent
+    "onpaste": ClipboardEvent
+  }
+
+  type OnHTMLElementEventMap = OnElementEventMap & OnGlobalEventHandlersEventMap & OnDocumentAndElementEventHandlersEventMap
+
+  type OnWindowEventHandlersEventMap = {
+    "onafterprint": Event
+    "onbeforeprint": Event
+    "onbeforeunload": BeforeUnloadEvent
+    "onhashchange": HashChangeEvent
+    "onlanguagechange": Event
+    "onmessage": MessageEvent
+    "onmessageerror": MessageEvent
+    "onoffline": Event
+    "ononline": Event
+    "onpagehide": PageTransitionEvent
+    "onpageshow": PageTransitionEvent
+    "onpopstate": PopStateEvent
+    "onrejectionhandled": PromiseRejectionEvent
+    "onstorage": StorageEvent
+    "onunhandledrejection": PromiseRejectionEvent
+    "onunload": Event
+  }
+
+  type OnWindowEventMap = OnGlobalEventHandlersEventMap & OnWindowEventHandlersEventMap & {
+    "onabort": UIEvent
+    "onafterprint": Event
+    "onbeforeprint": Event
+    "onbeforeunload": BeforeUnloadEvent
+    "onblur": FocusEvent
+    "oncanplay": Event
+    "oncanplaythrough": Event
+    "onchange": Event
+    "onclick": MouseEvent
+    "oncompassneedscalibration": Event
+    "oncontextmenu": MouseEvent
+    "ondblclick": MouseEvent
+    "ondevicelight": DeviceLightEvent
+    "ondevicemotion": DeviceMotionEvent
+    "ondeviceorientation": DeviceOrientationEvent
+    "ondeviceorientationabsolute": DeviceOrientationEvent
+    "ondrag": DragEvent
+    "ondragend": DragEvent
+    "ondragenter": DragEvent
+    "ondragleave": DragEvent
+    "ondragover": DragEvent
+    "ondragstart": DragEvent
+    "ondrop": DragEvent
+    "ondurationchange": Event
+    "onemptied": Event
+    "onended": Event
+    "onerror": ErrorEvent
+    "onfocus": FocusEvent
+    "onhashchange": HashChangeEvent
+    "oninput": Event
+    "oninvalid": Event
+    "onkeydown": KeyboardEvent
+    "onkeypress": KeyboardEvent
+    "onkeyup": KeyboardEvent
+    "onload": Event
+    "onloadeddata": Event
+    "onloadedmetadata": Event
+    "onloadstart": Event
+    "onmessage": MessageEvent
+    "onmousedown": MouseEvent
+    "onmouseenter": MouseEvent
+    "onmouseleave": MouseEvent
+    "onmousemove": MouseEvent
+    "onmouseout": MouseEvent
+    "onmouseover": MouseEvent
+    "onmouseup": MouseEvent
+    "onmousewheel": Event
+    "onMSGestureChange": Event
+    "onMSGestureDoubleTap": Event
+    "onMSGestureEnd": Event
+    "onMSGestureHold": Event
+    "onMSGestureStart": Event
+    "onMSGestureTap": Event
+    "onMSInertiaStart": Event
+    "onMSPointerCancel": Event
+    "onMSPointerDown": Event
+    "onMSPointerEnter": Event
+    "onMSPointerLeave": Event
+    "onMSPointerMove": Event
+    "onMSPointerOut": Event
+    "onMSPointerOver": Event
+    "onMSPointerUp": Event
+    "onoffline": Event
+    "ononline": Event
+    "onorientationchange": Event
+    "onpagehide": PageTransitionEvent
+    "onpageshow": PageTransitionEvent
+    "onpause": Event
+    "onplay": Event
+    "onplaying": Event
+    "onpopstate": PopStateEvent
+    "onprogress": ProgressEvent<Window>
+    "onratechange": Event
+    "onreadystatechange": ProgressEvent<Window>
+    "onreset": Event
+    "onresize": UIEvent
+    "onscroll": Event
+    "onseeked": Event
+    "onseeking": Event
+    "onselect": Event
+    "onstalled": Event
+    "onstorage": StorageEvent
+    "onsubmit": Event
+    "onsuspend": Event
+    "ontimeupdate": Event
+    "onunload": Event
+    "onvolumechange": Event
+    "onvrdisplayactivate": Event
+    "onvrdisplayblur": Event
+    "onvrdisplayconnect": Event
+    "onvrdisplaydeactivate": Event
+    "onvrdisplaydisconnect": Event
+    "onvrdisplayfocus": Event
+    "onvrdisplaypointerrestricted": Event
+    "onvrdisplaypointerunrestricted": Event
+    "onvrdisplaypresentchange": Event
+    "onwaiting": Event
+  }
 }

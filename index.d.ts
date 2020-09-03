@@ -55,7 +55,7 @@ declare module "hyperapp" {
 
   // An effect is where side effects and any additional dispatching occur.
   // An effect used in a subscription should be able to unsubscribe.
-  type Effect = <D>(dispatch: Dispatch, props?: EffectData<D>) => void | Unsubscribe
+  type Effect = <D>(dispatch: Dispatch, props?: EffectData<D>) => void | Unsubscribe | Promise<void | Unsubscribe>
 
   // An effect is generally given additional data.
   type EffectData<D> = D

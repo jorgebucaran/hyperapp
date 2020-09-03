@@ -13,7 +13,7 @@ declare module "hyperapp" {
 
   // A transition is either a state transformation with any effects to run, or
   // an action to take.
-  type Transition<S, P, D> = State<S> | StateWithEffects<S, D> | Action<S, P, D>
+  type Transition<S, P, D> = State<S> | StateWithEffects<S, D> | Action<P>
 
   // Application state is accessible in every view, action, and subscription.
   type State<S> = S
@@ -39,12 +39,12 @@ declare module "hyperapp" {
   // ---------------------------------------------------------------------------
 
   // A dispatched action handles an event in the context of the current state.
-  type Dispatch = <S, P, D>(action: Action<S, P, D>, props?: Payload<P>) => void
+  type Dispatch = <P>(action: Action<P>, props?: Payload<P>) => void
 
   // An action transforms existing state and can be wrapped by another action.
-  type Action<S, P, D>
-    = [Action<S, P, D>, Payload<P>]
-    | ((state: State<S>, props?: Payload<P>) => Transition<S, P, D>)
+  type Action<P>
+    = [Action<P>, Payload<P>]
+    | (<S, D>(state: State<S>, props?: Payload<P>) => Transition<S, P, D>)
 
   // A payload is data external to state that is given to a dispatched action.
   type Payload<P> = P

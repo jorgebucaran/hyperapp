@@ -1,3 +1,5 @@
+// These definitions are known to work for TypeScript 4.0.
+
 declare module "hyperapp" {
   // A Hyperapp application instance has an initial state and a base view.
   // It must also be mounted over an available DOM element.
@@ -72,22 +74,22 @@ declare module "hyperapp" {
   }
 
   // Virtual DOM properties will often correspond to HTML attributes.
-  type Prop = bigint | boolean | null | number | string | symbol | undefined | Function | ClassProp | StyleProp
+  type Prop = bigint | boolean | number | string | symbol | null | undefined | Function | ClassProp | StyleProp
   type PropList = Readonly<ElementCreationOptions & {
-    [k: string]: Prop
+    [_: string]: Prop
     class?: ClassProp
     key?: Key
     style?: StyleProp
   }>
 
   // A key can uniquely associate a virtual DOM node with a certain DOM element.
-  type Key = null | string | undefined
+  type Key = string | null | undefined
 
   // The `class` property represents an HTML class attribute string.
   type ClassProp = false | string | Record<string, boolean> | ClassProp[]
 
   // The `style` property represents inline CSS.
-  type StyleProp = Record<string, null | number | string>
+  type StyleProp = Record<string, number | string | null>
 
   // A virtual node is a convenience layer over a virtual DOM node.
   type VNode = boolean | null | undefined | VDOM
@@ -101,10 +103,7 @@ declare module "hyperapp" {
 
   // These are based on actual DOM node types:
   // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
-  const enum VDOMNodeType {
-    SSR = 1,
-    Text = 3,
-  }
+  const enum VDOMNodeType { SSR = 1, Text = 3 }
 
   // ---------------------------------------------------------------------------
 
@@ -119,5 +118,5 @@ declare module "hyperapp" {
   function memo(view: View, props: PropList): Partial<VDOM>
 
   // The `text` function creates a virtual DOM node representing plain text.
-  function text(value: string | number, node?: Node): VDOM
+  function text(value: number | string, node?: Node): VDOM
 }

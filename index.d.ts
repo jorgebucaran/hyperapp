@@ -3,17 +3,16 @@
 declare module "hyperapp" {
   // A Hyperapp application instance has an initial state and a base view.
   // It must also be mounted over an available DOM element.
-  type App<S, P, D> = Readonly<{
-    init: Transition<S, P, D>
+  type App<S, D> = Readonly<{
+    init: Transition<S, D>
     view: View
     node: Node
     subscriptions?: Subscription
     middleware?: Middleware
   }>
 
-  // A transition is either a state transformation with any effects to run, or
-  // an action to take.
-  type Transition<S, P, D> = State<S> | StateWithEffects<S, D> | Action<P>
+  // A transition is a state transformation with any effects to run.
+  type Transition<S, D> = State<S> | StateWithEffects<S, D>
 
   // Application state is accessible in every view, action, and subscription.
   type State<S> = S
@@ -44,7 +43,7 @@ declare module "hyperapp" {
   // An action transforms existing state and can be wrapped by another action.
   type Action<P>
     = [Action<P>, Payload<P>]
-    | (<S, D>(state: State<S>, props?: Payload<P>) => Transition<S, P, D>)
+    | (<S, D>(state: State<S>, props?: Payload<P>) => Transition<S, D> | Action<P>)
 
   // A payload is data external to state that is given to a dispatched action.
   type Payload<P> = P
@@ -113,7 +112,7 @@ declare module "hyperapp" {
 
   // The `app` function initiates a Hyperapp application. `app` along with effects
   // should be the only places you need to worry about side effects.
-  function app<S, P, D>(props: App<S, P, D>): Dispatch
+  function app<S, D>(props: App<S, D>): Dispatch
 
   // The `h` function builds a virtual DOM node.
   function h(type: string, props: PropList, children?: VNode | readonly VNode[]): VDOM

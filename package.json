@@ -22,7 +22,7 @@
     "ui"
   ],
   "scripts": {
-    "test": "c8 twist test/*.js",
+    "test": "c8 twist test/*.test.js",
     "build": "env prefix=${pkg:+pkg/$pkg/} out=$npm_package_name${pkg:+.$pkg}.js npm run minify",
     "minify": "terser ${prefix}index.js -o ${prefix}$out -mc --source-map url=$out.map --module",
     "create": "npm run build && git commit -am $msg && git tag -s $msg -m $msg && git push && git push --tags",

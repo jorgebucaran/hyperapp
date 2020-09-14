@@ -1,88 +1,89 @@
-// These definitions are known to work for TypeScript 4.0.
+// Minimum TypeScript Version: 3.7
 
 declare module "hyperapp" {
   // A Hyperapp application instance has an initial state and a base view.
   // It must also be mounted over an available DOM element.
-  type App<S, D> = Readonly<{
-    init: Transition<S, D>
-    view: View
+  type App<S, P = unknown, D = unknown> = Readonly<{
+    init: Transition<S, P, D> | Action<S, P, D>
+    view: View<S, D>
     node: Node
-    subscriptions?: Subscription
-    middleware?: Middleware
+    subscriptions?: Subscription<S, P, D>
+    middleware?: Middleware<S, P, D>
   }>
 
   // A transition is a state transformation with any effects to run.
-  type Transition<S, D> = State<S> | StateWithEffects<S, D>
+  type Transition<S, P = unknown, D = unknown> = State<S> | StateWithEffects<S, P, D>
 
   // Application state is accessible in every view, action, and subscription.
   type State<S> = S
 
   // Transformed state can be paired with a list of effects to run.
-  type StateWithEffects<S, D> = [State<S>, ...EffectDescriptor<D>[]]
+  type StateWithEffects<S, P = unknown, D = unknown> = [State<S>, ...EffectDescriptor<S, P, D>[]]
 
   // A view builds a virtual DOM node representation of the application state.
-  type View = <S>(state: State<S>) => VDOM
+  type View<S, D = unknown> = (state: State<S>) => VDOM<S, D>
 
   // A subscription is a set of recurring effects.
-  type Subscription = <S>(state: State<S>) => Subscriber[]
+  type Subscription<S, P = unknown, D = unknown> = (state: State<S>) => Subscriber<S, P, D>[]
 
   // A subscriber reacts to subscription updates.
-  type Subscriber = boolean | void | Effect | Unsubscribe
+  type Subscriber<S, P = unknown, D = unknown> = boolean | undefined | Effect<S, P, D> | Unsubscribe
 
   // A subscriber ideally provides a function that cancels itself properly.
   type Unsubscribe = () => void
 
   // Middleware allows for custom processing during dispatching.
-  type Middleware = (dispatch: Dispatch) => Dispatch
+  type Middleware<S, P = unknown, D = unknown> = (dispatch: Dispatch<S, P, D>) => Dispatch<S, P, D>
 
   // ---------------------------------------------------------------------------
 
   // A dispatched action handles an event in the context of the current state.
-  type Dispatch = <P>(action: Action<P>, props?: Payload<P>) => void
+  type Dispatch<S, P = unknown, D = unknown> = (action: Action<S, P, D>, props?: Payload<P>) => void
 
   // An action transforms existing state and can be wrapped by another action.
-  type Action<P>
-    = [Action<P>, Payload<P>]
-    | (<S, D>(state: State<S>, props?: Payload<P>) => Transition<S, D> | Action<P>)
+  type Action<S, P = unknown, D = unknown>
+    = [Action<S, P, D>, Payload<P>]
+    | ((state: State<S>, props?: Payload<P>) => Transition<S, P, D> | Action<S, P, D>)
 
   // A payload is data external to state that is given to a dispatched action.
-  type Payload<P> = P
+  type Payload<P = unknown> = P
 
   // An effect descriptor describes how an effect should be invoked.
   // A function that creates this is called an effect constructor.
-  type EffectDescriptor<D> = [Effect, EffectData<D>]
+  type EffectDescriptor<S, P = unknown, D = unknown> = [Effect<S, P, D>, EffectData<D>]
 
   // An effect is where side effects and any additional dispatching occur.
   // An effect used in a subscription should be able to unsubscribe.
-  type Effect = <D>(dispatch: Dispatch, props?: EffectData<D>) => void | Unsubscribe | Promise<void | Unsubscribe>
+  type Effect<S, P = unknown, D = unknown> =
+    (dispatch: Dispatch<S, P, D>, props?: EffectData<D>) =>
+      void | Unsubscribe | Promise<undefined | Unsubscribe>
 
   // An effect is generally given additional data.
-  type EffectData<D> = D
+  type EffectData<D = unknown> = D
 
   // ---------------------------------------------------------------------------
 
   // A virtual DOM node represents an actual DOM element.
-  type VDOM = {
+  type VDOM<S, D = unknown> = {
     readonly type: string
-    readonly props: PropList
-    readonly children: VNode[]
+    readonly props: PropList<S, D>
+    readonly children: VNode<S, D>[]
     node: MaybeNode
-    readonly tag?: Tag
+    readonly tag?: Tag<S, D>
     readonly key: Key
-    memo?: PropList
+    memo?: PropList<S, D>
   }
 
   // Virtual DOM properties will often correspond to HTML attributes.
-  type Prop = bigint | boolean | number | string | symbol | null | undefined | ClassProp | StyleProp
-  type PropList = Readonly<ElementCreationOptions & EventActions & {
-    [_: string]: Prop
+  type PropList<S, D = unknown> = Readonly<ElementCreationOptions & EventActions<S, D> & {
+    [_: string]: unknown
     class?: ClassProp
     key?: Key
     style?: StyleProp
   }>
 
   // Actions are used as event handlers.
-  type EventActions = { [K in keyof EventsMap]?: Action<EventsMap[K]> }
+  type EventActions<S, D = unknown> = { [K in keyof EventsMap]?: Action<S, EventsMap[K], D> }
   type EventsMap = OnHTMLElementEventMap & OnWindowEventMap & { onsearch: Event }
 
   // A key can uniquely associate a virtual DOM node with a certain DOM element.
@@ -95,14 +96,14 @@ declare module "hyperapp" {
   type StyleProp = Record<string, number | string | null>
 
   // A virtual node is a convenience layer over a virtual DOM node.
-  type VNode = boolean | null | undefined | VDOM
+  type VNode<S, D = unknown> = false | null | undefined | VDOM<S, D>
 
   // Actual DOM nodes will be manipulated depending on how property patching goes.
   type MaybeNode = null | undefined | Node
 
   // A virtual DOM node's tag has metadata relevant to it. Virtual DOM nodes are
   // tagged by their type to assist rendering.
-  type Tag = VDOMNodeType | View
+  type Tag<S, D = unknown> = VDOMNodeType | View<S, D>
 
   // These are based on actual DOM node types:
   // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
@@ -112,16 +113,20 @@ declare module "hyperapp" {
 
   // The `app` function initiates a Hyperapp application. `app` along with effects
   // should be the only places you need to worry about side effects.
-  function app<S, D>(props: App<S, D>): Dispatch
+  function app<S, P = unknown, D = unknown>(props: App<S, P, D>): Dispatch<S, P, D>
 
   // The `h` function builds a virtual DOM node.
-  function h(type: string, props: PropList, children?: VNode | readonly VNode[]): VDOM
+  function h<S, D = unknown>(
+    type: string,
+    props: PropList<S, D>,
+    children?: VNode<S, D> | readonly VNode<S, D>[],
+  ): VDOM<S, D>
 
   // The `memo` function stores a view along with properties for it.
-  function memo(view: View, props: PropList): Partial<VDOM>
+  function memo<S, D = unknown>(view: View<S, D>, props: PropList<S, D>): Partial<VDOM<S, D>>
 
   // The `text` function creates a virtual DOM node representing plain text.
-  function text(value: number | string, node?: Node): VDOM
+  function text<S, D = unknown>(value: number | string, node?: Node): VDOM<S, D>
 
   // ---------------------------------------------------------------------------
 
@@ -231,7 +236,10 @@ declare module "hyperapp" {
     "onpaste": ClipboardEvent
   }
 
-  type OnHTMLElementEventMap = OnElementEventMap & OnGlobalEventHandlersEventMap & OnDocumentAndElementEventHandlersEventMap
+  type OnHTMLElementEventMap
+    = OnElementEventMap
+    & OnGlobalEventHandlersEventMap
+    & OnDocumentAndElementEventHandlersEventMap
 
   type OnWindowEventHandlersEventMap = {
     "onafterprint": Event

@@ -1,0 +1,18 @@
+// https://www.typescriptlang.org/tsconfig
+// https://www.typescriptlang.org/docs/handbook/tsconfig-json.html
+// https://www.typescriptlang.org/docs/handbook/compiler-options.html
+
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "alwaysStrict": true,
+    "baseUrl": ".",
+    "lib": ["DOM", "ESNext"],
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "noEmit": true,
+    "paths": { "hyperapp": ["."] },
+    "strict": true,
+    "target": "ESNext"
+  }
+}

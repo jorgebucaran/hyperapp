@@ -75,65 +75,122 @@ h("p", {}, undefined)    // $ExpectType VDOM<unknown, unknown>
 
 // -----------------------------------------------------------------------------
 
-h("hr", { class: true })         // $ExpectError
-h("hr", { class: false })        // $ExpectType VDOM<unknown, unknown>
-h("hr", { class: 0 })            // $ExpectError
-h("hr", { class: 2424 })         // $ExpectError
-h("hr", { class: -123 })         // $ExpectError
-h("hr", { class: -Infinity })    // $ExpectError
-h("hr", { class: Infinity })     // $ExpectError
-h("hr", { class: NaN })          // $ExpectError
-h("hr", { class: "" })           // $ExpectType VDOM<unknown, unknown>
-h("hr", { class: "hi" })         // $ExpectType VDOM<unknown, unknown>
-h("hr", { class: {} })           // $ExpectType VDOM<unknown, unknown>
-h("hr", { class: new Set() })    // $ExpectError
-h("hr", { class: [] })           // $ExpectType VDOM<unknown, unknown>
-h("hr", { class: Symbol() })     // $ExpectError
-h("hr", { class: () => {} })     // $ExpectError
-h("hr", { class: null })         // $ExpectError
-h("hr", { class: undefined })    // $ExpectType VDOM<unknown, unknown>
+h("p", { class: true })         // $ExpectError
+h("p", { class: false })        // $ExpectType VDOM<unknown, unknown>
+h("p", { class: 0 })            // $ExpectError
+h("p", { class: 2424 })         // $ExpectError
+h("p", { class: -123 })         // $ExpectError
+h("p", { class: -Infinity })    // $ExpectError
+h("p", { class: Infinity })     // $ExpectError
+h("p", { class: NaN })          // $ExpectError
+h("p", { class: "" })           // $ExpectType VDOM<unknown, unknown>
+h("p", { class: "hi" })         // $ExpectType VDOM<unknown, unknown>
+h("p", { class: {} })           // $ExpectType VDOM<unknown, unknown>
+h("p", { class: new Set() })    // $ExpectError
+h("p", { class: [] })           // $ExpectType VDOM<unknown, unknown>
+h("p", { class: Symbol() })     // $ExpectError
+h("p", { class: () => {} })     // $ExpectError
+h("p", { class: null })         // $ExpectError
+h("p", { class: undefined })    // $ExpectType VDOM<unknown, unknown>
 
-h("hr", { class: { a: true } })         // $ExpectType VDOM<unknown, unknown>
-h("hr", { class: { a: false } })        // $ExpectType VDOM<unknown, unknown>
-h("hr", { class: { a: 0 } })            // $ExpectError
-h("hr", { class: { a: 2424 } })         // $ExpectError
-h("hr", { class: { a: -123 } })         // $ExpectError
-h("hr", { class: { a: -Infinity } })    // $ExpectError
-h("hr", { class: { a: Infinity } })     // $ExpectError
-h("hr", { class: { a: NaN } })          // $ExpectError
-h("hr", { class: { a: "" } })           // $ExpectError
-h("hr", { class: { a: "hi" } })         // $ExpectError
-h("hr", { class: { a: {} } })           // $ExpectError
-h("hr", { class: { a: new Set() } })    // $ExpectError
-h("hr", { class: { a: [] } })           // $ExpectError
-h("hr", { class: { a: Symbol() } })     // $ExpectError
-h("hr", { class: { a: () => {} } })     // $ExpectError
-h("hr", { class: { a: null } })         // $ExpectError
-h("hr", { class: { a: undefined } })    // $ExpectError
+h("p", { class: { a: true } })         // $ExpectType VDOM<unknown, unknown>
+h("p", { class: { a: false } })        // $ExpectType VDOM<unknown, unknown>
+h("p", { class: { a: 0 } })            // $ExpectError
+h("p", { class: { a: 2424 } })         // $ExpectError
+h("p", { class: { a: -123 } })         // $ExpectError
+h("p", { class: { a: -Infinity } })    // $ExpectError
+h("p", { class: { a: Infinity } })     // $ExpectError
+h("p", { class: { a: NaN } })          // $ExpectError
+h("p", { class: { a: "" } })           // $ExpectError
+h("p", { class: { a: "hi" } })         // $ExpectError
+h("p", { class: { a: {} } })           // $ExpectError
+h("p", { class: { a: new Set() } })    // $ExpectError
+h("p", { class: { a: [] } })           // $ExpectError
+h("p", { class: { a: Symbol() } })     // $ExpectError
+h("p", { class: { a: () => {} } })     // $ExpectError
+h("p", { class: { a: null } })         // $ExpectError
+h("p", { class: { a: undefined } })    // $ExpectError
 
-h("hr", { class: [true] })         // $ExpectError
-h("hr", { class: [false] })        // $ExpectType VDOM<unknown, unknown>
-h("hr", { class: [0] })            // $ExpectError
-h("hr", { class: [2424] })         // $ExpectError
-h("hr", { class: [-123] })         // $ExpectError
-h("hr", { class: [-Infinity] })    // $ExpectError
-h("hr", { class: [Infinity] })     // $ExpectError
-h("hr", { class: [NaN] })          // $ExpectError
-h("hr", { class: [""] })           // $ExpectType VDOM<unknown, unknown>
-h("hr", { class: ["hi"] })         // $ExpectType VDOM<unknown, unknown>
-h("hr", { class: [{}] })           // $ExpectType VDOM<unknown, unknown>
-h("hr", { class: [new Set()] })    // $ExpectError
-h("hr", { class: [[]] })           // $ExpectType VDOM<unknown, unknown>
-h("hr", { class: [Symbol()] })     // $ExpectError
-h("hr", { class: [() => {}] })     // $ExpectError
-h("hr", { class: [null] })         // $ExpectError
-h("hr", { class: [undefined] })    // $ExpectError
+h("p", { class: [true] })         // $ExpectError
+h("p", { class: [false] })        // $ExpectType VDOM<unknown, unknown>
+h("p", { class: [0] })            // $ExpectError
+h("p", { class: [2424] })         // $ExpectError
+h("p", { class: [-123] })         // $ExpectError
+h("p", { class: [-Infinity] })    // $ExpectError
+h("p", { class: [Infinity] })     // $ExpectError
+h("p", { class: [NaN] })          // $ExpectError
+h("p", { class: [""] })           // $ExpectType VDOM<unknown, unknown>
+h("p", { class: ["hi"] })         // $ExpectType VDOM<unknown, unknown>
+h("p", { class: [{}] })           // $ExpectType VDOM<unknown, unknown>
+h("p", { class: [new Set()] })    // $ExpectError
+h("p", { class: [[]] })           // $ExpectType VDOM<unknown, unknown>
+h("p", { class: [Symbol()] })     // $ExpectError
+h("p", { class: [() => {}] })     // $ExpectError
+h("p", { class: [null] })         // $ExpectError
+h("p", { class: [undefined] })    // $ExpectError
 
-h("hr", { class: [{}] })              // $ExpectType VDOM<unknown, unknown>
-h("hr", { class: [{ a: true }] })     // $ExpectType VDOM<unknown, unknown>
-h("hr", { class: [{ a: false }] })    // $ExpectType VDOM<unknown, unknown>
+h("p", { class: [{}] })              // $ExpectType VDOM<unknown, unknown>
+h("p", { class: [{ a: true }] })     // $ExpectType VDOM<unknown, unknown>
+h("p", { class: [{ a: false }] })    // $ExpectType VDOM<unknown, unknown>
 
-h("hr", { class: [false && "foo"] })    // $ExpectType VDOM<unknown, unknown>
+h("p", { class: [false && "foo"] })    // $ExpectType VDOM<unknown, unknown>
+
+// -----------------------------------------------------------------------------
+
+h("p", { style: true })         // $ExpectError
+h("p", { style: false })        // $ExpectError
+h("p", { style: 0 })            // $ExpectError
+h("p", { style: 2424 })         // $ExpectError
+h("p", { style: -123 })         // $ExpectError
+h("p", { style: -Infinity })    // $ExpectError
+h("p", { style: Infinity })     // $ExpectError
+h("p", { style: NaN })          // $ExpectError
+h("p", { style: "" })           // $ExpectError
+h("p", { style: "hi" })         // $ExpectError
+h("p", { style: {} })           // $ExpectType VDOM<unknown, unknown>
+h("p", { style: new Set() })    // $ExpectError
+h("p", { style: [] })           // $ExpectError
+h("p", { style: Symbol() })     // $ExpectError
+h("p", { style: () => {} })     // $ExpectError
+h("p", { style: null })         // $ExpectError
+h("p", { style: undefined })    // $ExpectType VDOM<unknown, unknown>
+
+h("p", { style: { color: true } })         // $ExpectError
+h("p", { style: { color: false } })        // $ExpectError
+h("p", { style: { color: 0 } })            // $ExpectError
+h("p", { style: { color: 2424 } })         // $ExpectError
+h("p", { style: { color: -123 } })         // $ExpectError
+h("p", { style: { color: -Infinity } })    // $ExpectError
+h("p", { style: { color: Infinity } })     // $ExpectError
+h("p", { style: { color: NaN } })          // $ExpectError
+h("p", { style: { color: "" } })           // $ExpectType VDOM<unknown, unknown>
+h("p", { style: { color: "red" } })        // $ExpectType VDOM<unknown, unknown>
+h("p", { style: { color: {} } })           // $ExpectError
+h("p", { style: { color: new Set() } })    // $ExpectError
+h("p", { style: { color: [] } })           // $ExpectError
+h("p", { style: { color: Symbol() } })     // $ExpectError
+h("p", { style: { color: () => {} } })     // $ExpectError
+h("p", { style: { color: null } })         // $ExpectType VDOM<unknown, unknown>
+h("p", { style: { color: undefined } })    // $ExpectType VDOM<unknown, unknown>
+h("p", { style: { clor: null } })          // $ExpectError
+
+h("p", { style: [true] })         // $ExpectError
+h("p", { style: [false] })        // $ExpectError
+h("p", { style: [0] })            // $ExpectError
+h("p", { style: [2424] })         // $ExpectError
+h("p", { style: [-123] })         // $ExpectError
+h("p", { style: [-Infinity] })    // $ExpectError
+h("p", { style: [Infinity] })     // $ExpectError
+h("p", { style: [NaN] })          // $ExpectError
+h("p", { style: [""] })           // $ExpectError
+h("p", { style: ["hi"] })         // $ExpectError
+h("p", { style: [{}] })           // $ExpectError
+h("p", { style: [new Set()] })    // $ExpectError
+h("p", { style: [[]] })           // $ExpectError
+h("p", { style: [Symbol()] })     // $ExpectError
+h("p", { style: [() => {}] })     // $ExpectError
+h("p", { style: [null] })         // $ExpectError
+h("p", { style: [undefined] })    // $ExpectError
 
 // -----------------------------------------------------------------------------
 
@@ -154,8 +211,6 @@ h("a", { onclick: (state) => [{ ...state }] }, [h("br", {})])
 
 // $ExpectType VDOM<number, unknown>
 h("a", { onclick: ((state: number) => state * 2) }, [h("br", {})])
-
-// -----------------------------------------------------------------------------
 
 // $ExpectType VDOM<number, unknown>
 h<number>("a", { onclick: (state) => state * 2 }, [h("br", {})])

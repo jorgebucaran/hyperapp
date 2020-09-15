@@ -95,7 +95,10 @@ declare module "hyperapp" {
   type ClassProp = false | string | Record<string, boolean> | ClassProp[]
 
   // The `style` property represents inline CSS.
-  type StyleProp = Record<string, number | string | null>
+  type StyleProp
+    = { [K in keyof CSSStyleDeclaration]?: CSSStyleDeclaration[K] | null }
+    // For some reason we need this to prevent `style` from being a string.
+    & { [index: number]: never }
 
   // A virtual node is a convenience layer over a virtual DOM node.
   type VNode<S, D = unknown> = false | null | undefined | VDOM<S, D>

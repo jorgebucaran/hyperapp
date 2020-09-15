@@ -3,13 +3,14 @@
 declare module "hyperapp" {
   // A Hyperapp application instance has an initial state and a base view.
   // It must also be mounted over an available DOM element.
-  type App<S, P = unknown, D = unknown> = Readonly<{
-    init: Transition<S, P, D> | Action<S, P, D>
-    view: View<S, D>
-    node: Node
-    subscriptions?: Subscription<S, P, D>
-    middleware?: Middleware<S, P, D>
-  }>
+  type App<S, P = unknown, D = unknown>
+    = Readonly<{
+      init: Transition<S, P, D> | Action<S, P, D>
+      view: View<S, D>
+      node: Node
+      subscriptions?: Subscription<S, P, D>
+      middleware?: Middleware<S, P, D>
+    }>
 
   // A transition is a state transformation with any effects to run.
   type Transition<S, P = unknown, D = unknown> = State<S> | StateWithEffects<S, P, D>
@@ -54,9 +55,9 @@ declare module "hyperapp" {
 
   // An effect is where side effects and any additional dispatching occur.
   // An effect used in a subscription should be able to unsubscribe.
-  type Effect<S, P = unknown, D = unknown> =
-    (dispatch: Dispatch<S, P, D>, props?: EffectData<D>) =>
-      void | Unsubscribe | Promise<undefined | Unsubscribe>
+  type Effect<S, P = unknown, D = unknown>
+    = (dispatch: Dispatch<S, P, D>, props?: EffectData<D>) =>
+        void | Unsubscribe | Promise<undefined | Unsubscribe>
 
   // An effect is generally given additional data.
   type EffectData<D = unknown> = D
@@ -75,12 +76,13 @@ declare module "hyperapp" {
   }
 
   // Virtual DOM properties will often correspond to HTML attributes.
-  type PropList<S, D = unknown> = Readonly<ElementCreationOptions & EventActions<S, D> & {
-    [_: string]: unknown
-    class?: ClassProp
-    key?: Key
-    style?: StyleProp
-  }>
+  type PropList<S, D = unknown>
+    = Readonly<ElementCreationOptions & EventActions<S, D> & {
+      [_: string]: unknown
+      class?: ClassProp
+      key?: Key
+      style?: StyleProp
+    }>
 
   // Actions are used as event handlers.
   type EventActions<S, D = unknown> = { [K in keyof EventsMap]?: Action<S, EventsMap[K], D> }

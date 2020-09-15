@@ -215,6 +215,8 @@ h("a", { onclick: ((state: number) => state * 2) }, [h("br", {})])
 // $ExpectType VDOM<number, unknown>
 h<number>("a", { onclick: (state) => state * 2 }, [h("br", {})])
 
+// -----------------------------------------------------------------------------
+
 type Test = { bar?: number, foo: number }
 
 // $ExpectType VDOM<Test, unknown>

@@ -19,6 +19,8 @@ app(() => {})     // $ExpectError
 app(null)         // $ExpectError
 app(undefined)    // $ExpectError
 
+// -----------------------------------------------------------------------------
+
 type Test = { bar?: number, foo: number }
 
 // $ExpectType Dispatch<Test, unknown, unknown>
@@ -57,4 +59,26 @@ app<Test>({
     }, [text("clicky")]),
   ]),
   node: document.body
+})
+
+// -----------------------------------------------------------------------------
+
+// $ExpectType Dispatch<Test, unknown, unknown>
+app<Test>({
+  init: { foo: 2 },
+  view: (state) => h("p", {}, [text(state.foo)]),
+  node: document.body,
+  middleware: (dispatch) => dispatch
+})
+
+// $ExpectType Dispatch<Test, unknown, unknown>
+app<Test>({
+  init: { foo: 2 },
+  view: (state) => h("p", {}, [text(state.foo)]),
+  node: document.body,
+  middleware: (dispatch) => (action, props) => {
+    console.log(action)
+    console.log(props)
+    dispatch(action, props)
+  }
 })

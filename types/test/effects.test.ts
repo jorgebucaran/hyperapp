@@ -1,16 +1,21 @@
-import { Effect, EffectData, EffectDescriptor } from "hyperapp"
+import { Effect, EffectDescriptor } from "hyperapp"
 
 // $ExpectType Effect<string, string, string>
-const runSayHi = ((dispatch, data) => {
+const runEcho = ((dispatch, data) => {
   console.log(data)
   dispatch((state, x) => state + x, data)
 }) as Effect<string, string, string>
 
-const sayHi = (x: EffectData<string>): EffectDescriptor<string, string, string> =>
-  [runSayHi, x]
+const echo = (x: string): EffectDescriptor<string, string, string> =>
+  [runEcho, x]
 
 // $ExpectType EffectDescriptor<string, string, string>
-sayHi("hi")
+echo("hi")
+
+// -----------------------------------------------------------------------------
+
+// TODO:
+// => Unsubscribe
 
 // -----------------------------------------------------------------------------
 
@@ -18,14 +23,19 @@ sayHi("hi")
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
 // $ExpectType Effect<string, string, string>
-const runSayHiEventually = (async (dispatch, data) => {
-  await delay (5000)
+const runEchoEventually = (async (dispatch, data) => {
+  await delay(5000)
   console.log(data)
   window.requestAnimationFrame(() => dispatch((state, x) => state + x, data))
 }) as Effect<string, string, string>
 
-const sayHiEventually = (x: EffectData<string>): EffectDescriptor<string, string, string> =>
-  [runSayHiEventually, x]
+const sayEchoEventually = (x: string): EffectDescriptor<string, string, string> =>
+  [runEchoEventually, x]
 
 // $ExpectType EffectDescriptor<string, string, string>
-sayHiEventually("hi")
+sayEchoEventually("hi")
+
+// -----------------------------------------------------------------------------
+
+// TODO:
+// => Promise<Unsubscribe>

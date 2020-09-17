@@ -1,6 +1,25 @@
 // Minimum TypeScript Version: 3.7
 
 declare module "hyperapp" {
+  // The `app` function initiates a Hyperapp application. `app` along with
+  // effects are the only places where side effects are allowed.
+  function app<S, P = unknown, D = unknown>(props: App<S, P, D>): Dispatch<S, P, D>
+
+  // The `h` function builds a virtual DOM node.
+  function h<S, D = unknown>(
+    type: string,
+    props: PropList<S, D>,
+    children?: VNode<S, D> | readonly VNode<S, D>[],
+  ): VDOM<S, D>
+
+  // The `memo` function stores a view along with properties for it.
+  function memo<S, D = unknown>(view: View<S, D>, props: PropList<S, D>): Partial<VDOM<S, D>>
+
+  // The `text` function creates a virtual DOM node representing plain text.
+  function text<S, D = unknown>(value: number | string, node?: Node): VDOM<S, D>
+
+  // ---------------------------------------------------------------------------
+
   // A Hyperapp application instance has an initial state and a base view.
   // It must also be mounted over an available DOM element.
   type App<S, P = unknown, D = unknown>
@@ -11,15 +30,6 @@ declare module "hyperapp" {
       subscriptions?: Subscription<S, P, D>
       middleware?: Middleware<S, P, D>
     }>
-
-  // A transition is a state transformation with any effects to run.
-  type Transition<S, P = unknown, D = unknown> = State<S> | StateWithEffects<S, P, D>
-
-  // Application state is accessible in every view, action, and subscription.
-  type State<S> = S
-
-  // Transformed state can be paired with a list of effects to run.
-  type StateWithEffects<S, P = unknown, D = unknown> = [State<S>, ...EffectDescriptor<S, P, D>[]]
 
   // A view builds a virtual DOM node representation of the application state.
   type View<S, D = unknown> = (state: State<S>) => VDOM<S, D>
@@ -52,6 +62,15 @@ declare module "hyperapp" {
   // A payload is data external to state that is given to a dispatched action.
   type Payload<P = unknown> = P
 
+  // A transition is a state transformation with any effects to run.
+  type Transition<S, P = unknown, D = unknown> = State<S> | StateWithEffects<S, P, D>
+
+  // Application state is accessible in every view, action, and subscription.
+  type State<S> = S
+
+  // Transformed state can be paired with a list of effects to run.
+  type StateWithEffects<S, P = unknown, D = unknown> = [State<S>, ...EffectDescriptor<S, P, D>[]]
+
   // An effect descriptor describes how an effect should be invoked.
   // A function that creates this is called an effect constructor.
   type EffectDescriptor<S, P = unknown, D = unknown> = [Effect<S, P, D>, EffectData<D>]
@@ -78,6 +97,23 @@ declare module "hyperapp" {
     memo?: PropList<S, D>
   }
 
+  // A key can uniquely associate a virtual DOM node with a certain DOM element.
+  type Key = string | null | undefined
+
+  // Actual DOM nodes will be manipulated depending on how property patching goes.
+  type MaybeNode = null | undefined | Node
+
+  // A virtual node is a convenience layer over a virtual DOM node.
+  type VNode<S, D = unknown> = false | null | undefined | VDOM<S, D>
+
+  // A virtual DOM node's tag has metadata relevant to it. Virtual DOM nodes are
+  // tagged by their type to assist rendering.
+  type Tag<S, D = unknown> = VDOMNodeType | View<S, D>
+
+  // These are based on actual DOM node types:
+  // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
+  const enum VDOMNodeType { SSR = 1, Text = 3 }
+
   // Virtual DOM properties will often correspond to HTML attributes.
   type PropList<S, D = unknown>
     = Readonly<ElementCreationOptions & EventActions<S, D> & {
@@ -86,13 +122,6 @@ declare module "hyperapp" {
       key?: Key
       style?: StyleProp
     }>
-
-  // Actions are used as event handlers.
-  type EventActions<S, D = unknown> = { [K in keyof EventsMap]?: Action<S, EventsMap[K], D> }
-  type EventsMap = OnHTMLElementEventMap & OnWindowEventMap & { onsearch: Event }
-
-  // A key can uniquely associate a virtual DOM node with a certain DOM element.
-  type Key = string | null | undefined
 
   // The `class` property represents an HTML class attribute string.
   type ClassProp = false | string | Record<string, boolean> | ClassProp[]
@@ -103,38 +132,9 @@ declare module "hyperapp" {
     // For some reason we need this to prevent `style` from being a string.
     & { [index: number]: never }
 
-  // A virtual node is a convenience layer over a virtual DOM node.
-  type VNode<S, D = unknown> = false | null | undefined | VDOM<S, D>
-
-  // Actual DOM nodes will be manipulated depending on how property patching goes.
-  type MaybeNode = null | undefined | Node
-
-  // A virtual DOM node's tag has metadata relevant to it. Virtual DOM nodes are
-  // tagged by their type to assist rendering.
-  type Tag<S, D = unknown> = VDOMNodeType | View<S, D>
-
-  // These are based on actual DOM node types:
-  // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
-  const enum VDOMNodeType { SSR = 1, Text = 3 }
-
-  // ---------------------------------------------------------------------------
-
-  // The `app` function initiates a Hyperapp application. `app` along with effects
-  // should be the only places you need to worry about side effects.
-  function app<S, P = unknown, D = unknown>(props: App<S, P, D>): Dispatch<S, P, D>
-
-  // The `h` function builds a virtual DOM node.
-  function h<S, D = unknown>(
-    type: string,
-    props: PropList<S, D>,
-    children?: VNode<S, D> | readonly VNode<S, D>[],
-  ): VDOM<S, D>
-
-  // The `memo` function stores a view along with properties for it.
-  function memo<S, D = unknown>(view: View<S, D>, props: PropList<S, D>): Partial<VDOM<S, D>>
-
-  // The `text` function creates a virtual DOM node representing plain text.
-  function text<S, D = unknown>(value: number | string, node?: Node): VDOM<S, D>
+  // Event handlers are implemented with actions.
+  type EventActions<S, D = unknown> = { [K in keyof EventsMap]?: Action<S, EventsMap[K], D> }
+  type EventsMap = OnHTMLElementEventMap & OnWindowEventMap & { onsearch: Event }
 
   // ---------------------------------------------------------------------------
 

@@ -41,10 +41,13 @@ declare module "hyperapp" {
   // A dispatched action handles an event in the context of the current state.
   type Dispatch<S, P = unknown, D = unknown> = (action: Action<S, P, D>, props?: Payload<P>) => void
 
-  // An action transforms existing state and can be wrapped by another action.
+  // An action transforms existing state and/or wraps another action.
   type Action<S, P = unknown, D = unknown>
-    = [Action<S, P, D>, Payload<P>]
-    | ((state: State<S>, props?: Payload<P>) => Transition<S, P, D> | Action<S, P, D>)
+    = ((state: State<S>, props?: Payload<P>) => Transition<S, P, D> | Action<S, P, D>)
+    | ActionDescriptor<S, P, D>
+
+  // An action descriptor describes an action and any payload for it.
+  type ActionDescriptor<S, P, D> = [Action<S, P, D>, Payload<P>]
 
   // A payload is data external to state that is given to a dispatched action.
   type Payload<P = unknown> = P

@@ -1,40 +1,36 @@
 import {
-  Dispatch, EffectData, EffectDescriptor, State, Transition,
+  Dispatch, Effect, EffectDescriptor, Payload, State, Transition,
   app, h, text,
 } from "hyperapp"
 
-type Test = { x: number }
+type Test = { x: number, y: number }
 
-// $ExpectType Dispatch<Test, unknown, unknown>
+// $ExpectType Dispatch<Test>
 app<Test>({
-  init: { x: 2 },
-  view: (state) => h("button", {
-    onclick: (state) => ({ ...state, x: state.x * 2 })
-  }, [text(state.x)]),
-  node: document.body
-})
-
-// $ExpectType Dispatch<Test, unknown, unknown>
-app<Test>({
-  init: { x: 2 },
-  view: (state) => h("button", {
-    onclick: (state) => [{ ...state, x: state.x * 2 }]
-  }, [text(state.x)]),
+  init: { x: 2, y: 4 },
+  view: (state) => h("div", {}, [
+    h("button", {
+      onclick: (state) => ({ ...state, x: state.x * 2 })
+    }, [text(state.x)]),
+    h("button", {
+      onclick: (state) => [{ ...state, x: state.x * 2 }]
+    }, [text(state.x)]),
+  ]),
   node: document.body
 })
 
 // -----------------------------------------------------------------------------
 
-const runJustEcho = <S, P, D>(_dispatch: Dispatch<S, P, D>, data: EffectData<D>) => {
+const runJustEcho = ((_dispatch: Dispatch<Test>, data: Payload<string>): void => {
   console.log(data)
-}
+}) as Effect<Test, string>
 
-const justEcho = <P>(x: string): EffectDescriptor<Test, P> =>
+const justEcho = (x: string): EffectDescriptor<Test, string> =>
   [runJustEcho, x]
 
-// $ExpectType Dispatch<Test, unknown, unknown>
+// $ExpectType Dispatch<Test>
 app<Test>({
-  init: { x: 2 },
+  init: { x: 2, y: 4 },
   view: (state) => h("button", {
     onclick: (state) => [
       { ...state, x: state.x * 2 },
@@ -44,11 +40,11 @@ app<Test>({
   node: document.body
 })
 
-// $ExpectType Dispatch<Test, unknown, unknown>
+// $ExpectType Dispatch<Test>
 app<Test>({
-  init: { x: 2 },
+  init: { x: 2, y: 4 },
   view: (state) => h("button", {
-    onclick: (state: State<Test>): Transition<Test, MouseEvent> => [
+    onclick: (state: State<Test>): Transition<Test> => [
       { ...state, x: state.x * 2 },
       justEcho("hi"),
     ],
@@ -56,11 +52,11 @@ app<Test>({
   node: document.body
 })
 
-// $ExpectType Dispatch<Test, unknown, unknown>
+// $ExpectType Dispatch<Test>
 app<Test>({
-  init: { x: 2 },
+  init: { x: 2, y: 4 },
   view: (state) => h("button", {
-    onkeypress: (state: State<Test>): Transition<Test, KeyboardEvent> => [
+    onkeypress: (state: State<Test>): Transition<Test> => [
       { ...state, x: state.x * 2 },
       justEcho("hi"),
     ],
@@ -68,9 +64,9 @@ app<Test>({
   node: document.body
 })
 
-// $ExpectType Dispatch<Test, unknown, unknown>
+// $ExpectType Dispatch<Test>
 app<Test>({
-  init: { x: 2 },
+  init: { x: 2, y: 4 },
   view: (state) => h("button", {
     onclick: (state) => [
       { ...state, x: state.x * 2 },
@@ -84,15 +80,15 @@ app<Test>({
   node: document.body
 })
 
-// $ExpectType Dispatch<Test, unknown, unknown>
+// $ExpectType Dispatch<Test>
 app<Test>({
-  init: { x: 2 },
+  init: { x: 2, y: 4 },
   view: (state) => h("button", {
-    onclick: (state: State<Test>): Transition<Test, MouseEvent> => [
+    onclick: (state: State<Test>): Transition<Test> => [
       { ...state, x: state.x * 2 },
       justEcho("hi"),
     ],
-    onkeypress: (state: State<Test>): Transition<Test, KeyboardEvent> => [
+    onkeypress: (state: State<Test>): Transition<Test> => [
       { ...state, x: state.x * 2 },
       justEcho("hi"),
     ],

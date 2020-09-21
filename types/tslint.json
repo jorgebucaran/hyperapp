@@ -10,6 +10,7 @@
 
     "no-const-enum": false,
     "no-single-declare-module": false,
-    "no-unnecessary-generics": false
+    "no-unnecessary-generics": false,
+    "void-return": false
   }
 }

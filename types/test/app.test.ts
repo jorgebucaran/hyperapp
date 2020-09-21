@@ -23,14 +23,14 @@ app(undefined)    // $ExpectError
 
 type Test = { bar?: number, foo: number }
 
-// $ExpectType Dispatch<Test, unknown, unknown>
+// $ExpectType Dispatch<Test>
 app<Test>({
   init: { foo: 2 },
   view: (state) => h("p", {}, [text(state.bar ?? "")]),
   node: document.body
 })
 
-// $ExpectType Dispatch<Test, unknown, unknown>
+// $ExpectType Dispatch<Test>
 app<Test>({
   init: { foo: 2 },
   view: (state) => h("div", {}, [
@@ -43,7 +43,7 @@ app<Test>({
   node: document.body
 })
 
-// $ExpectType Dispatch<Test, unknown, unknown>
+// $ExpectType Dispatch<Test>
 app<Test>({
   init: { foo: 2 },
   view: (state) => h("div", {}, [
@@ -63,7 +63,7 @@ app<Test>({
 
 // -----------------------------------------------------------------------------
 
-// $ExpectType Dispatch<Test, unknown, unknown>
+// $ExpectType Dispatch<Test>
 app<Test>({
   init: { foo: 2 },
   view: (state) => h("p", {}, [text(state.foo)]),
@@ -71,7 +71,7 @@ app<Test>({
   middleware: (dispatch) => dispatch
 })
 
-// $ExpectType Dispatch<Test, unknown, unknown>
+// $ExpectType Dispatch<Test>
 app<Test>({
   init: { foo: 2 },
   view: (state) => h("p", {}, [text(state.foo)]),

@@ -3,98 +3,95 @@
 declare module "hyperapp" {
   // The `app` function initiates a Hyperapp application. `app` along with
   // effects are the only places where side effects are allowed.
-  function app<S, P = unknown, D = unknown>(props: App<S, P, D>): Dispatch<S, P, D>
+  function app<S>(props: App<S>): Dispatch<S>
 
   // The `h` function builds a virtual DOM node.
-  function h<S, D = unknown>(
+  function h<S>(
     type: string,
-    props: PropList<S, D>,
-    children?: VNode<S, D> | readonly VNode<S, D>[],
-  ): VDOM<S, D>
+    props: PropList<S>,
+    children?: VNode<S> | readonly VNode<S>[],
+  ): VDOM<S>
 
   // The `memo` function stores a view along with properties for it.
-  function memo<S, D = unknown>(view: View<S, D>, props: PropList<S, D>): Partial<VDOM<S, D>>
+  function memo<S>(view: View<S>, props: PropList<S>): Partial<VDOM<S>>
 
   // The `text` function creates a virtual DOM node representing plain text.
-  function text<S, D = unknown>(value: number | string, node?: Node): VDOM<S, D>
+  function text<S>(value: number | string, node?: Node): VDOM<S>
 
   // ---------------------------------------------------------------------------
 
   // A Hyperapp application instance has an initial state and a base view.
   // It must also be mounted over an available DOM element.
-  type App<S, P = unknown, D = unknown>
+  type App<S>
     = Readonly<{
-      init: Transition<S, P, D> | Action<S, P, D>
-      view: View<S, D>
+      init: Transition<S> | Action<S, any>
+      view: View<S>
       node: Node
-      subscriptions?: Subscription<S, P, D>
-      middleware?: Middleware<S, P, D>
+      subscriptions?: Subscription<S>
+      middleware?: Middleware<S>
     }>
 
   // A view builds a virtual DOM node representation of the application state.
-  type View<S, D = unknown> = (state: State<S>) => VDOM<S, D>
+  type View<S> = (state: State<S>) => VDOM<S>
 
   // A subscription is a set of recurring effects.
-  type Subscription<S, P = unknown, D = unknown> = (state: State<S>) => Subscriber<S, P, D>[]
+  type Subscription<S> = (state: State<S>) => Subscriber<S>[]
 
   // A subscriber reacts to subscription updates.
-  type Subscriber<S, P = unknown, D = unknown> = boolean | undefined | Effect<S, P, D> | Unsubscribe
+  type Subscriber<S, D = any> = boolean | undefined | Effect<S, D> | Unsubscribe
 
   // A subscriber ideally provides a function that cancels itself properly.
   type Unsubscribe = () => void
 
   // Middleware allows for custom processing during dispatching.
-  type Middleware<S, P = unknown, D = unknown> = (dispatch: Dispatch<S, P, D>) => Dispatch<S, P, D>
+  type Middleware<S> = (dispatch: Dispatch<S>) => Dispatch<S>
 
   // ---------------------------------------------------------------------------
 
   // A dispatched action handles an event in the context of the current state.
-  type Dispatch<S, P = unknown, D = unknown> = (action: Action<S, P, D>, props?: Payload<P>) => void
+  type Dispatch<S> = (action: Action<S, any>, props?: Payload<any>) => void
 
   // An action transforms existing state and/or wraps another action.
-  type Action<S, P = unknown, D = unknown>
-    = ((state: State<S>, props?: Payload<P>) => Transition<S, P, D> | Action<S, P, D>)
-    | ActionDescriptor<S, P, D>
+  type Action<S, P>
+    = ((state: State<S>, props?: Payload<P>) => Transition<S> | Action<S, any>)
+    | ActionDescriptor<S, P>
 
   // An action descriptor describes an action and any payload for it.
-  type ActionDescriptor<S, P, D> = [Action<S, P, D>, Payload<P>]
+  type ActionDescriptor<S, P> = [Action<S, P>, Payload<P>]
 
-  // A payload is data external to state that is given to a dispatched action.
-  type Payload<P = unknown> = P
+  // A payload is data external to state that is given to an action or effect.
+  type Payload<P> = P
 
   // A transition is a state transformation with any effects to run.
-  type Transition<S, P = unknown, D = unknown> = State<S> | StateWithEffects<S, P, D>
+  type Transition<S> = State<S> | StateWithEffects<S>
 
   // Application state is accessible in every view, action, and subscription.
   type State<S> = S
 
   // Transformed state can be paired with a list of effects to run.
-  type StateWithEffects<S, P = unknown, D = unknown> = [State<S>, ...EffectDescriptor<S, P, D>[]]
+  type StateWithEffects<S, D = any> = [State<S>, ...EffectDescriptor<S, D>[]]
 
   // An effect descriptor describes how an effect should be invoked.
   // A function that creates this is called an effect constructor.
-  type EffectDescriptor<S, P = unknown, D = unknown> = [Effect<S, P, D>, EffectData<D>]
+  type EffectDescriptor<S, D> = [Effect<S, D>, Payload<D>]
 
   // An effect is where side effects and any additional dispatching occur.
   // An effect used in a subscription should be able to unsubscribe.
-  type Effect<S, P = unknown, D = unknown>
-    = (dispatch: Dispatch<S, P, D>, props?: EffectData<D>) =>
-        void | Unsubscribe | Promise<undefined | Unsubscribe>
-
-  // An effect is generally given additional data.
-  type EffectData<D = unknown> = D
+  type Effect<S, D>
+    = (dispatch: Dispatch<S>, props?: Payload<D>) =>
+        void | Unsubscribe | Promise<void | Unsubscribe>
 
   // ---------------------------------------------------------------------------
 
   // A virtual DOM node represents an actual DOM element.
-  type VDOM<S, D = unknown> = {
+  type VDOM<S> = {
     readonly type: string
-    readonly props: PropList<S, D>
-    readonly children: VNode<S, D>[]
+    readonly props: PropList<S>
+    readonly children: VNode<S>[]
     node: MaybeNode
-    readonly tag?: Tag<S, D>
+    readonly tag?: Tag<S>
     readonly key: Key
-    memo?: PropList<S, D>
+    memo?: PropList<S>
   }
 
   // A key can uniquely associate a virtual DOM node with a certain DOM element.
@@ -104,19 +101,19 @@ declare module "hyperapp" {
   type MaybeNode = null | undefined | Node
 
   // A virtual node is a convenience layer over a virtual DOM node.
-  type VNode<S, D = unknown> = false | null | undefined | VDOM<S, D>
+  type VNode<S> = false | null | undefined | VDOM<S>
 
   // A virtual DOM node's tag has metadata relevant to it. Virtual DOM nodes are
   // tagged by their type to assist rendering.
-  type Tag<S, D = unknown> = VDOMNodeType | View<S, D>
+  type Tag<S> = VDOMNodeType | View<S>
 
   // These are based on actual DOM node types:
   // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
   const enum VDOMNodeType { SSR = 1, Text = 3 }
 
   // Virtual DOM properties will often correspond to HTML attributes.
-  type PropList<S, D = unknown>
-    = Readonly<ElementCreationOptions & EventActions<S, D> & {
+  type PropList<S>
+    = Readonly<ElementCreationOptions & EventActions<S> & {
       [_: string]: unknown
       class?: ClassProp
       key?: Key
@@ -132,16 +129,17 @@ declare module "hyperapp" {
     // For some reason we need this to prevent `style` from being a string.
     & { [index: number]: never }
 
-  // Event handlers are implemented with actions.
-  type EventActions<S, D = unknown> = { [K in keyof EventsMap]?: Action<S, EventsMap[K], D> }
+  // Event handlers are implemented using actions.
+  type EventActions<S> = { [K in keyof EventsMap]?: Action<S, EventsMap[K]> }
   type EventsMap = OnHTMLElementEventMap & OnWindowEventMap & { onsearch: Event }
 
   // ---------------------------------------------------------------------------
 
-  // Due to current limitations with TypeScript (which should get resolved in
-  // the future: https://github.com/microsoft/TypeScript/pull/40336), here is
-  // a collection of modified copies of relevant event maps from TypeScript's
-  // "lib.dom.d.ts" definition file to assist with defining `EventActions`:
+  // Due to current limitations with TypeScript (which will get resolved in the
+  // future: https://devblogs.microsoft.com/typescript/announcing-typescript-4-1-beta/#key-remapping-mapped-types),
+  // here is a collection of modified copies of relevant event maps from
+  // TypeScript's "lib.dom.d.ts" definition file to assist with defining
+  // `EventActions`:
 
   type OnElementEventMap = {
     "onfullscreenchange": Event

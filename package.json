@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "c8": "*",
-    "dtslint": "^4.0.0",
+    "dtslint": "^4.0.2",
     "terser": "*",
     "twist": "*",
     "typescript": "^4.0.2"

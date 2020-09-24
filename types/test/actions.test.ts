@@ -1,5 +1,5 @@
 import {
-  Dispatch, Effect, EffectDescriptor, Payload, State, Transition,
+  Dispatch, Effect, EffectDescriptor, EffectfulState, Payload, State,
   app, h, text,
 } from "hyperapp"
 
@@ -21,9 +21,9 @@ app<Test>({
 
 // -----------------------------------------------------------------------------
 
-const runJustEcho = ((_dispatch: Dispatch<Test>, data: Payload<string>): void => {
+const runJustEcho = (_dispatch: Dispatch<Test>, data?: Payload<string>): void => {
   console.log(data)
-}) as Effect<Test, string>
+}
 
 const justEcho = (x: string): EffectDescriptor<Test, string> =>
   [runJustEcho, x]
@@ -44,7 +44,7 @@ app<Test>({
 app<Test>({
   init: { x: 2, y: 4 },
   view: (state) => h("button", {
-    onclick: (state: State<Test>): Transition<Test> => [
+    onclick: (state: State<Test>): EffectfulState<Test> => [
       { ...state, x: state.x * 2 },
       justEcho("hi"),
     ],
@@ -56,7 +56,7 @@ app<Test>({
 app<Test>({
   init: { x: 2, y: 4 },
   view: (state) => h("button", {
-    onkeypress: (state: State<Test>): Transition<Test> => [
+    onkeypress: (state: State<Test>): EffectfulState<Test> => [
       { ...state, x: state.x * 2 },
       justEcho("hi"),
     ],
@@ -84,11 +84,11 @@ app<Test>({
 app<Test>({
   init: { x: 2, y: 4 },
   view: (state) => h("button", {
-    onclick: (state: State<Test>): Transition<Test> => [
+    onclick: (state: State<Test>): EffectfulState<Test> => [
       { ...state, x: state.x * 2 },
       justEcho("hi"),
     ],
-    onkeypress: (state: State<Test>): Transition<Test> => [
+    onkeypress: (state: State<Test>): EffectfulState<Test> => [
       { ...state, x: state.x * 2 },
       justEcho("hi"),
     ],

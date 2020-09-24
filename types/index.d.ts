@@ -24,7 +24,8 @@ declare module "hyperapp" {
   // It must also be mounted over an available DOM element.
   type App<S>
     = Readonly<{
-      init: Transition<S> | Action<S, any>
+      // init: Transition<S> | Action<S>
+      init: State<S> | EffectfulState<S> | Action<S>
       view: View<S>
       node: Node
       subscriptions?: Subscription<S>
@@ -49,27 +50,25 @@ declare module "hyperapp" {
   // ---------------------------------------------------------------------------
 
   // A dispatched action handles an event in the context of the current state.
-  type Dispatch<S> = (action: Action<S, any>, props?: Payload<any>) => void
+  type Dispatch<S> = (action: Action<S>, props?: Payload<any>) => void
 
   // An action transforms existing state and/or wraps another action.
-  type Action<S, P>
-    = ((state: State<S>, props?: Payload<P>) => Transition<S> | Action<S, any>)
-    | ActionDescriptor<S, P>
-
-  // An action descriptor describes an action and any payload for it.
+  type Action<S, P = any> = ActionTransform<S, P> | ActionDescriptor<S, P>
+  type ActionTransform<S, P = any> = (state: State<S>, props?: Payload<P>) =>
+    State<S> | EffectfulState<S> | Action<S>
   type ActionDescriptor<S, P> = [Action<S, P>, Payload<P>]
+
+  // A transform carries out the transition from one state to another.
+  type Transform<S, P = any> = (state: State<S>, props?: Payload<P>) => State<S> | EffectfulState<S>
 
   // A payload is data external to state that is given to an action or effect.
   type Payload<P> = P
-
-  // A transition is a state transformation with any effects to run.
-  type Transition<S> = State<S> | StateWithEffects<S>
 
   // Application state is accessible in every view, action, and subscription.
   type State<S> = S
 
   // Transformed state can be paired with a list of effects to run.
-  type StateWithEffects<S, D = any> = [State<S>, ...EffectDescriptor<S, D>[]]
+  type EffectfulState<S, D = any> = [State<S>, ...EffectDescriptor<S, D>[]]
 
   // An effect descriptor describes how an effect should be invoked.
   // A function that creates this is called an effect constructor.
@@ -79,7 +78,7 @@ declare module "hyperapp" {
   // An effect used in a subscription should be able to unsubscribe.
   type Effect<S, D>
     = (dispatch: Dispatch<S>, props?: Payload<D>) =>
-        void | Unsubscribe | Promise<void | Unsubscribe>
+      void | Unsubscribe | Promise<void | Unsubscribe>
 
   // ---------------------------------------------------------------------------
 

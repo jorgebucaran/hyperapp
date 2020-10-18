@@ -322,7 +322,7 @@ const httpFx = (dispatch, props) => {
   // Do side effects
   fetch(props.url, props.options)
     .then((res) => res.json())
-    .then((data) => dispatch(data)) // Optionnally dispatch an action
+    .then((data) => dispatch(data)) // Optionally dispatch an action
 }
 
 // Helper to easily create the effect tuple for the Http effect

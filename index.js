@@ -361,14 +361,28 @@ export var memo = (tag, memo) => ({ tag, memo })
 export var text = (value, node) =>
   createVNode(value, EMPTY_OBJ, EMPTY_ARR, node, null, TEXT_NODE)
 
-export var h = (type, props, children) =>
-  createVNode(
-    type,
-    props,
-    isArray(children) ? children : children == null ? EMPTY_ARR : [children],
-    null,
-    props.key
-  )
+export var h = function(name, props) {
+  for (var vdom, rest = [], children = [], i = arguments.length; i-- > 2; ) {
+    rest.push(arguments[i])
+  }
+
+  while (rest.length > 0) {
+    if (isArray((vdom = rest.pop()))) {
+      for (var i = vdom.length; i-- > 0; ) {
+        rest.push(vdom[i])
+      }
+    } else if (vdom === false || vdom === true || vdom == null) {
+    } else {
+      children.push(typeof vdom === "object" ? vdom : text(vdom))
+    }
+  }
+
+  props = props || EMPTY_OBJ
+
+  return typeof name === "function"
+    ? name(props, children)
+    : createVNode(name, props, children, undefined, props.key)
+}
 
 export var app = (props) => {
   var view = props.view

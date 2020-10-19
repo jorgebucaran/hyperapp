@@ -24,7 +24,7 @@ Below is a consice recap of Hyperapp's core APIs and packages. It's geared towar
 ## h()
 
 ```js
-h(type, props, ...children)
+h(type, props, children)
 ```
 
 Hyperscript function to create virtual DOM nodes (VNodes), which are used for [rendering](#rendering).
@@ -33,7 +33,7 @@ A VNode is a simplified representation of an HTML element. It represents an elem
 
 - **type** - Name of the node, eg: div, h1, button, etc.
 - **props** - Object containing HTML or SVG attributes the DOM node will have and [special props](#special-props).
-- **children** - Array of child VNodes.
+- **children** - Array of child VNodes or single VNode child.
 
 ```js
 import { h, text } from "hyperapp"

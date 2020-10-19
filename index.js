@@ -361,13 +361,13 @@ export var memo = (tag, memo) => ({ tag, memo })
 export var text = (value, node) =>
   createVNode(value, EMPTY_OBJ, EMPTY_ARR, node, null, TEXT_NODE)
 
-export var h = (type, props, children) =>
+export var h = (type, props, ...children) =>
   createVNode(
     type,
     props,
     isArray(children) ? children : children == null ? EMPTY_ARR : [children],
     null,
-    props.key
+    (props || EMPTY_OBJ).key
   )
 
 export var app = (props) => {

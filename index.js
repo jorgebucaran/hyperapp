@@ -361,7 +361,7 @@ export var memo = (tag, memo) => ({ tag, memo })
 export var text = (value, node) =>
   createVNode(value, EMPTY_OBJ, EMPTY_ARR, node, null, TEXT_NODE)
 
-export var h = (type, props, ...children) =>
+export var h = (type, props, children) =>
   createVNode(
     type,
     props,

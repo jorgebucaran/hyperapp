@@ -101,7 +101,7 @@ Create this html file:
       href="https://hyperapp.dev/tutorial-assets/style.css"
     />
     <script type="module">
-      import { h, app } from "https://unpkg.com/hyperapp"
+      import { h, app } from "https://unpkg.com/hyperapp@2.0.0"
 
       // -- EFFECTS & SUBSCRIPTIONS --
 

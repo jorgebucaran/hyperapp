@@ -34,8 +34,7 @@ var createClass = (obj) => {
 
 var shouldRestart = (a, b) => {
   for (var k in { ...a, ...b }) {
-    if (typeof (isArray((b[k] = a[k])) ? b[k][0] : b[k]) === "function") {
-    } else if (a[k] !== b[k]) return true
+    if ([].concat(a[k])[0] !== [].concat(b[k])[0]) return true
   }
 }
 

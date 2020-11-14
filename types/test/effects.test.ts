@@ -31,8 +31,9 @@ const runEchoEventually = async (dispatch: Dispatch<string>, data?: Payload<stri
   window.requestAnimationFrame(() => dispatch((state, x) => state + x, data))
 }
 
-const echoEventually = (x: string): EffectDescriptor<string, string> =>
-  [runEchoEventually, x]
+const echoEventually = (x: string): EffectDescriptor<string, string> => {
+  return [runEchoEventually, x]
+}
 
 // $ExpectType EffectDescriptor<string, string>
 echoEventually("hi")

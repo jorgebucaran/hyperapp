@@ -25,8 +25,9 @@ const runJustEcho = (_dispatch: Dispatch<Test>, data?: Payload<string>): void =>
   console.log(data)
 }
 
-const justEcho = (x: string): EffectDescriptor<Test, string> =>
-  [runJustEcho, x]
+const justEcho = (x: string): EffectDescriptor<Test, string> => {
+  return [runJustEcho, x]
+}
 
 // $ExpectType Dispatch<Test>
 app<Test>({

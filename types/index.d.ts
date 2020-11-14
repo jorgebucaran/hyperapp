@@ -24,7 +24,6 @@ declare module "hyperapp" {
   // It must also be mounted over an available DOM element.
   type App<S>
     = Readonly<{
-      // init: Transition<S> | Action<S>
       init: State<S> | EffectfulState<S> | Action<S>
       view: View<S>
       node: Node

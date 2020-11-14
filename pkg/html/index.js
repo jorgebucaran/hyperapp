@@ -1,6 +1,6 @@
-const EMPTY_ARR = []
+const NO_CHILDREN = []
 
-const h = (type) => (props, children = EMPTY_ARR) => ({
+const h = (type) => (props, children = NO_CHILDREN) => ({
   type,
   props,
   children: Array.isArray(children) ? children : [children],

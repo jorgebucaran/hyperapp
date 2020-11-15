@@ -37,5 +37,5 @@
     "twist": "*",
     "typescript": "rc"
   },
-  "types": "./types"
+  "types": "./types/index.d.ts"
 }

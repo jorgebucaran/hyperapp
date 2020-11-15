@@ -13,7 +13,7 @@ declare module "hyperapp" {
   ): VDOM<S>
 
   // The `memo` function stores a view along with properties for it.
-  function memo<S>(view: View<S>, props: PropList<S>): Partial<VDOM<S>>
+  function memo<S>(tag: View<S>, memo: PropList<S>): Partial<VDOM<S>>
 
   // The `text` function creates a virtual DOM node representing plain text.
   function text<S>(value: number | string, node?: Node): VDOM<S>

@@ -15,7 +15,7 @@ memo({})           // $ExpectError
 memo(new Set())    // $ExpectError
 memo([])           // $ExpectError
 memo(Symbol())     // $ExpectError
-memo(() => {})     // $ExpectError
+memo(() => { })    // $ExpectError
 memo(null)         // $ExpectError
 memo(undefined)    // $ExpectError
 

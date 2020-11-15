@@ -15,6 +15,6 @@ text({})           // $ExpectError
 text(new Set())    // $ExpectError
 text([])           // $ExpectError
 text(Symbol())     // $ExpectError
-text(() => {})     // $ExpectError
+text(() => { })    // $ExpectError
 text(null)         // $ExpectError
 text(undefined)    // $ExpectError

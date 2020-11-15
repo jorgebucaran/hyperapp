@@ -15,7 +15,7 @@ app({})           // $ExpectError
 app(new Set())    // $ExpectError
 app([])           // $ExpectError
 app(Symbol())     // $ExpectError
-app(() => {})     // $ExpectError
+app(() => { })    // $ExpectError
 app(null)         // $ExpectError
 app(undefined)    // $ExpectError
 

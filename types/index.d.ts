@@ -133,6 +133,11 @@ declare module "hyperapp" {
 
   // ---------------------------------------------------------------------------
 
+  // TODO:
+  // - setting up for TypeScript 4.1...
+  // type OnHTMLElementEventMap = { [K in keyof HTMLElementEventMap as `on${K}`]: HTMLElementEventMap[K] }
+  // type OnWindowEventMap = { [K in keyof WindowEventMap as `on${K}`]: WindowEventMap[K] }
+
   // Due to current limitations with TypeScript (which will get resolved in the
   // future: https://devblogs.microsoft.com/typescript/announcing-typescript-4-1-beta/#key-remapping-mapped-types),
   // here is a collection of modified copies of relevant event maps from

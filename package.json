@@ -9,7 +9,7 @@
   "homepage": "https://hyperapp.dev",
   "files": [
     "*.js*",
-    "*.d.ts"
+    "types/index.d.ts"
   ],
   "author": "Jorge Bucaran",
   "funding": "https://github.com/sponsors/jorgebucaran",
@@ -38,5 +38,5 @@
     "twist": "*",
     "typescript": "rc"
   },
-  "types": "types"
+  "types": "types/index.d.ts"
 }

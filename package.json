@@ -8,7 +8,8 @@
   "repository": "jorgebucaran/hyperapp",
   "homepage": "https://hyperapp.dev",
   "files": [
-    "*.js*"
+    "*.js*",
+    "./types/index.d.ts"
   ],
   "author": "Jorge Bucaran",
   "funding": "https://github.com/sponsors/jorgebucaran",

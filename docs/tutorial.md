@@ -13,7 +13,6 @@ Welcome! If you're new to Hyperapp, you've found the perfect place to start lear
     -   [Reacting to events in the DOM](#reacting)
     -   [Capturing event-data in actions](#eventdata)
     -   [Actions with custom payloads](#custompayloads)
-    -   [Payload filters](#payloadfilters)
 -   [Effects](#effects)
     -   [Running effects with actions](#effectswithactions)
     -   [Running effects on init](#effectsoninit)
@@ -619,7 +618,7 @@ A few things going on here so let's break it down.
 
 -   The call to `request(...)` is _*not* executing the request_. It just returns an object (actually an array of `[function, options]`) which _represents_ the effect. After the state has been updated, Hyperapp will execute the effect.
 
--   `request({...})` is given a few options, notably the `url` where the data we want is. `action` says we want `GotStories` dispatched with the response payload. `expect: "json"` the data should be parsed as JSOn, and the payload should be a plain javascript object. We haven't implemented `GotStories` yet, but we will shortly.
+-   `request({...})` is given a few options, notably the `url` where the data we want is. `action` says we want `GotStories` dispatched with the response payload. `expect: "json"` the data should be parsed as JSON, and the payload should be a plain javascript object. We haven't implemented `GotStories` yet, but we will shortly.
 
 -   We introduced a new property in the state: `fetching: true`. This is how we will keep track that we are waiting for new data.
 
@@ -792,9 +791,9 @@ app ({
 
 ![auto update](https://raw.githubusercontent.com/jorgebucaran/hyperapp/1fd42319051e686adb9819b7e154f764fa3b0d29/docs/src/pages/Tutorial/tut8.png)
 
-How did that work?! Think of how Hyperapp spares you the effort of manually adding and removing DOM nodes. All you have to do is describe how you want the DOM to look, and Hyperapp takes care of that for you. It's the same with subscriptions. Each time the state updates, hyperapp calls the `subscriptions` function to check which subscriptions you want actives, and with which properties. Then Hyperapp takes care of starting and stopping them for you.
+How did that work?! Think of how Hyperapp spares you the effort of manually adding and removing DOM nodes. All you have to do is describe how you want the DOM to look, and Hyperapp takes care of that for you. It's the same with subscriptions. Each time the state updates, Hyperapp calls the `subscriptions` function to check which subscriptions you want active, and with which properties. Then Hyperapp takes care of starting and stopping them for you.
 
-This was the final step in the tutorial! If you'd like to see a working example have a look [here][Live Example 4]
+That was the final step! If you'd like to see a working example have a look [here][Live Example 4]
 
 
 ## Conclusion <a name="conclusion"></a>

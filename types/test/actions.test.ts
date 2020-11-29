@@ -5,7 +5,7 @@ import {
 
 type Test = { x: number, y: number }
 
-// $ExpectType Dispatch<Test>
+// $ExpectType void
 app<Test>({
   init: { x: 2, y: 4 },
   view: (state) => h("div", {}, [
@@ -29,7 +29,7 @@ const justEcho = (x: string): EffectDescriptor<Test, string> => {
   return [runJustEcho, x]
 }
 
-// $ExpectType Dispatch<Test>
+// $ExpectType void
 app<Test>({
   init: { x: 2, y: 4 },
   view: (state) => h("button", {
@@ -41,7 +41,7 @@ app<Test>({
   node: document.body
 })
 
-// $ExpectType Dispatch<Test>
+// $ExpectType void
 app<Test>({
   init: { x: 2, y: 4 },
   view: (state) => h("button", {
@@ -53,7 +53,7 @@ app<Test>({
   node: document.body
 })
 
-// $ExpectType Dispatch<Test>
+// $ExpectType void
 app<Test>({
   init: { x: 2, y: 4 },
   view: (state) => h("button", {
@@ -65,7 +65,7 @@ app<Test>({
   node: document.body
 })
 
-// $ExpectType Dispatch<Test>
+// $ExpectType void
 app<Test>({
   init: { x: 2, y: 4 },
   view: (state) => h("button", {
@@ -81,7 +81,7 @@ app<Test>({
   node: document.body
 })
 
-// $ExpectType Dispatch<Test>
+// $ExpectType void
 app<Test>({
   init: { x: 2, y: 4 },
   view: (state) => h("button", {

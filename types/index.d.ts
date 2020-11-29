@@ -1,9 +1,9 @@
-// Minimum TypeScript Version: 3.7
+// Minimum TypeScript Version: 3.8
 
 declare module "hyperapp" {
   // The `app` function initiates a Hyperapp application. `app` along with
   // effects are the only places where side effects are allowed.
-  function app<S>(props: App<S>): Dispatch<S>
+  function app<S>(props: App<S>): void
 
   // The `h` function builds a virtual DOM node.
   function h<S>(

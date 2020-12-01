@@ -3,7 +3,7 @@
   "description": "The tiny framework for building hypertext applications",
   "version": "2.0.8",
   "type": "module",
-  "main": "hyperapp.js",
+  "main": "index.js",
   "license": "MIT",
   "repository": "jorgebucaran/hyperapp",
   "homepage": "https://hyperapp.dev",

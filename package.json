@@ -33,10 +33,10 @@
   },
   "devDependencies": {
     "c8": "*",
-    "dtslint": "^4.0.5",
+    "dtslint": "*",
     "terser": "*",
     "twist": "*",
-    "typescript": "rc"
+    "typescript": "*"
   },
   "types": "types/index.d.ts"
 }

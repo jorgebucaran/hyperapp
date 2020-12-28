@@ -22,14 +22,13 @@ declare module "hyperapp" {
 
   // A Hyperapp application instance has an initial state and a base view.
   // It must also be mounted over an available DOM element.
-  type App<S>
-    = Readonly<{
-      init: State<S> | EffectfulState<S> | Action<S>
-      view: View<S>
-      node: Node
-      subscriptions?: Subscription<S>
-      middleware?: Middleware<S>
-    }>
+  type App<S> = Readonly<{
+    init: StateFormat<S> | Action<S>
+    view: View<S>
+    node: Node
+    subscriptions?: Subscription<S>
+    middleware?: Middleware<S>
+  }>
 
   // A view builds a virtual DOM node representation of the application state.
   type View<S> = (state: State<S>) => VDOM<S>
@@ -53,12 +52,14 @@ declare module "hyperapp" {
 
   // An action transforms existing state and/or wraps another action.
   type Action<S, P = any> = ActionTransform<S, P> | ActionDescriptor<S, P>
-  type ActionTransform<S, P = any> = (state: State<S>, props?: Payload<P>) =>
-    State<S> | EffectfulState<S> | Action<S>
+  type ActionTransform<S, P = any> = (state: State<S>, props?: Payload<P>) => StateFormat<S> | Action<S>
   type ActionDescriptor<S, P> = [Action<S, P>, Payload<P>]
 
   // A transform carries out the transition from one state to another.
-  type Transform<S, P = any> = (state: State<S>, props?: Payload<P>) => State<S> | EffectfulState<S>
+  type Transform<S, P = any> = (state: StateFormat<S>, props?: Payload<P>) => StateFormat<S>
+
+  // State can either be on its own or associated with effects.
+  type StateFormat<S> = State<S> | StateWithEffects<S>
 
   // A payload is data external to state that is given to an action or effect.
   type Payload<P> = P
@@ -66,8 +67,8 @@ declare module "hyperapp" {
   // Application state is accessible in every view, action, and subscription.
   type State<S> = S
 
-  // Transformed state can be paired with a list of effects to run.
-  type EffectfulState<S, D = any> = [State<S>, ...EffectDescriptor<S, D>[]]
+  // State can be associated with a list of effects to run.
+  type StateWithEffects<S, D = any> = [State<S>, ...EffectDescriptor<S, D>[]]
 
   // An effect descriptor describes how an effect should be invoked.
   // A function that creates this is called an effect constructor.

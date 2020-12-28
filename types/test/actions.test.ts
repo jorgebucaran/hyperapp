@@ -1,5 +1,5 @@
 import {
-  Dispatch, Effect, EffectDescriptor, EffectfulState, Payload, State,
+  Dispatch, EffectDescriptor, StateWithEffects, Payload, State,
   app, h, text,
 } from "hyperapp"
 
@@ -45,7 +45,7 @@ app<Test>({
 app<Test>({
   init: { x: 2, y: 4 },
   view: (state) => h("button", {
-    onclick: (state: State<Test>): EffectfulState<Test> => [
+    onclick: (state: State<Test>): StateWithEffects<Test> => [
       { ...state, x: state.x * 2 },
       justEcho("hi"),
     ],
@@ -57,7 +57,7 @@ app<Test>({
 app<Test>({
   init: { x: 2, y: 4 },
   view: (state) => h("button", {
-    onkeypress: (state: State<Test>): EffectfulState<Test> => [
+    onkeypress: (state: State<Test>): StateWithEffects<Test> => [
       { ...state, x: state.x * 2 },
       justEcho("hi"),
     ],
@@ -85,11 +85,11 @@ app<Test>({
 app<Test>({
   init: { x: 2, y: 4 },
   view: (state) => h("button", {
-    onclick: (state: State<Test>): EffectfulState<Test> => [
+    onclick: (state: State<Test>): StateWithEffects<Test> => [
       { ...state, x: state.x * 2 },
       justEcho("hi"),
     ],
-    onkeypress: (state: State<Test>): EffectfulState<Test> => [
+    onkeypress: (state: State<Test>): StateWithEffects<Test> => [
       { ...state, x: state.x * 2 },
       justEcho("hi"),
     ],

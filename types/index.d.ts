@@ -1,21 +1,21 @@
 // Minimum TypeScript Version: 4.2
 
 declare module "hyperapp" {
-  // The `app` function initiates a Hyperapp application. `app` along with
-  // effects are the only places where side effects are allowed.
+  // `app()` initiates a Hyperapp application. `app()` along with effects are
+  // only places where side effects are allowed.
   function app<S>(props: App<S>): void
 
-  // The `h` function builds a virtual DOM node.
+  // `h()` builds a virtual DOM node.
   function h<S>(
     type: string,
     props: PropList<S>,
     children?: VNode<S> | readonly VNode<S>[],
   ): VDOM<S>
 
-  // The `memo` function stores a view along with properties for it.
+  // `memo()` stores a view along with properties for it.
   function memo<S>(tag: View<S>, memo: PropList<S>): Partial<VDOM<S>>
 
-  // The `text` function creates a virtual DOM node representing plain text.
+  // `text()` creates a virtual DOM node representing plain text.
   function text<S>(value: number | string, node?: Node): VDOM<S>
 
   // ---------------------------------------------------------------------------
@@ -76,9 +76,8 @@ declare module "hyperapp" {
 
   // An effect is where side effects and any additional dispatching occur.
   // An effect used in a subscription should be able to unsubscribe.
-  type Effect<S, D>
-    = (dispatch: Dispatch<S>, props?: Payload<D>) =>
-      void | Unsubscribe | Promise<void | Unsubscribe>
+  type Effect<S, D> = (dispatch: Dispatch<S>, props?: Payload<D>) =>
+    void | Unsubscribe | Promise<void | Unsubscribe>
 
   // ---------------------------------------------------------------------------
 
@@ -111,13 +110,12 @@ declare module "hyperapp" {
   const enum VDOMNodeType { SSR = 1, Text = 3 }
 
   // Virtual DOM properties will often correspond to HTML attributes.
-  type PropList<S>
-    = Readonly<ElementCreationOptions & EventActions<S> & {
-      [_: string]: unknown
-      class?: ClassProp
-      key?: Key
-      style?: StyleProp
-    }>
+  type PropList<S> = Readonly<ElementCreationOptions & EventActions<S> & {
+    [_: string]: unknown
+    class?: ClassProp
+    key?: Key
+    style?: StyleProp
+  }>
 
   // The `class` property represents an HTML class attribute string.
   type ClassProp = false | string | undefined | Record<string, boolean | undefined> | ClassProp[]

@@ -1,14 +1,14 @@
 {
   "name": "@hyperapp/html",
-  "description": "Write HTML with plain functions.",
   "version": "1.2.3",
   "type": "module",
   "main": "hyperapp.html.js",
-  "license": "MIT",
-  "repository": "https://github.com/jorgebucaran/hyperapp/tree/master/pkg/html",
+  "description": "Write HTML with plain functions.",
+  "repository": "https://github.com/jorgebucaran/hyperapp/tree/master/packages/html",
   "files": [
     "*.js*"
   ],
+  "license": "MIT",
   "author": "Jorge Bucaran",
   "keywords": [
     "hyperapp",

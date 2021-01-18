@@ -1,14 +1,14 @@
 {
   "name": "@hyperapp/dom",
-  "description": "Manipulate the DOM, focus, blur, and measure elements.",
   "version": "0.0.0",
   "type": "module",
   "main": "index.js",
-  "license": "MIT",
-  "repository": "https://github.com/jorgebucaran/hyperapp/tree/master/pkg/dom",
+  "description": "Manipulate the DOM, focus, blur, and measure elements.",
+  "repository": "https://github.com/jorgebucaran/hyperapp/tree/master/packages/dom",
   "files": [
     "*.js*"
   ],
+  "license": "MIT",
   "author": "Jorge Bucaran",
   "keywords": [
     "hyperapp",

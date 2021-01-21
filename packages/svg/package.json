@@ -1,0 +1,17 @@
+{
+  "name": "@hyperapp/svg",
+  "version": "0.0.0",
+  "type": "module",
+  "main": "index.js",
+  "description": "",
+  "repository": "https://github.com/jorgebucaran/hyperapp/tree/master/packages/svg",
+  "files": [
+    "*.js*"
+  ],
+  "license": "MIT",
+  "author": "Jorge Bucaran",
+  "keywords": [
+    "hyperapp",
+    "svg"
+  ]
+}

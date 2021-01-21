@@ -6,7 +6,7 @@
 - **Write what, not how**—With a declarative API that's easy to read and fun to write, Hyperapp is the best way to build purely functional, feature-rich, browser-based apps in JavaScript.
 - **Smaller than a favicon**—1 kB, give or take. Hyperapp is an ultra-lightweight Virtual DOM, highly-optimized diff algorithm, and state management library obsessed with minimalism.
 
-Here's the first example to get you started—no bundlers or compilers. [Try it yourself](https://hyperapp.glitch.me/).
+Here's the first example to get you started—look ma' no bundlers! [Try it in your browser](https://codepen.io/jorgebucaran/pen/zNxZLP?editors=1000).
 
 <!-- prettier-ignore -->
 ```html
@@ -18,6 +18,7 @@ Here's the first example to get you started—no bundlers or compilers. [Try it 
 
       const AddTodo = (state) => ({
         ...state,
+        value: "",
         todos: state.todos.concat(state.value),
       })
 
@@ -30,11 +31,12 @@ Here's the first example to get you started—no bundlers or compilers. [Try it 
         init: { todos: [], value: "" },
         view: ({ todos, value }) =>
           h("main", {}, [
+            h("h1", {}, text("To do list")),
             h("input", { type: "text", oninput: NewValue, value }),
-            h("button", { onclick: AddTodo }, text("Add")),
             h("ul", {},
               todos.map((todo) => h("li", {}, text(todo)))
             ),
+            h("button", { onclick: AddTodo }, text("New!")),
           ]),
         node: document.getElementById("app"),
       })

@@ -4,7 +4,7 @@
   "type": "module",
   "main": "index.js",
   "description": "Subscribe animation frames, keyboard, mouse, window, and more.",
-  "repository": "https://github.com/jorgebucaran/hyperapp/tree/master/packages/events",
+  "repository": "https://github.com/jorgebucaran/hyperapp/tree/HEAD/packages/events",
   "files": [
     "src",
     "dist"

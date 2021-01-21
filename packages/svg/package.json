@@ -4,7 +4,7 @@
   "type": "module",
   "main": "index.js",
   "description": "",
-  "repository": "https://github.com/jorgebucaran/hyperapp/tree/master/packages/svg",
+  "repository": "https://github.com/jorgebucaran/hyperapp/tree/HEAD/packages/svg",
   "files": [
     "*.js*"
   ],

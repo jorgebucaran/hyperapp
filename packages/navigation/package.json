@@ -4,7 +4,7 @@
   "type": "module",
   "main": "index.js",
   "description": "Subscribe and manage the browser URL history.",
-  "repository": "https://github.com/jorgebucaran/hyperapp/tree/master/packages/navigation",
+  "repository": "https://github.com/jorgebucaran/hyperapp/tree/HEAD/packages/navigation",
   "files": [
     "*.js*"
   ],

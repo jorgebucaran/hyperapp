@@ -2,19 +2,17 @@
 
 > Write HTML with plain functions.
 
-@hyperapp/html is a no-bells-or-whistles alternative to JSX and template literals for [Hyperapp](https://github.com/jorgebucaran/hyperapp).
+Hyperapp's built-in `h()` function is intentionally primitive to give you the freedom to write views any way you like it. If you prefer a functional approach over templating solutions like JSX or template literals, here is a collection of functions—one for each HTML tag—to make your views quicker to write and easier to read.
 
-Hyperapp's baked-in hyperscript function can go a long way, but sooner or later you'll find yourself implementing the same set of functions in all projects: `a`, `input`, `form`, etc., so we've done it for you.
-
-Go ahead and [try it in your browser](https://hyperapp-html.glitch.me)—it just works!
+Here's an example to get you started. [Try it in your browser](https://codepen.io/jorgebucaran/pen/MrBgMy?editors=1000).
 
 ```html
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <script type="module">
-      import { h, text, app } from "https://unpkg.com/hyperapp"
-      import { main, h1, button } from "https://unpkg.com/@hyperapp/html"
+      import { main, h1, button, text } from "https://unpkg.com/@hyperapp/html"
+      import { app } from "https://unpkg.com/hyperapp"
 
       const Subtract = (state) => ({ ...state, count: state.count - 1 })
       const Add = (state) => ({ ...state, count: state.count + 1 })
@@ -22,8 +20,8 @@ Go ahead and [try it in your browser](https://hyperapp-html.glitch.me)—it just
       app({
         init: (count = 0) => ({ count }),
         view: (state) =>
-          main({}, [
-            h1({}, text(state.count)),
+          main([
+            h1(text(state.count)),
             button({ onclick: Subtract }, text("-")),
             button({ onclick: Add }, text("+")),
           ]),
@@ -37,10 +35,12 @@ Go ahead and [try it in your browser](https://hyperapp-html.glitch.me)—it just
 </html>
 ```
 
+> Looking for [@hyperapp/svg](../svg) instead?
+
 ## Installation
 
 ```console
-npm i @hyperapp/html
+npm install @hyperapp/html
 ```
 
 Then with a module bundler like [Rollup](https://rollupjs.org) or [Webpack](https://webpack.js.org) import it in your application and get right down to business.
@@ -53,7 +53,7 @@ Don't want to set up a build step? Import it in a `<script>` tag as a module.
 
 ```html
 <script type="module">
-  import { h, text, app } from "https://unpkg.com/hyperapp"
+  import { a, form, input } from "https://unpkg.com/@hyperapp/html"
 </script>
 ```
 

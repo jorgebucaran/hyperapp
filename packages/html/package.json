@@ -2,7 +2,7 @@
   "name": "@hyperapp/html",
   "version": "1.2.3",
   "type": "module",
-  "main": "hyperapp.html.js",
+  "main": "index.js",
   "description": "Write HTML with plain functions.",
   "repository": "https://github.com/jorgebucaran/hyperapp/tree/master/packages/html",
   "files": [
@@ -13,5 +13,8 @@
   "keywords": [
     "hyperapp",
     "html"
-  ]
+  ],
+  "peerDependencies": {
+    "hyperapp": "*"
+  }
 }

@@ -1,4 +1,5 @@
 // Minimum TypeScript Version: 4.2
+// `dtslint` needs 4.2 even though these definitions should work with 4.1.
 
 declare module "hyperapp" {
   // `app()` initiates a Hyperapp application. `app()` along with effects are
@@ -61,9 +62,6 @@ declare module "hyperapp" {
   // State can either be on its own or associated with effects.
   type StateFormat<S> = State<S> | StateWithEffects<S>
 
-  // A payload is data external to state that is given to an action or effect.
-  type Payload<P> = P
-
   // Application state is accessible in every view, action, and subscription.
   type State<S> = S
 
@@ -78,6 +76,9 @@ declare module "hyperapp" {
   // An effect used in a subscription should be able to unsubscribe.
   type Effect<S, D> = (dispatch: Dispatch<S>, props?: Payload<D>) =>
     void | Unsubscribe | Promise<void | Unsubscribe>
+
+  // A payload is data external to state that is given to an action or effect.
+  type Payload<P> = P
 
   // ---------------------------------------------------------------------------
 
@@ -121,10 +122,18 @@ declare module "hyperapp" {
   type ClassProp = false | string | undefined | Record<string, boolean | undefined> | ClassProp[]
 
   // The `style` property represents inline CSS.
+  //
+  // NOTE: This relies on what TypeScript itself recognizes as valid CSS
+  // properties. Custom properties are not covered as well as any newer
+  // properties that are not yet recognized by TypeScript. Apparently,
+  // the only way to accommodate them is to relax the adherence to
+  // TypeScript's CSS property definitions. The trade-off doesn't
+  // seem worth it given the rarity of such properties. However,
+  // if you need them the workaround is to use type casting.
   type StyleProp
     = { [K in keyof CSSStyleDeclaration]?: CSSStyleDeclaration[K] | null }
-    // For some reason we need this to prevent `style` from being a string.
-    & { [index: number]: never }
+    // Since strings are indexable we can avoid them by preventing indexing.
+    & { [_: number]: never }
 
   // Event handlers are implemented using actions.
   type EventActions<S> = { [K in keyof EventsMap]?: Action<S, EventsMap[K]> }

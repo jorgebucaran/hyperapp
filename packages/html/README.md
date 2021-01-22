@@ -2,17 +2,22 @@
 
 > Write HTML with plain functions.
 
-Hyperapp's built-in `h()` function is intentionally primitive to give you the freedom to write views any way you like it. If you prefer a functional approach over templating solutions like JSX or template literals, here is a collection of functions—one for each HTML tag—to make your views quicker to write and easier to read.
+Hyperapp's built-in `h()` function is intentionally primitive to give you the freedom to write views any way you like it. If you prefer a functional approach over templating solutions like JSX or template literals, here is a collection of functions—one for [each HTML tag](https://developer.mozilla.org/en-US/docs/Web/HTML/Element)—to make your views faster to write and easier to read.
 
-Here's an example to get you started. [Try it in your browser](https://codepen.io/jorgebucaran/pen/MrBgMy?editors=1000).
+Here's the first example to get you started. [Try it in your browser](https://codepen.io/jorgebucaran/pen/MrBgMy?editors=1000).
 
 ```html
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <script type="module">
-      import { main, h1, button, text } from "https://unpkg.com/@hyperapp/html"
       import { app } from "https://unpkg.com/hyperapp"
+      import {
+        main,
+        h1,
+        button,
+        text,
+      } from "https://unpkg.com/@hyperapp/html?module"
 
       const Subtract = (state) => ({ ...state, count: state.count - 1 })
       const Add = (state) => ({ ...state, count: state.count + 1 })
@@ -53,7 +58,7 @@ Don't want to set up a build step? Import it in a `<script>` tag as a module.
 
 ```html
 <script type="module">
-  import { a, form, input } from "https://unpkg.com/@hyperapp/html"
+  import { a, form, input } from "https://unpkg.com/@hyperapp/html?module"
 </script>
 ```
 

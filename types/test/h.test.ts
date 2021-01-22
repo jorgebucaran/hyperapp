@@ -129,10 +129,8 @@ h("p", { class: [() => { }] })    // $ExpectError
 h("p", { class: [null] })         // $ExpectError
 h("p", { class: [undefined] })    // $ExpectType VDOM<unknown>
 
-h("p", { class: [{}] })              // $ExpectType VDOM<unknown>
-h("p", { class: [{ a: true }] })     // $ExpectType VDOM<unknown>
-h("p", { class: [{ a: false }] })    // $ExpectType VDOM<unknown>
-
+h("p", { class: [{ a: true }] })       // $ExpectType VDOM<unknown>
+h("p", { class: [{ a: false }] })      // $ExpectType VDOM<unknown>
 h("p", { class: [false && "foo"] })    // $ExpectType VDOM<unknown>
 
 // -----------------------------------------------------------------------------
@@ -173,6 +171,11 @@ h("p", { style: { color: () => { } } })    // $ExpectError
 h("p", { style: { color: null } })         // $ExpectType VDOM<unknown>
 h("p", { style: { color: undefined } })    // $ExpectType VDOM<unknown>
 h("p", { style: { clor: null } })          // $ExpectError
+h("p", { style: { clor: "hi" } })          // $ExpectError
+
+// We need to use type casting if we want to use custom properties.
+h("p", { style: { "--clor": null } as any})    // $ExpectType VDOM<unknown>
+h("p", { style: { "--clor": "hi" } as any})    // $ExpectType VDOM<unknown>
 
 h("p", { style: [true] })         // $ExpectError
 h("p", { style: [false] })        // $ExpectError
@@ -193,6 +196,12 @@ h("p", { style: [null] })         // $ExpectError
 h("p", { style: [undefined] })    // $ExpectError
 
 // -----------------------------------------------------------------------------
+
+// $ExpectType VDOM<unknown>
+h("p", { customThingy: "blahbiddyblah"}, text("hi"))
+
+// $ExpectType VDOM<unknown>
+h("p", { "data-thingy": "blahbiddyblah"}, text("hi"))
 
 // $ExpectType VDOM<unknown>
 h("a", { id: "unique" }, [h("br", {})])
@@ -247,3 +256,7 @@ h("p", {}, [undefined])    // $ExpectType VDOM<unknown>
 h("p", {}, h("br", {}))        // $ExpectType VDOM<unknown>
 h("p", {}, [h("br", {})])      // $ExpectType VDOM<unknown>
 h("p", {}, [text("hello")])    // $ExpectType VDOM<unknown>
+
+// -----------------------------------------------------------------------------
+
+h("p", text("hi"))    // $ExpectError

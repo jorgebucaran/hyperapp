@@ -116,6 +116,10 @@ declare module "hyperapp" {
     class?: ClassProp
     key?: Key
     style?: StyleProp
+    // This is used to ensure that values that match `VDOM` are not mistaken for
+    // matching `PropList`. However, if you really need `node` for some reason
+    // then the workaround is to use type casting.
+    node?: never
   }>
 
   // The `class` property represents an HTML class attribute string.

@@ -3,15 +3,17 @@
   "version": "0.0.0",
   "type": "module",
   "main": "index.js",
-  "description": "",
+  "description": "Draw SVG with plain functions",
   "repository": "https://github.com/jorgebucaran/hyperapp/tree/main/packages/svg",
   "files": [
     "*.js*"
   ],
   "license": "MIT",
-  "author": "Jorge Bucaran",
   "keywords": [
     "hyperapp",
     "svg"
-  ]
+  ],
+  "peerDependencies": {
+    "hyperapp": "^2.0.0"
+  }
 }

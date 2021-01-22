@@ -10,7 +10,6 @@
     "dist"
   ],
   "license": "MIT",
-  "author": "Jorge Bucaran",
   "keywords": [
     "hyperapp",
     "request",

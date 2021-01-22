@@ -9,7 +9,6 @@
     "*.js*"
   ],
   "license": "MIT",
-  "author": "Jorge Bucaran",
   "keywords": [
     "hyperapp",
     "navigation",

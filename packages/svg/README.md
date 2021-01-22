@@ -11,7 +11,7 @@ Want to draw some circles? [Try this example in your browser](https://codepen.io
 <html lang="en">
   <head>
     <script type="module">
-      import { app } from "https://unpkg.com/@hyperapp"
+      import { app } from "https://unpkg.com/hyperapp"
       import { main } from "https://unpkg.com/@hyperapp/html?module"
       import { svg, use, circle } from "https://unpkg.com/@hyperapp/svg?module"
 

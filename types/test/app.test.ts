@@ -1,3 +1,5 @@
+import { Dispatch, Effect, Payload } from "hyperapp"
+
 import { app, h, text } from "hyperapp"
 
 app()             // $ExpectError
@@ -23,9 +25,29 @@ app(undefined)    // $ExpectError
 
 type Test = { bar?: number, foo: number }
 
+const runTestFx = <S>(dispatch: Dispatch<S>): void => {
+  console.log("test")
+}
+
+const testFx: Effect<Test> = () => [runTestFx, undefined]
+
 // $ExpectType void
 app<Test>({
   init: { foo: 2 },
+  view: (state) => h("p", {}, [text(state.bar ?? "")]),
+  node: document.body
+})
+
+// $ExpectType void
+app<Test>({
+  init: [{ foo: 2 }],
+  view: (state) => h("p", {}, [text(state.bar ?? "")]),
+  node: document.body
+})
+
+// $ExpectType void
+app<Test>({
+  init: [{ foo: 2 }, testFx()],
   view: (state) => h("p", {}, [text(state.bar ?? "")]),
   node: document.body
 })

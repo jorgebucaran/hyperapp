@@ -2,8 +2,8 @@
 // `dtslint` needs 4.2 even though these definitions should work with 4.1.
 
 declare module "hyperapp" {
-  // `app()` initiates a Hyperapp application. `app()` along with effects are
-  // only places where side effects are allowed.
+  // `app()` initiates a Hyperapp application. `app()` along with runners and
+  // subscribers are the only places where side effects are allowed.
   function app<S>(props: App<S>): void
 
   // `h()` builds a virtual DOM node.
@@ -27,20 +27,23 @@ declare module "hyperapp" {
     init: StateFormat<S> | Action<S>
     view: View<S>
     node: Node
-    subscriptions?: Subscription<S>
+    subscriptions?: Subscriptions<S>
     middleware?: Middleware<S>
   }>
 
   // A view builds a virtual DOM node representation of the application state.
   type View<S> = (state: State<S>) => VDOM<S>
 
-  // A subscription is a set of recurring effects.
-  type Subscription<S> = (state: State<S>) => Subscriber<S>[]
+  // The subscriptions function manages a set of subscriptions.
+  type Subscriptions<S> = (state: State<S>) => Subscription<S>[]
+
+  // A subscription represents subscriber activity.
+  type Subscription<S, D = any> = boolean | undefined | Subscriber<S, D> | Unsubscribe
 
   // A subscriber reacts to subscription updates.
-  type Subscriber<S, D = any> = boolean | undefined | Effect<S, D> | Unsubscribe
+  type Subscriber<S, D> = (dispatch: Dispatch<S>, props?: Payload<D>) => void | Unsubscribe
 
-  // A subscriber ideally provides a function that cancels itself properly.
+  // An unsubscribe function cleans up a canceled subscription.
   type Unsubscribe = () => void
 
   // Middleware allows for custom processing during dispatching.
@@ -66,18 +69,16 @@ declare module "hyperapp" {
   type State<S> = S
 
   // State can be associated with a list of effects to run.
-  type StateWithEffects<S, D = any> = [State<S>, ...EffectDescriptor<S, D>[]]
+  type StateWithEffects<S, D = any> = [State<S>, ...(Effect<S, D> | RunnerDescriptor<S, D>)[]]
 
-  // An effect descriptor describes how an effect should be invoked.
-  // A function that creates this is called an effect constructor.
-  type EffectDescriptor<S, D> = [Effect<S, D>, Payload<D>]
+  // An effect is an abstraction over an impure process.
+  type Effect<S, D = any> = (..._: any[]) => RunnerDescriptor<S, D>
 
-  // An effect is where side effects and any additional dispatching occur.
-  // An effect used in a subscription should be able to unsubscribe.
-  type Effect<S, D> = (dispatch: Dispatch<S>, props?: Payload<D>) =>
-    void | Unsubscribe | Promise<void | Unsubscribe>
+  // A runner is where side effects and any additional dispatching may occur.
+  type RunnerDescriptor<S, D> = [Runner<S, D>, Payload<D>]
+  type Runner<S, D> = (dispatch: Dispatch<S>, props?: Payload<D>) => void | Promise<void>
 
-  // A payload is data external to state that is given to an action or effect.
+  // A payload is data given to an action, effect, or subscription.
   type Payload<P> = P
 
   // ---------------------------------------------------------------------------
@@ -100,7 +101,7 @@ declare module "hyperapp" {
   // A key can uniquely associate a virtual DOM node with a certain DOM element.
   type Key = string | null | undefined
 
-  // Actual DOM nodes will be manipulated depending on how property patching goes.
+  // Actual DOM nodes get manipulated depending on how property patching goes.
   type MaybeNode = null | undefined | Node
 
   // A virtual node is a convenience layer over a virtual DOM node.

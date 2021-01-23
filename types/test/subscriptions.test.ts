@@ -1,6 +1,6 @@
 // TODO:
 
-import type { Dispatch, State, Subscriber } from "hyperapp"
+import type { Dispatch, State, Subscription } from "hyperapp"
 
 import { app, h, text } from "hyperapp"
 
@@ -14,7 +14,7 @@ type Test = { foo: number }
 app<Test>({
   init: { foo: 2 },
   view: (state) => h("p", {}, [text(state.foo)]),
-  subscriptions: (_state: State<Test>): Subscriber<Test>[] => [
+  subscriptions: (_state: State<Test>): Subscription<Test>[] => [
     fooSubscription,
   ],
   node: document.body

@@ -1,7 +1,6 @@
-import {
-  Dispatch, EffectDescriptor, StateWithEffects, Payload, State,
-  app, h, text,
-} from "hyperapp"
+import type { Dispatch, Effect, Payload, State, StateWithEffects } from "hyperapp"
+
+import { app, h, text } from "hyperapp"
 
 type Test = { x: number, y: number }
 
@@ -25,9 +24,7 @@ const runJustEcho = (_dispatch: Dispatch<Test>, data?: Payload<string>): void =>
   console.log(data)
 }
 
-const justEcho = (x: string): EffectDescriptor<Test, string> => {
-  return [runJustEcho, x]
-}
+const justEcho: Effect<Test, string> = (x) => [runJustEcho, x]
 
 // $ExpectType void
 app<Test>({

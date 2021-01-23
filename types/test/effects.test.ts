@@ -1,6 +1,4 @@
-// TODO:
-
-import { Dispatch, EffectDescriptor, Payload } from "hyperapp"
+import { Dispatch, Effect, Payload, RunnerDescriptor } from "hyperapp"
 
 const runEcho = (dispatch: Dispatch<string>, data?: Payload<string>): void => {
   if (!data) return
@@ -8,10 +6,9 @@ const runEcho = (dispatch: Dispatch<string>, data?: Payload<string>): void => {
   dispatch((state, x) => state + x, data)
 }
 
-const echo = (x: string): EffectDescriptor<string, string> =>
-  [runEcho, x]
+const echo: Effect<string, string> = (x) => [runEcho, x]
 
-// $ExpectType EffectDescriptor<string, string>
+// $ExpectType RunnerDescriptor<string, string>
 echo("hi")
 
 // -----------------------------------------------------------------------------
@@ -31,11 +28,9 @@ const runEchoEventually = async (dispatch: Dispatch<string>, data?: Payload<stri
   window.requestAnimationFrame(() => dispatch((state, x) => state + x, data))
 }
 
-const echoEventually = (x: string): EffectDescriptor<string, string> => {
-  return [runEchoEventually, x]
-}
+const echoEventually: Effect<string, string> = (x) => [runEchoEventually, x]
 
-// $ExpectType EffectDescriptor<string, string>
+// $ExpectType RunnerDescriptor<string, string>
 echoEventually("hi")
 
 // -----------------------------------------------------------------------------

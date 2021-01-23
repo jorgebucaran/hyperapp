@@ -1,8 +1,6 @@
 # @hyperapp/jsx
 
-> Use JSX transforms with hyperapp
-
-## Usage
+Use JSX [Automatic Runtime](https://reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html#manual-babel-setup) with hyperapp
 
 #### Install:
 
@@ -39,7 +37,7 @@ If using babel `@babel/preset-react` or `@babel/plugin-transform-react-jsx`:
 }
 ```
 
-Look [here](https://reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html#manual-babel-setup) for more info.
+Look [here](https://babeljs.io/docs/en/babel-plugin-transform-react-jsx) for more info.
 
 #### Use
 

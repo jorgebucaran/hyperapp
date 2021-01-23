@@ -91,6 +91,10 @@ declare module "hyperapp" {
     readonly tag?: Tag<S>
     readonly key: Key
     memo?: PropList<S>
+
+    // `_VDOM` is a guard property which gives us a way to tell `VDOM` objects
+    // apart from `PropList` object.
+    _VDOM: true
   }
 
   // A key can uniquely associate a virtual DOM node with a certain DOM element.
@@ -116,10 +120,10 @@ declare module "hyperapp" {
     class?: ClassProp
     key?: Key
     style?: StyleProp
-    // This is used to ensure that values that match `VDOM` are not mistaken for
-    // matching `PropList`. However, if you really need `node` for some reason
-    // then the workaround is to use type casting.
-    node?: never
+
+    // By disallowing `_VDOM` we ensure that values matching `VDOM` are not
+    // mistaken for also matching `PropList`.
+    _VDOM?: never
   }>
 
   // The `class` property represents an HTML class attribute string.

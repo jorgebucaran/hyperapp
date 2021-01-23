@@ -1,11 +1,11 @@
 {
   "name": "@hyperapp/jsx",
-  "description": "Hyperapp JSX runtime",
-  "version": "0.0.1",
+  "description": "JSX meets Hyperapp",
+  "version": "0.0.0",
   "type": "module",
   "main": "jsx-runtime.js",
   "license": "MIT",
-  "repository": "https://github.com/jorgebucaran/hyperapp/tree/master/pkg/jsx",
+  "repository": "https://github.com/jorgebucaran/hyperapp/tree/main/packages/jsx",
   "files": [
     "*.js*"
   ],

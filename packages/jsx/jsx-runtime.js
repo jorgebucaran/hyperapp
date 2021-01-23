@@ -13,4 +13,4 @@ const jsx = (tag, { children = [], ...props = {} }) =>
           )
       )
 
-export { jsx, jsx as jsxs, jsx as jsxDEV }
+export { jsx, jsx as jsxs }

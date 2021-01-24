@@ -1,16 +1,22 @@
 import { h, text } from "hyperapp"
 
-const jsx = (tag, { children = [], ...props }) =>
+const childNode = (child) => typeof child === "string" || typeof child === "number" ? text(child) : child;
+
+export const jsx = (tag, { children, ...props }) =>
   typeof tag === "function"
     ? tag(props || {}, children)
     : h(
         tag,
         props,
-        []
-          .concat(children)
-          .map((any) =>
-            typeof any === "string" || typeof any === "number" ? text(any) : any
-          )
+        childNode(children)
       )
 
-export { jsx, jsx as jsxs }
+export const jsxs = (tag, { children, ...props }) =>
+  typeof tag === "function"
+    ? tag(props || {}, children)
+    : h(
+        tag,
+        props,
+        children.map(childNode)
+      )
+

@@ -11,7 +11,7 @@ export const pushUrl = fx(
 export const onUrlChange = fx(
   ([action]) => ({ action }),
   (dispatch, { action }) => {
-    const popstate = (_) => dispatch(action, location.href)
+    const popstate = (_) => dispatch(action, location)
 
     addEventListener("popstate", popstate)
     addEventListener("hyperapp-pushstate", popstate)

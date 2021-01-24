@@ -27,14 +27,16 @@ export const onUrlRequest = fx(
   ([action]) => ({ action }),
   (dispatch, { action }) => {
     const clicks = (event) => {
+      let target = event.target;
+      while (target && !target.matches("a")) target = target.parentElement;
       if (
         !event.ctrlKey &&
         !event.metaKey &&
         !event.shiftKey &&
-        event.target.matches("a")
+        target
       ) {
         event.preventDefault()
-        const href = event.target.getAttribute("href")
+        const href = target.getAttribute("href")
         dispatch(action, { pathname: href })
       }
     }

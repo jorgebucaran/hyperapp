@@ -2,15 +2,15 @@
 
 Use JSX [Automatic Runtime](https://reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html#manual-babel-setup) with hyperapp
 
-#### Install:
+## Install:
 
 ```
 npm install @hyperapp/jsx -D
 ```
 
-#### Configure:
+## Configure:
 
-With `jsconfig.json` or `tsconfig.json` (typescript >v4.1):
+With `tsconfig.json` or `jsconfig.json` (TypeScript >v4.1):
 
 ```json
 {
@@ -21,25 +21,35 @@ With `jsconfig.json` or `tsconfig.json` (typescript >v4.1):
 }
 ```
 
-If using babel `@babel/preset-react` >v7.9.0 or `@babel/plugin-transform-react-jsx` >v7.9.0:
+If using `@babel/preset-react` >v7.9.0 :
 
 ```json
 {
   "presets": [
-    [
-      "@babel/preset-react",
-      {
-        "runtime": "automatic",
-        "importSource": "@hyperapp/jsx"
-      }
-    ]
+    ["@babel/preset-react", {
+      "runtime": "automatic",
+      "importSource": "@hyperapp/jsx"
+    }]
+  ]
+}
+```
+
+If using `@babel/plugin-transform-react-jsx` >v7.9.0
+
+```json
+{
+  "plugins": [
+    ["@babel/plugin-transform-react-jsx", {
+      "runtime": "automatic",
+      "importSource": "@hyperapp/jsx"
+    }]
   ]
 }
 ```
 
 Look [here](https://babeljs.io/docs/en/babel-plugin-transform-react-jsx) for more info.
 
-#### Use
+## Use
 
 ```jsx
 // No need to import the JSX runtime
@@ -48,6 +58,17 @@ const SomeViewFunction = (props) => (
   <div>
     <h1>Hello.</h1>
     <p>JSX is great!</p>
+    <SomeOtherViewFunction>
+      <p>Children node</p>
+    </SomeOtherViewFunction>
   </div>
 );
+
+const SomeOtherViewFunction = (props, children) => (
+  <div>
+    <span>Hello, I can receive children via JSX children syntax</span>
+    {children}
+  </div>
+);
+
 ```

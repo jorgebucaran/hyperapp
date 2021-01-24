@@ -10,7 +10,7 @@ npm install @hyperapp/jsx -D
 
 #### Configure:
 
-With `jsconfig.json` or `tsconfig.json`:
+With `jsconfig.json` or `tsconfig.json` (typescript >v4.1):
 
 ```json
 {
@@ -21,7 +21,7 @@ With `jsconfig.json` or `tsconfig.json`:
 }
 ```
 
-If using babel `@babel/preset-react` or `@babel/plugin-transform-react-jsx`:
+If using babel `@babel/preset-react` >v7.9.0 or `@babel/plugin-transform-react-jsx` >v7.9.0:
 
 ```json
 {

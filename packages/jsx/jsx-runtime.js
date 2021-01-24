@@ -1,8 +1,8 @@
 import { h, text } from "hyperapp"
 
-const jsx = (tag, { children = [], ...props = {} }) =>
+const jsx = (tag, { children = [], ...props }) =>
   typeof tag === "function"
-    ? tag(props, children)
+    ? tag(props || {}, children)
     : h(
         tag,
         props,

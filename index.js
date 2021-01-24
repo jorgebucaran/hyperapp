@@ -57,8 +57,7 @@ var patchSubs = (oldSubs, newSubs, dispatch) => {
           ? [
               newSub[0],
               newSub[1],
-              newSub[0](dispatch, newSub[1]),
-              oldSub && oldSub[2](),
+              (oldSub && oldSub[2](), newSub[0](dispatch, newSub[1]))
             ]
           : oldSub
         : oldSub && oldSub[2]()

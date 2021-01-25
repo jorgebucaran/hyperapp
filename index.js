@@ -354,7 +354,7 @@ var createVNode = (tag, props, children, type, node) => ({
   key: props.key,
   children,
   type,
-  node,
+  node
 })
 
 export var memo = (tag, memo) => ({ tag, memo })
@@ -396,6 +396,8 @@ export var app = (props) => {
               (fx) => fx && fx !== true && fx[0](dispatch, fx[1]),
               setState(action[0])
             )
+      : action == null
+      ? patchSubs(subs, EMPTY_ARR, (dispatch = id))
       : setState(action)
   )
 
@@ -413,5 +415,5 @@ export var app = (props) => {
       (doing = false)
     ))
 
-  dispatch(props.init)
+  return dispatch(props.init), dispatch
 }

@@ -1,0 +1,19 @@
+{
+  "name": "@hyperapp/html",
+  "version": "1.3.1",
+  "type": "module",
+  "main": "index.js",
+  "description": "Write HTML with plain functions",
+  "repository": "https://github.com/jorgebucaran/hyperapp/tree/main/packages/html",
+  "files": [
+    "*.js*"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "hyperapp",
+    "html"
+  ],
+  "peerDependencies": {
+    "hyperapp": "^2.0.0"
+  }
+}

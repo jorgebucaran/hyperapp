@@ -8,23 +8,23 @@ export default [
         deepEqual(h("zord", { foo: true }, []), {
           children: [],
           key: undefined,
-          node: null,
+          node: undefined,
           props: {
             foo: true,
           },
-          tag: undefined,
-          type: "zord",
+          type: undefined,
+          tag: "zord",
         }),
       ]),
     ]),
     t("text function", [
-      deepEqual(text("tenet"), {
+      deepEqual(text("hyper"), {
         children: [],
-        key: null,
+        key: undefined,
         node: undefined,
         props: {},
-        tag: 3,
-        type: "tenet",
+        type: 3,
+        tag: "hyper",
       }),
     ]),
   ]),

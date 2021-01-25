@@ -1,16 +1,15 @@
 {
   "name": "@hyperapp/events",
-  "description": "Subscribe animation frames, keyboard, mouse, window, and more.",
   "version": "0.0.0",
   "type": "module",
   "main": "index.js",
-  "license": "MIT",
-  "repository": "https://github.com/jorgebucaran/hyperapp/tree/master/pkg/events",
+  "description": "Subscribe animation frames, keyboard, mouse, window, and more.",
+  "repository": "https://github.com/jorgebucaran/hyperapp/tree/main/packages/events",
   "files": [
     "src",
     "dist"
   ],
-  "author": "Jorge Bucaran",
+  "license": "MIT",
   "keywords": [
     "hyperapp",
     "animation",

@@ -34,7 +34,8 @@ var createClass = (obj) => {
 
 var shouldRestart = (a, b) => {
   for (var k in { ...a, ...b }) {
-    if (typeof (isArray((b[k] = a[k])) ? b[k][0] : b[k]) === "function") {
+    if (typeof (isArray(a[k]) ? a[k][0] : a[k]) === "function") {
+      b[k] = a[k]
     } else if (a[k] !== b[k]) return true
   }
 }
@@ -56,8 +57,7 @@ var patchSubs = (oldSubs, newSubs, dispatch) => {
           ? [
               newSub[0],
               newSub[1],
-              newSub[0](dispatch, newSub[1]),
-              oldSub && oldSub[2](),
+              (oldSub && oldSub[2](), newSub[0](dispatch, newSub[1]))
             ]
           : oldSub
         : oldSub && oldSub[2]()
@@ -80,7 +80,9 @@ var patchProperty = (node, key, oldValue, newValue, listener, isSvg) => {
       }
     }
   } else if (key[0] === "o" && key[1] === "n") {
-    if (!((node.tag || (node.tag = {}))[(key = key.slice(2))] = newValue)) {
+    if (
+      !((node.events || (node.events = {}))[(key = key.slice(2))] = newValue)
+    ) {
       node.removeEventListener(key, listener)
     } else if (!oldValue) {
       node.addEventListener(key, listener)
@@ -101,11 +103,11 @@ var patchProperty = (node, key, oldValue, newValue, listener, isSvg) => {
 var createNode = (vdom, listener, isSvg) => {
   var props = vdom.props
   var node =
-    vdom.tag === TEXT_NODE
-      ? document.createTextNode(vdom.type)
-      : (isSvg = isSvg || vdom.type === "svg")
-      ? document.createElementNS(SVG_NS, vdom.type, { is: props.is })
-      : document.createElement(vdom.type, { is: props.is })
+    vdom.type === TEXT_NODE
+      ? document.createTextNode(vdom.tag)
+      : (isSvg = isSvg || vdom.tag === "svg")
+      ? document.createElementNS(SVG_NS, vdom.tag, { is: props.is })
+      : document.createElement(vdom.tag, { is: props.is })
 
   for (var k in props) {
     patchProperty(node, k, null, props[k], listener, isSvg)
@@ -128,11 +130,11 @@ var patch = (parent, node, oldVNode, newVNode, listener, isSvg) => {
   if (oldVNode === newVNode) {
   } else if (
     oldVNode != null &&
-    oldVNode.tag === TEXT_NODE &&
-    newVNode.tag === TEXT_NODE
+    oldVNode.type === TEXT_NODE &&
+    newVNode.type === TEXT_NODE
   ) {
-    if (oldVNode.type !== newVNode.type) node.nodeValue = newVNode.type
-  } else if (oldVNode == null || oldVNode.type !== newVNode.type) {
+    if (oldVNode.tag !== newVNode.tag) node.nodeValue = newVNode.tag
+  } else if (oldVNode == null || oldVNode.tag !== newVNode.tag) {
     node = parent.insertBefore(
       createNode((newVNode = maybeVNode(newVNode)), listener, isSvg),
       node
@@ -158,7 +160,7 @@ var patch = (parent, node, oldVNode, newVNode, listener, isSvg) => {
     var oldTail = oldVKids.length - 1
     var newTail = newVKids.length - 1
 
-    isSvg = isSvg || newVNode.type === "svg"
+    isSvg = isSvg || newVNode.tag === "svg"
 
     for (var i in { ...oldProps, ...newProps }) {
       if (
@@ -251,7 +253,7 @@ var patch = (parent, node, oldVNode, newVNode, listener, isSvg) => {
           continue
         }
 
-        if (newKey == null || oldVNode.tag === SSR_NODE) {
+        if (newKey == null || oldVNode.type === SSR_NODE) {
           if (oldKey == null) {
             patch(
               node,
@@ -342,33 +344,26 @@ var recycleNode = (node) =>
         node.nodeName.toLowerCase(),
         EMPTY_OBJ,
         map.call(node.childNodes, recycleNode),
-        node,
-        null,
-        SSR_NODE
+        SSR_NODE,
+        node
       )
 
-var createVNode = (type, props, children, node, key, tag) => ({
-  type,
-  props,
-  children,
-  node,
-  key,
+var createVNode = (tag, props, children, type, node) => ({
   tag,
+  props,
+  key: props.key,
+  children,
+  type,
+  node,
 })
 
 export var memo = (tag, memo) => ({ tag, memo })
 
 export var text = (value, node) =>
-  createVNode(value, EMPTY_OBJ, EMPTY_ARR, node, null, TEXT_NODE)
+  createVNode(value, EMPTY_OBJ, EMPTY_ARR, TEXT_NODE, node)
 
-export var h = (type, props, children) =>
-  createVNode(
-    type,
-    props,
-    isArray(children) ? children : children == null ? EMPTY_ARR : [children],
-    null,
-    props.key
-  )
+export var h = (tag, props, children = EMPTY_ARR) =>
+  createVNode(tag, props, isArray(children) ? children : [children])
 
 export var app = (props) => {
   var view = props.view
@@ -405,7 +400,7 @@ export var app = (props) => {
   )
 
   var listener = function (event) {
-    dispatch(this.tag[event.type], event)
+    dispatch(this.events[event.type], event)
   }
 
   var render = () =>

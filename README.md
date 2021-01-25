@@ -6,7 +6,7 @@
 - **Write what, not how**—With a declarative API that's easy to read and fun to write, Hyperapp is the best way to build purely functional, feature-rich, browser-based apps in JavaScript.
 - **Smaller than a favicon**—1 kB, give or take. Hyperapp is an ultra-lightweight Virtual DOM, highly-optimized diff algorithm, and state management library obsessed with minimalism.
 
-Here's the first example to get you started—no bundlers or compilers. [Try it yourself](https://hyperapp.glitch.me/).
+Here's the first example to get you started—look ma' no bundlers! [Try it in your browser](https://codepen.io/jorgebucaran/pen/zNxZLP?editors=1000).
 
 <!-- prettier-ignore -->
 ```html
@@ -18,6 +18,7 @@ Here's the first example to get you started—no bundlers or compilers. [Try it 
 
       const AddTodo = (state) => ({
         ...state,
+        value: "",
         todos: state.todos.concat(state.value),
       })
 
@@ -30,11 +31,12 @@ Here's the first example to get you started—no bundlers or compilers. [Try it 
         init: { todos: [], value: "" },
         view: ({ todos, value }) =>
           h("main", {}, [
+            h("h1", {}, text("To do list")),
             h("input", { type: "text", oninput: NewValue, value }),
-            h("button", { onclick: AddTodo }, text("Add")),
             h("ul", {},
               todos.map((todo) => h("li", {}, text(todo)))
             ),
+            h("button", { onclick: AddTodo }, text("New!")),
           ]),
         node: document.getElementById("app"),
       })
@@ -76,15 +78,16 @@ Don't want to set up a build step? Import Hyperapp in a `<script>` tag as a modu
 
 Official packages provide access to [The Web Platform](https://platform.html5.org), and ensure that the APIs are exposed in a way that makes sense for Hyperapp, and the underlying code is stable. We already cover a decent amount of features, but you can always [create your own effects and subscriptions](docs/reference.md) if something is not available yet.
 
-| Package                                   | Status                                                                                                                                              | About                                                          |
-| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
-| [`@hyperapp/dom`](/pkg/dom)               | [![npm](https://img.shields.io/badge/-planned-6a737d?style=for-the-badge&label=)](https://www.npmjs.com/package/@hyperapp/dom)                      | Manipulate the DOM, focus, blur, and measure elements.         |
-| [`@hyperapp/html`](/pkg/html)             | [![npm](https://img.shields.io/npm/v/@hyperapp/html.svg?style=for-the-badge&color=0366d6&label=)](https://www.npmjs.com/package/@hyperapp/html)     | Write HTML with plain functions.                              |
-| [`@hyperapp/time`](/pkg/time)             | [![npm](https://img.shields.io/npm/v/@hyperapp/time.svg?style=for-the-badge&color=0366d6&label=)](https://www.npmjs.com/package/@hyperapp/time)     | Subscribe to intervals, get the time.                          |
-| [`@hyperapp/http`](/pkg/http)             | [![npm](https://img.shields.io/npm/v/@hyperapp/http.svg?style=for-the-badge&color=0366d6&label=)](https://www.npmjs.com/package/@hyperapp/http)     | Talk to servers, make HTTP requests.                           |
-| [`@hyperapp/events`](/pkg/events)         | [![npm](https://img.shields.io/npm/v/@hyperapp/events.svg?style=for-the-badge&color=0366d6&label=)](https://www.npmjs.com/package/@hyperapp/events) | Subscribe animation frames, keyboard, mouse, window, and more. |
-| [`@hyperapp/random`](/pkg/random)         | [![npm](https://img.shields.io/badge/-planned-6a737d?style=for-the-badge&label=)](https://www.npmjs.com/package/@hyperapp/random)                   | Declarative random numbers and values.                         |
-| [`@hyperapp/navigation`](/pkg/navigation) | [![npm](https://img.shields.io/badge/-planned-6a737d?style=for-the-badge&label=)](https://www.npmjs.com/package/@hyperapp/navigation)               | Subscribe and manage the browser URL history.                  |
+| Package                                        | Status                                                                                                                                              | About                                                          |
+| ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| [`@hyperapp/dom`](/packages/dom)               | [![npm](https://img.shields.io/badge/-planned-6a737d?style=for-the-badge&label=)](https://www.npmjs.com/package/@hyperapp/dom)                      | Manipulate the DOM, focus, blur, and measure elements.         |
+| [`@hyperapp/svg`](/packages/svg)               | [![npm](https://img.shields.io/npm/v/@hyperapp/svg.svg?style=for-the-badge&color=0366d6&label=)](https://www.npmjs.com/package/@hyperapp/svg)       | Draw SVG with plain functions.                                 |
+| [`@hyperapp/html`](/packages/html)             | [![npm](https://img.shields.io/npm/v/@hyperapp/html.svg?style=for-the-badge&color=0366d6&label=)](https://www.npmjs.com/package/@hyperapp/html)     | Write HTML with plain functions.                               |
+| [`@hyperapp/time`](/packages/time)             | [![npm](https://img.shields.io/npm/v/@hyperapp/time.svg?style=for-the-badge&color=0366d6&label=)](https://www.npmjs.com/package/@hyperapp/time)     | Subscribe to intervals, get the time.                          |
+| [`@hyperapp/http`](/packages/http)             | [![npm](https://img.shields.io/npm/v/@hyperapp/http.svg?style=for-the-badge&color=0366d6&label=)](https://www.npmjs.com/package/@hyperapp/http)     | Talk to servers, make HTTP requests.                           |
+| [`@hyperapp/events`](/packages/events)         | [![npm](https://img.shields.io/npm/v/@hyperapp/events.svg?style=for-the-badge&color=0366d6&label=)](https://www.npmjs.com/package/@hyperapp/events) | Subscribe animation frames, keyboard, mouse, window, and more. |
+| [`@hyperapp/random`](/packages/random)         | [![npm](https://img.shields.io/badge/-planned-6a737d?style=for-the-badge&label=)](https://www.npmjs.com/package/@hyperapp/random)                   | Declarative random numbers and values.                         |
+| [`@hyperapp/navigation`](/packages/navigation) | [![npm](https://img.shields.io/badge/-planned-6a737d?style=for-the-badge&label=)](https://www.npmjs.com/package/@hyperapp/navigation)               | Subscribe and manage the browser URL history.                  |
 
 ## Help, I'm stuck!
 

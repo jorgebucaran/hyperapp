@@ -39,6 +39,6 @@ export const onUrlRequest = fx(
       }
     }
     addEventListener("click", clicks)
-    return () => addEventListener("click", clicks)
+    return () => removeEventListener("click", clicks)
   }
 )

@@ -394,7 +394,7 @@ export var app = (props) => {
             .slice(1)
             .map(
               (fx) => fx && fx !== true && fx[0](dispatch, fx[1]),
-              setState(action[0])
+              dispatch(action[0])
             )
       : action == null
       ? patchSubs(subs, EMPTY_ARR, (dispatch = id))

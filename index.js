@@ -57,7 +57,7 @@ var patchSubs = (oldSubs, newSubs, dispatch) => {
           ? [
               newSub[0],
               newSub[1],
-              (oldSub && oldSub[2](), newSub[0](dispatch, newSub[1]))
+              (oldSub && oldSub[2](), newSub[0](dispatch, newSub[1])),
             ]
           : oldSub
         : oldSub && oldSub[2]()
@@ -354,7 +354,7 @@ var createVNode = (tag, props, children, type, node) => ({
   key: props.key,
   children,
   type,
-  node
+  node,
 })
 
 export var memo = (tag, memo) => ({ tag, memo })
@@ -365,14 +365,11 @@ export var text = (value, node) =>
 export var h = (tag, props, children = EMPTY_ARR) =>
   createVNode(tag, props, isArray(children) ? children : [children])
 
-export var app = (props) => {
-  var view = props.view
-  var node = props.node
-  var subscriptions = props.subscriptions
+export var app = ({ init, view, subscriptions, dispatch = id, node }) => {
   var vdom = node && recycleNode(node)
   var subs = []
-  var doing
   var state
+  var busy
 
   var setState = (newState) => {
     if (state !== newState) {
@@ -380,29 +377,8 @@ export var app = (props) => {
       if (subscriptions) {
         subs = patchSubs(subs, subscriptions(state), dispatch)
       }
-      if (view && !doing) enqueue(render, (doing = true))
+      if (view && !busy) enqueue(render, (busy = true))
     }
-  }
-
-  var dispatch = (props.middleware || id)((action, props) =>
-    typeof action === "function"
-      ? dispatch(action(state, props))
-      : isArray(action)
-      ? typeof action[0] === "function"
-        ? dispatch(action[0], action[1])
-        : action
-            .slice(1)
-            .map(
-              (fx) => fx && fx !== true && fx[0](dispatch, fx[1]),
-              setState(action[0])
-            )
-      : action == null
-      ? patchSubs(subs, EMPTY_ARR, (dispatch = id))
-      : setState(action)
-  )
-
-  var listener = function (event) {
-    dispatch(this.events[event.type], event)
   }
 
   var render = () =>
@@ -412,8 +388,30 @@ export var app = (props) => {
       vdom,
       (vdom = view(state)),
       listener,
-      (doing = false)
+      (busy = false)
     ))
 
-  return dispatch(props.init), dispatch
+  var listener = function (event) {
+    dispatch(this.events[event.type], event)
+  }
+
+  return (
+    (dispatch = dispatch((action, props) =>
+      typeof action === "function"
+        ? dispatch(action(state, props))
+        : isArray(action)
+        ? typeof action[0] === "function"
+          ? dispatch(action[0], action[1])
+          : action
+              .slice(1)
+              .map(
+                (fx) => fx && fx !== true && fx[0](dispatch, fx[1]),
+                setState(action[0])
+              )
+        : action == null
+        ? patchSubs(subs, EMPTY_ARR, (dispatch = id))
+        : setState(action)
+    ))(init),
+    dispatch
+  )
 }

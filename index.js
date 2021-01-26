@@ -365,7 +365,13 @@ export var text = (value, node) =>
 export var h = (tag, props, children = EMPTY_ARR) =>
   createVNode(tag, props, isArray(children) ? children : [children])
 
-export var app = ({ init, view, subscriptions, dispatch = id, node }) => {
+export var app = ({
+  init = EMPTY_OBJ,
+  view,
+  subscriptions,
+  dispatch = id,
+  node,
+}) => {
   var vdom = node && recycleNode(node)
   var subs = []
   var state

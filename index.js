@@ -40,7 +40,7 @@ var shouldRestart = (a, b) => {
   }
 }
 
-var patchSubs = (oldSubs, newSubs, dispatch) => {
+var patchSubs = (oldSubs, newSubs = EMPTY_ARR, dispatch) => {
   for (
     var subs = [], i = 0, oldSub, newSub;
     i < oldSubs.length || i < newSubs.length;
@@ -366,23 +366,21 @@ export var h = (tag, props, children = EMPTY_ARR) =>
   createVNode(tag, props, isArray(children) ? children : [children])
 
 export var app = ({
-  init = EMPTY_OBJ,
+  node,
   view,
   subscriptions,
   dispatch = id,
-  node,
+  init = EMPTY_OBJ,
 }) => {
   var vdom = node && recycleNode(node)
   var subs = []
   var state
   var busy
 
-  var setState = (newState) => {
+  var update = (newState) => {
     if (state !== newState) {
-      state = newState
-      if (subscriptions) {
-        subs = patchSubs(subs, subscriptions(state), dispatch)
-      }
+      if ((state = newState) == null) dispatch = subscriptions = render = id
+      if (subscriptions) subs = patchSubs(subs, subscriptions(state), dispatch)
       if (view && !busy) enqueue(render, (busy = true))
     }
   }
@@ -412,11 +410,9 @@ export var app = ({
               .slice(1)
               .map(
                 (fx) => fx && fx !== true && fx[0](dispatch, fx[1]),
-                setState(action[0])
+                update(action[0])
               )
-        : action == null
-        ? patchSubs(subs, EMPTY_ARR, (dispatch = id))
-        : setState(action)
+        : update(action)
     ))(init),
     dispatch
   )

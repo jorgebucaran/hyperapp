@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "type": "module",
   "main": "index.js",
-  "description": "Manipulate the DOM, focus, blur, and measure elements.",
+  "description": "Inspect the DOM, focus and blur",
   "repository": "https://github.com/jorgebucaran/hyperapp/tree/main/packages/dom",
   "files": [
     "*.js*"
@@ -11,7 +11,8 @@
   "license": "MIT",
   "keywords": [
     "hyperapp",
-    "effects",
+    "focus",
+    "blur",
     "dom"
   ]
 }

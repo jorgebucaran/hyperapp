@@ -6,7 +6,7 @@
   "description": "Inspect the DOM, focus and blur",
   "repository": "https://github.com/jorgebucaran/hyperapp/tree/main/packages/dom",
   "files": [
-    "*.js*"
+    "*.js*(.map)"
   ],
   "license": "MIT",
   "keywords": [

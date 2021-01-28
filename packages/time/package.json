@@ -7,7 +7,7 @@
   "repository": "https://github.com/jorgebucaran/hyperapp/tree/main/packages/time",
   "license": "MIT",
   "files": [
-    "*.js*"
+    "*.js*(.map)"
   ],
   "keywords": [
     "hyperapp",

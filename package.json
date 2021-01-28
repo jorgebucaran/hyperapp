@@ -9,7 +9,7 @@
   "author": "Jorge Bucaran",
   "license": "MIT",
   "files": [
-    "*.js*"
+    "*.js*(.map)"
   ],
   "keywords": [
     "framework",

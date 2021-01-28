@@ -6,7 +6,7 @@
   "description": "Write HTML with plain functions",
   "repository": "https://github.com/jorgebucaran/hyperapp/tree/main/packages/html",
   "files": [
-    "*.js*"
+    "*.js*(.map)"
   ],
   "license": "MIT",
   "keywords": [

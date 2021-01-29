@@ -102,6 +102,21 @@ const variableProfileCardView = (user, useBorders, variant) =>
   }, text(user.name))
 ```
 
+## text()
+
+```js
+text("Hello World")
+```
+
+Create virtual text nodes.
+
+```js
+app({
+  view: () => text("Think different."),
+  node: document.getElementById("app"),
+})
+```
+
 ## app()
 
 ```js

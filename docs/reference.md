@@ -377,6 +377,8 @@ They are used for both adding and removing connections to events outside hyperap
 
 Binds **dispatch** to an external event. Returns a cleanup function that removes the binding.
 
+The subscription function (`keySub` in this case) will be called when it first appears in the `subscriptions:` list, and the anonymous cleanup function will be called when it no longer appears in the list. Also, when the `props` object changes, the old cleanup function will be called and the subscription function will be called a second time with the new `props`, creating a new subscription. Note that the "should this subscription be restarted with new settings?" function uses the JavaScript idea of equality - if your `props` contains an `array` or an `object`, then it needs to be _the same array_, not just _an array which contains the same values_, otherwise the subscription will get destroyed and recreated every time!
+
 ```js
 const keySub = (dispatch, props) => {
   // Hook up dispatch to external events

@@ -1,8 +1,12 @@
 import { h, text } from "hyperapp"
 
-const textTypes = ["string", "number", "bigint"];
+const isVNode = (child) => typeof child === "object" && ('node' in child)
 
-const childNode = (child) => textTypes.includes(typeof child) ? text(child) : child;
+const childNode = (child) => {
+  if (child) {
+    return isVNode(child) ? child : text(child)
+  }
+}
 
 export const jsx = (tag, { children, ...props }, key) =>
   typeof tag === "function"

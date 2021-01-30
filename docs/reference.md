@@ -91,7 +91,7 @@ The `class` prop can be either a string of classes or an object of classes. For 
 
 <!-- prettier-ignore -->
 ```js
-const variableProfileCardView = (user, useBorders, variant) =>
+const variableProfileCardView = (user, userBorders, variant) =>
   h("section", {
     class: {
       box: true,

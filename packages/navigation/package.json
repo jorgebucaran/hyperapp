@@ -5,9 +5,6 @@
   "main": "index.js",
   "description": "Subscribe and manage the browser URL history.",
   "repository": "https://github.com/jorgebucaran/hyperapp/tree/main/packages/navigation",
-  "files": [
-    "*.js*(.map)"
-  ],
   "license": "MIT",
   "keywords": [
     "hyperapp",

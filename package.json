@@ -8,9 +8,6 @@
   "homepage": "https://hyperapp.dev",
   "author": "Jorge Bucaran",
   "license": "MIT",
-  "files": [
-    "*.js*(.map)"
-  ],
   "keywords": [
     "framework",
     "hyperapp",

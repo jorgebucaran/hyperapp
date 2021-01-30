@@ -5,10 +5,6 @@
   "main": "index.js",
   "description": "Subscribe animation frames, keyboard, mouse, window, and more.",
   "repository": "https://github.com/jorgebucaran/hyperapp/tree/main/packages/events",
-  "files": [
-    "src",
-    "dist"
-  ],
   "license": "MIT",
   "keywords": [
     "hyperapp",

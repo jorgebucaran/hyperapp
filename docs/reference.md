@@ -405,3 +405,19 @@ app({
   ],
 })
 ```
+
+Hyperapp calls the `subscriptions` function on every update because the state is an input to it. This means you can easily change your subscriptions based on the state.
+
+```js
+subscriptions: (state) =>
+  state.isListening && [
+    key({
+      keys: ["w", "a", "s", "d"],
+      action: ChangeDirection,
+    }),
+  ]
+```
+
+Hyperapp calls `keySub` when `key` first appears in the subscriptions array. If the `key` is removed, the anonymous cleanup function is called instead.
+
+Also, when a subscription's `props` change, Hyperapp calls the cleanup function and the subscriber function a second time with the new `props`. How does Hyperapp know when `props` change? We use strict equality—if your `props` contain an array or an object, then it needs to be the same object, or the subscription will restart every time!

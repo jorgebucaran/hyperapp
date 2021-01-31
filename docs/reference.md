@@ -91,12 +91,12 @@ The `class` prop can be either a string of classes or an object of classes. For 
 
 <!-- prettier-ignore -->
 ```js
-const variableProfileCardView = (user, userBorders, variant) =>
+const variableProfileCardView = (user, useBorders, variant) =>
   h("section", {
     class: {
       box: true,
       disabled: user.role !== "admin",
-      useBorders: userBorders,
+      useBorders,
       [variant]: !!variant
     },
   }, text(user.name))

@@ -91,7 +91,7 @@ Official packages provide access to [The Web Platform](https://platform.html5.or
 
 ## Help, I'm stuck!
 
-Don't panic! If you've hit a stumbling block, hop on the [Hyperapp Slack](https://join.slack.com/t/hyperapp/shared_invite/zt-frxjw3hc-TB4MgH4t74iPrY05KF9Jcg) to get help, and if you don't receive an answer, or if you remain stuck, [please file an issue](https://github.com/jorgebucaran/hyperapp/issues/new), and we'll figure it out together.
+Don't panic! If you've hit a stumbling block, hop on our [Discord](https://discord.gg/5CtfCYEq8V) server to get help, and if you don't receive an answer, or if you remain stuck, [please file an issue](https://github.com/jorgebucaran/hyperapp/issues/new), and we'll figure it out together.
 
 ## Contributing
 

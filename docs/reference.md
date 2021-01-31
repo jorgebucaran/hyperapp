@@ -96,7 +96,7 @@ const variableProfileCardView = (user, useBorders, variant) =>
     class: {
       box: true,
       disabled: user.role !== "admin",
-      useBorders: userBorders,
+      useBorders,
       [variant]: !!variant
     },
   }, text(user.name))

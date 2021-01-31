@@ -1,6 +1,6 @@
 {
   "name": "@hyperapp/events",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "main": "index.js",
   "description": "Subscribe to mouse, keyboard, window, and frame events",

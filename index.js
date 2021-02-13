@@ -412,7 +412,7 @@ export var app = ({
                 (fx) => fx && fx !== true && fx[0](dispatch, fx[1]),
                 update(action[0])
               )
-        : update(action)
+        : update(action || state)
     ))(init),
     dispatch
   )

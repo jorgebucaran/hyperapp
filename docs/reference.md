@@ -12,7 +12,7 @@ Below is a consice recap of Hyperapp's core APIs and packages. It's geared towar
   - [view](#view-prop)
   - [subscriptions](#subscriptions-prop)
   - [node](#node-prop)
-  - [middleware](#middleware-prop)
+  - [dispatch](#dispatch-prop)
 - [`memo()`](#memo)
 - [Actions](#actions)
   - [Simple](#simple-action-state--nextstate)
@@ -120,14 +120,14 @@ app({
 ## app()
 
 ```js
-app({ init, view, node, subscriptions, middleware })
+app({ init, view, node, subscriptions, dispatch })
 ```
 
 The app function is used to initialize and mount an hyperapp app.
 
 There are 5 properties you can pass in to configure your app, all of which describe how your app will behave.
 
-The first 3 options, init, view and node, are required. The last two, subscriptions and middleware, will depend on your use case.
+The first 3 options, init, view and node, are required. The last two, subscriptions and dispatch, will depend on your use case.
 
 ```js
 import { app } from "hyperapp";
@@ -139,7 +139,7 @@ app({
   subscriptions: (state) => [
     SomeSubscription
   ],
-  middleware: dispatch => /* newDispatch */
+  dispatch: dispatch => /* newDispatch */
 });
 ```
 
@@ -218,7 +218,7 @@ Function that returns an array of [subscriptions](#subscriptions) for a given st
 
 In a similar fashion to how the view function is used to dynamically add and remove DOM elements based on the state, this subscriptions function is used for dynamically adding and removing [subscriptions](#subscriptions) to the app.
 
-#### middleware prop
+#### dispatch prop
 
 <!-- prettier-ignore -->
 ```js

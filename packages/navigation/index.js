@@ -35,9 +35,12 @@ export const onUrlRequest = fx(
         !event.shiftKey &&
         target
       ) {
-        event.preventDefault()
         const href = target.getAttribute("href")
-        dispatch(action, { pathname: href })
+        const dest = new URL(href, location.href);
+        if (dest.protocol == location.protocol && dest.hostname == location.hostname) {
+          event.preventDefault()
+          dispatch(action, { pathname: href })  
+        }
       }
     }
     addEventListener("click", clicks)

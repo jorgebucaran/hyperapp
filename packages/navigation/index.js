@@ -1,10 +1,13 @@
 const fx = (argsToProps, fx) => (...args) => [fx, argsToProps(args)]
 
+const HYPERAPP_PUSHSTATE = "hyperapp-pushstate"
+const URL_CHANGE_EVENTS = ["popstate", HYPERAPP_PUSHSTATE]
+
 export const pushUrl = fx(
   ([url]) => ({ url }),
   (_, { url }) => {
     history.pushState({}, "", url)
-    dispatchEvent(new CustomEvent("hyperapp-pushstate"))
+    dispatchEvent(new CustomEvent(HYPERAPP_PUSHSTATE))
   }
 )
 
@@ -13,11 +16,12 @@ export const onUrlChange = fx(
   (dispatch, { action }) => {
     const popstate = (_) => dispatch(action, location.href)
 
-    addEventListener("popstate", popstate)
-    addEventListener("hyperapp-pushstate", popstate)
+    URL_CHANGE_EVENTS.map((e) =>
+      addEventListener(e, popstate)
+    )
 
     return () =>
-      ["popstate", "hyperapp-pushstate"].map((e) =>
+      URL_CHANGE_EVENTS.map((e) =>
         removeEventListener(e, popstate)
       )
   }

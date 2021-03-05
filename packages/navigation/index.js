@@ -16,7 +16,7 @@ export const onUrlChange = fx(
   (dispatch, { action }) => {
     const popstate = (_) => dispatch(action, location.href)
 
-    URL_CHANGE_EVENTS.map((e) =>
+    URL_CHANGE_EVENTS.forEach((e) =>
       addEventListener(e, popstate)
     )
 

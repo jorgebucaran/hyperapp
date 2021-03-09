@@ -5,12 +5,12 @@ const textTypes = ["string", "number", "bigint"]
 const childNode = (child) =>
   textTypes.includes(typeof child) ? text(child) : child
 
-export const jsx = (tag, { children, ...props }, key) =>
-  typeof tag === "function"
-    ? tag({ ...props, key }, childNode(children))
-    : h(tag, { ...props, key }, childNode(children))
+export const jsx = (type, { children, ...props }, key) =>
+  typeof type === "function"
+    ? type({ ...props, key }, childNode(children))
+    : h(type, { ...props, key }, childNode(children))
 
-export const jsxs = (tag, { children, ...props }, key) =>
-  typeof tag === "function"
-    ? tag({ ...props, key }, childNode(children))
-    : h(tag, { ...props, key }, children.flatMap(childNode))
+export const jsxs = (type, { children, ...props }, key) =>
+  typeof type === "function"
+    ? type({ ...props, key }, childNode(children))
+    : h(type, { ...props, key }, children.flatMap(childNode))

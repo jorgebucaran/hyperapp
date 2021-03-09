@@ -54,21 +54,26 @@ Look [here](https://babeljs.io/docs/en/babel-plugin-transform-react-jsx) for mor
 ```jsx
 // No need to import the JSX runtime
 
-const SomeViewFunction = (props) => (
+const SomeViewFunction = (props, children) => (
+  <div>
+    <span>Hello, I can receive children via JSX children syntax</span>
+    {children}
+  </div>
+);
+
+const SomeOtherViewFunction = (props) => (
   <div>
     <h1>Hello.</h1>
     <p>JSX is great!</p>
     <SomeOtherViewFunction>
       <p>Children node</p>
     </SomeOtherViewFunction>
+    <AnotherComponent foo="bar" prop={2 + 4} />
+    <>
+      Fragments are also supported!
+    <>
   </div>
 );
 
-const SomeOtherViewFunction = (props, children) => (
-  <div>
-    <span>Hello, I can receive children via JSX children syntax</span>
-    {children}
-  </div>
-);
 
 ```

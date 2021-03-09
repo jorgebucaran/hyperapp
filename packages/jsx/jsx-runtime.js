@@ -13,4 +13,4 @@ export const jsx = (tag, { children, ...props }, key) =>
 export const jsxs = (tag, { children, ...props }, key) =>
   typeof tag === "function"
     ? tag({ ...props, key }, childNode(children))
-    : h(tag, { ...props, key }, children.map(childNode))
+    : h(tag, { ...props, key }, children.flatMap(childNode))

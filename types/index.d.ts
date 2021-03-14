@@ -34,9 +34,10 @@ declare module "hyperapp" {
   type Subscriptions<S> = (state: State<S>) => Subscription<S>[]
 
   // A subscription represents subscriber activity.
-  type Subscription<S, D = any> = boolean | undefined | Subscriber<S, D> | Unsubscribe
+  type Subscription<S, D = any> = boolean | undefined | SubscriberDescriptor<S, D> | Unsubscribe
 
   // A subscriber reacts to subscription updates.
+  type SubscriberDescriptor<S, D> = [Subscriber<S, D>, Payload<D>]
   type Subscriber<S, D> = (dispatch: Dispatch<S>, props?: Payload<D>) => void | Unsubscribe
 
   // An unsubscribe function cleans up a canceled subscription.
@@ -72,6 +73,8 @@ declare module "hyperapp" {
 
   // A runner is where side effects and any additional dispatching may occur.
   type RunnerDescriptor<S, D> = [Runner<S, D>, Payload<D>]
+  // TODO:
+  // type RunnerDescriptor<S, D = any> = [Runner<S, D>, Payload<D>]
   type Runner<S, D> = (dispatch: Dispatch<S>, props?: Payload<D>) => void | Promise<void>
 
   // A payload is data given to an action, effect, or subscription.
@@ -100,6 +103,8 @@ declare module "hyperapp" {
   const enum VDOMNodeType { SSR = 1, Text = 3 }
 
   // A virtual node is a convenience layer over a virtual DOM node.
+  // TODO:
+  // type VNode<S> = boolean | null | undefined | VDOM<S>
   type VNode<S> = false | null | undefined | VDOM<S>
 
   // Actual DOM nodes get manipulated depending on how property patching goes.

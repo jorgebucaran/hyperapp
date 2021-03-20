@@ -27,5 +27,5 @@ memo(text("hi"), {})           // $ExpectError
 memo(text, "hi")               // $ExpectType Partial<VDOM<unknown>>
 memo(text, ["hi"])             // $ExpectType Partial<VDOM<unknown>>
 
-// $ExpectType Partial<VDOM<string>>
-memo((data: string) => h("div", {}, text<string>(data)), "hi")
+// $ExpectType Partial<VDOM<unknown>>
+memo((data) => h("div", {}, text(data)), "hi")

@@ -10,10 +10,10 @@ declare module "hyperapp" {
   function h<S>(tag: string, props: PropList<S>, children?: VNode<S> | readonly VNode<S>[]): VDOM<S>
 
   // `memo()` stores a view along with data for it.
-  function memo<S>(view: View<S>, data: string | any[] | Record<string, any>): Partial<VDOM<S>>
+  function memo<S, D extends string | any[] | Record<string, any>>(view: View<D>, data: D): Partial<VDOM<S>>
 
   // `text()` creates a virtual DOM node representing plain text.
-  function text<S>(value: number | string, node?: Node): VDOM<S>
+  function text<T, S>(value: T extends (symbol | ((..._: any[]) => any)) ? never : T, node?: Node): VDOM<S>
 
   // ---------------------------------------------------------------------------
 

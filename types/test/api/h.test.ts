@@ -27,11 +27,7 @@ h(-123, {})         // $ExpectError
 h(-Infinity, {})    // $ExpectError
 h(Infinity, {})     // $ExpectError
 h(NaN, {})          // $ExpectError
-
-h("", {})           // $ExpectType VDOM<unknown>
-// TODO:
-// h("", {})           // $ExpectError
-
+h("", {})           // $ExpectError
 h("hi", {})         // $ExpectType VDOM<unknown>
 h({}, {})           // $ExpectError
 h(new Set(), {})    // $ExpectError

@@ -24,8 +24,10 @@ memo(text("hi"), undefined)    // $ExpectError
 memo(text("hi"), null)         // $ExpectError
 memo(text("hi"), {})           // $ExpectError
 
-memo(text, "hi")               // $ExpectType Partial<VDOM<unknown>>
-memo(text, ["hi"])             // $ExpectType Partial<VDOM<unknown>>
+memo(text, "hi")               // $ExpectType VDOM<unknown>
+memo(text, ["hi"])             // $ExpectType VDOM<unknown>
 
-// $ExpectType Partial<VDOM<unknown>>
+// $ExpectType VDOM<unknown>
 memo((data) => h("div", {}, text(data)), "hi")
+
+h("div", {}, memo(text, ["hi"]))    // $ExpectType VDOM<unknown>

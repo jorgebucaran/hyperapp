@@ -7,10 +7,10 @@ declare module "hyperapp" {
   function app<S>(props: App<S>): void
 
   // `h()` builds a virtual DOM node.
-  function h<S>(tag: string, props: PropList<S>, children?: VNode<S> | readonly VNode<S>[]): VDOM<S>
+  function h<S, T extends string = string>(tag: T extends "" ? never : T, props: PropList<S>, children?: VNode<S> | readonly VNode<S>[]): VDOM<S>
 
   // `memo()` stores a view along with data for it.
-  function memo<S, D extends string | any[] | Record<string, any>>(view: View<D>, data: D): Partial<VDOM<S>>
+  function memo<S, D extends string | any[] | Record<string, any>>(view: View<D>, data: D): VDOM<S>
 
   // `text()` creates a virtual DOM node representing plain text.
   function text<T, S>(value: T extends (symbol | ((..._: any[]) => any)) ? never : T, node?: Node): VDOM<S>
@@ -86,7 +86,7 @@ declare module "hyperapp" {
     readonly props: PropList<S>
     readonly children: VNode<S>[]
     node: MaybeNode
-    readonly tag?: Tag<S>
+    readonly tag: Tag<S>
     readonly key: Key
     memo?: PropList<S>
     events?: Record<string, Action<S>>
@@ -106,7 +106,7 @@ declare module "hyperapp" {
   // Actual DOM nodes get manipulated depending on how property patching goes.
   type MaybeNode = null | undefined | Node
 
-  // A virtual DOM node's tag has metadata relevant to it. Virtual DOM nodes are
+  // A virtual DOM node's taghas metadata relevant to it. Virtual DOM nodes are
   // tagged by their type to assist rendering.
   type Tag<S> = string | View<S>
 
@@ -120,13 +120,15 @@ declare module "hyperapp" {
     key?: Key
     style?: StyleProp
 
-    // By disallowing `_VDOM` we ensure that values matching `VDOM` are not
-    // mistaken for also matching `PropList`.
+    // By disallowing `_VDOM` we ensure that values having the `VDOM` type are
+    // not mistaken for also having `PropList`.
     _VDOM?: never
   }>
 
   // The `class` property represents an HTML class attribute string.
   type ClassProp = false | string | undefined | Record<string, boolean | undefined> | ClassProp[]
+  // TODO:
+  // type ClassProp = boolean | string | undefined | Record<string, boolean | undefined> | ClassProp[]
 
   // The `style` property represents inline CSS.
   //
@@ -135,8 +137,8 @@ declare module "hyperapp" {
   // properties that are not yet recognized by TypeScript. Apparently,
   // the only way to accommodate them is to relax the adherence to
   // TypeScript's CSS property definitions. The trade-off doesn't
-  // seem worth it given the rarity of such properties. However,
-  // if you need them the workaround is to use type casting.
+  // seem worth it given the chances of using such properties.
+  // However, you can use type casting if you want to them.
   type StyleProp
     = { [K in keyof CSSStyleDeclaration]?: CSSStyleDeclaration[K] | null }
     // Since strings are indexable we can avoid them by preventing indexing.

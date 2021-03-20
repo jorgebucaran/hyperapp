@@ -1,6 +1,8 @@
 import { Action, Dispatch, Effect, RunnerDescriptor, StateFormat } from "hyperapp"
 
 import { app, h, text } from "hyperapp"
+
+// TODO:
 // import { delay } from "../../../packages/time/index.js"
 
 app()             // $ExpectError
@@ -107,17 +109,6 @@ app<Test>({
 })
 
 // -----------------------------------------------------------------------------
-
-// const timeout: any = (dispatch: any, props: any) =>
-//   setTimeout(() => dispatch(props.action), props.delay)
-//
-// const delay: any = (delay: any, action: any) => [timeout, { delay, action }]
-
-// const timeout: any = (dispatch: any, props: any) =>
-//   setTimeout(() => dispatch(props.action), props.delay)
-//
-// const delay: Effect<Test> = (delay: any, action: any) => [timeout, { delay, action }]
-// const delay: any = (delay: any, action: any) => [timeout, { delay, action }]
 
 const timeout = <S>(dispatch: Dispatch<S>, props: any) => {
   setTimeout(() => dispatch(props.action), props.delay)

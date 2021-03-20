@@ -1,7 +1,7 @@
-import { Action, Dispatch, Effect } from "hyperapp"
+import { Action, Dispatch, Effect, RunnerDescriptor, StateFormat } from "hyperapp"
 
 import { app, h, text } from "hyperapp"
-import { delay } from "../../../packages/time/index.js"
+// import { delay } from "../../../packages/time/index.js"
 
 app()             // $ExpectError
 app(true)         // $ExpectError
@@ -108,30 +108,26 @@ app<Test>({
 
 // -----------------------------------------------------------------------------
 
-
-
-
-
-
 // const timeout: any = (dispatch: any, props: any) =>
 //   setTimeout(() => dispatch(props.action), props.delay)
-
+//
 // const delay: any = (delay: any, action: any) => [timeout, { delay, action }]
 
-
-
 // const timeout: any = (dispatch: any, props: any) =>
 //   setTimeout(() => dispatch(props.action), props.delay)
-
+//
 // const delay: Effect<Test> = (delay: any, action: any) => [timeout, { delay, action }]
 // const delay: any = (delay: any, action: any) => [timeout, { delay, action }]
 
+const timeout = <S>(dispatch: Dispatch<S>, props: any) => {
+  setTimeout(() => dispatch(props.action), props.delay)
+}
 
+const delay = <S>(delay: number, action: StateFormat<S> | Action<S>): RunnerDescriptor<S> =>
+  [timeout, { delay, action }]
 
-
-
-
-const IncrementFoo: Action<Test> = (state) => ({ ...state, foo: state.foo + 1 })
+const IncrementFoo: Action<Test> = (state) =>
+  ({ ...state, foo: state.foo + 1 })
 
 // $ExpectType void
 app<Test>({
@@ -149,7 +145,7 @@ app<Test>({
 
 // $ExpectType void
 app<Test>({
-  init: (state: Test) => [{ foo: 2 }, delay(200, IncrementFoo)],
+  init: (state) => [{ foo: 2 }, delay(200, IncrementFoo)],
   view: state => h("main", {}, []),
   node: document.body,
 })

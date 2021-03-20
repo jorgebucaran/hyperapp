@@ -27,7 +27,11 @@ h(-123, {})         // $ExpectError
 h(-Infinity, {})    // $ExpectError
 h(Infinity, {})     // $ExpectError
 h(NaN, {})          // $ExpectError
+
 h("", {})           // $ExpectType VDOM<unknown>
+// TODO:
+// h("", {})           // $ExpectError
+
 h("hi", {})         // $ExpectType VDOM<unknown>
 h({}, {})           // $ExpectError
 h(new Set(), {})    // $ExpectError
@@ -55,7 +59,7 @@ h("p", () => { })    // $ExpectError
 h("p", null)         // $ExpectError
 h("p", undefined)    // $ExpectError
 
-h("p", {}, true)         // $ExpectError
+h("p", {}, true)         // $ExpectType VDOM<unknown>
 h("p", {}, false)        // $ExpectType VDOM<unknown>
 h("p", {}, 0)            // $ExpectError
 h("p", {}, 2424)         // $ExpectError
@@ -235,7 +239,7 @@ h<Test>("button", {
 
 // -----------------------------------------------------------------------------
 
-h("p", {}, [true])         // $ExpectError
+h("p", {}, [true])         // $ExpectType VDOM<unknown>
 h("p", {}, [false])        // $ExpectType VDOM<unknown>
 h("p", {}, [0])            // $ExpectError
 h("p", {}, [2424])         // $ExpectError

@@ -1,4 +1,4 @@
-import { memo } from "hyperapp"
+import { h, text, memo } from "hyperapp"
 
 memo()             // $ExpectError
 memo(true)         // $ExpectError
@@ -19,7 +19,13 @@ memo(() => { })    // $ExpectError
 memo(null)         // $ExpectError
 memo(undefined)    // $ExpectError
 
-// TODO:
-// export var memo = (tag, memo) => ({ tag, memo })
-// // The `memo` function stores a view along with properties for it.
-// function memo<S, D = unknown>(view: View<S, D>, props: PropList<S, D>): Partial<VDOM<S, D>>
+memo(text("hi"))               // $ExpectError
+memo(text("hi"), undefined)    // $ExpectError
+memo(text("hi"), null)         // $ExpectError
+memo(text("hi"), {})           // $ExpectError
+
+memo(text, "hi")               // $ExpectType Partial<VDOM<unknown>>
+memo(text, ["hi"])             // $ExpectType Partial<VDOM<unknown>>
+
+// $ExpectType Partial<VDOM<string>>
+memo((data: string) => h("div", {}, text<string>(data)), "hi")

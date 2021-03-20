@@ -9,8 +9,8 @@ declare module "hyperapp" {
   // `h()` builds a virtual DOM node.
   function h<S>(tag: string, props: PropList<S>, children?: VNode<S> | readonly VNode<S>[]): VDOM<S>
 
-  // `memo()` stores a view along with properties for it.
-  function memo<S>(tag: View<S>, memo: PropList<S>): Partial<VDOM<S>>
+  // `memo()` stores a view along with data for it.
+  function memo<S>(view: View<S>, data: string | any[] | Record<string, any>): Partial<VDOM<S>>
 
   // `text()` creates a virtual DOM node representing plain text.
   function text<S>(value: number | string, node?: Node): VDOM<S>
@@ -54,7 +54,7 @@ declare module "hyperapp" {
   // An action transforms existing state and/or wraps another action.
   type Action<S, P = any> = ActionTransform<S, P> | ActionDescriptor<S, P>
   type ActionTransform<S, P = any> = (state: State<S>, props?: Payload<P>) => StateFormat<S> | Action<S>
-  type ActionDescriptor<S, P> = [Action<S, P>, Payload<P>]
+  type ActionDescriptor<S, P> = [ActionTransform<S, P>, Payload<P>]
 
   // A transform carries out the transition from one state to another.
   type Transform<S, P = any> = (state: StateFormat<S>, props?: Payload<P>) => StateFormat<S>
@@ -72,9 +72,7 @@ declare module "hyperapp" {
   type Effect<S, D = any> = (..._: any[]) => RunnerDescriptor<S, D>
 
   // A runner is where side effects and any additional dispatching may occur.
-  type RunnerDescriptor<S, D> = [Runner<S, D>, Payload<D>]
-  // TODO:
-  // type RunnerDescriptor<S, D = any> = [Runner<S, D>, Payload<D>]
+  type RunnerDescriptor<S, D = any> = [Runner<S, D>, Payload<D>]
   type Runner<S, D> = (dispatch: Dispatch<S>, props?: Payload<D>) => void | Promise<void>
 
   // A payload is data given to an action, effect, or subscription.
@@ -103,9 +101,7 @@ declare module "hyperapp" {
   const enum VDOMNodeType { SSR = 1, Text = 3 }
 
   // A virtual node is a convenience layer over a virtual DOM node.
-  // TODO:
-  // type VNode<S> = boolean | null | undefined | VDOM<S>
-  type VNode<S> = false | null | undefined | VDOM<S>
+  type VNode<S> = boolean | null | undefined | VDOM<S>
 
   // Actual DOM nodes get manipulated depending on how property patching goes.
   type MaybeNode = null | undefined | Node

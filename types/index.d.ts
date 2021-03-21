@@ -1,5 +1,6 @@
 // Minimum TypeScript Version: 4.2
-// `dtslint` needs 4.2 even though these definitions should work with 4.1.
+
+// NOTE: `dtslint` needs 4.2 even though these definitions should work with 4.1.
 
 declare module "hyperapp" {
   // `app()` initiates a Hyperapp application. `app()` along with runners and
@@ -7,13 +8,27 @@ declare module "hyperapp" {
   function app<S>(props: App<S>): void
 
   // `h()` builds a virtual DOM node.
-  function h<S, T extends string = string>(tag: T extends "" ? never : T, props: PropList<S>, children?: VNode<S> | readonly VNode<S>[]): VDOM<S>
+  function h<S, T extends string = string>(
+    // Tags cannot be empty strings.
+    tag: T extends "" ? never : T,
+    props: PropList<S>,
+    children?: VNode<S> | readonly VNode<S>[]
+  ): VDOM<S>
 
   // `memo()` stores a view along with data for it.
-  function memo<S, D extends string | any[] | Record<string, any>>(view: View<D>, data: D): VDOM<S>
+  function memo<
+    S,
+    D extends string | any[] | Record<string, any>
+  >(
+    view: View<D>,
+    data: D
+  ): VDOM<S>
 
   // `text()` creates a virtual DOM node representing plain text.
-  function text<T, S>(value: T extends (symbol | ((..._: any[]) => any)) ? never : T, node?: Node): VDOM<S>
+  function text<T, S>(
+    value: T extends (symbol | ((..._: any[]) => any)) ? never : T,
+    node?: Node
+  ): VDOM<S>
 
   // ---------------------------------------------------------------------------
 
@@ -126,9 +141,7 @@ declare module "hyperapp" {
   }>
 
   // The `class` property represents an HTML class attribute string.
-  type ClassProp = false | string | undefined | Record<string, boolean | undefined> | ClassProp[]
-  // TODO:
-  // type ClassProp = boolean | string | undefined | Record<string, boolean | undefined> | ClassProp[]
+  type ClassProp = boolean | string | undefined | Record<string, boolean | undefined> | ClassProp[]
 
   // The `style` property represents inline CSS.
   //

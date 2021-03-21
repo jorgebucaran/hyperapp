@@ -75,7 +75,7 @@ h("p", {}, undefined)    // $ExpectType VDOM<unknown>
 
 // -----------------------------------------------------------------------------
 
-h("p", { class: true })         // $ExpectError
+h("p", { class: true })         // $ExpectType VDOM<unknown>
 h("p", { class: false })        // $ExpectType VDOM<unknown>
 h("p", { class: 0 })            // $ExpectError
 h("p", { class: 2424 })         // $ExpectError
@@ -111,7 +111,7 @@ h("p", { class: { a: () => { } } })    // $ExpectError
 h("p", { class: { a: null } })         // $ExpectError
 h("p", { class: { a: undefined } })    // $ExpectType VDOM<unknown>
 
-h("p", { class: [true] })         // $ExpectError
+h("p", { class: [true] })         // $ExpectType VDOM<unknown>
 h("p", { class: [false] })        // $ExpectType VDOM<unknown>
 h("p", { class: [0] })            // $ExpectError
 h("p", { class: [2424] })         // $ExpectError
@@ -132,6 +132,7 @@ h("p", { class: [undefined] })    // $ExpectType VDOM<unknown>
 h("p", { class: [{ a: true }] })       // $ExpectType VDOM<unknown>
 h("p", { class: [{ a: false }] })      // $ExpectType VDOM<unknown>
 h("p", { class: [false && "foo"] })    // $ExpectType VDOM<unknown>
+h("p", { class: [true || "foo"] })     // $ExpectType VDOM<unknown>
 
 // -----------------------------------------------------------------------------
 

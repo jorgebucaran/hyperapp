@@ -2,6 +2,9 @@
   "//": "https://palantir.github.io/tslint/rules/",
   "///": "https://github.com/microsoft/dtslint/tree/master/docs",
   "extends": "dtslint/dtslint.json",
+  "linterOptions": {
+    "exclude": ["**/*.js"]
+  },
   "rules": {
     "array-type": [true, "array"],
     "indent": [true, "spaces"],

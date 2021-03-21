@@ -1,9 +1,7 @@
 import { Action, Dispatch, Effect, RunnerDescriptor, StateFormat } from "hyperapp"
 
 import { app, h, text } from "hyperapp"
-
-// TODO:
-// import { delay } from "../../../packages/time/index.js"
+import { delay } from "../../../packages/time/index.js"
 
 app()             // $ExpectError
 app(true)         // $ExpectError
@@ -28,9 +26,7 @@ app(undefined)    // $ExpectError
 
 type Test = { bar?: number, foo: number }
 
-const runTestFx = <S>(dispatch: Dispatch<S>): void => {
-  console.log("test")
-}
+const runTestFx = <S>(dispatch: Dispatch<S>): void => console.log("test")
 
 const testFx: Effect<Test> = () => [runTestFx, undefined]
 
@@ -110,33 +106,42 @@ app<Test>({
 
 // -----------------------------------------------------------------------------
 
-const timeout = <S>(dispatch: Dispatch<S>, props: any) => {
+// $ExpectType void
+app<Test>({
+  init: [{ foo: 2 }, delay(2000, { foo: 3 }) as any],
+  view: (state) => h("main", {}, []),
+  node: document.body,
+})
+
+// -----------------------------------------------------------------------------
+
+const myTimeout = <S>(dispatch: Dispatch<S>, props: any) => {
   setTimeout(() => dispatch(props.action), props.delay)
 }
 
-const delay = <S>(delay: number, action: StateFormat<S> | Action<S>): RunnerDescriptor<S> =>
-  [timeout, { delay, action }]
+const myDelay = <S>(delay: number, action: StateFormat<S> | Action<S>): RunnerDescriptor<S> =>
+  [myTimeout, { delay, action }]
 
 const IncrementFoo: Action<Test> = (state) =>
   ({ ...state, foo: state.foo + 1 })
 
 // $ExpectType void
 app<Test>({
-  init: [{ foo: 2 }, delay(2000, { foo: 3 })],
-  view: state => h("main", {}, []),
+  init: [{ foo: 2 }, myDelay(2000, { foo: 3 })],
+  view: (state) => h("main", {}, []),
   node: document.body,
 })
 
 // $ExpectType void
 app<Test>({
-  init: [{ foo: 2 }, delay(2000, IncrementFoo)],
-  view: state => h("main", {}, []),
+  init: [{ foo: 2 }, myDelay(2000, IncrementFoo)],
+  view: (state) => h("main", {}, []),
   node: document.body,
 })
 
 // $ExpectType void
 app<Test>({
-  init: (state) => [{ foo: 2 }, delay(200, IncrementFoo)],
-  view: state => h("main", {}, []),
+  init: (state) => [{ foo: 2 }, myDelay(200, IncrementFoo)],
+  view: (state) => h("main", {}, []),
   node: document.body,
 })

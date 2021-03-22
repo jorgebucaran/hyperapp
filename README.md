@@ -48,25 +48,33 @@ Here's the first example to get you started—look ma' no bundlers! [Try it in y
 </html>
 ```
 
-Now that you have poked around the code a bit, you may have some questions. What is `init` and `view`, and how do they fit together? The app starts off with `init`, where we set the initial state. The `view` returns a plain object that represents how we want the DOM to look (the virtual DOM) and Hyperapp takes care of modifying the actual DOM to match this specification whenever the state changes. That's really all there is to it.
+Now that you have poked around the code a bit, you may have some questions. What is `init:` and `view:`, and how do they fit together? The app starts off with `init:`, where we set the initial state. The `view:` function returns a plain object that represents how we want the DOM to look (the virtual DOM) and Hyperapp takes care of modifying the actual DOM to match this specification whenever the state changes. That's really all there is to it.
 
-Ready to dive in? Learn the basics in the [tutorial](docs/tutorial.md) or visit the [API reference](docs/reference.md) for more documentation. If you prefer to learn by studying real-world examples, you can browse our [awesome list of resources](https://github.com/jorgebucaran/hyperawesome) too.
+## Ready to dive in?
+
+Learn the basics in the [tutorial](docs/tutorial.md) or visit the [reference documentation](docs/reference.md) for more detail. If you prefer to learn by studying real-world examples, you can browse our [awesome list of resources](https://github.com/jorgebucaran/hyperawesome) too.
 
 ## Installation
 
-Install Hyperapp with npm or Yarn:
+Install Hyperapp with [npm](https://www.npmjs.com/):
 
 ```console
 npm i hyperapp
 ```
 
-Then with a module bundler like [Rollup](https://rollupjs.org) or [Webpack](https://webpack.js.org) import it in your application and get right down to business.
+or [Yarn](https://yarnpkg.com/):
+
+```console
+yarn add hyperapp
+```
+
+Then with a module bundler like [Rollup](https://rollupjs.org/) or [Webpack](https://webpack.js.org/) import it in your application and get right down to business.
 
 ```js
 import { h, text, app } from "hyperapp"
 ```
 
-Don't want to set up a build step? Import Hyperapp in a `<script>` tag as a module. Don't worry; modules are supported in all evergreen, self-updating desktop, and mobile browsers.
+Don't want to set up a build step? Import Hyperapp in a `<script>` tag as a module. Don't worry; modules are supported in all evergreen, self-updating desktop and mobile browsers.
 
 ```html
 <script type="module">

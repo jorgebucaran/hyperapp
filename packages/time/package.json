@@ -6,9 +6,6 @@
   "description": "Subscribe to intervals, get the time now",
   "repository": "https://github.com/jorgebucaran/hyperapp/tree/main/packages/time",
   "license": "MIT",
-  "files": [
-    "*.js*(.map)"
-  ],
   "keywords": [
     "hyperapp",
     "interval",

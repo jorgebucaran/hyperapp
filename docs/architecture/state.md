@@ -28,6 +28,12 @@ So, Hyperapp will apply the state first and then will run the effects in the ord
 
 If you actually do want to use an array as your state you'll have to wrap it within an effectful state array to make it work.
 
+```js
+[["a", "b", "c"]]
+```
+
+The actions page also [talks about it](actions.md#transitioning-array-state).
+
 ---
 
 ## Visualization

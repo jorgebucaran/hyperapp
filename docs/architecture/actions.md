@@ -396,7 +396,7 @@ There are a couple options available:
 
 ### Nonstandard Usage
 
-- Using an anonymous function for an action has the disadvantage that it has no name for the debugger to make use of. That's significant because it's recommended that actions have names.
+- Using an anonymous function for an action has the disadvantage that it has no name for debugging tools to make use of. That's significant because it's recommended that actions have names.
 
 - If you wanted to use curried functions to implement actions then you can use named function expressions.
 

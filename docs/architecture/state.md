@@ -55,3 +55,5 @@ You can of course choose to make your state some basic type such as a string or 
 ### Direct Mutation
 
 Since we are ultimately using JavaScript you can technically edit parts of the state mutably. However, state changes should be thought of in terms of snapshots: New versions of the state get created to reflect the changes made at a certain moment in time. This perspective naturally calls for immutability.
+
+Fresh new state should be returned from an [action](actions.md). If an action returns nothing your app will [stop](actions.md#stopping-your-app). If you mutate the current state and return it you are returning the same object reference as the state was earlier. Hyperapp cannot tell from this that any changes have occurred. Hence the action will do nothing.

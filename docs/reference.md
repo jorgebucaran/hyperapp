@@ -34,6 +34,6 @@
 - [Subscription](architecture/subscriptions.md): A binding between the app and external events.
 - [Top-Level View](architecture/views.md#top-level-view): The main view which is given the state.
 - [VDOM](architecture/views.md#virtual-dom): The virtual DOM, an in-memory representation for the DOM of the current page.
-- [View](architecture/views.md): A description of VNodes to render as influenced by the current state.
+- [View](architecture/views.md): A function describing the desired DOM, represented by a VNode, as a function of the current state.
 - [VNode](architecture/views.md#virtual-dom): Virtual node, a light abstraction over a VDOM element.
 - [Wrapped Action](architecture/actions.md#wrapped-actions): An action that is returned by another action.

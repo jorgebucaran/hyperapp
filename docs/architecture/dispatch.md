@@ -39,7 +39,7 @@ Let's say we're working on a project where we want to always log the current sta
 ```js
 import { log } from "./fx"
 
-const middleman = (dispatch) => (action, payload) => {
+const middleware = (dispatch) => (action, payload) => {
   dispatch((state) => [state, log(state)])
   dispatch(action, payload)
 }

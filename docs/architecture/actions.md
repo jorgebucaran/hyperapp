@@ -138,15 +138,21 @@ const Liokaiser = (state) => ({
 
 ## Stopping Your App
 
-You can cease all Hyperapp processes by transitioning to an `undefined` state.
-
-This can be useful if you need to do specific cleanup work for your app.
+You can cease all Hyperapp processes by transitioning to an `undefined` state. This can be useful if you need to do specific cleanup work for your app.
 
 ```js
 const Stop = () => undefined
 ```
 
-Once your app is stopped it cannot be restarted.
+Once your app stops, several things happen:
+
+- All of the app's subscriptions stop.
+- The DOM is no longer touched.
+- Event handlers stop working.
+
+A stopped app cannot be restarted.
+
+If you encounter a scenario where your app doesn't respond when you click stuff within it then your app might've been stopped by mistake.
 
 ---
 

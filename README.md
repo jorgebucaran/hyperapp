@@ -60,21 +60,6 @@ Ready to dive in? Learn the basics in the [Tutorial](docs/tutorial.md), check ou
 
 To access [Web Platform APIs](https://platform.html5.org) (like `fetch` or `addEventListener`) in a way that makes sense for Hyperapp, learn [how to create your own effects and subscriptions](/docs/architecture/subscriptions.md). For everything else, from third-party packages to real-world examples, browse the [Hyperawesome](https://github.com/jorgebucaran/hyperawesome) collection.
 
-## Packages
-
-Official packages provide access to [The Web Platform](https://platform.html5.org), and ensure that the APIs are exposed in a way that makes sense for Hyperapp, and the underlying code is stable. We already cover a decent amount of features, but you can always [create your own effects and subscriptions](docs/reference.md) if something is not available yet.
-
-| Package                                        | Status                                                                                                                                              | About                                                   |
-| ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| [`@hyperapp/dom`](/packages/dom)               | [![npm](https://img.shields.io/npm/v/@hyperapp/dom.svg?style=for-the-badge&color=0366d6&label=)](https://www.npmjs.com/package/@hyperapp/dom)       | Inspect the DOM, focus and blur.                        |
-| [`@hyperapp/svg`](/packages/svg)               | [![npm](https://img.shields.io/npm/v/@hyperapp/svg.svg?style=for-the-badge&color=0366d6&label=)](https://www.npmjs.com/package/@hyperapp/svg)       | Draw SVG with plain functions.                          |
-| [`@hyperapp/html`](/packages/html)             | [![npm](https://img.shields.io/npm/v/@hyperapp/html.svg?style=for-the-badge&color=0366d6&label=)](https://www.npmjs.com/package/@hyperapp/html)     | Write HTML with plain functions.                        |
-| [`@hyperapp/time`](/packages/time)             | [![npm](https://img.shields.io/npm/v/@hyperapp/time.svg?style=for-the-badge&color=0366d6&label=)](https://www.npmjs.com/package/@hyperapp/time)     | Subscribe to intervals, get the time now.               |
-| [`@hyperapp/http`](/packages/http)             | [![npm](https://img.shields.io/npm/v/@hyperapp/http.svg?style=for-the-badge&color=0366d6&label=)](https://www.npmjs.com/package/@hyperapp/http)     | Talk to servers, make HTTP requests.                    |
-| [`@hyperapp/events`](/packages/events)         | [![npm](https://img.shields.io/npm/v/@hyperapp/events.svg?style=for-the-badge&color=0366d6&label=)](https://www.npmjs.com/package/@hyperapp/events) | Subscribe to mouse, keyboard, window, and frame events. |
-| [`@hyperapp/random`](/packages/random)         | [![npm](https://img.shields.io/badge/-planned-6a737d?style=for-the-badge&label=)](https://www.npmjs.com/package/@hyperapp/random)                   | Declarative random numbers and values.                  |
-| [`@hyperapp/navigation`](/packages/navigation) | [![npm](https://img.shields.io/badge/-planned-6a737d?style=for-the-badge&label=)](https://www.npmjs.com/package/@hyperapp/navigation)               | Subscribe and manage the browser URL history.           |
-
 ## Help, I'm stuck!
 
 If you've hit a stumbling block, hop on our [Discord](https://discord.gg/5CtfCYEq8V) server to get help, and if you remain stuck, [please file an issue](https://github.com/jorgebucaran/hyperapp/issues/new), and we'll help you figure it out.

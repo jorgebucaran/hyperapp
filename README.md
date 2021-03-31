@@ -42,11 +42,11 @@ Here's the first example to get you started. [Try it here](https://codepen.io/jo
 <main id="app"></main>
 ```
 
-[Check out more examples](https://codepen.io/your-work/?search_term=hyperapp)
+[Check out more examples](https://codepen.io/collection/nLLvrz?grid_type=grid)
 
 The app starts by setting the initial state and rendering the view on the page. User input flows into actions, whose function is to update the state, causing Hyperapp to re-render the view.
 
-When describing how a page looks, we don't write markup. Instead, we use `h()` and `text()` to create a lightweight representation of the DOM (or virtual DOM for short), and Hyperapp takes care of updating the real DOM.
+When describing how a page looks in Hyperapp, we don't write markup. Instead, we use `h()` and `text()` to create a lightweight representation of the DOM (or virtual DOM for short), and Hyperapp takes care of updating the real DOM efficiently.
 
 ## Installation
 
@@ -56,7 +56,7 @@ npm install hyperapp
 
 ## Documentation
 
-Ready to dive in? Learn the basics in the [Tutorial](docs/tutorial.md), check out the [Examples](https://codepen.io/your-work/?search_term=hyperapp), or visit the [Reference](docs/reference.md) for more detail.
+Ready to dive in? Learn the basics in the [Tutorial](docs/tutorial.md), check out the [Examples](https://codepen.io/collection/nLLvrz?grid_type=grid), or visit the [Reference](docs/reference.md) for more detail.
 
 To access [Web Platform APIs](https://platform.html5.org) (like `fetch` or `addEventListener`) in a way that makes sense for Hyperapp, learn [how to create your own effects and subscriptions](/docs/architecture/subscriptions.md). For everything else, from third-party packages to real-world examples, browse the [Hyperawesome](https://github.com/jorgebucaran/hyperawesome) collection.
 

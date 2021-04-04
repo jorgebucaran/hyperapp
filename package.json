@@ -10,7 +10,7 @@
   "license": "MIT",
   "files": [
     "*.js*(.map)",
-    "types/index.d.ts"
+    "index.d.ts"
   ],
   "keywords": [
     "framework",

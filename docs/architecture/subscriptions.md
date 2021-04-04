@@ -61,11 +61,11 @@ There may be times when an official Hyperapp subscription package is unavailable
 
 ### Subscribers
 
-A **subscriber** is a function which implements an active subscription. As with [runners](actions.md#runners), subscribers are allowed to use side-effects and can also manually [`dispatch`](dispatch.md) actions in order to inform your app of any pertinent results from their execution.
+A **subscriber** is a function which implements an active subscription. As with [effecters](actions.md#effecters), subscribers are allowed to use side-effects and can also manually [`dispatch`](dispatch.md) actions in order to inform your app of any pertinent results from their execution.
 
 Subscribers can be given a data `payload` for their use.
 
-Well-formed subscribers, as it is with runners, should be as generic as possible. However, unlike with runners, they should return a function that handles cleaning up the subscription if it gets cancelled.
+Well-formed subscribers, as it is with effecters, should be as generic as possible. However, unlike with effecters, they should return a function that handles cleaning up the subscription if it gets cancelled.
 
 ### Example
 

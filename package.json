@@ -25,11 +25,9 @@
     "release": "tag=$(npm run --silent which) npm run deploy && cd ./${pkg:+packages/$pkg} && npm publish --access public",
     "deploy": "npm test && git commit --all --message $tag && git tag --sign $tag --message $tag && git push && git push --tags",
     "which": "node --print \"('$pkg' ? '@$npm_package_name/$pkg@' : '') + require('./${pkg:+packages/$pkg/}package').version\"",
-    "test": "c8 twist tests/*.js",
-    "dts": "dtslint types"
+    "test": "c8 twist tests/*.js"
   },
   "devDependencies": {
-    "dtslint": "*",
     "twist": "*",
     "typescript": "*",
     "c8": "*"

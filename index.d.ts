@@ -33,17 +33,17 @@ declare module "hyperapp" {
 
   // A Hyperapp instance has an initial state and a base view.
   // It's usually mounted over an available DOM element.
-  type App<S> =
-    Readonly<{ init: StateFormat<S> | Action<S> }> |
-    Readonly<{ subscriptions: Subscriptions<S> }> |
-    Readonly<{ dispatch: DispatchInitializer<S> }> |
-    Readonly<{
-      init?: StateFormat<S> | Action<S>
-      view: View<S>
-      node: Node
-      subscriptions?: Subscriptions<S>
-      dispatch?: DispatchInitializer<S>
-    }>
+  type App<S>
+    = Readonly<{ init: State<S> | StateWithEffects<S> | Action<S> }>
+    | Readonly<{ subscriptions: Subscriptions<S> }>
+    | Readonly<{ dispatch: DispatchInitializer<S> }>
+    | Readonly<{
+        init?: State<S> | StateWithEffects<S> | Action<S>
+        view: View<S>
+        node: Node
+        subscriptions?: Subscriptions<S>
+        dispatch?: DispatchInitializer<S>
+      }>
 
   // A view builds a virtual DOM node representation of the application state.
   type View<S> = (state: State<S>) => VDOM<S>
@@ -70,14 +70,13 @@ declare module "hyperapp" {
 
   // An action transforms existing state and/or wraps another action.
   type Action<S, P = any> = ActionTransform<S, P> | ActionWithPayload<S, P>
-  type ActionTransform<S, P = any> = (state: State<S>, payload?: Payload<P>) => StateFormat<S> | Action<S>
+  type ActionTransform<S, P = any> =
+    (state: State<S>, payload?: Payload<P>) => State<S> | StateWithEffects<S> | Action<S>
   type ActionWithPayload<S, P> = [ActionTransform<S, P>, Payload<P>]
 
   // A transform carries out the transition from one state to another.
-  type Transform<S, P = any> = (state: StateFormat<S>, payload?: Payload<P>) => StateFormat<S>
-
-  // State can either be on its own or associated with effects.
-  type StateFormat<S> = State<S> | StateWithEffects<S>
+  type Transform<S, P = any> =
+    (state: State<S> | StateWithEffects<S>, payload?: Payload<P>) => State<S> | StateWithEffects<S>
 
   // Application state is accessible in every view, action, and subscription.
   type State<S> = S

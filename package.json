@@ -29,7 +29,6 @@
   },
   "devDependencies": {
     "twist": "*",
-    "typescript": "*",
     "c8": "*"
   }
 }

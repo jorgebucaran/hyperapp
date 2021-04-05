@@ -9,8 +9,7 @@
   "author": "Jorge Bucaran",
   "license": "MIT",
   "files": [
-    "*.js*(.map)",
-    "index.d.ts"
+    "*.[tj]s"
   ],
   "keywords": [
     "framework",
@@ -22,10 +21,9 @@
     "ui"
   ],
   "scripts": {
-    "release": "tag=$(npm run --silent which) npm run deploy && cd ./${pkg:+packages/$pkg} && npm publish --access public",
+    "test": "c8 twist tests/*.js",
     "deploy": "npm test && git commit --all --message $tag && git tag --sign $tag --message $tag && git push && git push --tags",
-    "which": "node --print \"('$pkg' ? '@$npm_package_name/$pkg@' : '') + require('./${pkg:+packages/$pkg/}package').version\"",
-    "test": "c8 twist tests/*.js"
+    "release": "tag=$npm_package_version npm run deploy && npm publish --access public"
   },
   "devDependencies": {
     "twist": "*",

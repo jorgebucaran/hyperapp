@@ -23,11 +23,11 @@
 - [Dispatch Function](architecture/dispatch.md#dispatch): The process that executes actions, applies state, and calls effects.
 - [Dispatch Initializer](architecture/dispatch.md#dispatch-initializer): A function that controls dispatch.
 - [Effect](architecture/actions.md#effects): A generalized encapsulation of an external process.
+- [Effecter](architecture/actions.md#effecters): A function that carries out an effect.
 - [Event Payload](architecture/actions.md#event-payloads): A payload specific to an event.
 - [Memoization](architecture/views.md#memoization): In Hyperapp, the delayed rendering of VNodes.
 - [Mount Node](api/app.md#node): The DOM element that holds the app.
 - [Payload](architecture/actions.md#payloads): Data given to an action.
-- [Runner](architecture/actions.md#runners): A function that carries out an effect.
 - [State](architecture/state.md): The unified set of data your Hyperapp application uses and maintains.
 - [State Transition](architecture/state.md#state-transitions): An evolutionary step for the state.
 - [Subscriber](architecture/subscriptions.md#subscribers): A function that carries out a subscription.
@@ -35,5 +35,4 @@
 - [Top-Level View](architecture/views.md#top-level-view): The main view which is given the state.
 - [VDOM](architecture/views.md#virtual-dom): The virtual DOM, an in-memory representation for the DOM of the current page.
 - [View](architecture/views.md): A function describing the desired DOM, represented by a VNode, as a function of the current state.
-- [VNode](architecture/views.md#virtual-dom): Virtual node, a light abstraction over a VDOM element.
 - [Wrapped Action](architecture/actions.md#wrapped-actions): An action that is returned by another action.

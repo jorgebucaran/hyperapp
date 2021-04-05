@@ -134,7 +134,7 @@ Hyperapp supports hydration of views out of the box. This means that if the moun
 
 ## Virtual DOM
 
-The **virtual DOM**, or **VDOM** for short, is an in-memory representation of the [DOM](https://dom.spec.whatwg.org/) elements that exist on the current page. Hyperapp uses it to determine how to efficiently update the actual DOM. The virtual DOM is a tree data structure where each of its nodes is a **virtual DOM node**, or **VNode** for short, that represents a particular VDOM element that may or may not get rendered.
+The **virtual DOM**, or **VDOM** for short, is an in-memory representation of the [DOM](https://dom.spec.whatwg.org/) elements that exist on the current page. Hyperapp uses it to determine how to efficiently update the actual DOM. The virtual DOM is a tree data structure where each of its nodes represent a particular VDOM element that may or may not get rendered.
 
 We've already seen how [`h()`](../api/h.md), [`text()`](../api/text.md), and [`memo()`](../api/memo.md)  all return different types of VNodes.
 

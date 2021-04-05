@@ -2,7 +2,7 @@
 
 An **action** is a message used within your app that signals the valid way to change [state](state.md). It is implemented by a deterministic function that produces no side-effects which describes a transition between the current state and the next state and in so doing may optionally list out [effects](#effects) to be run as well.
 
-Actions are dispatched by either DOM events in your app, [runners](#runners), or [subscribers](subscriptions.md#subscribers). When dispatched, actions always implicitly receive the current state as their first argument.
+Actions are dispatched by either DOM events in your app, [effecters](#effecters), or [subscribers](subscriptions.md#subscribers). When dispatched, actions always implicitly receive the current state as their first argument.
 
 ---
 
@@ -254,25 +254,25 @@ const DoItBest = (state) => [
 
 ### Defining Effects
 
-An effect is implemented by a function giving a tuple containing its [runner](#runners) and any associated data.
+Syntactically speaking, an effect takes the form of a tuple containing its [effecter](#effecters) and any associated data.
+
+Technically, an effect can be used directly but using a function that creates the effect is recommended because it offers flexibility with how the tuple is created while looking a little cleaner overall.
 
 ```js
 const massFx = (data) => [runNormandy, data]
 ```
 <!-- `massFx` is a play on the title of the videogame series "Mass Effect". The SSV Normandy SR-1 is the spaceship the player travels in throughout the series. -->
 
-Technically, the tuple can be used directly but the effect function is recommended because it offers flexibility with how the tuple is created while looking a little cleaner overall.
+### Effecters
 
-### Runners
+An **effecter** is the function that actually carries out the effect. As with [subscribers](subscriptions.md#subscribers), effecters are allowed to use side-effects and can also manually [`dispatch`](dispatch.md) actions in order to inform your app of any pertinent results from their execution.
 
-An effect **runner** is the function that actually carries out the effect. As with [subscribers](subscriptions.md#subscribers), runners are allowed to use side-effects and can also manually [`dispatch`](dispatch.md) actions in order to inform your app of any pertinent results from their execution.
+It's important to know that effecters are more than just a way to wrap any arbitrary impure code. Their purpose is to be a generalized bridge between your app's business logic and the impure code that needs to exist. By keeping the effecters as generic as we can we form a clean, manageable separation between what is requested to be done from how that request is done.
 
-It's important to know that runners are more than just a way to wrap any arbitrary impure code. Their purpose is to be a generalized bridge between your app's business logic and the impure code that needs to exist. By keeping the runners as generic as we can we form a clean, manageable separation between what is requested to be done from how that request is done.
-
-To demonstrate this approach take this ill-formed runner for example:
+To demonstrate this approach take this ill-formed effecter for example:
 
 ```js
-// This runner is ill-formed.
+// This effecter is ill-formed.
 const runHarvest = (dispatch, _payload) => {
   const tiberium = document.getElementById("tiberium")
   dispatch((state) => ({ ...state, tiberium }))
@@ -282,39 +282,39 @@ const runHarvest = (dispatch, _payload) => {
 
 Sure it runs but it's also coupled to our app's state and the element ID being referenced is also hard-coded.
 
-Let's address this by first decoupling our callback action from the runner by leveraging our ability to give the runner a payload:
+Let's address this by first decoupling our callback action from the effecter by leveraging our ability to give the effecter a payload:
 
 ```js
 const runHarvest = (dispatch, payload) =>
   dispatch(payload.action, document.getElementById("tiberium"))
 ```
 
-Let's further utilize our payload by using it to pass in data our runner needs to work:
+Let's further utilize our payload by using it to pass in data our effecter needs to work:
 
 ```js
 const runHarvest = (dispatch, payload) =>
   dispatch(payload.action, document.getElementById(payload.id))
 ```
 
-Finally, we should rename the runner to reflect its generic nature:
+Finally, we should rename the effecter to reflect its generic nature:
 
 ```js
 const runGetElement = (dispatch, payload) =>
   dispatch(payload.action, document.getElementById(payload.id))
 ```
 
-A well-formed runner is as generic as it can be.
+A well-formed effecter is as generic as it can be.
 
 #### Synchonization
 
-Runners which run some asynchronous operation and wish to report the results of it back to your app will need to ensure that the timing of their communication dispatch happens in alignment with Hyperapp's repaint cycle. This is important to ensure the state is set correctly.
+Effecters which run some asynchronous operation and wish to report the results of it back to your app will need to ensure that the timing of their communication dispatch happens in alignment with Hyperapp's repaint cycle. This is important to ensure the state is set correctly.
 
-Hyperapp's repaint cycle stays synchronized with the browser's natural repaint cycle, so asynchronous runners must do the same. The preferred way to do this is with [`requestAnimationFrame()`](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame). If for some reason that method is unavailable, the fallback is [`setTimeout()`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setTimeout).
+Hyperapp's repaint cycle stays synchronized with the browser's natural repaint cycle, so asynchronous effecters must do the same. The preferred way to do this is with [`requestAnimationFrame()`](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame). If for some reason that method is unavailable, the fallback is [`setTimeout()`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setTimeout).
 
-Let's see an example of an ill-formed asynchronous runner:
+Let's see an example of an ill-formed asynchronous effecter:
 
 ```js
-// This runner is ill-formed.
+// This effecter is ill-formed.
 const runBrotherhood = async (dispatch, payload) => {
   const response = await fetch(payload.lookForKaneHere)
   const kaneLives = response.json()
@@ -328,7 +328,7 @@ const runBrotherhood = async (dispatch, payload) => {
 ```
 <!-- In the videogame series "Command & Conquer", Kane is the leader of the Brotherhood of Nod and has cheated death at least once. One of his catchphrases is "One vision! One purpose!" -->
 
-Now let's see a more well-formed asynchronous runner:
+Now let's see a more well-formed asynchronous effecter:
 
 ```js
 const runSimpleFetch = async (dispatch, payload) => {

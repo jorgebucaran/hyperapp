@@ -74,7 +74,7 @@ declare module "hyperapp" {
   type Action<S, P = any> = ActionTransform<S, P> | ActionWithPayload<S, P>
   type ActionTransform<S, P = any> = (
     state: State<S>,
-    payload?: Payload<P>
+    payload: Payload<P>
   ) => State<S> | StateWithEffects<S> | Action<S>
   type ActionWithPayload<S, P> = [ActionTransform<S, P>, Payload<P>]
 

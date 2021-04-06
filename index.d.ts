@@ -34,6 +34,10 @@ declare module "hyperapp" {
   type AtLeastOne<T> = { [K in keyof T]: Pick<T, K> }[keyof T]
   // Credit: https://stackoverflow.com/a/59987826/1935675
 
+  // This utility type requires every property of an object or none at all.
+  // `App` uses this to make sure `view:` always appears alongside `node:`.
+  type Bundle<T> = T | { [K in keyof T]?: never }
+
   // ---------------------------------------------------------------------------
 
   // A Hyperapp instance generally has an initial state and a base view and is
@@ -47,15 +51,11 @@ declare module "hyperapp" {
       init: State<S> | StateWithEffects<S> | Action<S>
       subscriptions: Subscriptions<S>
       dispatch: DispatchInitializer<S>
-    }> & (
-      {
-        view: View<S>
-        node: Node
-      } | {
-        view?: never
-        node?: never
-      }
-    )
+    }> &
+    Bundle<{
+      view: View<S>
+      node: Node
+    }>
   >
 
   // A view builds a virtual DOM node representation of the application state.

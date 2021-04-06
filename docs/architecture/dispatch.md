@@ -1,6 +1,6 @@
 # Dispatch
 
-The **dispatch** function controls Hyperapp's core dispatching process which executes [actions](actions.md), applies state transitions, runs [effects](actions.md#effects), patches the DOM, and starts/stops [subscriptions](subscriptions.md) that need it.
+The **dispatch** function controls Hyperapp's core dispatching process which executes [actions](actions.md), applies state transitions, runs [effects](actions.md#effects), and starts/stops [subscriptions](subscriptions.md) that need it.
 
 You can augment the dispatcher to tap into the dispatching process for debugging/instrumentation purposes. Such augmentation is loosely comparable to middleware used in other frameworks.
 

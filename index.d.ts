@@ -28,19 +28,35 @@ declare module "hyperapp" {
 
   // ---------------------------------------------------------------------------
 
-  // A Hyperapp instance has an initial state and a base view.
-  // It's usually mounted over an available DOM element.
-  type App<S> =
-    | Readonly<{ init: State<S> | StateWithEffects<S> | Action<S> }>
-    | Readonly<{ subscriptions: Subscriptions<S> }>
-    | Readonly<{ dispatch: DispatchInitializer<S> }>
-    | Readonly<{
-        init?: State<S> | StateWithEffects<S> | Action<S>
+  // This utility type ensures at least one property in an object is present.
+  // `App` uses this to conveniently mark `app({})` as invalid because that
+  // is basically a fancy no-op.
+  type AtLeastOne<T> = { [K in keyof T]: Pick<T, K> }[keyof T]
+  // Credit: https://stackoverflow.com/a/59987826/1935675
+
+  // ---------------------------------------------------------------------------
+
+  // A Hyperapp instance generally has an initial state and a base view and is
+  // mounted over an available DOM element.
+  type App<S> = Readonly<
+    {
+      view: View<S>
+      node: Node
+    } |
+    AtLeastOne<{
+      init: State<S> | StateWithEffects<S> | Action<S>
+      subscriptions: Subscriptions<S>
+      dispatch: DispatchInitializer<S>
+    }> & (
+      {
         view: View<S>
         node: Node
-        subscriptions?: Subscriptions<S>
-        dispatch?: DispatchInitializer<S>
-      }>
+      } | {
+        view?: never
+        node?: never
+      }
+    )
+  >
 
   // A view builds a virtual DOM node representation of the application state.
   type View<S> = (state: State<S>) => VDOM<S>
@@ -90,6 +106,7 @@ declare module "hyperapp" {
   // State can be associated with a list of effects to run.
   type StateWithEffects<S, D = any> = [State<S>, ...Effect<S, D>[]]
 
+  // It is often convenient to abstract away effect preparation.
   type EffectCreator<S, D = any> = (..._: any[]) => Effect<S, D>
 
   // An effect is an abstraction over an impure process.
@@ -118,7 +135,10 @@ declare module "hyperapp" {
     events?: Record<string, Action<S>>
 
     // `_VDOM` is a guard property which gives us a way to tell `VDOM` objects
-    // apart from `PropList` objects.
+    // apart from `PropList` objects. Since users are not expected to manually
+    // create their own VDOM elements, we can take advantage of this
+    // TypeScript-specific trick without forcing the user to do
+    // anything different.
     _VDOM: true
   }
 

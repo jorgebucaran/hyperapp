@@ -36,7 +36,7 @@ declare module "hyperapp" {
 
   // This utility type requires every property of an object or none at all.
   // `App` uses this to make sure `view:` always appears alongside `node:`.
-  type Bundle<T> = T | { [K in keyof T]?: never }
+  type AllOrNothing<T> = T | { [K in keyof T]?: never }
 
   // ---------------------------------------------------------------------------
 
@@ -52,7 +52,7 @@ declare module "hyperapp" {
       subscriptions: Subscriptions<S>
       dispatch: DispatchInitializer<S>
     }> &
-    Bundle<{
+    AllOrNothing<{
       view: View<S>
       node: Node
     }>

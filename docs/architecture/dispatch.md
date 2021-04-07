@@ -1,8 +1,8 @@
 # Dispatch
 
-The **dispatch** function controls how to execute [actions](actions.md) and apply the state transitions and effect running that they request to be done.
+The **dispatch** function controls Hyperapp's core dispatching process which executes [actions](actions.md), applies state transitions, runs [effects](actions.md#effects), and starts/stops [subscriptions](subscriptions.md) that need it.
 
-Custom dispatchers are loosely comparable to middleware used in other frameworks with the difference being that they are just intended to augment the regular dispatching process for specialized purposes you may have for your project, particularly in relation to dev tooling.
+You can augment the dispatcher to tap into the dispatching process for debugging/instrumentation purposes. Such augmentation is loosely comparable to middleware used in other frameworks.
 
 ---
 
@@ -14,21 +14,27 @@ The dispatch initializer accepts the default dispatch as its sole argument and m
 const boring = (dispatch) => dispatch
 ```
 
-Of course, in your own initializer you'll likely want to return a variant of the regular dispatch.
+In your own initializer you'll likely want to return a variant of the regular dispatch.
 
 ---
 
-## Custom Dispatching
+## Augmented Dispatching
 
-A dispatch function accepts an [action](actions.md) and its [payload](actions.md#payloads) if it has one. The action will then be carried out and its resulting state transition will be applied and then any effects it requested to be run will be run.
+A dispatch function accepts as its first argument an [action](actions.md) or anything an action can return, and its second argument is the default [payload](actions.md#payloads) if there is one. The payload will be used if the first argument is an action function.
+
+The action will then be carried out and its resulting state transition will be applied and then any effects it requested to be run will be run.
 
 ```js
 const dispatch = (action, payload) => {
-  // Magic happens!
+  // Do your custom work here.
+  // ...
+
+  // Afterwards, carry on normally.
+  dispatch(action, payload)
 }
 ```
 
-Hyperapp's default dispatch function is a little too involved to showcase here but suffice it to say you'll most likely want to leverage it when crafting your own dispatching.
+Hyperapp's default dispatch function is a little too involved to showcase here but suffice it to say you'll most likely want to leverage it.
 
 ---
 
@@ -63,4 +69,4 @@ Only one dispatch initializer can be defined per app. Consequently, only one dis
 
 - [`app()`](../api/app.md) returns the dispatch function to allow [dispatching externally](../api/app.md#instrumentation).
 
-- If you're feeling truly adventurous and/or know what you're doing you can choose to have your dispatch initializer return a completely custom dispatch from the ground up. For what purpose? You tell me!
+- If you're feeling truly adventurous and/or know what you're doing you can choose to have your dispatch initializer return a completely custom dispatch from the ground up. For what purpose? You tell me! However, a completely custom dispatch won't have access to some important internal framework functions, so it's unlikely to be something useful without building off of the original dispatch.

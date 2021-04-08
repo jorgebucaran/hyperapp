@@ -28,6 +28,17 @@ declare module "hyperapp" {
 
   // ---------------------------------------------------------------------------
 
+  // This lets you use a version of `h` which assumes your particular app state.
+  interface TypedH<S> {
+    <_, T extends string = string>(
+      tag: T extends "" ? never : T,
+      props: PropList<S>,
+      children?: MaybeVDOM<S> | readonly MaybeVDOM<S>[]
+    ): VDOM<S>
+  }
+
+  // ---------------------------------------------------------------------------
+
   // A Hyperapp instance has an initial state and a base view.
   // It's usually mounted over an available DOM element.
   type App<S> =

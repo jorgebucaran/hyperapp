@@ -11,6 +11,7 @@
   "files": [
     "*.[tj]s"
   ],
+  "types": "./index.d.ts",
   "keywords": [
     "framework",
     "hyperapp",

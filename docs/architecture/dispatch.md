@@ -1,7 +1,8 @@
 # Dispatch
 
-> *Definition:* 
-> The **dispatch** function controls Hyperapp’s core dispatching process which executes [actions](actions.md), applies state transitions, runs [effects](actions.md#effects), and starts/stops [subscriptions](subscriptions.md) that need it.
+_Definition:_
+
+> The **dispatch** function controls Hyperapp’s core dispatching process which executes [actions](actions.md), applies state transitions, runs [effects](effects.md), and starts/stops [subscriptions](subscriptions.md) that need it.
 
 You can augment the dispatcher to tap into the dispatching process for debugging/instrumentation purposes. Such augmentation is loosely comparable to middleware used in other frameworks.
 
@@ -13,7 +14,7 @@ The dispatch initializer accepts the default dispatch as its sole argument and m
 
 ```js
 // Dispatch : (DispatchFn) -> SameDispatchFn
-const boring = (dispatch) => dispatch
+const boring = (dispatch) => dispatch;
 ```
 
 In your own initializer you’ll likely want to return a variant of the regular dispatch.
@@ -33,8 +34,8 @@ const dispatch = (action, payload) => {
   // ...
 
   // Afterwards, carry on normally.
-  dispatch(action, payload)
-}
+  dispatch(action, payload);
+};
 ```
 
 Hyperapp’s default dispatch function is a little too involved to showcase here but suffice it to say you’ll most likely want to leverage it.
@@ -46,12 +47,12 @@ Hyperapp’s default dispatch function is a little too involved to showcase here
 Let’s say we’re working on a project where we want to always log the current state. Creating a custom dispatch for this purpose makes sense because it lets us accomplish this without having to change any of our existing actions to request our logging effect to run.
 
 ```js
-import { log } from "./fx"
+import { log } from "./fx";
 
 const middleware = (dispatch) => (action, payload) => {
-  dispatch((state) => [state, log(state)])
-  dispatch(action, payload)
-}
+  dispatch((state) => [state, log(state)]);
+  dispatch(action, payload);
+};
 ```
 
 Great! Now let’s learn how to use it.

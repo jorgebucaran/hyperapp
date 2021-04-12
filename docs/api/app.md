@@ -1,31 +1,34 @@
 # `app()`
 
-> *Definition:*
+_Definition:_
+
 > A function that initializes and mounts a Hyperapp application.
->
-> *Signature:*
->
-> ```elm
-> app : ({ Init, View, Node, Subscriptions?, Dispatch? }) -> DispatchFn
-> ```
+
+_Signature:_
+
+```elm
+app : ({ Init, View, Node, Subscriptions?, Dispatch? }) -> DispatchFn
+```
+
+_Sample Usage:_
 
 ```js
 import { app } from "hyperapp";
 
 // ...
-const props = { init, view, node }
 
 app(props);
 ```
 
+_Parameter Overview:_
 
-| Parameter       | Type   | Required? |
+| Input Parameter | Type   | Required? |
 | --------------- | ------ | --------- |
 | [props](#props) | Object | yes       |
 
-| Return parameter      | Type     |
-| --------------------- | -------- |
-| [dispatch](#dispatch) | Function |
+| Output Parameter                        | Type     |
+| --------------------------------------- | -------- |
+| [dispatch](../architecture/dispatch.md) | Function |
 
 ---
 
@@ -40,7 +43,7 @@ There are only a handful of props you can use to configure your app.
 | [init](#init)                   | [State](../architecture/state.md) or [Action](../architecture/actions.md) | yes       |
 | [view](#view)                   | [View](../architecture/views.md)                                          | yes       |
 | [node](#node)                   | DOM element                                                               | yes       |
-| [subscriptions](#subscriptions) | function                                                                  | no        |
+| [subscriptions](#subscriptions) | Function                                                                  | no        |
 | [dispatch](#dispatch)           | [Dispatch](../architecture/dispatch.md)                                   | no        |
 
 #### `init:`

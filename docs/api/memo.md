@@ -1,28 +1,35 @@
 # `memo()`
 
-> *Definition:*
+_Definition:_
+
 > A wrapper function to cache your [views](../architecture/views.md) based on properties you pass into them.
->
-> *Signature:*
->
-> ```elm
-> memo : (View, IndexableData?) -> VNode
-> ```
+
+_Signature:_
+
+```elm
+memo : (View, IndexableData?) -> VNode
+```
+
+_Sample Usage:_
 
 ```js
-import { memo } from "hyperapp"
+import { memo } from "hyperapp";
 
 // ...
 
-memo(view, props)
+memo(view, props);
 ```
 
+_Parameter Overview:_
 
+| Input Parameters | Type                                            | Required? |
+| ---------------- | ----------------------------------------------- | --------- |
+| [view](#view)    | [View](../architecture/views.md)                | yes       |
+| [data](#data)    | anything indexable (i.e. Array, Object, String) | no        |
 
-| Parameter     | Type                                            | Required? |
-| ------------- | ----------------------------------------------- | --------- |
-| [view](#view) | [View](../architecture/views.md)                | yes       |
-| [data](#data) | anything indexable (i.e. Array, Object, String) | no        |
+| Output Parameter                                     | Type  |
+| ---------------------------------------------------- | ----- |
+| [virtual node](../architecture/views.md#virtual-dom) | VNode |
 
 `memo()` lets you take advantage of a performance optimization technique known as [memoization](../architecture/views.md#memoization).
 
@@ -45,21 +52,25 @@ The data to pass along to the wrapped view function instead of the [state](../ar
 Here we have a list of numbers displayed in a regular view as well as a memoized version of the same view. One button changes the list which affects both views. Another button updates a counter which affects the counter’s view and also the regular view of the list but not the memoized view of the list.
 
 ```js
-import { h, text, app, memo } from "hyperapp"
+import { h, text, app, memo } from "hyperapp";
 
-const randomHex = () => "0123456789ABCDEF"[Math.floor(Math.random() * 16)]
-const randomColor = () => "#" + Array.from({ length: 6 }, randomHex).join("")
+const randomHex = () => "0123456789ABCDEF"[Math.floor(Math.random() * 16)];
+const randomColor = () => "#" + Array.from({ length: 6 }, randomHex).join("");
 
 const listView = (list) =>
-  h("p", {
-    style: {
-      backgroundColor: randomColor(),
-      color: randomColor(),
+  h(
+    "p",
+    {
+      style: {
+        backgroundColor: randomColor(),
+        color: randomColor(),
+      },
     },
-  }, text(list))
+    text(list)
+  );
 
-const MoreItems = (state) => ({ ...state, list: [...state.list, randomHex()] })
-const Increment = (state) => ({ ...state, counter: state.counter + 1 })
+const MoreItems = (state) => ({ ...state, list: [...state.list, randomHex()] });
+const Increment = (state) => ({ ...state, counter: state.counter + 1 });
 
 app({
   init: {
@@ -77,7 +88,7 @@ app({
       memo(listView, state.list),
     ]),
   node: document.body,
-})
+});
 ```
 
 ---
@@ -99,20 +110,16 @@ We can modify parts of the example from earlier to illustrate this:
 
 const MoreItems = (state) => ({
   ...state,
-  list: Array.isArray(state.list)
-    ? [...state.list, randomHex()]
-    : state.list + "" + randomHex(),
-})
+  list: Array.isArray(state.list) ? [...state.list, randomHex()] : state.list + "" + randomHex(),
+});
 
 const Increment = (state) => ({
   ...state,
   counter: state.counter + 1,
 
   // The following should cause the memoized view to rerender but it doesn’t.
-  list: Array.isArray(state.list)
-    ? state.list.join("")
-    : state.list.split(""),
-})
+  list: Array.isArray(state.list) ? state.list.join("") : state.list.split(""),
+});
 
 // ...
 ```

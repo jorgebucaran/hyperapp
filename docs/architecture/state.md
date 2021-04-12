@@ -1,6 +1,7 @@
 # State
 
-> *Definition:*
+_Definition:_
+
 > The **state** of your Hyperapp application is the unified set of data that your [views](views.md), [actions](actions.md), and [subscriptions](subscriptions.md) all have access to.
 
 Hyperapp by design offers no strong opinion about how your state should be structured aside from it being unified. This means [components](views.md#components) don’t technically possess their own local state but that also means they have direct access to any part of the entire state they need. The user is entrusted with shaping things beyond that.
@@ -17,12 +18,12 @@ Aside from the aforementioned [`init:`](../api/app.md#init) property the only wa
 
 ## State With Effects
 
-If you use an array to set the state Hyperapp will interpret this as a special array where the first entry is the state and if there are more entries they will be [effects](actions.md#effects) that need to be run.
+If you use an array to set the state Hyperapp will interpret this as a special array where the first entry is the state and if there are more entries they will be [effects](effects.md) that need to be run.
 
 So, Hyperapp will apply the state first and then will run the effects in the order they appear.
 
 ```js
-[state, log(state), log("MOAR")]
+[state, log(state), log("MOAR")];
 ```
 
 ### Array State
@@ -30,7 +31,7 @@ So, Hyperapp will apply the state first and then will run the effects in the ord
 If you actually do want to use an array as your state you’ll have to wrap it within an effectful state array to make it work.
 
 ```js
-[["a", "b", "c"]]
+[["a", "b", "c"]];
 ```
 
 The actions page also [talks about it](actions.md#transitioning-array-state).

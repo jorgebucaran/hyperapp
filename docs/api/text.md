@@ -1,13 +1,16 @@
 # `text()`
 
-> *Definition:*
+_Definition:_
+
 > A function that creates a [virtual DOM node (VNode)](../architecture/views.md#virtual-dom) out of a given value.
->
-> *Signature:*
->
-> ```elm
-> text : (String | Number) -> VNode
-> ```
+
+_Signature:_
+
+```elm
+text : (String | Number) -> VNode
+```
+
+_Sample Usage:_
 
 You’ll normally use it with [`h()`](./h.md).
 
@@ -19,10 +22,16 @@ import { text } from "hyperapp";
 h("p", {}, text(content));
 ```
 
-| Parameter           | Type                                        | Required? | Notes                                   |
-| ------------------- | ------------------------------------------- | --------- | --------------------------------------- |
-| [content](#content) | any (sort of), but usually String or Number | yes       |                                         |
-| node                | DOM element                                 | no        | This is for internal Hyperapp use only! |
+_Parameter Overview:_
+
+| Input Parameter     | Type                                                  | Required? | Notes                                   |
+| ------------------- | ----------------------------------------------------- | --------- | --------------------------------------- |
+| [content](#content) | any (sort of), but meaningfully only String or Number | yes       |                                         |
+| node                | DOM element                                           | no        | This is for internal Hyperapp use only! |
+
+| Output Parameter                                          | Type  |
+| --------------------------------------------------------- | ----- |
+| [virtual text node](../architecture/views.md#virtual-dom) | VNode |
 
 You would use `text()` to insert regular text content into your views.
 

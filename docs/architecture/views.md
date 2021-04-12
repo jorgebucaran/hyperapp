@@ -56,16 +56,26 @@ const view = (state) => memo(scenicView, state.vacationSpot)
 
 Views are naturally composable so they can be as simple or complicated as you need. Simpler apps probably just need a single view but in more complicated apps there could be plenty of subviews.
 
-_A **component** in Hyperapp can either be a subview or some other function that generates VNodes._
+_Definition:_
+
+> A **component** in Hyperapp can either be a subview or some other function that generates VNodes.
+
+_Signature:_
+
+```elm
+Component : (GlobalState | PartialState) -> VNode | [...VNodes]
+```
 
 You would typically make components for widgets that provide the building block elements of your app’s UI. Components for larger UI segments such as dashboards or pages would make use of these widgets.
 
 In the following example, `coinsDisplay` is a component in the form of a subview while `questionBlock` is a component in the form of some function that returns a VNode. Notice the former cares directly about the state while the latter doesn’t:
 
 ```js
+// Component : (GlobalState) -> VNode
 const coinsDisplay = (state) =>
   h("div", { class: "coins-display" }, text(state.coins))
 
+// Component : (PartialState) -> VNode
 const questionBlock = (opened) =>
   opened
     ? h("button", { class: "question-block opened" }, text("?"))
@@ -81,6 +91,7 @@ const questionBlock = (opened) =>
         text("?")
       )
 
+// Component : (GlobalState) -> VNode
 const level = (state) =>
   h("div", { class: "level" }, [
     coinsDisplay(state),
@@ -95,6 +106,7 @@ const level = (state) =>
 Components are allowed to return an array of VNodes. However, to make use of such components you’ll need to spread their result.
 
 ```js
+// Component : () -> [...VNodes]
 const finishingMoveOptions = () => [
   h("button", { onclick: FinishHim }, text("Fatality")),
   h("button", { onclick: FinishHimAsAnAnimal }, text("Animality")),
@@ -148,7 +160,9 @@ Hyperapp supports hydration of views out of the box. This means that if the moun
 
 ## Virtual DOM
 
-_The **virtual DOM**, or **VDOM** for short, is an in-memory representation of the [DOM](https://dom.spec.whatwg.org/) elements that exist on the current page._
+_Definition:_ 
+
+> The **virtual DOM**, or **VDOM** for short, is an in-memory representation of the [DOM](https://dom.spec.whatwg.org/) elements that exist on the current page.
 
 Hyperapp uses it to determine how to efficiently update the actual DOM. The virtual DOM is a tree data structure where each of its nodes represent a particular VDOM element that may or may not get rendered.
 

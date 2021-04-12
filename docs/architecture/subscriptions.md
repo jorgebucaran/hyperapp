@@ -21,7 +21,7 @@ There are several official Hyperapp packages that provide subscriptions for some
 Subscriptions are setup and managed through the [`subscriptions:`](../api/app.md#subscriptions) property used with [`app()`](../api/app.md) when instantiating your app.
 
 ```js
-import { every } from "@hyperapp/time";
+import { every } from "./time"
 
 // ...
 
@@ -31,7 +31,7 @@ app({
     // Dispatch `RequestResource` every `delayInMilliseconds`.
     every(state.delayInMilliseconds, RequestResource),
   ],
-});
+})
 ```
 
 You can control if subscriptions are active or not by using boolean values.
@@ -42,7 +42,7 @@ app({
     state.toBe && every(state.delay, ThatIsTheQuestion),
     state.notToBe || every(state.delay, ThatIsTheQuestion),
   ],
-});
+})
 ```
 
 <!-- In William Shakespeare’s play “Hamlet”, Prince Hamlet gives a soliloquy in Act 3, Scene 1 where he begins with “To be, or not to be”, basically questioning life. -->
@@ -98,12 +98,12 @@ Somewhere within the legacy portion of our project a custom event gets emitted:
 // Somewhere in our legacy app...
 
 const triggerSpecialEvent = () => {
-  dispatchEvent(new CustomEvent("secret", { detail: 42 }));
-};
+  dispatchEvent(new CustomEvent("secret", { detail: 42 }))
+}
 
 // ...
 
-triggerSpecialEvent();
+triggerSpecialEvent()
 ```
 
 <!-- In “The Hitchhiker’s Guide to the Galaxy” the number 42 is given as The Answer to the Ultimate Question of Life, The Universe, and Everything by the computer Deep Thought. -->
@@ -114,12 +114,14 @@ Our embedded Hyperapp application will need a custom subscription to be able to 
 // ./subs.js
 
 const listenToEvent = (dispatch, props) => {
-  const listener = (event) => requestAnimationFrame(() => dispatch(props.action, event.detail));
-  addEventListener(props.type, listener);
-  return () => removeEventListener(props.type, listener);
-};
+  const listener = (event) => 
+    requestAnimationFrame(() => dispatch(props.action, event.detail))
 
-export const listen = (type, action) => [listenToEvent, { type, action }];
+  addEventListener(props.type, listener)
+  return () => removeEventListener(props.type, listener)
+}
+
+export const listen = (type, action) => [listenToEvent, { type, action }]
 ```
 
 In case you’re wondering why `listenToEvent()`’s listener is using `requestAnimationFrame` it has to do with [synchronization](actions.md#synchronization).
@@ -127,18 +129,21 @@ In case you’re wondering why `listenToEvent()`’s listener is using `requestA
 Now we can use our custom subscription in our Hyperapp application. Since it will be embedded we’ll wrap our call to [`app()`](../api/app.md) within an exported function our legacy app can make use of:
 
 ```js
-import { h, text, app } from "hyperapp";
-import { listen } from "./subs";
+import { h, text, app } from "hyperapp"
+import { listen } from "./subs"
 
-const Response = (state, payload) => ({ ...state, payload });
+const Response = (state, payload) => ({ ...state, payload })
 
 export const myApp = (node) =>
   app({
     init: () => ({ payload: null }),
-    view: ({ payload }) => h("main", {}, [payload && h("p", {}, text(`Payload received: ${JSON.stringify(payload)}`))]),
+    view: ({ payload }) =>
+      h("main", {}, [
+        payload && h("p", {}, text(`Payload received: ${JSON.stringify(payload)}`)),
+      ]),
     subscriptions: () => [listen("secret", Response)],
     node,
-  });
+  })
 ```
 
 ---
@@ -151,26 +156,30 @@ Since a well-formed subscriber returns a cleanup function, it’s possible that 
 
 ```js
 const listenToEvent = (dispatch, props) => {
-  const listener = (event) => requestAnimationFrame(() => dispatch(props.action, event.detail));
-  addEventListener(props.type, listener);
+  const listener = (event) => 
+    requestAnimationFrame(() => dispatch(props.action, event.detail))
+
+  addEventListener(props.type, listener)
   return () => {
-    removeEventListener(props.type, listener);
-    dispatch(props.action, "<done>");
-  };
-};
+    removeEventListener(props.type, listener)
+    dispatch(props.action, "<done>")
+  }
+}
 ```
 
 So, using `props` directly works well. However, if instead you tried to use destructuring then the cleanup function won’t be able to communicate back to your app in all scenarios:
 
 ```js
 const listenToEvent = (dispatch, { action, type }) => {
-  const listener = (event) => requestAnimationFrame(() => dispatch(action, event.detail));
-  addEventListener(type, listener);
+  const listener = (event) => 
+    requestAnimationFrame(() => dispatch(action, event.detail))
+
+  addEventListener(type, listener)
   return () => {
-    removeEventListener(type, listener);
-    dispatch(action, "cleaned-up"); // <-- uh, oh!
-  };
-};
+    removeEventListener(type, listener)
+    dispatch(action, "cleaned-up") // <-- uh, oh!
+  }
+}
 ```
 
 The reason is because destructuring the `props` parameter will create local copies of the props listed. This means the cleanup function’s closure will be referring to the `action` function that existed at the moment the cleanup function was created and returned, not the moment the cleanup function gets invoked. This is a subtle yet significant difference depending on how you use your actions with this type of subscriber.
@@ -181,21 +190,23 @@ The scenario in which this comes into play is if you use an anonymous function f
 // ./fx.js
 
 const runPreventDefault = (dispatch, payload) => {
-  payload.event.preventDefault();
-  dispatch(payload.action);
-};
+  payload.event.preventDefault()
+  dispatch(payload.action)
+}
 
-export const preventDefault = (action, event) => [runPreventDefault, { action, event }];
+export const preventDefault = (action, event) => 
+  [runPreventDefault, { action, event }]
 ```
 
 ```js
 // ./actions.js
 
-import { preventDefault } from "./fx";
+import { preventDefault } from "./fx"
 
-export const skipDefault = (action) => (state, event) => [state, preventDefault(action, event)];
+export const skipDefault = (action) => (state, event) => 
+  [state, preventDefault(action, event)]
 
-export const MyAction = (state) => ({ ...state });
+export const MyAction = (state) => ({ ...state })
 ```
 
 ```js
@@ -203,16 +214,16 @@ export const MyAction = (state) => ({ ...state });
 
 const subOnThatThing = (dispatch, props) => {
   // Do stuff...
-};
+}
 
-export const onThatThing = (action, props) => [subOnThatThing, { ...props, action }];
+export const onThatThing = (action, props) => [subOnThatThing, { ...props, action }]
 ```
 
 ```js
 // ./main.js
 
-import { onThatThing } from "./subs";
-import { skipDefault } from "./actions";
+import { onThatThing } from "./subs"
+import { skipDefault } from "./actions"
 
 app({
   subscriptions: (state) => [
@@ -221,7 +232,7 @@ app({
         foo: 42 + state.index,
       }),
   ],
-});
+})
 ```
 
 Now when the subscription function runs per state update, the wrapped action is generated anew which results in a new function reference for the subscription’s `action`. So, `subOnThatThing` must use `props` instead of destructuring to ensure the right function reference is available.

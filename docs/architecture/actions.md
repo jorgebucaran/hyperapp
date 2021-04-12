@@ -25,7 +25,7 @@ The simplest possible action merely returns the current state:
 
 ```js
 // Action : (State) -> SameState
-const Identity = (state) => state;
+const Identity = (state) => state
 ```
 
 It seems useless at first but can be helpful as a placeholder for other actions while prototyping a new app or [component](views.md#components).
@@ -33,14 +33,14 @@ It seems useless at first but can be helpful as a placeholder for other actions 
 Probably the most common way to use an action is to assign it as an event handler for one of the nodes in your view.
 
 ```js
-h("button", { onclick: Identity }, text("Do Nothing"));
+h("button", { onclick: Identity }, text("Do Nothing"))
 ```
 
 The next simplest type of action merely sets the state.
 
 ```js
 // Action : () -> ForcedState
-const FeedFace = () => 0xfeedface;
+const FeedFace = () => 0xfeedface
 ```
 
 <!-- “FEEDFACE” is an example of “hexspeak”, a variant of English spelling using hexadecimal digits. -->
@@ -50,11 +50,11 @@ But you’ll most likely want to do actual state transitions.
 
 ```js
 // Action : (State) -> NewState
-const Increment = (state) => ({ ...state, value: state.value + 1 });
+const Increment = (state) => ({ ...state, value: state.value + 1 })
 
 // ...
 
-h("button", { onclick: Increment }, text("+"));
+h("button", { onclick: Increment }, text("+"))
 ```
 
 ---
@@ -65,13 +65,13 @@ Actions can also accept an optional **payload** along with the current state.
 
 ```js
 // Action : (State, Payload?) -> NewState
-const AddBy = (state, amount) => ({ ...state, value: state.value + amount });
+const AddBy = (state, amount) => ({ ...state, value: state.value + amount })
 ```
 
 To give a payload to an action we’ll want to use an **action descriptor**.
 
 ```js
-h("button", { onclick: [AddBy, 5] }, text("+5"));
+h("button", { onclick: [AddBy, 5] }, text("+5"))
 ```
 
 ### Event Payloads
@@ -81,7 +81,7 @@ Actions used as event handlers receive the event object as the default payload.
 If we were to use our `AddBy` action without specifying its payload:
 
 ```js
-h("button", { onclick: AddBy }, text("+5"));
+h("button", { onclick: AddBy }, text("+5"))
 ```
 
 then it will receive the event object when the user clicks it and will attempt to directly "add" that to our state which would obviously be a bug.
@@ -103,32 +103,36 @@ Actions can return other actions. The simplest form of these basically acts like
 
 ```js
 // Action : () -> OtherAction
-const PlusOne = () => Increment;
+const PlusOne = () => Increment
 ```
 
 A more useful form preprocesses payloads to use with other actions. We can make an event adaptor so our primary action can use event data without coupling to the event source.
 
 ```js
 // Action : (State, EventPayload) -> [OtherAction, Payload]
-const AddByValue = (state, event) => [AddBy, +event.target.value];
+const AddByValue = (state, event) => [AddBy, +event.target.value]
 ```
 
 We’ll make use of `AddByValue` with an `input` node instead of the `button` from earlier because we want the event that gets preprocessed to have a `value` property we can extract:
 
 ```js
-h("input", { value: state, oninput: AddByValue });
+h("input", { value: state, oninput: AddByValue })
 ```
 
 You can keep wrapping actions for as long as your sanity permits. The benefit is the ability to chain together payload adjustments.
 
 ```js
-const AddBy = (state, amount) => ({ ...state, value: state.value + amount });
-const AddByMore = (_, amount) => [AddBy, amount + 5];
-const AddByEvenMore = (_, amount) => [AddByMore, amount + 10];
+const AddBy = (state, amount) => ({ ...state, value: state.value + amount })
+const AddByMore = (_, amount) => [AddBy, amount + 5]
+const AddByEvenMore = (_, amount) => [AddByMore, amount + 10]
 
 // ...
 
-h("button", { onclick: [AddByEvenMore, 1] }, text("+16"));
+h(
+  "button",
+  { onclick: [AddByEvenMore, 1] },
+  text("+16")
+)
 ```
 
 ---
@@ -147,7 +151,7 @@ const Liokaiser = (state) => ({
   lowerTorso: jallguar(state),
   leftLeg: drillhorn(state),
   rightLeg: killbison(state),
-});
+})
 ```
 
 <!-- In the '80s Japanese animated series “Transformers: Victory”, Liokaiser is a Decepticon combiner made from the combination of the team of Leozack, Drillhorn, Guyhawk, Hellbat, Jallguar, and Killbison. -->
@@ -160,7 +164,7 @@ You can cease all Hyperapp processes by transitioning to an `undefined` state. T
 
 ```js
 // Action : () -> undefined
-const Stop = () => undefined;
+const Stop = () => undefined
 ```
 
 Once your app stops, several things happen:
@@ -190,13 +194,13 @@ There are a couple of options available:
 - Wrap the return state within an [effectful state array](state.md#state-with-effects).
 
   ```js
-  const ArrayAction = (state) => [[...state, "one"]];
+  const ArrayAction = (state) => [[...state, "one"]]
   ```
 
 - Or you can choose a different format for the state by setting it up as an object that contains the the array so actions can work with it like they would with any other object state.
 
   ```js
-  const ObjectAction = (state) => ({ ...state, list: [...state.list, "one"] });
+  const ObjectAction = (state) => ({ ...state, list: [...state.list, "one"] })
   ```
 
 ### Nonstandard Usage
@@ -208,8 +212,8 @@ There are a couple of options available:
   ```js
   const Meet = (name) =>
     function AndGreet(state) {
-      return `${state.salutation}, my name is ${name}.`;
-    };
+      return `${state.salutation}, my name is ${name}.`
+    }
   ```
 
 - If you have some special requirements you can customize how actions are [dispatched](dispatch.md).
@@ -217,20 +221,20 @@ There are a couple of options available:
 - Because of the way Hyperapp works internally, anywhere actions can be used literal values can be used instead to directly set state and possibly run effects.
 
   ```js
-  h("button", { onclick: 55 }, text("55"));
-  h("button", { onclick: [55, log] }, text("55 and log"));
+  h("button", { onclick: 55 }, text("55"))
+  h("button", { onclick: [55, log] }, text("55 and log"))
   ```
 
   However, this conflicts with the notion that state transitions happen through the usage of actions. The valid way to achieve the same thing would be:
 
   ```js
-  const FiftyFive = () => 55;
-  const FiftyFiveAndLog = () => [55, log];
+  const FiftyFive = () => 55
+  const FiftyFiveAndLog = () => [55, log]
   ```
 
   ```js
-  h("button", { onclick: FiftyFive }, text("55"));
-  h("button", { onclick: FiftyFiveAndLog }, text("55 and log"));
+  h("button", { onclick: FiftyFive }, text("55"))
+  h("button", { onclick: FiftyFiveAndLog }, text("55 and log"))
   ```
 
   The [`init`](../api/app.md#init) property of [`app()`](../api/app.md) is the only place where it’s valid to either directly set the state or use an action to do it.
@@ -238,5 +242,5 @@ There are a couple of options available:
   That said, this type of usage is fascinating...
 
   ```js
-  h("button", { onclick: state.startingOver ? "Begin" : MyCoolAction }, text("cool"));
+  h("button", { onclick: state.startingOver ? "Begin" : MyCoolAction }, text("cool"))
   ```

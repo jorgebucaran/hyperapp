@@ -15,11 +15,11 @@ _Sample Usage:_
 You’ll normally use it with [`h()`](./h.md).
 
 ```js
-import { text } from "hyperapp";
+import { text } from "hyperapp"
 
 // ...
 
-h("p", {}, text(content));
+h("p", {}, text(content))
 ```
 
 _Parameter Overview:_
@@ -36,7 +36,7 @@ _Parameter Overview:_
 You would use `text()` to insert regular text content into your views.
 
 ```js
-h("p", {}, text("You must construct additional pylons."));
+h("p", {}, text("You must construct additional pylons."))
 ```
 
 <!-- In the videogame “StarCraft”, the alien race known as the Protoss use special structures called pylons to power their buildings. -->
@@ -44,7 +44,7 @@ h("p", {}, text("You must construct additional pylons."));
 Of course, this may include anything relevant from the [current state](../architecture/state.md).
 
 ```js
-h("p", {}, text(state.message));
+h("p", {}, text(state.message))
 ```
 
 `text()` exists as the way of defining text nodes such that Hyperapp’s implementation is kept simpler than it otherwise would have been.

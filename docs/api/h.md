@@ -13,11 +13,11 @@ h : (String, Object, VNode? | [...VNodes]?) -> VNode
 _Sample Usage:_
 
 ```js
-import { h } from "hyperapp";
+import { h } from "hyperapp"
 
 // ...
 
-h(tag, props, children);
+h(tag, props, children)
 ```
 
 _Parameter Overview:_
@@ -35,7 +35,10 @@ _Parameter Overview:_
 `h()` effectively represents the page elements used in your app. Because it’s just JavaScript we can easily render whichever elements we see fit in a dynamical manner.
 
 ```js
-const hobbit = (wearingElvenCloak) => h("div", {}, [!wearingElvenCloak && h("p", {}, text("Frodo"))]);
+const hobbit = (wearingElvenCloak) =>
+  h("div", {}, [
+    !wearingElvenCloak && h("p", {}, text("Frodo")),
+  ])
 ```
 
 <!-- In “The Lord of the Rings” book/movie series, Frodo is a main character who eventually obtains a special cloak that makes him invisible when worn. -->
@@ -57,7 +60,7 @@ h("input", {
   type: "checkbox",
   id: "picard",
   checked: state.engaging,
-});
+})
 ```
 
 <!-- In the television series “Star Trek: The Next Generation”, one of captain Picard’s catchphrases is “Engage!”. -->
@@ -65,7 +68,7 @@ h("input", {
 Hyphenated props will need to be quoted in order to use them. The quotes are necessary to abide by JavaScript syntax restrictions.
 
 ```js
-h("q", { "data-zoq-fot-pik": "Frungy" }, text("The Sport of Kings!"));
+h("q", { "data-zoq-fot-pik": "Frungy" }, text("The Sport of Kings!"))
 ```
 
 <!-- In the videogame “Star Control II: The Ur-Quan Masters” the alien races known as the Zoq-Fot-Pik have a favorite mysterious sport called Frungy which they regard as “The Sport of Kings”. -->
@@ -79,7 +82,7 @@ The [classes](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attribute
 - As a string representing a class name. Because of the way Hyperapp internally processes class strings they’re allowed to have a space-separated list of different class names.
 
   ```js
-  h("div", { class: "muggle-studies" });
+  h("div", { class: "muggle-studies" })
   ```
 
   <!-- In the “Harry Potter” book/movie series, “Muggle Studies” is a class that can be taken at the Hogwarts School of Witchcraft and Wizardry. -->
@@ -87,7 +90,7 @@ The [classes](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attribute
 - As an object where the keys are the names of the classes while the values are booleans for toggling the classes.
 
   ```js
-  h("div", { class: { arithmancy: true, "study-of-ancient-runes": true } });
+  h("div", { class: { arithmancy: true, "study-of-ancient-runes": true } })
   ```
 
   <!-- In the “Harry Potter” series, “Arithmancy” and “The Study of Ancient Runes” are classes that can be taken at Hogwarts. -->
@@ -95,7 +98,7 @@ The [classes](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attribute
 - As an array that contains any combination of the various formats including this one.
 
   ```js
-  h("div", { class: ["magical theory", "xylomancy"] });
+  h("div", { class: ["magical theory", "xylomancy"] })
   ```
 
   <!-- In the “Harry Potter” series, “Magical Theory” and “Xylomancy” are classes that can be taken at Hogwarts. -->
@@ -109,9 +112,13 @@ The [classes](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attribute
       { dragonzord: state.green && !state.white },
       "mastodon",
       state.pink && "pterodactyl",
-      [{ triceratops: state.blue }, "sabretooth-tiger", state.red && "tyrannosaurus"],
+      [
+        { triceratops: state.blue }, 
+        "sabretooth-tiger", 
+        state.red && "tyrannosaurus"
+      ],
     ],
-  });
+  })
   ```
 
   <!--
@@ -140,7 +147,7 @@ h(
     },
   },
   text("+\\")
-);
+)
 ```
 
 <!-- The combination of the plus and backslash characters along with the blue and white colors are reminiscent of Hyperapp’s logo. -->
@@ -155,7 +162,7 @@ const pokedex = (pokemon) =>
     "ul",
     {},
     pokemon.map((p) => h("li", { key: p.id }, text(p.name)))
-  );
+  )
 ```
 
 <!-- The Pokédex is a digital encyclopedia used by Trainers in the world of Pokémon. -->
@@ -171,7 +178,7 @@ The children of the VNode are other VNodes which are directly nested within it.
 `children` can either be given as a single child VNode:
 
 ```js
-h("q", {}, text("There is no spoon."));
+h("q", {}, text("There is no spoon."))
 ```
 
 <!-- In the movie “The Matrix”, a young boy says “There is no spoon.” to the protagonist Neo. -->
@@ -179,7 +186,10 @@ h("q", {}, text("There is no spoon."));
 or as an array of child VNodes:
 
 ```js
-h("q", {}, [text("I know Kung Fu."), h("em", {}, text("Show me."))]);
+h("q", {}, [
+  text("I know Kung Fu."), 
+  h("em", {}, text("Show me."))
+])
 ```
 
 <!-- In the movie “The Matrix”, Neo says “I know Kung Fu.” after having downloaded martial arts knowledge into his head. His mentor Morpheus replies with “Show me.” before they spar with each other. -->
@@ -193,7 +203,7 @@ h("q", {}, [text("I know Kung Fu."), h("em", {}, text("Show me."))]);
 Hyperapp doesn’t support [JSX](https://reactjs.org/docs/introducing-jsx.html) out-of-the-box. That said you can use this custom JSX function to be able to use it.
 
 ```js
-import { h, text } from "hyperapp";
+import { h, text } from "hyperapp"
 
 const jsxify = (h) => (type, props, ...children) =>
   typeof type === "function"
@@ -201,8 +211,10 @@ const jsxify = (h) => (type, props, ...children) =>
     : h(
         type,
         props || {},
-        [].concat(...children).map((x) => (typeof x === "string" || typeof x === "number" ? text(x) : x))
-      );
+        [].concat(...children).map((x) => 
+          typeof x === "string" || typeof x === "number" ? text(x) : x
+        )
+      )
 
-const jsx = jsxify(h); /** @jsx jsx */
+const jsx = jsxify(h) /** @jsx jsx */
 ```

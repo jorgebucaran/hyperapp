@@ -29,7 +29,7 @@ const view = (state) =>
       onclick: FindThatDisk,
     },
     text("It’s in that place where I put that thing that time.")
-  );
+  )
 ```
 
 <!-- In the 1995 movie “Hackers”, the hacker “The Phantom Freak” calls his friend “Acid Burn” from jail as he’s being framed for a crime he didn’t commit. -->
@@ -37,7 +37,7 @@ const view = (state) =>
 [`text()`](../api/text.md) just creates text nodes so the views it can create on its own are necessarily simplistic.
 
 ```js
-const view = () => text("Go home and be a family man!");
+const view = () => text("Go home and be a family man!")
 ```
 
 <!-- In the videogame “Street Fighter II: The World Warrior”, the fighter known as Guile says this taunt to his opponent after defeating them. -->
@@ -45,7 +45,7 @@ const view = () => text("Go home and be a family man!");
 [`memo()`](../api/memo.md) is designed to be used with other functions that produce VNodes, so it doesn’t really describe a view by itself.
 
 ```js
-const view = (state) => memo(scenicView, state.vacationSpot);
+const view = (state) => memo(scenicView, state.vacationSpot)
 ```
 
 <!-- Just a play-on-words between how “view” is used in Hyperapp and everyday language. -->
@@ -63,7 +63,8 @@ You would typically make components for widgets that provide the building block 
 In the following example, `coinsDisplay` is a component in the form of a subview while `questionBlock` is a component in the form of some function that returns a VNode. Notice the former cares directly about the state while the latter doesn’t:
 
 ```js
-const coinsDisplay = (state) => h("div", { class: "coins-display" }, text(state.coins));
+const coinsDisplay = (state) =>
+  h("div", { class: "coins-display" }, text(state.coins))
 
 const questionBlock = (opened) =>
   opened
@@ -72,13 +73,19 @@ const questionBlock = (opened) =>
         "button",
         {
           class: "question-block",
-          onclick: [HitBlockFromBottom, { revealItem: "beanstalk" }],
+          onclick: [
+            HitBlockFromBottom,
+            { revealItem: "beanstalk" },
+          ],
         },
         text("?")
-      );
+      )
 
 const level = (state) =>
-  h("div", { class: "level" }, [coinsDisplay(state), questionBlock(state.onlyQuestionBlockOpened)]);
+  h("div", { class: "level" }, [
+    coinsDisplay(state),
+    questionBlock(state.onlyQuestionBlockOpened),
+  ])
 ```
 
 <!-- In the videogame “Super Mario Bros.” coins are important for earning extra lives and the question blocks often contain useful contents. -->
@@ -93,9 +100,9 @@ const finishingMoveOptions = () => [
   h("button", { onclick: FinishHimAsAnAnimal }, text("Animality")),
   h("button", { onclick: TurnHimIntoABaby }, text("Babality")),
   h("button", { onclick: BefriendHim }, text("Friendship")),
-];
+]
 
-const view = () => h("div", {}, finishingMoveOptions());
+const view = () => h("div", {}, finishingMoveOptions())
 ```
 
 <!-- In the “Mortal Kombat” videogame series there are multiple ways to finish off your opponent. The opportunity to do so occurs at the end of a match once the match announcer exclaims “Finish Him!” -->
@@ -111,8 +118,12 @@ Every Hyperapp application has a base view that encompasses all others. This is 
 ```js
 app({
   // ...
-  view: (state) => h("main", {}, [earthrealm(state), edenia(state)]),
-});
+  view: (state) =>
+    h("main", {}, [
+      earthrealm(state),
+      edenia(state),
+    ]),
+})
 ```
 
 <!-- “Earthrealm” and “Edenia” are two of several realms in the “Mortal Kombat” videogame series. -->
@@ -123,7 +134,10 @@ Elements of a view can be shown or hidden conditionally.
 
 ```js
 const view = (state) =>
-  h("div", {}, [state.flying && h("div", {}, text("Flying")), state.notSwimming || h("div", {}, text("Swimming"))]);
+  h("div", {}, [
+    state.flying && h("div", {}, text("Flying")),
+    state.notSwimming || h("div", {}, text("Swimming")),
+  ])
 ```
 
 ### Recycling

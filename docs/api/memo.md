@@ -13,11 +13,11 @@ memo : (View, IndexableData?) -> VNode
 _Sample Usage:_
 
 ```js
-import { memo } from "hyperapp";
+import { memo } from "hyperapp"
 
 // ...
 
-memo(view, props);
+memo(view, props)
 ```
 
 _Parameter Overview:_
@@ -52,25 +52,21 @@ The data to pass along to the wrapped view function instead of the [state](../ar
 Here we have a list of numbers displayed in a regular view as well as a memoized version of the same view. One button changes the list which affects both views. Another button updates a counter which affects the counter’s view and also the regular view of the list but not the memoized view of the list.
 
 ```js
-import { h, text, app, memo } from "hyperapp";
+import { h, text, app, memo } from "hyperapp"
 
-const randomHex = () => "0123456789ABCDEF"[Math.floor(Math.random() * 16)];
-const randomColor = () => "#" + Array.from({ length: 6 }, randomHex).join("");
+const randomHex = () => "0123456789ABCDEF"[Math.floor(Math.random() * 16)]
+const randomColor = () => "#" + Array.from({ length: 6 }, randomHex).join("")
 
 const listView = (list) =>
-  h(
-    "p",
-    {
-      style: {
-        backgroundColor: randomColor(),
-        color: randomColor(),
-      },
+  h("p", {
+    style: {
+      backgroundColor: randomColor(),
+      color: randomColor(),
     },
-    text(list)
-  );
+  }, text(list))
 
-const MoreItems = (state) => ({ ...state, list: [...state.list, randomHex()] });
-const Increment = (state) => ({ ...state, counter: state.counter + 1 });
+const MoreItems = (state) => ({ ...state, list: [...state.list, randomHex()] })
+const Increment = (state) => ({ ...state, counter: state.counter + 1 })
 
 app({
   init: {
@@ -88,7 +84,7 @@ app({
       memo(listView, state.list),
     ]),
   node: document.body,
-});
+})
 ```
 
 ---
@@ -110,16 +106,20 @@ We can modify parts of the example from earlier to illustrate this:
 
 const MoreItems = (state) => ({
   ...state,
-  list: Array.isArray(state.list) ? [...state.list, randomHex()] : state.list + "" + randomHex(),
-});
+  list: Array.isArray(state.list)
+    ? [...state.list, randomHex()]
+    : state.list + "" + randomHex(),
+})
 
 const Increment = (state) => ({
   ...state,
   counter: state.counter + 1,
 
-  // The following should cause the memoized view to rerender but it doesn’t.
-  list: Array.isArray(state.list) ? state.list.join("") : state.list.split(""),
-});
+  // The following should cause the memoized view to rerender but it doesn't.
+  list: Array.isArray(state.list)
+    ? state.list.join("")
+    : state.list.split(""),
+})
 
 // ...
 ```

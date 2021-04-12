@@ -17,25 +17,32 @@ As with [subscriptions](subscriptions.md), effects are used to deal with impure 
 An action can associate its state transition with a list of one or more [effects](#effects) to run alongside the transition. It does this by returning an array containing the [state with effects](state.md#state-with-effects) where the first entry is the next state while the remaining entries are the effects to run.
 
 ```js
-import { log } from "./fx";
+import { log } from "./fx"
 
 // Action : (State) -> [NextState, ...Effects]
-const SayHi = (state) => [{ ...state, value: state.value + 1 }, log("hi"), log("there")];
+const SayHi = (state) => [
+  { ...state, value: state.value + 1 },
+  log("hi"),
+  log("there"),
+]
 
 // ...
 
-h("button", { onclick: SayHi }, text("Say Hi"));
+h("button", { onclick: SayHi }, text("Say Hi"))
 ```
 
 Actions can of course receive payloads and use effects simultaneously.
 
 ```js
 // Action : (State, Payload) -> [NextState, ...Effects]
-const SayBye = (state, amount) => [{ ...state, value: state.value + amount }, log("bye")];
+const SayBye = (state, amount) => [
+  { ...state, value: state.value + amount },
+  log("bye"),
+]
 
 // ...
 
-h("button", { onclick: [SayBye, 1] }, text("Bye"));
+h("button", { onclick: [SayBye, 1] }, text("Bye"))
 ```
 
 ## Excluding Effects
@@ -45,11 +52,12 @@ If you don’t include any effects in the return array then only the state trans
 Here, `OnlyIncrement` both behaves and is used similarly to `Increment` [shown here](actions.md#actual-state-transition):
 
 ```js
-const OnlyIncrement = (state) => [{ ...state, value: state.value + 1 }];
+// Action : (State) -> [NextState]
+const OnlyIncrement = (state) => [{ ...state, value: state.value + 1 }]
 
 // ...
 
-h("button", { onclick: OnlyIncrement }, text("+"));
+h("button", { onclick: OnlyIncrement }, text("+"))
 ```
 
 Such a single-element array may seem redundant at first but it can come into play if you have an action that conditionally runs effects.
@@ -58,15 +66,17 @@ For example, compare this:
 
 ```js
 const DoIt = (state) => {
-  let transition = { ...state, value: "MacGuffin" };
+  let transition = { ...state, value: "MacGuffin" }
   if (state.eating) {
-    transition = [transition, log("eating")];
+    transition = [transition, log("eating")]
   }
   if (state.drinking) {
-    transition = Array.isArray(transition) ? [...transition, log("drinking")] : [transition, log("drinking")];
+    transition = Array.isArray(transition)
+      ? [...transition, log("drinking")]
+      : [transition, log("drinking")]
   }
-  return transition;
-};
+  return transition
+}
 ```
 
 <!-- In fiction, a MacGuffin is something that’s necessary to the plot and the motivation of the characters but unimportant in itself. -->
@@ -75,15 +85,15 @@ with this:
 
 ```js
 const DoItBetter = (state) => {
-  let transition = [{ ...state, value: "MacGuffin" }];
+  let transition = [{ ...state, value: "MacGuffin" }]
   if (state.eating) {
-    transition = [...transition, log("eating")];
+    transition = [...transition, log("eating")]
   }
   if (state.drinking) {
-    transition = [...transition, log("drinking")];
+    transition = [...transition, log("drinking")]
   }
-  return transition;
-};
+  return transition
+}
 ```
 
 Admittedly, these examples are a bit contrived but the latter is less complex.
@@ -95,7 +105,7 @@ const DoItBest = (state) => [
   { ...state, value: "MacGuffin" },
   state.eating && log("eating"),
   state.drinking && log("drinking"),
-];
+]
 ```
 
 ## Defining Effects
@@ -105,7 +115,7 @@ Syntactically speaking, an effect takes the form of a tuple containing its [effe
 Technically, an effect can be used directly but using a function that creates the effect is recommended because it offers flexibility with how the tuple is created while looking a little cleaner overall.
 
 ```js
-const massFx = (data) => [runNormandy, data];
+const massFx = (data) => [runNormandy, data]
 ```
 
 <!-- `massFx` is a play on the title of the videogame series “Mass Effect”. The SSV Normandy SR-1 is the spaceship the player travels in throughout the series. -->
@@ -118,9 +128,9 @@ _Definition:_
 
 _Signature:_
 
-> ```elm
-> EffecterFn : (DispatchFn, Payload?) -> void
-> ```
+```elm
+EffecterFn : (DispatchFn, Payload?) -> void
+```
 
 As with [subscribers](subscriptions.md#subscribers), effecters are allowed to use side-effects and can also manually [`dispatch`](dispatch.md) actions in order to inform your app of any pertinent results from their execution.
 
@@ -131,9 +141,9 @@ To demonstrate this approach take this ill-formed effecter for example:
 ```js
 // This effecter is ill-formed.
 const runHarvest = (dispatch, _payload) => {
-  const tiberium = document.getElementById("tiberium");
-  dispatch((state) => ({ ...state, tiberium }));
-};
+  const tiberium = document.getElementById("tiberium")
+  dispatch((state) => ({ ...state, tiberium }))
+}
 ```
 
 <!-- In the videogame series “Command & Conquer”, Tiberium is a toxic alien crystalline substance that can be harvested for its energy. -->
@@ -143,19 +153,22 @@ Sure it runs, but it’s also coupled to our app’s state and the element ID be
 Let’s address this by first decoupling our callback action from the effecter by leveraging our ability to give the effecter a payload:
 
 ```js
-const runHarvest = (dispatch, payload) => dispatch(payload.action, document.getElementById("tiberium"));
+const runHarvest = (dispatch, payload) => 
+  dispatch(payload.action, document.getElementById("tiberium"))
 ```
 
 Let’s further utilize our payload by using it to pass in data our effecter needs to work:
 
 ```js
-const runHarvest = (dispatch, payload) => dispatch(payload.action, document.getElementById(payload.id));
+const runHarvest = (dispatch, payload) => 
+  dispatch(payload.action, document.getElementById(payload.id))
 ```
 
 Finally, we should rename the effecter to reflect its generic nature:
 
 ```js
-const runGetElement = (dispatch, payload) => dispatch(payload.action, document.getElementById(payload.id));
+const runGetElement = (dispatch, payload) => 
+  dispatch(payload.action, document.getElementById(payload.id))
 ```
 
 A well-formed effecter is as generic as it can be.
@@ -171,15 +184,15 @@ Let’s see an example of an ill-formed asynchronous effecter:
 ```js
 // This effecter is ill-formed.
 const runBrotherhood = async (dispatch, payload) => {
-  const response = await fetch(payload.lookForKaneHere);
-  const kaneLives = response.json();
+  const response = await fetch(payload.lookForKaneHere)
+  const kaneLives = response.json()
   requestAnimationFrame(() => {
     dispatch((state) => ({
       ...state,
       message: kaneLives ? "One vision! One purpose!" : "",
-    }));
-  });
-};
+    }))
+  })
+}
 ```
 
 <!-- In the videogame series “Command & Conquer”, Kane is the leader of the Brotherhood of Nod and has cheated death at least once. One of his catchphrases is “One vision! One purpose!” -->
@@ -188,9 +201,9 @@ Now let’s see a more well-formed asynchronous effecter:
 
 ```js
 const runSimpleFetch = async (dispatch, payload) => {
-  const response = await fetch(payload.url);
-  requestAnimationFrame(() => dispatch(payload.action, response.json()));
-};
+  const response = await fetch(payload.url)
+  requestAnimationFrame(() => dispatch(payload.action, response.json()))
+}
 ```
 
 ### Custom Events
@@ -202,14 +215,15 @@ We can have our Hyperapp application use a custom effect for triggering custom e
 ```js
 // ./fx.js
 
-const runEmit = (_dispatch, payload) => dispatchEvent(new CustomEvent(payload.type, { detail: payload.detail }));
+const runEmit = (_dispatch, payload) => 
+  dispatchEvent(new CustomEvent(payload.type, { detail: payload.detail }))
 
-export const emit = (type, detail) => [runEmit, { type, detail }];
+export const emit = (type, detail) => [runEmit, { type, detail }]
 ```
 
 ```js
-import { h, text, app } from "hyperapp";
-import { emit } from "./fx";
+import { h, text, app } from "hyperapp"
+import { emit } from "./fx"
 
 app({
   view: () =>
@@ -217,11 +231,14 @@ app({
       h(
         "button",
         {
-          onclick: (state) => [state, emit("outgoing", { message: "hello" })],
+          onclick: (state) => [
+            state, 
+            emit("outgoing", { message: "hello" })
+          ],
         },
         text("Send greetings")
       ),
     ]),
   node: document.getElementById("app"),
-});
+})
 ```

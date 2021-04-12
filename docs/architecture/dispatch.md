@@ -1,16 +1,16 @@
 # Dispatch
 
-_Definition:_
+**_Definition:_**
 
 > The **dispatch** function controls Hyperapp’s core dispatching process which executes [actions](actions.md), applies state transitions, runs [effects](effects.md), and starts/stops [subscriptions](subscriptions.md) that need it.
 
-_Signature:_
+You can augment the dispatcher to tap into the dispatching process for debugging/instrumentation purposes. Such augmentation is loosely comparable to middleware used in other frameworks.
+
+**_Signature:_**
 
 ```elm
 DispatchFn : (Action, Payload?) -> void
 ```
-
-You can augment the dispatcher to tap into the dispatching process for debugging/instrumentation purposes. Such augmentation is loosely comparable to middleware used in other frameworks.
 
 ---
 

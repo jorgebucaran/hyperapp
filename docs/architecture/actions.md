@@ -1,10 +1,14 @@
 # Actions
 
-_Definition:_
+**_Definition:_**
 
 > An **action** is a message used within your app that signals the valid way to change [state](state.md).
 
-_Signature:_
+An action is implemented by a deterministic function that produces no side-effects which describes a transition between the current state and the next state and in so doing may optionally list out [effects](effects.md) to be run as well.
+
+Actions are dispatched by either DOM events in your app, [effecters](effects.md#effecters), or [subscribers](subscriptions.md#subscribers). When dispatched, actions always implicitly receive the current state as their first argument.
+
+**_Signature:_**
 
 ```elm
 Action : (State, Payload?) -> NextState
@@ -13,9 +17,9 @@ Action : (State, Payload?) -> NextState
                               | [OtherAction, Payload?]
 ```
 
-It is implemented by a deterministic function that produces no side-effects which describes a transition between the current state and the next state and in so doing may optionally list out [effects](effects.md) to be run as well.
+**_Naming Recommendation:_**
 
-Actions are dispatched by either DOM events in your app, [effecters](effects.md#effecters), or [subscribers](subscriptions.md#subscribers). When dispatched, actions always implicitly receive the current state as their first argument.
+Actions are recommended to be named in `PascalCase` to signal to the developer that they should be thought of as messages intended for use by Hyperapp itself. It is also recommended to use a verb (for instance `Add`) or a verb-noun phrase (`AddArticle`) for the name. The verb can be either in its imperative form, like `IncrementBy`, `ToggleVisibility`, `GetPizzas` or `SaveAddress`, or in the past tense form, for instance `GotData`, `StoppedCounting` – especially when the action is used for a “final” state transition at the end of an action-effect-chain.
 
 ---
 
@@ -180,10 +184,6 @@ If you encounter a scenario where your app doesn’t respond when you click stuf
 ---
 
 ## Other Considerations
-
-### Naming
-
-Actions are recommended to be named in `PascalCase` to signal to the developer that they should be thought of as messages intended for use by Hyperapp itself.
 
 ### Transitioning Array State
 

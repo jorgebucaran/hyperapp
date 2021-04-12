@@ -1,18 +1,20 @@
 # Subscriptions
 
-_Definition:_
+**_Definition:_**
 
 > A **subscription** function represents a dependency your app has on some external process.
 
-_Signature:_
+As with [effects](effects.md), subscriptions deal with impure, asynchronous interactions with the outside world in a safe, pure, and immutable way. They are a streamlined way of responding to events happening outside our application such as time or location changes. They handle resource management for us that we would otherwise need to worry about like adding and removing event listeners, closing connections, etc.
+
+**_Signature:_**
 
 ```elm
 Subscription : [SubscriberFn, Payload?]
 ```
 
-As with [effects](effects.md), subscriptions deal with impure, asynchronous interactions with the outside world in a safe, pure, and immutable way. They are a streamlined way of responding to events happening outside our application such as time or location changes. They handle resource management for us that we would otherwise need to worry about like adding and removing event listeners, closing connections, etc.
+**_Naming Recommendation:_**
 
-There are several official Hyperapp packages that provide subscriptions for some commonly used APIs from [The Web Platform](https://platform.html5.org/). For instance, you can schedule recurrent tasks using [`@hyperapp/time`](../../../packages/time), or listen to global events like mouse or keyboard events using [`@hyperapp/events`](../../../packages/events).
+Subscriptions are recommended to be named in `camelCase` prefixed by `on`, for instance `onEvery` or `onMouseEnter` in order to reflect their (app-external) event handling character.
 
 ---
 
@@ -21,7 +23,7 @@ There are several official Hyperapp packages that provide subscriptions for some
 Subscriptions are setup and managed through the [`subscriptions:`](../api/app.md#subscriptions) property used with [`app()`](../api/app.md) when instantiating your app.
 
 ```js
-import { every } from "./time"
+import { onEvery } from "./time"
 
 // ...
 
@@ -29,7 +31,7 @@ app({
   init: { delayInMilliseconds: 1000 },
   subscriptions: (state) => [
     // Dispatch `RequestResource` every `delayInMilliseconds`.
-    every(state.delayInMilliseconds, RequestResource),
+    onEvery(state.delayInMilliseconds, RequestResource),
   ],
 })
 ```
@@ -39,8 +41,8 @@ You can control if subscriptions are active or not by using boolean values.
 ```js
 app({
   subscriptions: (state) => [
-    state.toBe && every(state.delay, ThatIsTheQuestion),
-    state.notToBe || every(state.delay, ThatIsTheQuestion),
+    state.toBe && onEvery(state.delay, ThatIsTheQuestion),
+    state.notToBe || onEvery(state.delay, ThatIsTheQuestion),
   ],
 })
 ```
@@ -72,15 +74,17 @@ There may be times when an official Hyperapp subscription package is unavailable
 
 ### Subscribers
 
-_Definition:_
+**_Definition:_**
 
 > A **subscriber** is a function which implements an active subscription.
 
-_Signature:_
+**_Signature:_**
 
 ```elm
 SubscriberFn : (DispatchFn, Payload?) -> CleanupFn
 ```
+
+
 
 As with [effecters](effects.md#effecters), subscribers are allowed to use side-effects and can also manually [`dispatch`](dispatch.md) actions in order to inform your app of any pertinent results from their execution.
 
@@ -124,7 +128,7 @@ const listenToEvent = (dispatch, props) => {
 export const listen = (type, action) => [listenToEvent, { type, action }]
 ```
 
-In case you’re wondering why `listenToEvent()`’s listener is using `requestAnimationFrame` it has to do with [synchronization](actions.md#synchronization).
+In case you’re wondering why `listenToEvent()`’s listener is using `requestAnimationFrame`, it has to do with [synchronization](actions.md#synchronization).
 
 Now we can use our custom subscription in our Hyperapp application. Since it will be embedded we’ll wrap our call to [`app()`](../api/app.md) within an exported function our legacy app can make use of:
 

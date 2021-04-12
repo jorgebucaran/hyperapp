@@ -1,16 +1,20 @@
 # Effects
 
-_Definition:_
+_**Definition:**_
 
 > An **effect** is a representation used by actions to interact with some external process.
 
-_Signature:_
+As with [subscriptions](subscriptions.md), effects are used to deal with impure asynchronous interactions with the outside world in a safe, pure, and immutable way. Creating an HTTP request, giving focus to a DOM element, saving data to local storage, sending data over a WebSocket, and so on, are all examples of effects at a conceptual level.
+
+**_Signature:_**
 
 ```elm
 Effect : [EffecterFn, Payload?]
 ```
 
-As with [subscriptions](subscriptions.md), effects are used to deal with impure asynchronous interactions with the outside world in a safe, pure, and immutable way. Creating an HTTP request, giving focus to a DOM element, saving data to local storage, sending data over a WebSocket, and so on, are all examples of effects at a conceptual level.
+**_Naming Recommendation:_**
+
+Effects are recommended to be named in `camelCase` using a verb (for instance `log`) or verb-noun phrase (like `saveAsPDF`) in its imperative form for the name.
 
 ## Using Effects
 
@@ -122,15 +126,17 @@ const massFx = (data) => [runNormandy, data]
 
 ## Effecters
 
-_Definition:_
+**_Definition:_**
 
 > An **effecter** is the function that actually carries out an effect.
 
-_Signature:_
+**_Signature:_**
 
 ```elm
 EffecterFn : (DispatchFn, Payload?) -> void
 ```
+
+
 
 As with [subscribers](subscriptions.md#subscribers), effecters are allowed to use side-effects and can also manually [`dispatch`](dispatch.md) actions in order to inform your app of any pertinent results from their execution.
 

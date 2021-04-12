@@ -1,16 +1,16 @@
 # `text()`
 
-_Definition:_
+**_Definition:_**
 
 > A function that creates a [virtual DOM node (VNode)](../architecture/views.md#virtual-dom) out of a given value.
 
-_Signature:_
+**_Signature:_**
 
 ```elm
 text : (String | Number) -> VNode
 ```
 
-_Sample Usage:_
+**_Import & Usage:_**
 
 You’ll normally use it with [`h()`](./h.md).
 
@@ -22,7 +22,7 @@ import { text } from "hyperapp"
 h("p", {}, text(content))
 ```
 
-_Parameter Overview:_
+**_Parameter Overview:_**
 
 | Input Parameter     | Type                                                  | Required? | Notes                                   |
 | ------------------- | ----------------------------------------------------- | --------- | --------------------------------------- |

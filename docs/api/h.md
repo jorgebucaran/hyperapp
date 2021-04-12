@@ -1,16 +1,16 @@
 <h1 title="The name of the `h()` function is short for **hyperscript** which is named after the original hyperscript function from [HyperScript](https://github.com/hyperhype/hyperscript)."><code>h()</code></h1>
 
-_Definition:_
+**_Definition:_**
 
 > A function that creates [virtual DOM nodes (VNodes)](../architecture/views.md#virtual-dom) which are used for defining [views](../architecture/views.md).
 
-_Signature:_
+**_Signature:_**
 
 ```elm
 h : (String, Object, VNode? | [...VNodes]?) -> VNode
 ```
 
-_Sample Usage:_
+**_Import & Usage:_**
 
 ```js
 import { h } from "hyperapp"
@@ -20,7 +20,7 @@ import { h } from "hyperapp"
 h(tag, props, children)
 ```
 
-_Parameter Overview:_
+**_Parameter Overview:_**
 
 | Input Parameters      | Type                     | Required? |
 | --------------------- | ------------------------ | --------- |

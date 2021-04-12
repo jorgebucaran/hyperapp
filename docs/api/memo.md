@@ -1,16 +1,16 @@
 # `memo()`
 
-_Definition:_
+**_Definition:_**
 
 > A wrapper function to cache your [views](../architecture/views.md) based on properties you pass into them.
 
-_Signature:_
+**_Signature:_**
 
 ```elm
 memo : (View, IndexableData?) -> VNode
 ```
 
-_Sample Usage:_
+**_Import & Usage:_**
 
 ```js
 import { memo } from "hyperapp"
@@ -20,7 +20,7 @@ import { memo } from "hyperapp"
 memo(view, props)
 ```
 
-_Parameter Overview:_
+**_Parameter Overview:_**
 
 | Input Parameters | Type                                            | Required? |
 | ---------------- | ----------------------------------------------- | --------- |

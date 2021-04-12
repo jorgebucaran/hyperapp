@@ -1,16 +1,16 @@
 # Views
 
-_Definition:_
+**_Definition:_**
 
 > A **view** is a declarative description of what should get rendered and is usually influenced by the current [state](state.md).
 
-_Signature:_
+A view is implemented as a pure function that accepts the current state and returns a [virtual DOM node (VNode)](#virtual-dom). When [state transitions](state.md#state-transitions) happen your views are automatically updated accordingly.
+
+**_Signature:_**
 
 ```elm
 View : (State) -> VNode
 ```
-
-A view is implemented as a pure function that accepts the current state and returns a [virtual DOM node (VNode)](#virtual-dom). When [state transitions](state.md#state-transitions) happen your views are automatically updated accordingly.
 
 ---
 
@@ -56,15 +56,17 @@ const view = (state) => memo(scenicView, state.vacationSpot)
 
 Views are naturally composable so they can be as simple or complicated as you need. Simpler apps probably just need a single view but in more complicated apps there could be plenty of subviews.
 
-_Definition:_
+**_Definition:_**
 
 > A **component** in Hyperapp can either be a subview or some other function that generates VNodes.
 
-_Signature:_
+**_Signature:_**
 
 ```elm
 Component : (GlobalState | PartialState) -> VNode | [...VNodes]
 ```
+
+
 
 You would typically make components for widgets that provide the building block elements of your app’s UI. Components for larger UI segments such as dashboards or pages would make use of these widgets.
 
@@ -100,6 +102,12 @@ const level = (state) =>
 ```
 
 <!-- In the videogame “Super Mario Bros.” coins are important for earning extra lives and the question blocks often contain useful contents. -->
+
+
+
+**_Naming Recommendation:_**
+
+Components are recommended to be named in `camelCase` using a noun that concisely describes the (purpose of the) composed group of contained elements best, for instance `articleHeader` or `questionBlock`.
 
 ### Components Returning Multiple VNodes
 
@@ -160,7 +168,7 @@ Hyperapp supports hydration of views out of the box. This means that if the moun
 
 ## Virtual DOM
 
-_Definition:_ 
+**_Definition:_** 
 
 > The **virtual DOM**, or **VDOM** for short, is an in-memory representation of the [DOM](https://dom.spec.whatwg.org/) elements that exist on the current page.
 

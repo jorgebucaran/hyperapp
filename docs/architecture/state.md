@@ -1,6 +1,6 @@
 # State
 
-_Definition:_
+**_Definition:_**
 
 > The **state** of your Hyperapp application is the unified set of data that your [views](views.md), [actions](actions.md), and [subscriptions](subscriptions.md) all have access to.
 

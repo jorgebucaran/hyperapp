@@ -1,16 +1,16 @@
 # `app()`
 
-_Definition:_
+**_Definition:_**
 
 > A function that initializes and mounts a Hyperapp application.
 
-_Signature:_
+**_Signature:_**
 
 ```elm
 app : ({ Init, View, Node, Subscriptions?, Dispatch? }) -> DispatchFn
 ```
 
-_Sample Usage:_
+**_Import & Usage:_**
 
 ```js
 import { app } from "hyperapp"
@@ -20,7 +20,7 @@ import { app } from "hyperapp"
 app(props)
 ```
 
-_Parameter Overview:_
+**_Parameter Overview:_**
 
 | Input Parameter | Type   | Required? |
 | --------------- | ------ | --------- |

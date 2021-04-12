@@ -1,14 +1,15 @@
 # State
 
-The **state** of your Hyperapp application is the unified set of data that your [views](views.md), [actions](actions.md), and [subscriptions](subscriptions.md) all have access to.
+> *Definition:*
+> The **state** of your Hyperapp application is the unified set of data that your [views](views.md), [actions](actions.md), and [subscriptions](subscriptions.md) all have access to.
 
-Hyperapp by design offers no strong opinion about how your state should be structured aside from it being unified. This means [components](views.md#components) don't technically possess their own local state but that also means they have direct access to any part of the entire state they need. The user is entrusted with shaping things beyond that.
+Hyperapp by design offers no strong opinion about how your state should be structured aside from it being unified. This means [components](views.md#components) don’t technically possess their own local state but that also means they have direct access to any part of the entire state they need. The user is entrusted with shaping things beyond that.
 
 ---
 
 ## Assignment
 
-When you initially create your app instance with [`app()`](../api/app.md) you get to setup your state with the [`init:`](../api/app.md#init) property. Since it's possible to have several different app instances [active simultaneously](../api/app.md#multiple-apps) it's important to know that each app retains its own separate state.
+When you initially create your app instance with [`app()`](../api/app.md) you get to setup your state with the [`init:`](../api/app.md#init) property. Since it’s possible to have several different app instances [active simultaneously](../api/app.md#multiple-apps) it’s important to know that each app retains its own separate state.
 
 ### State Transitions
 
@@ -26,7 +27,7 @@ So, Hyperapp will apply the state first and then will run the effects in the ord
 
 ### Array State
 
-If you actually do want to use an array as your state you'll have to wrap it within an effectful state array to make it work.
+If you actually do want to use an array as your state you’ll have to wrap it within an effectful state array to make it work.
 
 ```js
 [["a", "b", "c"]]
@@ -50,7 +51,7 @@ While you can put anything you want in the state we recommend avoiding things th
 
 ### State Type
 
-You can of course choose to make your state some basic type such as a string or number. However, it's recommended to use an object because of the expressivity it gives you in defining your state shape.
+You can of course choose to make your state some basic type such as a string or number. However, it’s recommended to use an object because of the expressivity it gives you in defining your state shape.
 
 ### Direct Mutation
 

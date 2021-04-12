@@ -3,10 +3,10 @@
 > The tiny framework for building hypertext applications.
 
 - **Do more with less**—We have minimized the concepts you need to learn to get stuff done. Views, actions, effects, and subscriptions are all pretty easy to get to grips with and work together seamlessly.
-- **Write what, not how**—With a declarative API that's easy to read and fun to write, Hyperapp is the best way to build purely functional, feature-rich, browser-based apps using idiomatic JavaScript.
+- **Write what, not how**—With a declarative API that’s easy to read and fun to write, Hyperapp is the best way to build purely functional, feature-rich, browser-based apps using idiomatic JavaScript.
 - **Smaller than a favicon**—1 kB, give or take. Hyperapp is an ultra-lightweight Virtual DOM, [highly-optimized diff algorithm](https://javascript.plainenglish.io/javascript-frameworks-performance-comparison-2020-cd881ac21fce), and state management library obsessed with minimalism.
 
-Here's the first example to get you started. [Try it here](https://codepen.io/jorgebucaran/pen/zNxZLP?editors=1000)—no build step required!
+Here’s the first example to get you started. [Try it here](https://codepen.io/jorgebucaran/pen/zNxZLP?editors=1000)—no build step required!
 
 <!-- prettier-ignore -->
 ```html
@@ -46,7 +46,7 @@ Here's the first example to get you started. [Try it here](https://codepen.io/jo
 
 The app starts by setting the initial state and rendering the view on the page. User input flows into actions, whose function is to update the state, causing Hyperapp to re-render the view.
 
-When describing how a page looks in Hyperapp, we don't write markup. Instead, we use `h()` and `text()` to create a lightweight representation of the DOM (or virtual DOM for short), and Hyperapp takes care of updating the real DOM efficiently.
+When describing how a page looks in Hyperapp, we don’t write markup. Instead, we use `h()` and `text()` to create a lightweight representation of the DOM (or virtual DOM for short), and Hyperapp takes care of updating the real DOM efficiently.
 
 ## Installation
 
@@ -60,9 +60,9 @@ Ready to dive in? Learn the basics in the [Tutorial](docs/tutorial.md), check ou
 
 To access [Web Platform APIs](https://platform.html5.org) (like `fetch` or `addEventListener`) in a way that makes sense for Hyperapp, learn [how to create your own effects and subscriptions](/docs/architecture/subscriptions.md). For everything else, from third-party packages to real-world examples, browse the [Hyperawesome](https://github.com/jorgebucaran/hyperawesome) collection.
 
-## Help, I'm stuck!
+## Help, I’m stuck!
 
-If you've hit a stumbling block, hop on our [Discord](https://discord.gg/5CtfCYEq8V) server to get help, and if you remain stuck, [please file an issue](https://github.com/jorgebucaran/hyperapp/issues/new), and we'll help you figure it out.
+If you’ve hit a stumbling block, hop on our [Discord](https://discord.gg/5CtfCYEq8V) server to get help, and if you remain stuck, [please file an issue](https://github.com/jorgebucaran/hyperapp/issues/new), and we’ll help you figure it out.
 
 ## Contributing
 

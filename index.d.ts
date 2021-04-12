@@ -29,7 +29,7 @@ declare module "hyperapp" {
   // ---------------------------------------------------------------------------
 
   // A Hyperapp instance has an initial state and a base view.
-  // It's usually mounted over an available DOM element.
+  // It’s usually mounted over an available DOM element.
   type App<S> =
     | Readonly<{ init: State<S> | StateWithEffects<S> | Action<S> }>
     | Readonly<{ subscriptions: Subscriptions<S> }>
@@ -132,7 +132,7 @@ declare module "hyperapp" {
   // In certain places a virtual DOM node can be made optional.
   type MaybeVDOM<S> = boolean | null | undefined | VDOM<S>
 
-  // A virtual DOM node's tag has metadata relevant to it. Virtual DOM nodes are
+  // A virtual DOM node’s tag has metadata relevant to it. Virtual DOM nodes are
   // tagged by their type to assist rendering.
   type Tag<S> = string | View<S>
 
@@ -168,7 +168,7 @@ declare module "hyperapp" {
   // properties. Custom properties are not covered as well as any newer
   // properties that are not yet recognized by TypeScript. Apparently,
   // the only way to accommodate them is to relax the adherence to
-  // TypeScript's CSS property definitions. The trade-off doesn't
+  // TypeScript’s CSS property definitions. The trade-off doesn’t
   // seem worth it given the chances of using such properties.
   // However, you can use type casting if you want to them.
   type StyleProp = {

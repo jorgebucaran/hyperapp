@@ -1,6 +1,13 @@
 # `memo()`
 
-A wrapper function to cache your [views](../architecture/views.md) based on properties you pass into them.
+> *Definition:*
+> A wrapper function to cache your [views](../architecture/views.md) based on properties you pass into them.
+>
+> *Signature:*
+>
+> ```elm
+> memo : (View, IndexableData?) -> VNode
+> ```
 
 ```js
 import { memo } from "hyperapp"
@@ -10,10 +17,12 @@ import { memo } from "hyperapp"
 memo(view, props)
 ```
 
-| Parameter     | Type                                            | Required?
-| ------------- | ----------------------------------------------- | ---------
-| [view](#view) | [View](../architecture/views.md)                | :100:
-| [data](#data) | anything indexable (i.e. array, object, string) | no
+
+
+| Parameter     | Type                                            | Required? |
+| ------------- | ----------------------------------------------- | --------- |
+| [view](#view) | [View](../architecture/views.md)                | yes       |
+| [data](#data) | anything indexable (i.e. Array, Object, String) | no        |
 
 `memo()` lets you take advantage of a performance optimization technique known as [memoization](../architecture/views.md#memoization).
 
@@ -33,7 +42,7 @@ The data to pass along to the wrapped view function instead of the [state](../ar
 
 ## Example
 
-Here we have a list of numbers displayed in a regular view as well as a memoized version of the same view. One button changes the list which affects both views. Another button updates a counter which affects the counter's view and also the regular view of the list but not the memoized view of the list.
+Here we have a list of numbers displayed in a regular view as well as a memoized version of the same view. One button changes the list which affects both views. Another button updates a counter which affects the counter’s view and also the regular view of the list but not the memoized view of the list.
 
 ```js
 import { h, text, app, memo } from "hyperapp"
@@ -99,7 +108,7 @@ const Increment = (state) => ({
   ...state,
   counter: state.counter + 1,
 
-  // The following should cause the memoized view to rerender but it doesn't.
+  // The following should cause the memoized view to rerender but it doesn’t.
   list: Array.isArray(state.list)
     ? state.list.join("")
     : state.list.split(""),

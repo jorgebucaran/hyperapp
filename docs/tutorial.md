@@ -1,6 +1,6 @@
 # Tutorial
 
-Welcome! If you're new to Hyperapp, you've found the perfect place to start learning. This tutorial will guide you through your first steps with Hyperapp as we build a simple app.
+Welcome! If you’re new to Hyperapp, you’ve found the perfect place to start learning. This tutorial will guide you through your first steps with Hyperapp as we build a simple app.
 
 -   [The Set-up](#setup)
 -   [Hello World](#helloworld)
@@ -21,10 +21,10 @@ Welcome! If you're new to Hyperapp, you've found the perfect place to start lear
 
 ## The Set-up <a name="setup"></a>
 
-Together we'll build a simple newsreader-like application. As we do, we'll work
+Together we’ll build a simple newsreader-like application. As we do, we’ll work
 our way through the five core concepts: view, state, actions, effects and subscriptions.
 
-To move things along, let's imagine we've already made a static version of the
+To move things along, let’s imagine we’ve already made a static version of the
 app we want to build, with this HTML:
 
 ```html
@@ -76,11 +76,11 @@ It looks like this:
 
 ![what it looks like](https://raw.githubusercontent.com/jorgebucaran/hyperapp/1fd42319051e686adb9819b7e154f764fa3b0d29/docs/src/pages/Tutorial/tut1.png)
 
-We'll start by making Hyperapp render the HTML for us. Then we will
+We’ll start by making Hyperapp render the HTML for us. Then we will
 add dynamic behavior to all the widgets, including text input and
 dynamically fetching stories.
 
-First, let's begin with the traditional "Hello World!"
+First, let’s begin with the traditional "Hello World!"
 
 ## Hello World <a name="helloworld"></a>
 
@@ -115,15 +115,15 @@ Create this html file:
 </html>
 ```
 
-> The section structure outlined in the comments is not important. It's
-> just a suggestion for how to organize the code we'll be
+> The section structure outlined in the comments is not important. It’s
+> just a suggestion for how to organize the code we’ll be
 > adding throughout the tutorial.
 
-Open it in a browser, and you'll be greeted with an optimistic **Hello _World!_**.
+Open it in a browser, and you’ll be greeted with an optimistic **Hello _World!_**.
 
 ## View <a name="view"></a>
 
-Let's step through what just happened.
+Let’s step through what just happened.
 
 ### Virtual Nodes <a name="virtualnodes"></a>
 
@@ -158,7 +158,7 @@ argument of `h`.
 ### Rendering to the DOM <a name="rendertodom"></a>
 
 `app` is the function that runs our app. It is called with a single argument - an object
-which can take several properties. For now we're just concerned with `view` and `node.`
+which can take several properties. For now we’re just concerned with `view` and `node.`
 
 Hyperapp calls the `view` function which tells it the DOM structure we want, in the form
 of virtual nodes. Hyperapp proceeds to create it for us, replacing the node specified in `node`.
@@ -224,7 +224,7 @@ Try it out to confirm that the result matches the screenshot above.
 > [Hyperlit](https://github.com/zaceno/hyperlit) allows writing html-like views
 > that work in the browser without any compilation/build-step. Using JSX for
 > Hyperapp is also possible, with a bit of configuration In this tutorial
-> we'll stick with `h` & `text` to keep it simple and close to the metal.
+> we’ll stick with `h` & `text` to keep it simple and close to the metal.
 
 ### Composing the view with reusable functions <a name="composingview"></a>
 
@@ -361,14 +361,14 @@ view: () => container([
 ])
 ```
 
-What you see on the page should be exactly the same as before, because we haven't
+What you see on the page should be exactly the same as before, because we haven’t
 changed what `view` returns. Using basic functional composition, we were able to make
-the code a bit more manageable, and that's the only difference.
+the code a bit more manageable, and that’s the only difference.
 
 ## State <a name="state"></a>
 
 With all that view logic broken out in separate functions, `view` is starting to look like
-plain _data_. The next step is to fully separate data from the view. It's time to use
+plain _data_. The next step is to fully separate data from the view. It’s time to use
 the `init` property. Set it to this plain data object:
 
 ```js
@@ -395,7 +395,7 @@ the `init` property. Set it to this plain data object:
   },
 ```
 
-The value of `init` becomes the app's _state_. Hyperapp calls `view` with the state
+The value of `init` becomes the app’s _state_. Hyperapp calls `view` with the state
 as an argument, so it can be reduced to:
 
 ```js
@@ -407,11 +407,11 @@ as an argument, so it can be reduced to:
   ]),
 ```
 
-Visually, everything is _still_ the same. If you'd like to see a working example of the code so far, have a look [here][Live Example 1]
+Visually, everything is _still_ the same. If you’d like to see a working example of the code so far, have a look [here][Live Example 1]
 
 ## Actions <a name="actions"></a>
 
-Now that we know all about rendering views, it's finally time for some _action_!
+Now that we know all about rendering views, it’s finally time for some _action_!
 
 ### Reacting to events in the DOM <a name="reacting"></a>
 
@@ -538,7 +538,7 @@ The following action sets the `reading` property in the state to a story-id, whi
 const SelectStory = (state, id) => ({ ...state, reading: id })
 ```
 
-It has a payload, but it's not an event object. It's a custom value telling us which
+It has a payload, but it’s not an event object. It’s a custom value telling us which
 story was clicked. How are actions dispatched with custom payloads? – Like this:
 
 ```js
@@ -574,15 +574,15 @@ const SelectStory = (state, id) => ({
 ```
 
 Now, when you select a blue-edged story it turns yellow because it is selected, and when you select something else,
-the edge turns gray to indicate you've read the story.
+the edge turns gray to indicate you’ve read the story.
 
 ![read stories are gray](https://raw.githubusercontent.com/jorgebucaran/hyperapp/1fd42319051e686adb9819b7e154f764fa3b0d29/docs/src/pages/Tutorial/tut4.png)
 
-If you'd like to see a working example of the code so far, have a look [here][Live Example 2]
+If you’d like to see a working example of the code so far, have a look [here][Live Example 2]
 
 ## Effects <a name="effects"></a>
 
-So far, the list of stories is defined statically when the app starts up and doesn't change. What we really want is when the filter-word is changed, stories matching it should be loaded from a server.
+So far, the list of stories is defined statically when the app starts up and doesn’t change. What we really want is when the filter-word is changed, stories matching it should be loaded from a server.
 
 Hyperapp takes a page from the book of functional programming in that it requires you to separate the imperative, procedural code from the pure mathematical calculations that define your actions. Such bundles of imperative code are called _effects_ (often also "side-effects")
 
@@ -595,7 +595,7 @@ import {request} from "https://unpkg.com/@hyperapp/http" // <---
 
 ### Running effects with actions <a name="effectswithactions"></a>
 
-When the user is done changing the filter word, we want to fetch all the stories that match. So let's update the `StopEditingFilter` action with that effect:
+When the user is done changing the filter word, we want to fetch all the stories that match. So let’s update the `StopEditingFilter` action with that effect:
 
 ```js
 const StopEditingFilter = (state) => [  // <---
@@ -612,17 +612,17 @@ const StopEditingFilter = (state) => [  // <---
 ]
 ```
 
-A few things going on here so let's break it down.
+A few things going on here so let’s break it down.
 
 -   `StopEditingFilter` no longer returns _just_ the state, but an _array_ where the first item is the new state and the following are effects. Hyperapp understands this format of return values and will update the state same as for "normal" actions
 
 -   The call to `request(...)` is _*not* executing the request_. It just returns an object (actually an array of `[function, options]`) which _represents_ the effect. After the state has been updated, Hyperapp will execute the effect.
 
--   `request({...})` is given a few options, notably the `url` where the data we want is. `action` says we want `GotStories` dispatched with the response payload. `expect: "json"` the data should be parsed as JSON, and the payload should be a plain javascript object. We haven't implemented `GotStories` yet, but we will shortly.
+-   `request({...})` is given a few options, notably the `url` where the data we want is. `action` says we want `GotStories` dispatched with the response payload. `expect: "json"` the data should be parsed as JSON, and the payload should be a plain javascript object. We haven’t implemented `GotStories` yet, but we will shortly.
 
 -   We introduced a new property in the state: `fetching: true`. This is how we will keep track that we are waiting for new data.
 
-When we get new data, we want to replace the `stories` property of the state with the new stories we get in the payload. It's not quite as simple as just replacing the `stories` property in the state though. We also need to make sure to "unselect" the currently selected story if it isn't in the new list. Also, any stories in the new list that we have already `seen` need to maintain that status. Here's how it could be implemented:
+When we get new data, we want to replace the `stories` property of the state with the new stories we get in the payload. It’s not quite as simple as just replacing the `stories` property in the state though. We also need to make sure to "unselect" the currently selected story if it isn’t in the new list. Also, any stories in the new list that we have already `seen` need to maintain that status. Here’s how it could be implemented:
 
 ```js
 const GotStories = (state, stories) => ({
@@ -649,7 +649,7 @@ const GotStories = (state, stories) => ({
 })
 ```
 
-Notice we are also setting `fetching: false` to remember that we aren't waiting for new stories any more.
+Notice we are also setting `fetching: false` to remember that we aren’t waiting for new stories any more.
 
 Now go ahead and try it out. Enter "Life" as the filter-word and see how new stories are loaded in to the list.
 
@@ -659,7 +659,7 @@ Now go ahead and try it out. Enter "Life" as the filter-word and see how new sto
 
 The next obvious step is to load the _initial_ stories from the API as well.
 
-Whatever you set the app's `init` prop to is handled just like the return value of an action. To run an effect on initialization, you change `init` in the same way we changed `StopEditingFilter` above:
+Whatever you set the app’s `init` prop to is handled just like the return value of an action. To run an effect on initialization, you change `init` in the same way we changed `StopEditingFilter` above:
 
 ```js
   init: [
@@ -707,18 +707,18 @@ When the app loads, and when you change the filter, you should see the spinner a
 
 ![spinner](https://raw.githubusercontent.com/jorgebucaran/hyperapp/1fd42319051e686adb9819b7e154f764fa3b0d29/docs/src/pages/Tutorial/tut7.png)
 
-> If you aren't seeing the spinner, it might just be happening too fast. Try choking your network speed. In the Chrome
+> If you aren’t seeing the spinner, it might just be happening too fast. Try choking your network speed. In the Chrome
 > browser you can set your network speed to "slow 3g" under the network tab in the developer tools.
 
-If you'd like to see a working example of the code so far, have a look [here][Live Example 3]
+If you’d like to see a working example of the code so far, have a look [here][Live Example 3]
 
 ## Subscriptions <a name="subscriptions"></a>
 
-The last feature we'll add is one where the user can opt in to have the app check every five seconds for new
-stories matching the current filter. (There won't actually be any new stories, because it's not a real service,
-but you'll know it's happening when you see the spinner pop up every five seconds.)
+The last feature we’ll add is one where the user can opt in to have the app check every five seconds for new
+stories matching the current filter. (There won’t actually be any new stories, because it’s not a real service,
+but you’ll know it’s happening when you see the spinner pop up every five seconds.)
 
-Whenever your app needs to react to external events (like callbacks to an interval), what you need is a _subscription_. As with effects, you can easily define your own effects but it's better to reuse the ones already available. In this case we want to import the subscription `every` from `@hyperapp/time`:
+Whenever your app needs to react to external events (like callbacks to an interval), what you need is a _subscription_. As with effects, you can easily define your own effects but it’s better to reuse the ones already available. In this case we want to import the subscription `every` from `@hyperapp/time`:
 
 ```js
 import { app, h, text } from "https://unpkg.com/hyperapp"
@@ -737,7 +737,7 @@ app ({
 })
 ```
 
-Similar to `request()` earlier, `every(...)` is not actually starting the subscription. It returns an object that tells Hyperapp how to start and stop the subscription. The arguments to `every` are the interval time in milliseconds, and the action to dispatch each time – a new action we'll call `UpdateStories`.
+Similar to `request()` earlier, `every(...)` is not actually starting the subscription. It returns an object that tells Hyperapp how to start and stop the subscription. The arguments to `every` are the interval time in milliseconds, and the action to dispatch each time – a new action we’ll call `UpdateStories`.
 
 
 ```js
@@ -754,9 +754,9 @@ const UpdateStories = (state) => [
 ]
 ```
 
-The action `UpdateStories` is going to be nearly the same as `StopEditingFilter`, with the one exception that we don't set `editingFilter: false`. If we kept that in, users would be "tossed out" from editing the filter after five seconds, which would be quite bothersome. We leave it as an exercise to the reader, to reduce the duplication of code that results.
+The action `UpdateStories` is going to be nearly the same as `StopEditingFilter`, with the one exception that we don’t set `editingFilter: false`. If we kept that in, users would be "tossed out" from editing the filter after five seconds, which would be quite bothersome. We leave it as an exercise to the reader, to reduce the duplication of code that results.
 
-But we want to allow the user to turn updating on and off, using the auto-update checkbox. Let's keep track of their preference using a new state property `autoUpdate`, with an action we'll call `TooggleAutoUpdate`:
+But we want to allow the user to turn updating on and off, using the auto-update checkbox. Let’s keep track of their preference using a new state property `autoUpdate`, with an action we’ll call `TooggleAutoUpdate`:
 
 ```js
 const ToggleAutoUpdate = (state) => ({
@@ -778,7 +778,7 @@ const autoUpdateView = props => h("div", { class: "autoupdate" }, [
 ])
 ```
 
-When the checkbox is checked, `autoUpdate` will be `true`, and _only then_ do we want the subscription to `every` to be active. It's as easy as:
+When the checkbox is checked, `autoUpdate` will be `true`, and _only then_ do we want the subscription to `every` to be active. It’s as easy as:
 
 ```js
 app ({
@@ -791,9 +791,9 @@ app ({
 
 ![auto update](https://raw.githubusercontent.com/jorgebucaran/hyperapp/1fd42319051e686adb9819b7e154f764fa3b0d29/docs/src/pages/Tutorial/tut8.png)
 
-How did that work?! Think of how Hyperapp spares you the effort of manually adding and removing DOM nodes. All you have to do is describe how you want the DOM to look, and Hyperapp takes care of that for you. It's the same with subscriptions. Each time the state updates, Hyperapp calls the `subscriptions` function to check which subscriptions you want active, and with which properties. Then Hyperapp takes care of starting and stopping them for you.
+How did that work?! Think of how Hyperapp spares you the effort of manually adding and removing DOM nodes. All you have to do is describe how you want the DOM to look, and Hyperapp takes care of that for you. It’s the same with subscriptions. Each time the state updates, Hyperapp calls the `subscriptions` function to check which subscriptions you want active, and with which properties. Then Hyperapp takes care of starting and stopping them for you.
 
-That was the final step! If you'd like to see a working example have a look [here][Live Example 4]
+That was the final step! If you’d like to see a working example have a look [here][Live Example 4]
 
 
 ## Conclusion <a name="conclusion"></a>

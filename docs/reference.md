@@ -9,7 +9,7 @@
 
 ## Architecture
 
-- [State](architecture/state.md) represents your application's data.
+- [State](architecture/state.md) represents your application’s data.
 - [Views](architecture/views.md) represent your state visually.
 - [Actions](architecture/actions.md) cause state transitions and run effects.
 - [Subscriptions](architecture/subscriptions.md) dispatch actions in response to external events.

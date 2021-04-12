@@ -1,18 +1,31 @@
 # `app()`
 
-A function that initializes and mounts a Hyperapp application.
+> *Definition:*
+> A function that initializes and mounts a Hyperapp application.
+>
+> *Signature:*
+>
+> ```elm
+> app : ({ Init, View, Node, Subscriptions?, Dispatch? }) -> DispatchFn
+> ```
 
 ```js
-import { app } from "hyperapp"
+import { app } from "hyperapp";
 
 // ...
+const props = { init, view, node }
 
-app(props)
+app(props);
 ```
 
-| Parameter       | Type   | Required?
-| --------------- | ------ | ---------
-| [props](#props) | object | :100:
+
+| Parameter       | Type   | Required? |
+| --------------- | ------ | --------- |
+| [props](#props) | Object | yes       |
+
+| Return parameter      | Type     |
+| --------------------- | -------- |
+| [dispatch](#dispatch) | Function |
 
 ---
 
@@ -22,13 +35,13 @@ app(props)
 
 There are only a handful of props you can use to configure your app.
 
-| Prop                            | Type                                                                      | Required?
-| ------------------------------- | ------------------------------------------------------------------------- | ---------
-| [init](#init)                   | [State](../architecture/state.md) or [Action](../architecture/actions.md) | :100:
-| [view](#view)                   | [View](../architecture/views.md)                                          | :100:
-| [node](#node)                   | DOM element                                                               | :100:
-| [subscriptions](#subscriptions) | function                                                                  | no
-| [dispatch](#dispatch)           | [Dispatch](../architecture/dispatch.md)                                   | no
+| Prop                            | Type                                                                      | Required? |
+| ------------------------------- | ------------------------------------------------------------------------- | --------- |
+| [init](#init)                   | [State](../architecture/state.md) or [Action](../architecture/actions.md) | yes       |
+| [view](#view)                   | [View](../architecture/views.md)                                          | yes       |
+| [node](#node)                   | DOM element                                                               | yes       |
+| [subscriptions](#subscriptions) | function                                                                  | no        |
+| [dispatch](#dispatch)           | [Dispatch](../architecture/dispatch.md)                                   | no        |
 
 #### `init:`
 
@@ -40,24 +53,23 @@ You can simply set the initial state directly:
 app({
   // ...
   init: { problems: 99 },
-})
+});
 ```
-<!-- The initial state is a play on Jay-Z's song "99 Problems". -->
+
+<!-- The initial state is a play on Jay-Z’s song “99 Problems”. -->
 
 Or you can use the various types of [actions](../architecture/actions.md) to do things like fetching initial data for your app.
 
 ```js
-import { butASPAAintOne } from "./fx"
+import { butASPAAintOne } from "./fx";
 
 app({
   // ...
-  init: (problems = 99) => [
-    { loading: true },
-    butASPAAintOne(problems),
-  ],
-})
+  init: (problems = 99) => [{ loading: true }, butASPAAintOne(problems)],
+});
 ```
-<!-- The initial action taken is a play on Jay-Z's song "99 Problems". -->
+
+<!-- The initial action taken is a play on Jay-Z’s song “99 Problems”. -->
 
 Note that if you leave `init:` undefined the state will be set to an empty object (`{}`) by default.
 
@@ -65,23 +77,20 @@ Note that if you leave `init:` undefined the state will be set to an empty objec
 
 The [top-level view](../architecture/views.md#top-level-view) that represents the app as a whole. There can only be one top-level view in your app.
 
-Hyperapp uses this to map your state to your UI for rendering the app. Every time the state of you application changes, this function will be called again to render the UI based on the new state, using the logic you've defined inside of it.
+Hyperapp uses this to map your state to your UI for rendering the app. Every time the state of your application changes, this function will be called again to render the UI based on the new state, using the logic you’ve defined inside of it.
 
 ```js
 app({
   // ...
-  view: (state) =>
-    h("main", {}, [
-      outworld(state),
-      netherrealm(state),
-    ]),
-})
+  view: (state) => h("main", {}, [outworld(state), netherrealm(state)]),
+});
 ```
-<!-- "Outworld" and "Netherrealm" are two of several realms in the "Mortal Kombat" videogame series. -->
+
+<!-- “Outworld” and “Netherrealm” are two of several realms in the “Mortal Kombat” videogame series. -->
 
 #### `node:`
 
-The DOM element to render the virtual DOM over. Also known as the **mount node**. It's common to define an intentionally empty element in your HTML which has an ID that your app can use for mounting.
+The DOM element to render the virtual DOM over. Also known as the **mount node**. It’s common to define an intentionally empty element in your HTML which has an ID that your app can use for mounting.
 
 ```html
 <main id="app"></main>
@@ -91,7 +100,7 @@ The DOM element to render the virtual DOM over. Also known as the **mount node**
 app({
   // ...
   node: document.getElementById("app"),
-})
+});
 ```
 
 ##### Mounting
@@ -104,19 +113,15 @@ If the **mount node** had content within it then Hyperapp will attempt to [recyc
 
 A function that returns an array of [subscriptions](../architecture/subscriptions.md) for a given state.
 
-In a similar fashion to how [views](../architecture/views.md) are used to dynamically add and remove DOM elements based on the state, this subscriptions function is used for dynamically adding and removing subscriptions to the app.
+In a similar fashion to how [views](../architecture/views.md) are used to dynamically add and remove DOM elements based on the state, this _subscriptions_ function is used for dynamically adding and removing subscriptions to the app.
 
 ```js
-import { onKey } from "./subs"
+import { onKey } from "./subs";
 
 // ...
 
 app({
-  view: (state) =>
-    h("div", {}, [
-      state.playing && viewLevel(),
-      h("p", {}, text("Rip and Tear!")),
-    ]),
+  view: (state) => h("div", {}, [state.playing && viewLevel(), h("p", {}, text("Rip and Tear!"))]),
   subscriptions: (state) => [
     onKey("w", MoveForward),
     onKey("a", MoveBackward),
@@ -124,9 +129,10 @@ app({
     onKey("d", StrafeRight),
     state.playingDOOM1993 || onKey(" ", Jump),
   ],
-})
+});
 ```
-<!-- The 1993 videogame DOOM did not have jumping as a movement option. "Rip and Tear!" was one of the infamous quotes of the protagonist DoomGuy in the 1996 Doom comic "Knee Deep in the Dead". -->
+
+<!-- The 1993 videogame DOOM did not have jumping as a movement option. “Rip and Tear!” was one of the infamous quotes of the protagonist DoomGuy in the 1996 Doom comic “Knee Deep in the Dead”. -->
 
 #### `dispatch:`
 
@@ -147,25 +153,26 @@ A dispatch initializer that can create a [custom dispatch function](../architect
 ```js
 app({
   init: { message: "Hello, World!" },
-  view: (state) => h("p", {}, text(state.message)),
+  view: (state) => h("body", {}, h("p", {}, text(state.message))),
   node: document.body,
-})
+});
 ```
-<!-- A "Hello, World!" program is traditionally the first program you would write when learning a new programming language. -->
+
+<!-- A “Hello, World!” program is traditionally the first program you would write when learning a new programming language. -->
 
 ### Full Usage
 
 ```js
 app({
   init: { message: "Hello, World!" },
-  view: (state) => h("p", {}, text(state.message)),
+  view: (state) => h("body", {}, h("p", {}, text(state.message))),
   node: document.body,
   subscriptions: (state) => [sub1, sub2],
   dispatch: (dispatch) => (action, payload) => {
-    dispatch((state) => ({ ...state, message: `${state.message}!` }))
-    dispatch(action, payload)
+    dispatch((state) => ({ ...state, message: `${state.message}!` }));
+    dispatch(action, payload);
   },
-})
+});
 ```
 
 ---
@@ -180,6 +187,6 @@ You can embed your Hyperapp application within an already existing app that was 
 
 Multiple Hyperapp applications can coexist on the page simultaneously. They each have their own state and behave independently relative to each other.
 
-If they need to communicate with each other then subscriptions and effects for each app can be used for that purpose.
+If they need to communicate with each other, then subscriptions and effects for each app can be used for that purpose.
 
-However, if one is nested within another then the containing app would naturally have more control over the nested app, not only by controlling what can be used for nested app's [mount node](#node) but also by utilizing the nested app's [returned dispatch function](#instrumentation).
+However, if one is nested within another, then the containing app would naturally have more control over the nested app, not only by controlling what can be used for the nested app’s [mount node](#node) but also by utilizing the nested app’s [returned dispatch function](#instrumentation).

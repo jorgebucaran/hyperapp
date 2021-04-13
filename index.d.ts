@@ -112,12 +112,6 @@ declare module "hyperapp" {
   type Action<S, P = any> = (state: S, payload: P) => Dispatchable<S>
   type ActionWithPayload<S, P = any> = [action: Action<S, P>, payload: P]
 
-  // A transform carries out the transition from one state to another.
-  type Transform<S, P = any> = (
-    state: S | StateWithEffects<S>,
-    payload: P
-  ) => S | StateWithEffects<S>
-
   // State can be associated with a list of effects to run.
   type StateWithEffects<S, P = any> = [state: S, ...effects: Effect<S, P>[]]
 

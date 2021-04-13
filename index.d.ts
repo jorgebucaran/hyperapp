@@ -102,12 +102,15 @@ declare module "hyperapp" {
   ) => void
 
   // A dispatchable entity, when processed, causes a state transition.
-  type Dispatchable<S> = S | StateWithEffects<S> | Reaction<S>
+  type Dispatchable<S, P = any> =
+    | S
+    | StateWithEffects<S>
+    | Action<S, P>
+    | ActionWithPayload<S, P>
 
   // An action transforms existing state and/or wraps another action.
-  type Reaction<S, P = any> = Action<S, P> | ActionWithPayload<S, P>
   type Action<S, P = any> = (state: S, payload: P) => Dispatchable<S>
-  type ActionWithPayload<S, P> = [action: Action<S, P>, payload: P]
+  type ActionWithPayload<S, P = any> = [action: Action<S, P>, payload: P]
 
   // A transform carries out the transition from one state to another.
   type Transform<S, P = any> = (
@@ -138,7 +141,7 @@ declare module "hyperapp" {
     readonly tag: Tag<S>
     readonly key: Key
     memo?: PropList<S, C>
-    events?: Record<string, Reaction<S>>
+    events?: Record<string, Action<S> | ActionWithPayload<S>>
 
     // `_VDOM` is a guard property which gives us a way to tell `VDOM` objects
     // apart from `PropList` objects. Since we don't expect users to manually
@@ -167,8 +170,9 @@ declare module "hyperapp" {
 
   // Virtual DOM properties will often correspond to HTML attributes.
   type PropList<S, C> = Readonly<
-    ElementCreationOptions &
-    EventActions<S, C> & {
+    | ElementCreationOptions
+    & EventActions<S, C>
+    & {
       [_: string]: unknown
       class?: ClassProp
       key?: Key
@@ -203,12 +207,15 @@ declare module "hyperapp" {
 
   // Event handlers are implemented using actions.
   type EventActions<S, C> = {
-    [K in keyof EventsMap]?: Reaction<S, EventsMap[K]> | ActionWithPayload<S, C>
+    [K in keyof EventsMap]?:
+      | Action<S, EventsMap[K]>
+      | ActionWithPayload<S, EventsMap[K]>
+      | ActionWithPayload<S, C>
   }
 
   // Most event typings are provided by TypeScript itself.
-  type EventsMap
-    = { [K in keyof HTMLElementEventMap as `on${K}`]: HTMLElementEventMap[K] }
+  type EventsMap =
+    | { [K in keyof HTMLElementEventMap as `on${K}`]: HTMLElementEventMap[K] }
     & { [K in keyof WindowEventMap as `on${K}`]: WindowEventMap[K] }
     & { onsearch: Event }
 }

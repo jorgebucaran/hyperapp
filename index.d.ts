@@ -96,7 +96,10 @@ declare module "hyperapp" {
   // ---------------------------------------------------------------------------
 
   // A dispatched action handles an event in the context of the current state.
-  type Dispatch<S> = (action: Action<S>, payload?: any) => void
+  type Dispatch<S> = (
+    dispatchable: Dispatchable<S>,
+    payload?: any
+  ) => void
 
   // A dispatchable entity, when processed, causes a state transition.
   type Dispatchable<S> = S | StateWithEffects<S> | Action<S>

@@ -9,7 +9,7 @@ declare module "hyperapp" {
   function h<S, C = unknown, T extends string = string>(
     // Tags cannot be empty strings.
     tag: T extends "" ? never : T,
-    props: PropList<S, C>,
+    props: ValidateCustomPayloads<S, C> & PropList<S>,
     children?: MaybeVDOM<S> | readonly MaybeVDOM<S>[]
   ): VDOM<S>
 
@@ -29,15 +29,23 @@ declare module "hyperapp" {
   // ---------------------------------------------------------------------------
 
   // This lets you use a version of `h` which assumes your particular app state.
-  interface TypedH<S, C = unknown> {
+  // The `_ extends never` ensures that any such state-aware `h` doesn't have
+  // an explicitly set state type that contradicts the type it actually uses.
+  interface TypedH<S> {
     <_ extends never, T extends string = string>(
       tag: T extends "" ? never : T,
-      props: PropList<S, C>,
+      props: PropList<S>,
       children?: MaybeVDOM<S> | readonly MaybeVDOM<S>[]
     ): VDOM<S>
   }
 
-  // ---------------------------------------------------------------------------
+  // This helper for `h` lets event handling actions accept custom payloads.
+  type ValidateCustomPayloads<S, T> = {
+    [K in keyof T]?:
+      K extends "style" ? StyleProp
+      : T[K] extends [Action<S, infer P>, unknown] ? [Action<S, P>, P]
+      : T[K]
+  }
 
   // This utility type requires every property of an object or none at all.
   // `App` uses this to make sure `view:` always appears alongside `node:`.
@@ -96,10 +104,7 @@ declare module "hyperapp" {
   // ---------------------------------------------------------------------------
 
   // A dispatched action handles an event in the context of the current state.
-  type Dispatch<S> = (
-    dispatchable: Dispatchable<S>,
-    payload?: any
-  ) => void
+  type Dispatch<S> = (dispatchable: Dispatchable<S>, payload?: any) => void
 
   // A dispatchable entity, when processed, causes a state transition.
   type Dispatchable<S, P = any> =
@@ -119,22 +124,19 @@ declare module "hyperapp" {
   type Effect<S, P = any> = [effecter: Effecter<S, P>, payload: P]
 
   // An effecter is where side effects and any additional dispatching may occur.
-  type Effecter<S, P> = (
-    dispatch: Dispatch<S>,
-    payload: P
-  ) => void | Promise<void>
+  type Effecter<S, P> = (dispatch: Dispatch<S>, payload: P) => void | Promise<void>
 
   // ---------------------------------------------------------------------------
 
   // A virtual DOM node represents an actual DOM element.
-  type VDOM<S, C = unknown> = {
+  type VDOM<S> = {
     readonly type: VDOMNodeType
-    readonly props: PropList<S, C>
+    readonly props: PropList<S>
     readonly children: MaybeVDOM<S>[]
     node: null | undefined | Node
     readonly tag: Tag<S>
     readonly key: Key
-    memo?: PropList<S, C>
+    memo?: PropList<S>
     events?: Record<string, Action<S> | ActionWithPayload<S>>
 
     // `_VDOM` is a guard property which gives us a way to tell `VDOM` objects
@@ -163,9 +165,9 @@ declare module "hyperapp" {
   type Key = string | null | undefined
 
   // Virtual DOM properties will often correspond to HTML attributes.
-  type PropList<S, C> = Readonly<
+  type PropList<S> = Readonly<
     | ElementCreationOptions
-    & EventActions<S, C>
+    & EventActions<S>
     & {
       [_: string]: unknown
       class?: ClassProp
@@ -200,11 +202,8 @@ declare module "hyperapp" {
   }
 
   // Event handlers are implemented using actions.
-  type EventActions<S, C> = {
-    [K in keyof EventsMap]?:
-      | Action<S, EventsMap[K]>
-      | ActionWithPayload<S, EventsMap[K]>
-      | ActionWithPayload<S, C>
+  type EventActions<S> = {
+    [K in keyof EventsMap]?: Action<S, EventsMap[K]> | ActionWithPayload<S>
   }
 
   // Most event typings are provided by TypeScript itself.

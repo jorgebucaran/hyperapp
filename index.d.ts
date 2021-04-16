@@ -166,7 +166,12 @@ declare module "hyperapp" {
 
   // Virtual DOM properties will often correspond to HTML attributes.
   type PropList<S> = Readonly<
-    | ElementCreationOptions
+    | Partial<Omit<HTMLElement, keyof (
+      | DocumentAndElementEventHandlers
+      & ElementCSSInlineStyle
+      & GlobalEventHandlers
+    )>>
+    & ElementCreationOptions
     & EventActions<S>
     & {
       [_: string]: unknown

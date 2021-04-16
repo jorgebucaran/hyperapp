@@ -89,11 +89,11 @@ declare module "hyperapp" {
     state: S
   ) => (boolean | undefined | Subscription<S> | Unsubscribe)[]
 
-  // A subscription represents subscriber activity.
-  type Subscription<S, P = any> = [subscriber: Subscriber<S, P>, payload: P]
-
-  // A subscriber reacts to subscription updates.
-  type Subscriber<S, P> = (dispatch: Dispatch<S>, payload: P) => void | Unsubscribe
+  // A subscription reacts to external activity.
+  type Subscription<S, P = any> = [
+    subscriber: (dispatch: Dispatch<S>, payload: P) => void | Unsubscribe,
+    payload: P
+  ]
 
   // An unsubscribe function cleans up a canceled subscription.
   type Unsubscribe = () => void
@@ -109,22 +109,18 @@ declare module "hyperapp" {
   // A dispatchable entity, when processed, causes a state transition.
   type Dispatchable<S, P = any> =
     | S
-    | StateWithEffects<S>
+    | [state: S, ...effects: Effect<S, P>[]]
     | Action<S, P>
-    | ActionWithPayload<S, P>
+    | [action: Action<S, P>, payload: P]
 
   // An action transforms existing state and/or wraps another action.
   type Action<S, P = any> = (state: S, payload: P) => Dispatchable<S>
-  type ActionWithPayload<S, P = any> = [action: Action<S, P>, payload: P]
 
-  // State can be associated with a list of effects to run.
-  type StateWithEffects<S, P = any> = [state: S, ...effects: Effect<S, P>[]]
-
-  // An effect is an abstraction over an impure process.
-  type Effect<S, P = any> = [effecter: Effecter<S, P>, payload: P]
-
-  // An effecter is where side effects and any additional dispatching may occur.
-  type Effecter<S, P> = (dispatch: Dispatch<S>, payload: P) => void | Promise<void>
+  // An effect is where side effects and any additional dispatching may occur.
+  type Effect<S, P = any> = [
+    effecter: (dispatch: Dispatch<S>, payload: P) => void | Promise<void>,
+    payload: P
+  ]
 
   // ---------------------------------------------------------------------------
 
@@ -137,7 +133,7 @@ declare module "hyperapp" {
     readonly tag: Tag<S>
     readonly key: Key
     memo?: PropList<S>
-    events?: Record<string, Action<S> | ActionWithPayload<S>>
+    events?: Record<string, Action<S> | [action: Action<S>, payload: any]>
 
     // `_VDOM` is a guard property which gives us a way to tell `VDOM` objects
     // apart from `PropList` objects. Since we don't expect users to manually
@@ -208,7 +204,9 @@ declare module "hyperapp" {
 
   // Event handlers are implemented using actions.
   type EventActions<S> = {
-    [K in keyof EventsMap]?: Action<S, EventsMap[K]> | ActionWithPayload<S>
+    [K in keyof EventsMap]?:
+      | Action<S, EventsMap[K]>
+      | [action: Action<S>, payload: any]
   }
 
   // Most event typings are provided by TypeScript itself.

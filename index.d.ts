@@ -20,7 +20,7 @@ declare module "hyperapp" {
   ): VDOM<S>
 
   // `text()` creates a virtual DOM node representing plain text.
-  function text<T, S>(
+  function text<S, T = unknown>(
     // While most values can be stringified, symbols and functions cannot.
     value: T extends symbol | ((..._: any[]) => any) ? never : T,
     node?: Node

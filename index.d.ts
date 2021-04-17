@@ -14,7 +14,13 @@ declare module "hyperapp" {
   ): VDOM<S>
 
   // `memo()` stores a view along with any given data for it.
-  function memo<S, D extends string | any[] | Record<string, any>>(
+  function memo<
+    S,
+    D extends string | unknown[] | Record<string, any> =
+      | string
+      | unknown[]
+      | Record<string, any>
+  >(
     view: View<D>,
     data: D
   ): VDOM<S>

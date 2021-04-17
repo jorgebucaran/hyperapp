@@ -6,10 +6,10 @@ declare module "hyperapp" {
   function app<S>(props: App<S>): Dispatch<S>
 
   // `h()` builds a virtual DOM node.
-  function h<S, T extends string = string>(
+  function h<S, C = unknown, T extends string = string>(
     // Tags cannot be empty strings.
     tag: T extends "" ? never : T,
-    props: PropList<S>,
+    props: ValidateCustomPayloads<S, C> & PropList<S>,
     children?: MaybeVDOM<S> | readonly MaybeVDOM<S>[]
   ): VDOM<S>
 
@@ -20,7 +20,7 @@ declare module "hyperapp" {
   ): VDOM<S>
 
   // `text()` creates a virtual DOM node representing plain text.
-  function text<T, S>(
+  function text<S, T = unknown>(
     // While most values can be stringified, symbols and functions cannot.
     value: T extends symbol | ((..._: any[]) => any) ? never : T,
     node?: Node
@@ -28,36 +28,72 @@ declare module "hyperapp" {
 
   // ---------------------------------------------------------------------------
 
-  // A Hyperapp instance has an initial state and a base view.
-  // It's usually mounted over an available DOM element.
-  type App<S> =
-    | Readonly<{ init: State<S> | StateWithEffects<S> | Action<S> }>
-    | Readonly<{ subscriptions: Subscriptions<S> }>
-    | Readonly<{ dispatch: DispatchInitializer<S> }>
-    | Readonly<{
-        init?: State<S> | StateWithEffects<S> | Action<S>
-        view: View<S>
-        node: Node
-        subscriptions?: Subscriptions<S>
-        dispatch?: DispatchInitializer<S>
-      }>
+  // This lets you use a version of `h` which assumes your particular app state.
+  // The `_ extends never` ensures that any such state-aware `h` doesn't have
+  // an explicitly set state type that contradicts the type it actually uses.
+  interface TypedH<S> {
+    <_ extends never, T extends string = string>(
+      tag: T extends "" ? never : T,
+      props: PropList<S>,
+      children?: MaybeVDOM<S> | readonly MaybeVDOM<S>[]
+    ): VDOM<S>
+  }
+
+  // This helper for `h` lets event handling actions accept custom payloads.
+  type ValidateCustomPayloads<S, T> = {
+    [K in keyof T]?:
+      K extends "style" ? StyleProp
+      : T[K] extends [Action<S, infer P>, unknown] ? [Action<S, P>, P]
+      : T[K]
+  }
+
+  // This utility type requires every property of an object or none at all.
+  // `App` uses this to make sure `view:` always appears alongside `node:`.
+  type AllOrNothing<T> = T | { [K in keyof T]?: never }
+
+  // This utility type ensures at least one property in an object to be present.
+  // `App` uses this to conveniently invalidate `app({})` because that is
+  // basically a fancy no-op.
+  type AtLeastOne<T> = { [K in keyof T]: Pick<T, K> }[keyof T]
+  // Credit: https://stackoverflow.com/a/59987826/1935675
+
+  // This utility type validates plain objects while invalidating array objects
+  // and string objects by disallowing numerical indexing. Used by `StyleProp`.
+  type IndexableByKey = Record<number, never>
+
+  // ---------------------------------------------------------------------------
+
+  // A Hyperapp instance generally has an initial state and a base view and is
+  // mounted over an available DOM element.
+  type App<S> = Readonly<
+    {
+      view: View<S>
+      node: Node
+    } |
+    AtLeastOne<{
+      init: Dispatchable<S>
+      subscriptions: Subscriptions<S>
+      dispatch: DispatchInitializer<S>
+    }> &
+    AllOrNothing<{
+      view: View<S>
+      node: Node
+    }>
+  >
 
   // A view builds a virtual DOM node representation of the application state.
-  type View<S> = (state: State<S>) => VDOM<S>
+  type View<S> = (state: S) => VDOM<S>
 
   // The subscriptions function manages a set of subscriptions.
   type Subscriptions<S> = (
-    state: State<S>
+    state: S
   ) => (boolean | undefined | Subscription<S> | Unsubscribe)[]
 
-  // A subscription represents subscriber activity.
-  type Subscription<S, D = any> = [Subscriber<S, D>, Payload<D>]
-
-  // A subscriber reacts to subscription updates.
-  type Subscriber<S, D> = (
-    dispatch: Dispatch<S>,
-    payload?: Payload<D>
-  ) => void | Unsubscribe
+  // A subscription reacts to external activity.
+  type Subscription<S, P = any> = [
+    subscriber: (dispatch: Dispatch<S>, payload: P) => void | Unsubscribe,
+    payload: P
+  ]
 
   // An unsubscribe function cleans up a canceled subscription.
   type Unsubscribe = () => void
@@ -68,41 +104,23 @@ declare module "hyperapp" {
   // ---------------------------------------------------------------------------
 
   // A dispatched action handles an event in the context of the current state.
-  type Dispatch<S> = (action: Action<S>, payload?: Payload<any>) => void
+  type Dispatch<S> = (dispatchable: Dispatchable<S>, payload?: any) => void
+
+  // A dispatchable entity, when processed, causes a state transition.
+  type Dispatchable<S, P = any> =
+    | S
+    | [state: S, ...effects: Effect<S, P>[]]
+    | Action<S, P>
+    | [action: Action<S, P>, payload: P]
 
   // An action transforms existing state and/or wraps another action.
-  type Action<S, P = any> = ActionTransform<S, P> | ActionWithPayload<S, P>
-  type ActionTransform<S, P = any> = (
-    state: State<S>,
-    payload: Payload<P>
-  ) => State<S> | StateWithEffects<S> | Action<S>
-  type ActionWithPayload<S, P> = [ActionTransform<S, P>, Payload<P>]
+  type Action<S, P = any> = (state: S, payload: P) => Dispatchable<S>
 
-  // A transform carries out the transition from one state to another.
-  type Transform<S, P = any> = (
-    state: State<S> | StateWithEffects<S>,
-    payload?: Payload<P>
-  ) => State<S> | StateWithEffects<S>
-
-  // Application state is accessible in every view, action, and subscription.
-  type State<S> = S
-
-  // State can be associated with a list of effects to run.
-  type StateWithEffects<S, D = any> = [State<S>, ...Effect<S, D>[]]
-
-  type EffectCreator<S, D = any> = (..._: any[]) => Effect<S, D>
-
-  // An effect is an abstraction over an impure process.
-  type Effect<S, D = any> = [Effecter<S, D>, Payload<D>]
-
-  // An effecter is where side effects and any additional dispatching may occur.
-  type Effecter<S, D> = (
-    dispatch: Dispatch<S>,
-    payload?: Payload<D>
-  ) => void | Promise<void>
-
-  // A payload is data given to an action, effect, or subscription.
-  type Payload<P> = P
+  // An effect is where side effects and any additional dispatching may occur.
+  type Effect<S, P = any> = [
+    effecter: (dispatch: Dispatch<S>, payload: P) => void | Promise<void>,
+    payload: P
+  ]
 
   // ---------------------------------------------------------------------------
 
@@ -115,10 +133,13 @@ declare module "hyperapp" {
     readonly tag: Tag<S>
     readonly key: Key
     memo?: PropList<S>
-    events?: Record<string, Action<S>>
+    events?: Record<string, Action<S> | [action: Action<S>, payload: any]>
 
     // `_VDOM` is a guard property which gives us a way to tell `VDOM` objects
-    // apart from `PropList` objects.
+    // apart from `PropList` objects. Since we don't expect users to manually
+    // create their own VNodes, we can take advantage of this trick that's
+    // specific to TypeScript without forcing the user to do
+    // anything different.
     _VDOM: true
   }
 
@@ -141,17 +162,23 @@ declare module "hyperapp" {
 
   // Virtual DOM properties will often correspond to HTML attributes.
   type PropList<S> = Readonly<
-    ElementCreationOptions &
-      EventActions<S> & {
-        [_: string]: unknown
-        class?: ClassProp
-        key?: Key
-        style?: StyleProp
+    | Partial<Omit<HTMLElement, keyof (
+      | DocumentAndElementEventHandlers
+      & ElementCSSInlineStyle
+      & GlobalEventHandlers
+    )>>
+    & ElementCreationOptions
+    & EventActions<S>
+    & {
+      [_: string]: unknown
+      class?: ClassProp
+      key?: Key
+      style?: StyleProp
 
-        // By disallowing `_VDOM` we ensure that values having the `VDOM` type are
-        // not mistaken for also having `PropList`.
-        _VDOM?: never
-      }
+      // By disallowing `_VDOM` we ensure that values having the `VDOM` type
+      // are not mistaken for also having `PropList`.
+      _VDOM?: never
+    }
   >
 
   // The `class` property represents an HTML class attribute string.
@@ -171,19 +198,20 @@ declare module "hyperapp" {
   // TypeScript's CSS property definitions. The trade-off doesn't
   // seem worth it given the chances of using such properties.
   // However, you can use type casting if you want to them.
-  type StyleProp = {
+  type StyleProp = IndexableByKey & {
     [K in keyof CSSStyleDeclaration]?: CSSStyleDeclaration[K] | null
-  } & // Since strings are indexable we can avoid them by preventing indexing.
-  { [_: number]: never }
+  }
 
   // Event handlers are implemented using actions.
   type EventActions<S> = {
-    [K in keyof EventsMap]?: Action<S, EventsMap[K]> | ActionWithPayload<S, any>
+    [K in keyof EventsMap]?:
+      | Action<S, EventsMap[K]>
+      | [action: Action<S>, payload: any]
   }
-  type EventsMap = {
-    [K in keyof HTMLElementEventMap as `on${K}`]: HTMLElementEventMap[K]
-  } &
-    { [K in keyof WindowEventMap as `on${K}`]: WindowEventMap[K] } & {
-      onsearch: Event
-    }
+
+  // Most event typings are provided by TypeScript itself.
+  type EventsMap =
+    | { [K in keyof HTMLElementEventMap as `on${K}`]: HTMLElementEventMap[K] }
+    & { [K in keyof WindowEventMap as `on${K}`]: WindowEventMap[K] }
+    & { onsearch: Event }
 }

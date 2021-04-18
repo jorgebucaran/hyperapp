@@ -22,8 +22,7 @@ declare module "hyperapp" {
   // `text()` creates a virtual DOM node representing plain text.
   function text<S, T = unknown>(
     // While most values can be stringified, symbols and functions cannot.
-    value: T extends symbol | ((..._: any[]) => any) ? never : T,
-    node?: Node
+    value: T extends symbol | ((..._: any[]) => any) ? never : T
   ): VDOM<S>
 
   // ---------------------------------------------------------------------------
@@ -41,9 +40,10 @@ declare module "hyperapp" {
 
   // This helper for `h` lets event handling actions accept custom payloads.
   type ValidateCustomPayloads<S, T> = {
-    [K in keyof T]?:
-      K extends "style" ? StyleProp
-      : T[K] extends [Action<S, infer P>, unknown] ? [Action<S, P>, P]
+    [K in keyof T]?: K extends "style"
+      ? StyleProp
+      : T[K] extends [Action<S, infer P>, unknown]
+      ? [Action<S, P>, P]
       : T[K]
   }
 
@@ -66,19 +66,19 @@ declare module "hyperapp" {
   // A Hyperapp instance generally has an initial state and a base view and is
   // mounted over an available DOM element.
   type App<S> = Readonly<
-    {
-      view: View<S>
-      node: Node
-    } |
-    AtLeastOne<{
-      init: Dispatchable<S>
-      subscriptions: Subscriptions<S>
-      dispatch: DispatchInitializer<S>
-    }> &
-    AllOrNothing<{
-      view: View<S>
-      node: Node
-    }>
+    | {
+        view: View<S>
+        node: Node
+      }
+    | (AtLeastOne<{
+        init: Dispatchable<S>
+        subscriptions: Subscriptions<S>
+        dispatch: DispatchInitializer<S>
+      }> &
+        AllOrNothing<{
+          view: View<S>
+          node: Node
+        }>)
   >
 
   // A view builds a virtual DOM node representation of the application state.
@@ -162,23 +162,25 @@ declare module "hyperapp" {
 
   // Virtual DOM properties will often correspond to HTML attributes.
   type PropList<S> = Readonly<
-    | Partial<Omit<HTMLElement, keyof (
-      | DocumentAndElementEventHandlers
-      & ElementCSSInlineStyle
-      & GlobalEventHandlers
-    )>>
-    & ElementCreationOptions
-    & EventActions<S>
-    & {
-      [_: string]: unknown
-      class?: ClassProp
-      key?: Key
-      style?: StyleProp
+    Partial<
+      Omit<
+        HTMLElement,
+        keyof (DocumentAndElementEventHandlers &
+          ElementCSSInlineStyle &
+          GlobalEventHandlers)
+      >
+    > &
+      ElementCreationOptions &
+      EventActions<S> & {
+        [_: string]: unknown
+        class?: ClassProp
+        key?: Key
+        style?: StyleProp
 
-      // By disallowing `_VDOM` we ensure that values having the `VDOM` type
-      // are not mistaken for also having `PropList`.
-      _VDOM?: never
-    }
+        // By disallowing `_VDOM` we ensure that values having the `VDOM` type
+        // are not mistaken for also having `PropList`.
+        _VDOM?: never
+      }
   >
 
   // The `class` property represents an HTML class attribute string.
@@ -198,9 +200,10 @@ declare module "hyperapp" {
   // TypeScript's CSS property definitions. The trade-off doesn't
   // seem worth it given the chances of using such properties.
   // However, you can use type casting if you want to them.
-  type StyleProp = IndexableByKey & {
-    [K in keyof CSSStyleDeclaration]?: CSSStyleDeclaration[K] | null
-  }
+  type StyleProp = IndexableByKey &
+    {
+      [K in keyof CSSStyleDeclaration]?: CSSStyleDeclaration[K] | null
+    }
 
   // Event handlers are implemented using actions.
   type EventActions<S> = {
@@ -210,8 +213,10 @@ declare module "hyperapp" {
   }
 
   // Most event typings are provided by TypeScript itself.
-  type EventsMap =
-    | { [K in keyof HTMLElementEventMap as `on${K}`]: HTMLElementEventMap[K] }
-    & { [K in keyof WindowEventMap as `on${K}`]: WindowEventMap[K] }
-    & { onsearch: Event }
+  type EventsMap = {
+    [K in keyof HTMLElementEventMap as `on${K}`]: HTMLElementEventMap[K]
+  } &
+    { [K in keyof WindowEventMap as `on${K}`]: WindowEventMap[K] } & {
+      onsearch: Event
+    }
 }

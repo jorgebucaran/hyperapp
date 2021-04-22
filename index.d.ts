@@ -164,17 +164,18 @@ declare module "hyperapp" {
   type Key = string | null | undefined
 
   // Virtual DOM properties will often correspond to HTML attributes.
-  type PropList<S> = Readonly<
-    Partial<
-      Omit<
-        HTMLElement,
-        keyof (DocumentAndElementEventHandlers &
+  type PropList<S> =
+    Readonly<
+      Partial<
+        Omit<HTMLElement, keyof (
+          DocumentAndElementEventHandlers &
           ElementCSSInlineStyle &
-          GlobalEventHandlers)
-      >
-    > &
-      ElementCreationOptions &
-      EventActions<S> & {
+          GlobalEventHandlers
+        )> &
+        ElementCreationOptions &
+        EventActions<S>
+      > &
+      {
         [_: string]: unknown
         class?: ClassProp
         key?: Key
@@ -184,7 +185,7 @@ declare module "hyperapp" {
         // are not mistaken for also having `PropList`.
         _VDOM?: never
       }
-  >
+    >
 
   // The `class` property represents an HTML class attribute string.
   type ClassProp =
@@ -210,7 +211,7 @@ declare module "hyperapp" {
 
   // Event handlers are implemented using actions.
   type EventActions<S> = {
-    [K in keyof EventsMap]?:
+    [K in keyof EventsMap]:
       | Action<S, EventsMap[K]>
       | [action: Action<S>, payload: any]
   }

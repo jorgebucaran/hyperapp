@@ -79,7 +79,8 @@ declare module "hyperapp" {
       init: Dispatchable<S>
 
       // The subscriptions function manages a set of subscriptions.
-      subscriptions: (state: S) => (boolean | undefined | Subscription<S>)[]
+      subscriptions: (state: S) =>
+        readonly (boolean | undefined | Subscription<S>)[]
 
       // Dispatching can be augmented to do custom processing.
       dispatch: (dispatch: Dispatch<S>) => Dispatch<S>
@@ -105,7 +106,7 @@ declare module "hyperapp" {
       K extends "style"
       ? StyleProp
       : T[K] extends [action: Action<S, infer P>, payload: unknown]
-      ? [action: Action<S, P>, payload: P]
+      ? readonly [action: Action<S, P>, payload: P]
       : T[K]
   }
 
@@ -117,10 +118,10 @@ declare module "hyperapp" {
     | S
     | [state: S, ...effects: Effect<S, P>[]]
     | Action<S, P>
-    | [action: Action<S, P>, payload: P]
+    | readonly [action: Action<S, P>, payload: P]
 
   // An effect is where side effects and any additional dispatching may occur.
-  type Effect<S, P = unknown> = [
+  type Effect<S, P = unknown> = readonly [
     effecter: (dispatch: Dispatch<S>, payload: P) => void | Promise<void>,
     payload: P
   ]
@@ -129,7 +130,7 @@ declare module "hyperapp" {
   type EventActions<S> = {
     [K in keyof EventsMap]:
       | Action<S, EventsMap[K]>
-      | [action: Action<S>, payload: unknown]
+      | readonly [action: Action<S>, payload: unknown]
   }
 
   // In certain places a virtual DOM node can be made optional.
@@ -170,7 +171,7 @@ declare module "hyperapp" {
   }
 
   // A subscription reacts to external activity.
-  type Subscription<S, P = unknown> = [
+  type Subscription<S, P = unknown> = readonly [
     subscriber: (dispatch: Dispatch<S>, payload: P) => void | Unsubscribe,
     payload: P
   ]
@@ -181,11 +182,15 @@ declare module "hyperapp" {
   // A virtual DOM node (a.k.a. VNode) represents an actual DOM element.
   type VNode<S> = {
     readonly props: Props<S>
-    readonly children: MaybeVNode<S>[]
+    readonly children: readonly MaybeVNode<S>[]
     node: null | undefined | Node
 
     // Hyperapp takes care of using native Web platform event handlers for us.
-    events?: Record<string, Action<S> | [action: Action<S>, payload: unknown]>
+    events?:
+      Record<
+        string,
+        Action<S> | readonly [action: Action<S>, payload: unknown]
+      >
 
     // A key can uniquely associate a VNode with a certain DOM element.
     readonly key: string | null | undefined

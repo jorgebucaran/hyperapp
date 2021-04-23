@@ -121,7 +121,7 @@ declare module "hyperapp" {
     | readonly [action: Action<S, P>, payload: P]
 
   // An effect is where side effects and any additional dispatching may occur.
-  type Effect<S, P = unknown> = readonly [
+  type Effect<S, P = any> = readonly [
     effecter: (dispatch: Dispatch<S>, payload: P) => void | Promise<void>,
     payload: P
   ]
@@ -171,7 +171,7 @@ declare module "hyperapp" {
   }
 
   // A subscription reacts to external activity.
-  type Subscription<S, P = unknown> = readonly [
+  type Subscription<S, P = any> = readonly [
     subscriber: (dispatch: Dispatch<S>, payload: P) => void | Unsubscribe,
     payload: P
   ]

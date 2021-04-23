@@ -172,7 +172,7 @@ declare module "hyperapp" {
 
   // A subscription reacts to external activity.
   type Subscription<S, P = any> = readonly [
-    subscriber: (dispatch: Dispatch<S>, payload: P) => void | Unsubscribe,
+    subscriber: (dispatch: Dispatch<S>, payload: P) => Unsubscribe,
     payload: P
   ]
 

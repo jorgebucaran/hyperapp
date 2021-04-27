@@ -12,7 +12,7 @@ text : (String | Number) -> VNode
 
 **_Import & Usage:_**
 
-You’ll normally use it with [`h()`](./h.md).
+You'll normally use it with [`h()`](./h.md).
 
 ```js
 import { text } from "hyperapp"
@@ -39,7 +39,7 @@ You would use `text()` to insert regular text content into your views.
 h("p", {}, text("You must construct additional pylons."))
 ```
 
-<!-- In the videogame “StarCraft”, the alien race known as the Protoss use special structures called pylons to power their buildings. -->
+<!-- In the videogame StarCraft, the alien race known as the Protoss use special structures called pylons to power their buildings. -->
 
 Of course, this may include anything relevant from the [current state](../architecture/state.md).
 
@@ -47,7 +47,7 @@ Of course, this may include anything relevant from the [current state](../archit
 h("p", {}, text(state.message))
 ```
 
-`text()` exists as the way of defining text nodes such that Hyperapp’s implementation is kept simpler than it otherwise would have been.
+`text()` exists as the way of defining text nodes such that Hyperapp's implementation is kept simpler than it otherwise would have been.
 
 ---
 
@@ -55,4 +55,4 @@ h("p", {}, text(state.message))
 
 ### `content`
 
-While `content` can technically be anything, what will actually be used for the content of the VDOM element will be the stringified version of `content`. So, using actual strings and numbers makes a lot of sense but using arrays will probably be formatted in a way you don’t want and objects won’t work well at all.
+While `content` can technically be anything, what will actually be used for the content of the VDOM element will be the stringified version of `content`. So, using actual strings and numbers makes a lot of sense but using arrays will probably be formatted in a way you don't want and objects won't work well at all.

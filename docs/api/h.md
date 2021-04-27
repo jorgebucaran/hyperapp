@@ -32,7 +32,7 @@ h(tag, props, children)
 | ---------------------------------------------------- | ----- |
 | [virtual node](../architecture/views.md#virtual-dom) | VNode |
 
-`h()` effectively represents the page elements used in your app. Because it’s just JavaScript we can easily render whichever elements we see fit in a dynamical manner.
+`h()` effectively represents the page elements used in your app. Because it's just JavaScript we can easily render whichever elements we see fit in a dynamical manner.
 
 ```js
 const hobbit = (wearingElvenCloak) =>
@@ -41,7 +41,7 @@ const hobbit = (wearingElvenCloak) =>
   ])
 ```
 
-<!-- In “The Lord of the Rings” book/movie series, Frodo is a main character who eventually obtains a special cloak that makes him invisible when worn. -->
+<!-- In The Lord of the Rings book/movie series, Frodo is a main character who eventually obtains a special cloak that makes him invisible when worn. -->
 
 ---
 
@@ -63,7 +63,7 @@ h("input", {
 })
 ```
 
-<!-- In the television series “Star Trek: The Next Generation”, one of captain Picard’s catchphrases is “Engage!”. -->
+<!-- In the television series Star Trek: The Next Generation, one of captain Picard's catchphrases is Engage!. -->
 
 Hyphenated props will need to be quoted in order to use them. The quotes are necessary to abide by JavaScript syntax restrictions.
 
@@ -71,7 +71,7 @@ Hyphenated props will need to be quoted in order to use them. The quotes are nec
 h("q", { "data-zoq-fot-pik": "Frungy" }, text("The Sport of Kings!"))
 ```
 
-<!-- In the videogame “Star Control II: The Ur-Quan Masters” the alien races known as the Zoq-Fot-Pik have a favorite mysterious sport called Frungy which they regard as “The Sport of Kings”. -->
+<!-- In the videogame Star Control II: The Ur-Quan Masters the alien races known as the Zoq-Fot-Pik have a favorite mysterious sport called Frungy which they regard as The Sport of Kings. -->
 
 Certain properties are treated in a special way by Hyperapp.
 
@@ -79,13 +79,13 @@ Certain properties are treated in a special way by Hyperapp.
 
 The [classes](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/class) to use with the VNode. The `class` prop can be given in various formats:
 
-- As a string representing a class name. Because of the way Hyperapp internally processes class strings they’re allowed to have a space-separated list of different class names.
+- As a string representing a class name. Because of the way Hyperapp internally processes class strings they're allowed to have a space-separated list of different class names.
 
   ```js
   h("div", { class: "muggle-studies" })
   ```
 
-  <!-- In the “Harry Potter” book/movie series, “Muggle Studies” is a class that can be taken at the Hogwarts School of Witchcraft and Wizardry. -->
+  <!-- In the Harry Potter book/movie series, Muggle Studies is a class that can be taken at the Hogwarts School of Witchcraft and Wizardry. -->
 
 - As an object where the keys are the names of the classes while the values are booleans for toggling the classes.
 
@@ -93,7 +93,7 @@ The [classes](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attribute
   h("div", { class: { arithmancy: true, "study-of-ancient-runes": true } })
   ```
 
-  <!-- In the “Harry Potter” series, “Arithmancy” and “The Study of Ancient Runes” are classes that can be taken at Hogwarts. -->
+  <!-- In the Harry Potter series, Arithmancy and The Study of Ancient Runes are classes that can be taken at Hogwarts. -->
 
 - As an array that contains any combination of the various formats including this one.
 
@@ -101,7 +101,7 @@ The [classes](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attribute
   h("div", { class: ["magical theory", "xylomancy"] })
   ```
 
-  <!-- In the “Harry Potter” series, “Magical Theory” and “Xylomancy” are classes that can be taken at Hogwarts. -->
+  <!-- In the Harry Potter series, Magical Theory and Xylomancy are classes that can be taken at Hogwarts. -->
 
   This means the array format is recursive.
 
@@ -122,8 +122,8 @@ The [classes](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attribute
   ```
 
   <!--
-  In the television show “Mighty Morphin Power Rangers”, Tommy Oliver was initially the Green Ranger and eventually became the White Ranger.
-  The Green Ranger’s Zord was called the Dragonzord.
+  In the television show Mighty Morphin Power Rangers, Tommy Oliver was initially the Green Ranger and eventually became the White Ranger.
+  The Green Ranger's Zord was called the Dragonzord.
   The Black Ranger had the Mastodon Dinozord.
   The Pink Ranger had the Pterodactyl Dinozord.
   The Blue Ranger had the Triceratops Dinozord.
@@ -150,11 +150,11 @@ h(
 )
 ```
 
-<!-- The combination of the plus and backslash characters along with the blue and white colors are reminiscent of Hyperapp’s logo. -->
+<!-- The combination of the plus and backslash characters along with the blue and white colors are reminiscent of Hyperapp's logo. -->
 
 #### `key:`
 
-A unique string per VNode that helps Hyperapp track if VNodes are changed, added, or removed in situations where it’s unable to do so, such as in arrays.
+A unique string per VNode that helps Hyperapp track if VNodes are changed, added, or removed in situations where it's unable to do so, such as in arrays.
 
 ```js
 const pokedex = (pokemon) =>
@@ -181,7 +181,7 @@ The children of the VNode are other VNodes which are directly nested within it.
 h("q", {}, text("There is no spoon."))
 ```
 
-<!-- In the movie “The Matrix”, a young boy says “There is no spoon.” to the protagonist Neo. -->
+<!-- In the movie The Matrix, a young boy says There is no spoon. to the protagonist Neo. -->
 
 or as an array of child VNodes:
 
@@ -192,7 +192,7 @@ h("q", {}, [
 ])
 ```
 
-<!-- In the movie “The Matrix”, Neo says “I know Kung Fu.” after having downloaded martial arts knowledge into his head. His mentor Morpheus replies with “Show me.” before they spar with each other. -->
+<!-- In the movie The Matrix, Neo says I know Kung Fu. after having downloaded martial arts knowledge into his head. His mentor Morpheus replies with Show me. before they spar with each other. -->
 
 ---
 
@@ -200,7 +200,7 @@ h("q", {}, [
 
 ### JSX Support
 
-Hyperapp doesn’t support [JSX](https://reactjs.org/docs/introducing-jsx.html) out-of-the-box. That said you can use this custom JSX function to be able to use it.
+Hyperapp doesn't support [JSX](https://reactjs.org/docs/introducing-jsx.html) out-of-the-box. That said you can use this custom JSX function to be able to use it.
 
 ```js
 import { h, text } from "hyperapp"

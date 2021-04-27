@@ -24,8 +24,8 @@ h(tag, props, children)
 
 | Input Parameters      | Type                     | Required? |
 | --------------------- | ------------------------ | --------- |
-| [tag](#tag)           | String                   | yes       |
-| [props](#props)       | Object                   | yes       |
+| [tag](#tag)           | String                   | yes :100: |
+| [props](#props)       | Object                   | yes :100: |
 | [children](#children) | VNode or array of VNodes | no        |
 
 | Output Parameter                                     | Type  |

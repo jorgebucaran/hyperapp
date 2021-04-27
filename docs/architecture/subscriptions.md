@@ -60,9 +60,9 @@ On every state change, Hyperapp will check each subscriptions array entry to see
 | Previously Active | Currently Active | What Happens                                 |
 | ----------------- | ---------------- | -------------------------------------------- |
 | no                | no               | Nothing.                                     |
-| no                | yes              | Subscription starts up.                      |
-| yes               | no               | Subscription shuts down and gets cleaned up. |
-| yes               | yes              | Subscription remains active.                 |
+| no                | yes :100:        | Subscription starts up.                      |
+| yes :100:         | no               | Subscription shuts down and gets cleaned up. |
+| yes :100:         | yes :100:        | Subscription remains active.                 |
 
 To restart a subscription you must first deactivate it and then, during the next state change, reactivate it.
 

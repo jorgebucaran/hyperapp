@@ -24,7 +24,7 @@ memo(view, props)
 
 | Input Parameters | Type                                            | Required? |
 | ---------------- | ----------------------------------------------- | --------- |
-| [view](#view)    | [View](../architecture/views.md)                | yes       |
+| [view](#view)    | [View](../architecture/views.md)                | yes :100: |
 | [data](#data)    | anything indexable (i.e. Array, Object, String) | no        |
 
 | Output Parameter                                     | Type  |

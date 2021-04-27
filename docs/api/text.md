@@ -26,7 +26,7 @@ h("p", {}, text(content))
 
 | Input Parameter     | Type                                                  | Required? | Notes                                   |
 | ------------------- | ----------------------------------------------------- | --------- | --------------------------------------- |
-| [content](#content) | any (sort of), but meaningfully only String or Number | yes       |                                         |
+| [content](#content) | any (sort of), but meaningfully only String or Number | yes :100: |                                         |
 | node                | DOM element                                           | no        | This is for internal Hyperapp use only! |
 
 | Output Parameter                                          | Type  |

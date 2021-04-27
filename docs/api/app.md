@@ -24,7 +24,7 @@ app(props)
 
 | Input Parameter | Type   | Required? |
 | --------------- | ------ | --------- |
-| [props](#props) | Object | yes       |
+| [props](#props) | Object | yes :100: |
 
 | Output Parameter                        | Type     |
 | --------------------------------------- | -------- |
@@ -40,9 +40,9 @@ There are only a handful of props you can use to configure your app.
 
 | Prop                            | Type                                                                      | Required? |
 | ------------------------------- | ------------------------------------------------------------------------- | --------- |
-| [init](#init)                   | [State](../architecture/state.md) or [Action](../architecture/actions.md) | yes       |
-| [view](#view)                   | [View](../architecture/views.md)                                          | yes       |
-| [node](#node)                   | DOM element                                                               | yes       |
+| [init](#init)                   | [State](../architecture/state.md) or [Action](../architecture/actions.md) | yes :100: |
+| [view](#view)                   | [View](../architecture/views.md)                                          | yes :100: |
+| [node](#node)                   | DOM element                                                               | yes :100: |
 | [subscriptions](#subscriptions) | Function                                                                  | no        |
 | [dispatch](#dispatch)           | [Dispatch](../architecture/dispatch.md)                                   | no        |
 

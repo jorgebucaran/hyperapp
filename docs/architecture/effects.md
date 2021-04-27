@@ -245,6 +245,6 @@ app({
         text("Send greetings")
       ),
     ]),
-  node: document.getElementById("app"),
+  node: document.querySelector("main"),
 })
 ```

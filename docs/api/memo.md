@@ -83,7 +83,7 @@ app({
       h("p", {}, text("Memoized view showing list:")),
       memo(listView, state.list),
     ]),
-  node: document.body,
+  node: document.querySelector("main"),
 })
 ```
 

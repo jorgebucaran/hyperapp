@@ -166,8 +166,8 @@ A dispatch initializer that can create a [custom dispatch function](../architect
 ```js
 app({
   init: { message: "Hello, World!" },
-  view: (state) => h("body", {}, h("p", {}, text(state.message))),
-  node: document.body,
+  view: (state) => h("main", {}, h("p", {}, text(state.message))),
+  node: document.querySelector("main"),
 })
 ```
 
@@ -178,8 +178,8 @@ app({
 ```js
 app({
   init: { message: "Hello, World!" },
-  view: (state) => h("body", {}, h("p", {}, text(state.message))),
-  node: document.body,
+  view: (state) => h("main", {}, h("p", {}, text(state.message))),
+  node: document.querySelector("main"),
   subscriptions: (state) => [sub1, sub2],
   dispatch: (dispatch) => (action, payload) => {
     dispatch((state) => ({ ...state, message: `${state.message}!` }))

@@ -146,7 +146,7 @@ export const myApp = (node) =>
         payload && h("p", {}, text(`Payload received: ${JSON.stringify(payload)}`)),
       ]),
     subscriptions: () => [listen("secret", Response)],
-    node,
+    node: document.querySelector("main"),
   })
 ```
 

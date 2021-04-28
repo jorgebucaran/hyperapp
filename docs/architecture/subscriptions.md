@@ -47,15 +47,15 @@ app({
 })
 ```
 
-<!-- In William Shakespeare’s play “Hamlet”, Prince Hamlet gives a soliloquy in Act 3, Scene 1 where he begins with “To be, or not to be”, basically questioning life. -->
+<!-- In William Shakespeare's play "Hamlet", Prince Hamlet gives a soliloquy in Act 3, Scene 1 where he begins with "To be, or not to be", basically questioning life. -->
 
 ### Subscriptions Array Format
 
-Hyperapp expects the subscriptions array to be of a fixed size with each entry being either a boolean value or a particular subscription function that stays in the same array position. Using dynamic arrays won’t work. Inlining subscription functions also won’t work because they would just reset on every state change.
+Hyperapp expects the subscriptions array to be of a fixed size with each entry being either a boolean value or a particular subscription function that stays in the same array position. Using dynamic arrays won't work. Inlining subscription functions also won't work because they would just reset on every state change.
 
 ### Subscription Lifecycle
 
-On every state change, Hyperapp will check each subscriptions array entry to see if they’re active and compare that with how they were in the previous state. This comparison determines how subscriptions are handled.
+On every state change, Hyperapp will check each subscriptions array entry to see if they're active and compare that with how they were in the previous state. This comparison determines how subscriptions are handled.
 
 | Previously Active | Currently Active | What Happens                                 |
 | ----------------- | ---------------- | -------------------------------------------- |
@@ -70,7 +70,7 @@ To restart a subscription you must first deactivate it and then, during the next
 
 ## Custom Subscriptions
 
-There may be times when an official Hyperapp subscription package is unavailable for our needs. For those scenarios we’ll need to make our own custom subscriptions.
+There may be times when an official Hyperapp subscription package is unavailable for our needs. For those scenarios we'll need to make our own custom subscriptions.
 
 ### Subscribers
 
@@ -94,7 +94,7 @@ Well-formed subscribers, as it is with effecters, should be as generic as possib
 
 ### Example
 
-Let’s say we’re embedding our Hyperapp application within a legacy vanilla JavaScript project.
+Let's say we're embedding our Hyperapp application within a legacy vanilla JavaScript project.
 
 Somewhere within the legacy portion of our project a custom event gets emitted:
 
@@ -110,7 +110,7 @@ const triggerSpecialEvent = () => {
 triggerSpecialEvent()
 ```
 
-<!-- In “The Hitchhiker’s Guide to the Galaxy” the number 42 is given as The Answer to the Ultimate Question of Life, The Universe, and Everything by the computer Deep Thought. -->
+<!-- In "The Hitchhiker's Guide to the Galaxy" the number 42 is given as The Answer to the Ultimate Question of Life, The Universe, and Everything by the computer Deep Thought. -->
 
 Our embedded Hyperapp application will need a custom subscription to be able to deal with custom events:
 
@@ -128,9 +128,9 @@ const listenToEvent = (dispatch, props) => {
 export const listen = (type, action) => [listenToEvent, { type, action }]
 ```
 
-In case you’re wondering why `listenToEvent()`’s listener is using `requestAnimationFrame`, it has to do with [synchronization](actions.md#synchronization).
+In case you're wondering why `listenToEvent()`'s listener is using `requestAnimationFrame`, it has to do with [synchronization](actions.md#synchronization).
 
-Now we can use our custom subscription in our Hyperapp application. Since it will be embedded we’ll wrap our call to [`app()`](../api/app.md) within an exported function our legacy app can make use of:
+Now we can use our custom subscription in our Hyperapp application. Since it will be embedded we'll wrap our call to [`app()`](../api/app.md) within an exported function our legacy app can make use of:
 
 ```js
 import { h, text, app } from "hyperapp"
@@ -156,7 +156,7 @@ export const myApp = (node) =>
 
 ### Destructuring Gotcha
 
-Since a well-formed subscriber returns a cleanup function, it’s possible that the cleanup function would want to communicate back to your app that the cleanup took place.
+Since a well-formed subscriber returns a cleanup function, it's possible that the cleanup function would want to communicate back to your app that the cleanup took place.
 
 ```js
 const listenToEvent = (dispatch, props) => {
@@ -171,7 +171,7 @@ const listenToEvent = (dispatch, props) => {
 }
 ```
 
-So, using `props` directly works well. However, if instead you tried to use destructuring then the cleanup function won’t be able to communicate back to your app in all scenarios:
+So, using `props` directly works well. However, if instead you tried to use destructuring then the cleanup function won't be able to communicate back to your app in all scenarios:
 
 ```js
 const listenToEvent = (dispatch, { action, type }) => {
@@ -186,7 +186,7 @@ const listenToEvent = (dispatch, { action, type }) => {
 }
 ```
 
-The reason is because destructuring the `props` parameter will create local copies of the props listed. This means the cleanup function’s closure will be referring to the `action` function that existed at the moment the cleanup function was created and returned, not the moment the cleanup function gets invoked. This is a subtle yet significant difference depending on how you use your actions with this type of subscriber.
+The reason is because destructuring the `props` parameter will create local copies of the props listed. This means the cleanup function's closure will be referring to the `action` function that existed at the moment the cleanup function was created and returned, not the moment the cleanup function gets invoked. This is a subtle yet significant difference depending on how you use your actions with this type of subscriber.
 
 The scenario in which this comes into play is if you use an anonymous function for the `action`. An example of where you may consider doing this is if you wanted a way to seletively prevent default event behavior when a subscriber responds to an event.
 
@@ -239,4 +239,4 @@ app({
 })
 ```
 
-Now when the subscription function runs per state update, the wrapped action is generated anew which results in a new function reference for the subscription’s `action`. So, `subOnThatThing` must use `props` instead of destructuring to ensure the right function reference is available.
+Now when the subscription function runs per state update, the wrapped action is generated anew which results in a new function reference for the subscription's `action`. So, `subOnThatThing` must use `props` instead of destructuring to ensure the right function reference is available.

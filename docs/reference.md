@@ -9,14 +9,14 @@
 
 ## Architecture
 
-- [State](architecture/state.md) represents your application’s data.
+- [State](architecture/state.md) represents your application's data.
 - [Views](architecture/views.md) represent your state visually.
 - [Actions](architecture/actions.md) cause state transitions and trigger effects.
 - [Effects](architecture/effects.md) are triggered by actions to interact with external processes.
 - [Subscriptions](architecture/subscriptions.md) dispatch actions in response to external events.
 - [Dispatch](architecture/dispatch.md) controls action dispatching.
 
-<h2 title="“I’d like to think of browsing the glossary as flipping pages in a book. I can go anywhere instantly and learn whatever suits my fancy.” ―@icylace">Glossary</h2>
+<h2 title="“I'd like to think of browsing the glossary as flipping pages in a book. I can go anywhere instantly and learn whatever suits my fancy.” ―@icylace">Glossary</h2>
 
 - [Action](architecture/actions.md): An app behavior that transitions state and invokes effects.
 - [Action Descriptor](architecture/actions.md#payloads): A tuple representing an action with its payload.

@@ -19,7 +19,7 @@ Action : (State, Payload?) -> NextState
 
 **_Naming Recommendation:_**
 
-Actions are recommended to be named in `PascalCase` to signal to the developer that they should be thought of as messages intended for use by Hyperapp itself. It is also recommended to use a verb (for instance `Add`) or a verb-noun phrase (`AddArticle`) for the name. The verb can be either in its imperative form, like `IncrementBy`, `ToggleVisibility`, `GetPizzas` or `SaveAddress`, or in the past tense form, for instance `GotData`, `StoppedCounting` – especially when the action is used for a “final” state transition at the end of an action-effect-chain.
+Actions are recommended to be named in `PascalCase` to signal to the developer that they should be thought of as messages intended for use by Hyperapp itself. It is also recommended to use a verb (for instance `Add`) or a verb-noun phrase (`AddArticle`) for the name. The verb can be either in its imperative form, like `IncrementBy`, `ToggleVisibility`, `GetPizzas` or `SaveAddress`, or in the past tense form, for instance `GotData`, `StoppedCounting` – especially when the action is used for a "final" state transition at the end of an action-effect-chain.
 
 ---
 
@@ -47,10 +47,10 @@ The next simplest type of action merely sets the state.
 const FeedFace = () => 0xfeedface
 ```
 
-<!-- “FEEDFACE” is an example of “hexspeak”, a variant of English spelling using hexadecimal digits. -->
+<!-- "FEEDFACE" is an example of "hexspeak", a variant of English spelling using hexadecimal digits. -->
 
 <a name="actual-state-transition"></a>
-But you’ll most likely want to do actual state transitions.
+But you'll most likely want to do actual state transitions.
 
 ```js
 // Action : (State) -> NewState
@@ -72,7 +72,7 @@ Actions can also accept an optional **payload** along with the current state.
 const AddBy = (state, amount) => ({ ...state, value: state.value + amount })
 ```
 
-To give a payload to an action we’ll want to use an **action descriptor**.
+To give a payload to an action we'll want to use an **action descriptor**.
 
 ```js
 h("button", { onclick: [AddBy, 5] }, text("+5"))
@@ -117,7 +117,7 @@ A more useful form preprocesses payloads to use with other actions. We can make 
 const AddByValue = (state, event) => [AddBy, +event.target.value]
 ```
 
-We’ll make use of `AddByValue` with an `input` node instead of the `button` from earlier because we want the event that gets preprocessed to have a `value` property we can extract:
+We'll make use of `AddByValue` with an `input` node instead of the `button` from earlier because we want the event that gets preprocessed to have a `value` property we can extract:
 
 ```js
 h("input", { value: state, oninput: AddByValue })
@@ -158,7 +158,7 @@ const Liokaiser = (state) => ({
 })
 ```
 
-<!-- In the '80s Japanese animated series “Transformers: Victory”, Liokaiser is a Decepticon combiner made from the combination of the team of Leozack, Drillhorn, Guyhawk, Hellbat, Jallguar, and Killbison. -->
+<!-- In the '80s Japanese animated series "Transformers: Victory", Liokaiser is a Decepticon combiner made from the combination of the team of Leozack, Drillhorn, Guyhawk, Hellbat, Jallguar, and Killbison. -->
 
 ---
 
@@ -173,13 +173,13 @@ const Stop = () => undefined
 
 Once your app stops, several things happen:
 
-- All of the app’s subscriptions stop.
+- All of the app's subscriptions stop.
 - The DOM is no longer touched.
 - Event handlers stop working.
 
 A stopped app cannot be restarted.
 
-If you encounter a scenario where your app doesn’t respond when you click stuff within it, then your app might have been stopped by mistake.
+If you encounter a scenario where your app doesn't respond when you click stuff within it, then your app might have been stopped by mistake.
 
 ---
 
@@ -205,7 +205,7 @@ There are a couple of options available:
 
 ### Nonstandard Usage
 
-- Using an anonymous function for an action has the disadvantage that it has no name for debugging tools to make use of. That’s significant because it’s recommended that actions have names.
+- Using an anonymous function for an action has the disadvantage that it has no name for debugging tools to make use of. That's significant because it's recommended that actions have names.
 
 - If you wanted to use curried functions to implement actions then you can use named function expressions.
 
@@ -237,7 +237,7 @@ There are a couple of options available:
   h("button", { onclick: FiftyFiveAndLog }, text("55 and log"))
   ```
 
-  The [`init`](../api/app.md#init) property of [`app()`](../api/app.md) is the only place where it’s valid to either directly set the state or use an action to do it.
+  The [`init`](../api/app.md#init) property of [`app()`](../api/app.md) is the only place where it's valid to either directly set the state or use an action to do it.
 
   That said, this type of usage is fascinating...
 

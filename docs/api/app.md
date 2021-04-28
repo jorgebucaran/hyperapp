@@ -59,7 +59,7 @@ app({
 })
 ```
 
-<!-- The initial state is a play on Jay-Z’s song “99 Problems”. -->
+<!-- The initial state is a play on Jay-Z's song "99 Problems". -->
 
 Or you can use the various types of [actions](../architecture/actions.md) to do things like fetching initial data for your app.
 
@@ -75,7 +75,7 @@ app({
 })
 ```
 
-<!-- The initial action taken is a play on Jay-Z’s song “99 Problems”. -->
+<!-- The initial action taken is a play on Jay-Z's song "99 Problems". -->
 
 Note that if you leave `init:` undefined the state will be set to an empty object (`{}`) by default.
 
@@ -83,7 +83,7 @@ Note that if you leave `init:` undefined the state will be set to an empty objec
 
 The [top-level view](../architecture/views.md#top-level-view) that represents the app as a whole. There can only be one top-level view in your app.
 
-Hyperapp uses this to map your state to your UI for rendering the app. Every time the state of your application changes, this function will be called again to render the UI based on the new state, using the logic you’ve defined inside of it.
+Hyperapp uses this to map your state to your UI for rendering the app. Every time the state of your application changes, this function will be called again to render the UI based on the new state, using the logic you've defined inside of it.
 
 ```js
 app({
@@ -95,11 +95,11 @@ app({
 })
 ```
 
-<!-- “Outworld” and “Netherrealm” are two of several realms in the “Mortal Kombat” videogame series. -->
+<!-- "Outworld" and "Netherrealm" are two of several realms in the "Mortal Kombat" videogame series. -->
 
 #### `node:`
 
-The DOM element to render the virtual DOM over. Also known as the **mount node**. It’s common to define an intentionally empty element in your HTML which has an ID that your app can use for mounting.
+The DOM element to render the virtual DOM over. Also known as the **mount node**. It's common to define an intentionally empty element in your HTML which has an ID that your app can use for mounting.
 
 ```html
 <main id="app"></main>
@@ -145,7 +145,7 @@ app({
 })
 ```
 
-<!-- The 1993 videogame DOOM did not have jumping as a movement option. “Rip and Tear!” was one of the infamous quotes of the protagonist DoomGuy in the 1996 Doom comic “Knee Deep in the Dead”. -->
+<!-- The 1993 videogame DOOM did not have jumping as a movement option. "Rip and Tear!" was one of the infamous quotes of the protagonist DoomGuy in the 1996 Doom comic "Knee Deep in the Dead". -->
 
 #### `dispatch:`
 
@@ -171,7 +171,7 @@ app({
 })
 ```
 
-<!-- A “Hello, World!” program is traditionally the first program you would write when learning a new programming language. -->
+<!-- A "Hello, World!" program is traditionally the first program you would write when learning a new programming language. -->
 
 ### Full Usage
 
@@ -202,4 +202,4 @@ Multiple Hyperapp applications can coexist on the page simultaneously. They each
 
 If they need to communicate with each other, then subscriptions and effects for each app can be used for that purpose.
 
-However, if one is nested within another, then the containing app would naturally have more control over the nested app, not only by controlling what can be used for the nested app’s [mount node](#node) but also by utilizing the nested app’s [returned dispatch function](#instrumentation).
+However, if one is nested within another, then the containing app would naturally have more control over the nested app, not only by controlling what can be used for the nested app's [mount node](#node) but also by utilizing the nested app's [returned dispatch function](#instrumentation).

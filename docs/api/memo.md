@@ -49,7 +49,7 @@ The data to pass along to the wrapped view function instead of the [state](../ar
 
 ## Example
 
-Here we have a list of numbers displayed in a regular view as well as a memoized version of the same view. One button changes the list which affects both views. Another button updates a counter which affects the counter’s view and also the regular view of the list but not the memoized view of the list.
+Here we have a list of numbers displayed in a regular view as well as a memoized version of the same view. One button changes the list which affects both views. Another button updates a counter which affects the counter's view and also the regular view of the list but not the memoized view of the list.
 
 ```js
 import { h, text, app, memo } from "hyperapp"

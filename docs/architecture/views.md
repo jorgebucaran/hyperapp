@@ -28,11 +28,11 @@ const view = (state) =>
       class: { "calling-acid-burn": state.beingFramed },
       onclick: FindThatDisk,
     },
-    text("It’s in that place where I put that thing that time.")
+    text("It's in that place where I put that thing that time.")
   )
 ```
 
-<!-- In the 1995 movie “Hackers”, the hacker “The Phantom Freak” calls his friend “Acid Burn” from jail as he’s being framed for a crime he didn’t commit. -->
+<!-- In the 1995 movie "Hackers", the hacker "The Phantom Freak" calls his friend "Acid Burn" from jail as he's being framed for a crime he didn't commit. -->
 
 [`text()`](../api/text.md) just creates text nodes so the views it can create on its own are necessarily simplistic.
 
@@ -40,15 +40,15 @@ const view = (state) =>
 const view = () => text("Go home and be a family man!")
 ```
 
-<!-- In the videogame “Street Fighter II: The World Warrior”, the fighter known as Guile says this taunt to his opponent after defeating them. -->
+<!-- In the videogame "Street Fighter II: The World Warrior", the fighter known as Guile says this taunt to his opponent after defeating them. -->
 
-[`memo()`](../api/memo.md) is designed to be used with other functions that produce VNodes, so it doesn’t really describe a view by itself.
+[`memo()`](../api/memo.md) is designed to be used with other functions that produce VNodes, so it doesn't really describe a view by itself.
 
 ```js
 const view = (state) => memo(scenicView, state.vacationSpot)
 ```
 
-<!-- Just a play-on-words between how “view” is used in Hyperapp and everyday language. -->
+<!-- Just a play-on-words between how "view" is used in Hyperapp and everyday language. -->
 
 ---
 
@@ -68,9 +68,9 @@ Component : (GlobalState | PartialState) -> VNode | [...VNodes]
 
 
 
-You would typically make components for widgets that provide the building block elements of your app’s UI. Components for larger UI segments such as dashboards or pages would make use of these widgets.
+You would typically make components for widgets that provide the building block elements of your app's UI. Components for larger UI segments such as dashboards or pages would make use of these widgets.
 
-In the following example, `coinsDisplay` is a component in the form of a subview while `questionBlock` is a component in the form of some function that returns a VNode. Notice the former cares directly about the state while the latter doesn’t:
+In the following example, `coinsDisplay` is a component in the form of a subview while `questionBlock` is a component in the form of some function that returns a VNode. Notice the former cares directly about the state while the latter doesn't:
 
 ```js
 // Component : (GlobalState) -> VNode
@@ -101,7 +101,7 @@ const level = (state) =>
   ])
 ```
 
-<!-- In the videogame “Super Mario Bros.” coins are important for earning extra lives and the question blocks often contain useful contents. -->
+<!-- In the videogame "Super Mario Bros." coins are important for earning extra lives and the question blocks often contain useful contents. -->
 
 
 
@@ -111,7 +111,7 @@ Components are recommended to be named in `camelCase` using a noun that concisel
 
 ### Components Returning Multiple VNodes
 
-Components are allowed to return an array of VNodes. However, to make use of such components you’ll need to spread their result.
+Components are allowed to return an array of VNodes. However, to make use of such components you'll need to spread their result.
 
 ```js
 // Component : () -> [...VNodes]
@@ -125,7 +125,7 @@ const finishingMoveOptions = () => [
 const view = () => h("div", {}, finishingMoveOptions())
 ```
 
-<!-- In the “Mortal Kombat” videogame series there are multiple ways to finish off your opponent. The opportunity to do so occurs at the end of a match once the match announcer exclaims “Finish Him!” -->
+<!-- In the "Mortal Kombat" videogame series there are multiple ways to finish off your opponent. The opportunity to do so occurs at the end of a match once the match announcer exclaims "Finish Him!" -->
 
 ---
 
@@ -133,7 +133,7 @@ const view = () => h("div", {}, finishingMoveOptions())
 
 ### Top-Level View
 
-Every Hyperapp application has a base view that encompasses all others. This is the **top-level view** that’s defined by the [`view:`](../api/app.md#view) property when using [`app()`](../api/app.md). Hyperapp automatically calls this view and gives it the current state when the state is initially set or anytime it’s updated.
+Every Hyperapp application has a base view that encompasses all others. This is the **top-level view** that's defined by the [`view:`](../api/app.md#view) property when using [`app()`](../api/app.md). Hyperapp automatically calls this view and gives it the current state when the state is initially set or anytime it's updated.
 
 ```js
 app({
@@ -146,7 +146,7 @@ app({
 })
 ```
 
-<!-- “Earthrealm” and “Edenia” are two of several realms in the “Mortal Kombat” videogame series. -->
+<!-- "Earthrealm" and "Edenia" are two of several realms in the "Mortal Kombat" videogame series. -->
 
 ### Conditional Rendering
 
@@ -174,7 +174,7 @@ Hyperapp supports hydration of views out of the box. This means that if the moun
 
 Hyperapp uses it to determine how to efficiently update the actual DOM. The virtual DOM is a tree data structure where each of its nodes represent a particular VDOM element that may or may not get rendered.
 
-We’ve already seen how [`h()`](../api/h.md), [`text()`](../api/text.md), and [`memo()`](../api/memo.md) all return different types of VNodes.
+We've already seen how [`h()`](../api/h.md), [`text()`](../api/text.md), and [`memo()`](../api/memo.md) all return different types of VNodes.
 
 ### Patching the DOM
 
@@ -184,7 +184,7 @@ When Hyperapp is ready to update the DOM it will do so starting at the element t
 
 Sometimes Hyperapp needs help determining how certain elements have changed. This is generally the case for VNodes that are rendered based on arrays in the state. This is because array items may have shifted around a lot during a state change, so when they get rendered the VNodes that currently represent them might be completely different than before.
 
-Since Hyperapp can’t know for sure it must assume everything had changed requiring a full render every time.
+Since Hyperapp can't know for sure it must assume everything had changed requiring a full render every time.
 
 For an example, look at the [`key:`](../api/h.md#key) documentation for [`h()`](../api/h.md).
 
@@ -200,8 +200,8 @@ For an example, look at the documentation for [`memo()`](../api/memo.md#example)
 
 #### Performance
 
-Memoization exists to help improve rendering performance but it’s not a panacea. If it was used with nodes that need to update on every state change, the cost of checking if the memoization’s props had changed before carrying out the rendering would be a net loss of performance over time.
+Memoization exists to help improve rendering performance but it's not a panacea. If it was used with nodes that need to update on every state change, the cost of checking if the memoization's props had changed before carrying out the rendering would be a net loss of performance over time.
 
-Memoization was designed for nodes that don’t need to update at all or just occassionally.
+Memoization was designed for nodes that don't need to update at all or just occassionally.
 
-As always when it comes to optimizations, be sure to measure the performance of your app to make sure you’re getting true benefits and adjust if necessary.
+As always when it comes to optimizations, be sure to measure the performance of your app to make sure you're getting true benefits and adjust if necessary.

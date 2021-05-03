@@ -38,7 +38,7 @@ declare module "hyperapp" {
     tag: NonEmptyString<T>,
     props: CustomPayloads<S, C> & Props<S>,
     children?: MaybeVNode<S> | readonly MaybeVNode<S>[]
-  ): VNode<S>
+  ): ElementVNode<S>
 
   // `memo()` stores a view along with any given data for it.
   function memo<S, D extends Indexable = Indexable>(
@@ -47,10 +47,10 @@ declare module "hyperapp" {
   ): VNode<S>
 
   // `text()` creates a virtual DOM node representing plain text.
-  function text<S, T = unknown>(
+  function text<T = unknown>(
     // Values, aside from symbols and functions, can be handled.
     value: T extends symbol | ((..._: unknown[]) => unknown) ? never : T
-  ): VNode<S>
+  ): TextVNode
 
   // ---------------------------------------------------------------------------
 
@@ -63,7 +63,7 @@ declare module "hyperapp" {
       tag: NonEmptyString<T>,
       props: CustomPayloads<S, C> & Props<S>,
       children?: MaybeVNode<S> | readonly MaybeVNode<S>[]
-    ): VNode<S>
+    ): ElementVNode<S>
   }
 
   // ---------------------------------------------------------------------------
@@ -180,7 +180,7 @@ declare module "hyperapp" {
   type Unsubscribe = () => void
 
   // A virtual DOM node (a.k.a. VNode) represents an actual DOM element.
-  type VNode<S> = {
+  type ElementVNode<S> = {
     readonly props: Props<S>
     readonly children: readonly MaybeVNode<S>[]
     node: null | undefined | Node
@@ -203,7 +203,7 @@ declare module "hyperapp" {
 
     // VNode types are based on actual DOM node types:
     // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
-    readonly type: 1 | 3
+    readonly type: 1
 
     // `_VNode` is a phantom guard property which gives us a way to tell `VNode`
     // objects apart from `Props` objects. Since we don't expect users to make
@@ -211,4 +211,18 @@ declare module "hyperapp" {
     // is unique to TypeScript type definitions for JavaScript code.
     _VNode: true
   }
+
+  // Certain VNodes specifically represent Text nodes and don't rely on state.
+  type TextVNode = {
+    readonly props: {}
+    readonly children: []
+    node: null | undefined | Node
+    readonly key: undefined
+    readonly tag: string
+    readonly type: 3
+    _VNode: true
+  }
+  
+  // VNodes may represent either Text or Element nodes.
+  type VNode<S> = ElementVNode<S> | TextVNode
 }

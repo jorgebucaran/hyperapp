@@ -14,7 +14,7 @@ Subscription : [SubscriberFn, Payload?]
 
 **_Naming Recommendation:_**
 
-Subscriptions are recommended to be named in `camelCase` prefixed by `on`, for instance `onEvery` or `onMouseEnter` in order to reflect their (app-external) event handling character.
+Subscriptions are recommended to be named in `camelCase` prefixed by `on`, for instance `onEvery` or `onMouseEnter` in order to reflect their event handling character.
 
 ---
 

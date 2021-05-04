@@ -16,7 +16,7 @@
 - [Subscriptions](architecture/subscriptions.md) dispatch actions in response to external events.
 - [Dispatch](architecture/dispatch.md) controls action dispatching.
 
-<h2 title="“I'd like to think of browsing the glossary as flipping pages in a book. I can go anywhere instantly and learn whatever suits my fancy.” ―@icylace">Glossary</h2>
+<h2 title="\"I'd like to think of browsing the glossary as flipping pages in a book. I can go anywhere instantly and learn whatever suits my fancy.\" ―@icylace">Glossary</h2>
 
 - [Action](architecture/actions.md): An app behavior that transitions state and invokes effects.
 - [Action Descriptor](architecture/actions.md#payloads): A tuple representing an action with its payload.

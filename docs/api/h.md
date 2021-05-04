@@ -4,12 +4,6 @@
 
 > A function that creates [virtual DOM nodes (VNodes)](../architecture/views.md#virtual-dom) which are used for defining [views](../architecture/views.md).
 
-**_Signature:_**
-
-```elm
-h : (String, Object, VNode? | [...VNodes]?) -> VNode
-```
-
 **_Import & Usage:_**
 
 ```js
@@ -20,15 +14,19 @@ import { h } from "hyperapp"
 h(tag, props, children)
 ```
 
-**_Parameter Overview:_**
+**_Signature & Parameters:_**
 
-| Input Parameters      | Type                     | Required? |
+```elm
+h : (String, Object, VNode? | [...VNodes]?) -> VNode
+```
+
+| Parameters            | Type                     | Required? |
 | --------------------- | ------------------------ | --------- |
 | [tag](#tag)           | String                   | yes :100: |
 | [props](#props)       | Object                   | yes :100: |
 | [children](#children) | VNode or array of VNodes | no        |
 
-| Output Parameter                                     | Type  |
+| Return Value                                         | Type  |
 | ---------------------------------------------------- | ----- |
 | [virtual node](../architecture/views.md#virtual-dom) | VNode |
 

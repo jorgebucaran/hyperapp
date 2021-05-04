@@ -4,12 +4,6 @@
 
 > A wrapper function to cache your [views](../architecture/views.md) based on properties you pass into them.
 
-**_Signature:_**
-
-```elm
-memo : (View, IndexableData?) -> VNode
-```
-
 **_Import & Usage:_**
 
 ```js
@@ -20,14 +14,18 @@ import { memo } from "hyperapp"
 memo(view, props)
 ```
 
-**_Parameter Overview:_**
+**_Signature & Parameters:_**
 
-| Input Parameters | Type                                            | Required? |
-| ---------------- | ----------------------------------------------- | --------- |
-| [view](#view)    | [View](../architecture/views.md)                | yes :100: |
-| [data](#data)    | anything indexable (i.e. Array, Object, String) | no        |
+```elm
+memo : (View, IndexableData) -> VNode
+```
 
-| Output Parameter                                     | Type  |
+| Parameters    | Type                                            | Required? |
+| ------------- | ----------------------------------------------- | --------- |
+| [view](#view) | [View](../architecture/views.md)                | yes :100: |
+| [data](#data) | anything indexable (i.e. Array, Object, String) | no        |
+
+| Return Value                                         | Type  |
 | ---------------------------------------------------- | ----- |
 | [virtual node](../architecture/views.md#virtual-dom) | VNode |
 

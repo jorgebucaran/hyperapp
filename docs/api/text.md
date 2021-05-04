@@ -4,12 +4,6 @@
 
 > A function that creates a [virtual DOM node (VNode)](../architecture/views.md#virtual-dom) out of a given value.
 
-**_Signature:_**
-
-```elm
-text : (String | Number) -> VNode
-```
-
 **_Import & Usage:_**
 
 You'll normally use it with [`h()`](./h.md).
@@ -22,14 +16,18 @@ import { text } from "hyperapp"
 h("p", {}, text(content))
 ```
 
-**_Parameter Overview:_**
+**_Signature & Parameters:_**
 
-| Input Parameter     | Type                                                  | Required? | Notes                                   |
-| ------------------- | ----------------------------------------------------- | --------- | --------------------------------------- |
-| [content](#content) | any (sort of), but meaningfully only String or Number | yes :100: |                                         |
-| node                | DOM element                                           | no        | This is for internal Hyperapp use only! |
+```elm
+text : (String | Number) -> VNode
+```
 
-| Output Parameter                                          | Type  |
+| Parameter           | Type                                                  | Required?      | Notes                                   |
+| ------------------- | ----------------------------------------------------- | -------------- | --------------------------------------- |
+| [content](#content) | any (sort of), but meaningfully only String or Number | yes :100:      |                                         |
+| node                | DOM element                                           | prohibited :x: | This is for internal Hyperapp use only! |
+
+| Return Value                                              | Type  |
 | --------------------------------------------------------- | ----- |
 | [virtual text node](../architecture/views.md#virtual-dom) | VNode |
 

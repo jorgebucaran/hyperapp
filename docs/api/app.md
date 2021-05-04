@@ -4,12 +4,6 @@
 
 > A function that initializes and mounts a Hyperapp application.
 
-**_Signature:_**
-
-```elm
-app : ({ Init, View, Node, Subscriptions?, Dispatch? }) -> DispatchFn
-```
-
 **_Import & Usage:_**
 
 ```js
@@ -20,13 +14,17 @@ import { app } from "hyperapp"
 app(props)
 ```
 
-**_Parameter Overview:_**
+**_Signature & Parameters:_**
 
-| Input Parameter | Type   | Required? |
+```elm
+app : ({ Init, View, Node, Subscriptions?, Dispatch? }) -> DispatchFn
+```
+
+| Parameter       | Type   | Required? |
 | --------------- | ------ | --------- |
 | [props](#props) | Object | yes :100: |
 
-| Output Parameter                        | Type     |
+| Return Value                            | Type     |
 | --------------------------------------- | -------- |
 | [dispatch](../architecture/dispatch.md) | Function |
 

@@ -44,7 +44,7 @@ There are only a handful of props you can use to configure your app.
 | [view](#view)                   | [View](../architecture/views.md)                                          | yes :100: |
 | [node](#node)                   | DOM element                                                               | yes :100: |
 | [subscriptions](#subscriptions) | Function                                                                  | no        |
-| [dispatch](#dispatch)           | [Dispatch](../architecture/dispatch.md)                                   | no        |
+| [dispatch](#dispatch)           | [Dispatch Initializer](../architecture/dispatch.md#dispatch-initializer)  | no        |
 
 #### `init:`
 

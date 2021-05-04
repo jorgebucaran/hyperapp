@@ -103,8 +103,6 @@ const level = (state) =>
 
 <!-- In the videogame "Super Mario Bros." coins are important for earning extra lives and the question blocks often contain useful contents. -->
 
-
-
 **_Naming Recommendation:_**
 
 Components are recommended to be named in `camelCase` using a noun that concisely describes the (purpose of the) composed group of contained elements best, for instance `articleHeader` or `questionBlock`.

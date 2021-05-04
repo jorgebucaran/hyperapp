@@ -136,8 +136,6 @@ const massFx = (data) => [runNormandy, data]
 EffecterFn : (DispatchFn, Payload?) -> void
 ```
 
-
-
 As with [subscribers](subscriptions.md#subscribers), effecters are allowed to use side-effects and can also manually [`dispatch`](dispatch.md) actions in order to inform your app of any pertinent results from their execution.
 
 It's important to know that effecters are more than just a way to wrap any arbitrary impure code. Their purpose is to be a generalized bridge between your app's business logic and the impure code that needs to exist. By keeping the effecters as generic as we can, we form a clean, manageable separation between what is requested to be done from how that request is done.

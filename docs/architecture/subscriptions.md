@@ -84,8 +84,6 @@ There may be times when an official Hyperapp subscription package is unavailable
 SubscriberFn : (DispatchFn, Payload?) -> CleanupFn
 ```
 
-
-
 As with [effecters](effects.md#effecters), subscribers are allowed to use side-effects and can also manually [`dispatch`](dispatch.md) actions in order to inform your app of any pertinent results from their execution.
 
 Subscribers can be given a data `payload` for their use.

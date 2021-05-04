@@ -1,816 +1,731 @@
-# Tutorial
+# Tutorial #
 
-Welcome! If you're new to Hyperapp, you've found the perfect place to start learning. This tutorial will guide you through your first steps with Hyperapp as we build a simple app.
-
--   [The Set-up](#setup)
--   [Hello World](#helloworld)
--   [View](#view)
-    -   [Virtual Nodes](#virtualnodes)
-    -   [Rendering to the DOM](#rendertodom)
-    -   [Composing the view with reusable functions](#composingview)
--   [State](#state)
--   [Actions](#actions)
-    -   [Reacting to events in the DOM](#reacting)
-    -   [Capturing event-data in actions](#eventdata)
-    -   [Actions with custom payloads](#custompayloads)
--   [Effects](#effects)
-    -   [Running effects with actions](#effectswithactions)
-    -   [Running effects on init](#effectsoninit)
--   [Subscriptions](#subscriptions)
--   [Conclusion](#conclusion)
-
-## The Set-up <a name="setup"></a>
-
-Together we'll build a simple newsreader-like application. As we do, we'll work
-our way through the five core concepts: view, state, actions, effects and subscriptions.
-
-To move things along, let's imagine we've already made a static version of the
-app we want to build, with this HTML:
+If you're new to Hyperapp, this is a great place to start. We'll cover all the essentials and then some, as we incrementally build up a simplistic example. To begin, open up an editor and type in this html:
 
 ```html
-<div id="app" class="container">
-    <div class="filter">
-        Filter:
-        <span class="filter-word">ocean</span>
-        <button>&#9998;</button>
-    </div>
-    <div class="stories">
-        <ul>
-            <li class="unread">
-                <p class="title">The <em>Ocean </em>is Sinking</p>
-                <p class="author">Kat Stropher</p>
-            </li>
-            <li class="reading">
-                <p class="title"><em>Ocean </em>life is brutal</p>
-                <p class="author">Surphy McBrah</p>
-            </li>
-            <li>
-                <p class="title">
-                    Family friendly fun at the
-                    <em>ocean </em>exhibit
-                </p>
-                <p class="author">Guy Prosales</p>
-            </li>
-        </ul>
-    </div>
-    <div class="story">
-        <h1>Ocean life is brutal</h1>
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat.
-        </p>
-        <p class="signature">Surphy McBrah</p>
-    </div>
-    <div class="autoupdate">
-        Auto update:
-        <input type="checkbox" />
-    </div>
-</div>
-```
-
-...and some CSS [here](https://zaceno.github.com/hatut/style.css).
-
-It looks like this:
-
-![what it looks like](https://raw.githubusercontent.com/jorgebucaran/hyperapp/1fd42319051e686adb9819b7e154f764fa3b0d29/docs/src/pages/Tutorial/tut1.png)
-
-We'll start by making Hyperapp render the HTML for us. Then we will
-add dynamic behavior to all the widgets, including text input and
-dynamically fetching stories.
-
-First, let's begin with the traditional "Hello World!"
-
-## Hello World <a name="helloworld"></a>
-
-Create this html file:
-
-```html
-<!DOCTYPE html>
+<!doctype html>
 <html>
-    <head>
-        <link
-            rel="stylesheet"
-            href="https://hyperapp.dev/tutorial-assets/style.css"
-        />
-        <script type="module">
-            import { app, h, text } from "https://unpkg.com/hyperapp"
-            // -- ACTIONS --
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="./hyperapp-tutorial.css" />
+    <script type="module">
 
-            // -- VIEWS ---
+/* Your code goes here */      
 
-            // -- RUN --
-            app({
-                init: {},
-                node: document.getElementById("app"),
-                view: () =>
-                    h("h1", {}, [text("Hello "), h("i", {}, text("World!"))]),
-            })
-        </script>
-    </head>
-    <body>
-        <div id="app"></div>
-    </body>
+    </script>
+  </head>
+  <body>
+    <main id="app"/>
+  </body>
 </html>
 ```
 
-> The section structure outlined in the comments is not important. It's
-> just a suggestion for how to organize the code we'll be
-> adding throughout the tutorial.
+Save it as `hyperapp-tutorial.html` on your local drive, and in the same folder create the `hyperapp-tutorial.css` with the following css:
 
-Open it in a browser, and you'll be greeted with an optimistic **Hello _World!_**.
+<details>
+  <summary>(expand tutorial css)</summary>
+  
+```css
+@import url('https://cdn.jsdelivr.net/npm/water.css@2/out/light.css');
 
-## View <a name="view"></a>
+:root {
+  --box-width: 200px;
+}
 
-Let's step through what just happened.
+main { position: relative;}
 
-### Virtual Nodes <a name="virtualnodes"></a>
+.person {
+  box-sizing: border-box;
+  width: var(--box-width);
+  padding: 10px 10px 10px 40px;
+  position: relative;
+  border: 1px #ddd solid;
+  border-radius: 5px;  
+  margin-bottom: 10px;
+  cursor: pointer;
+}
 
-Hyperapp exports the `app` `h`, and `text` functions.
-`h` and `text` are for creating _virtual nodes_, which is to say:
-plain javascript objects which _represent_ DOM nodes.
+.person.highlight {
+  background-color: #fd9;
+}
+.person.selected {
+  border-width: 3px;
+  border-color: #55c;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
 
-The result of
+.person input[type=checkbox] {
+  position: absolute;
+  cursor: default;
+  top: 10px;
+  left: 7px;
+}
+.person.selected input[type=checkbox] {
+  left: 5px;
+  top: 8px;
+}
+
+.person p {
+  margin: 0;
+  margin-left: 2px;
+}
+.person.selected p {
+  margin-left: 0;
+} 
+
+.bio {
+  position: absolute;
+  left: calc(var(--box-width) + 2rem);
+  top: 60px;
+  color: #55c;
+  font-style: italic;
+  font-size: 2rem;
+  text-indent: -1rem;
+}
+.bio:before {content: '"';}
+.bio:after {content: '"';}
+
+```
+  
+</details>
+
+Keep the html file open in a browser as you follow along the tutorial, to watch your progress. At each step there will be a link to a live-demo sandbox yo may refer to in case something isn't working right. (You could also use the sandbox to follow the tutorial if you prefer)
+
+## Hello world ##
+
+Enter the following code:
 
 ```js
-h("h1", {}, [text("Hello "), h("i", {}, text("World!"))])
-```
+import {h, text, app} from "https://cdn.skypack.dev/hyperapp"
 
-is a virtual node, representing
-
-```html
-<h1>
-    Hello
-    <i>World!</i>
-</h1>
-```
-
-`h` is for describing
-element-nodes such as `<h1>` or `<i>` – anything you would use a tag to
-describe in regular html.
-
-Such nodes can have content, which is given as virtual nodes in the third
-argument of `h`.
-
-`text` is specifically for describing text nodes.
-
-### Rendering to the DOM <a name="rendertodom"></a>
-
-`app` is the function that runs our app. It is called with a single argument - an object
-which can take several properties. For now we're just concerned with `view` and `node.`
-
-Hyperapp calls the `view` function which tells it the DOM structure we want, in the form
-of virtual nodes. Hyperapp proceeds to create it for us, replacing the node specified in `node`.
-
-To render the HTML we want, change the `view` to:
-
-```js
-view: () => h("div", { id: "app", class: "container" }, [
-  h("div", { class: "filter" }, [
-    text(" Filter: "),
-    h("span", { class: "filter-word" }, text("ocean")),
-    h("button", {}, text("\u270E")),
-  ]),
-  h("div", { class: "stories" }, [
-    h("ul", {}, [
-      h("li", { class: "unread" }, [
-        h("p", { class: "title" }, [
-          text("The "),
-          h("em", {}, text("Ocean")),
-          text(" is Sinking!"),
-        ]),
-        h("p", { class: "author" }, text("Kat Stropher")),
-      ]),
-      h("li", { class: "reading" }, [
-        h("p", { class: "title" }, [
-          h("em", {}, text("Ocean")),
-          text(" life is brutal"),
-        ]),
-        h("p", { class: "author" }, text("Surphy McBrah")),
-      ]),
-      h("li", {}, [
-        h("p", { class: "title" }, [
-          text("Family friendly fun at the "),
-          h("em", {}, text("ocean")),
-          text(" exhibit"),
-        ]),
-        h("p", { class: "author" }, text("Guy Prosales")),
-      ]),
+app({
+  view: () => h("main", {}, [
+    h("div", {class: "person"}, [
+      h("p", {}, text("Hello world")),
     ]),
   ]),
-  h("div", { class: "story" }, [
-    h("h1", {}, text("Ocean life is brutal")),
-    h("p", {}, text(`
-      Lorem ipsum dolor sit amet, consectetur adipiscing
-      elit, sed do eiusmod tempor incididunt ut labore et
-      dolore magna aliqua. Ut enim ad minim veniam, quis
-      nostrud exercitation ullamco laboris nisi ut aliquip
-      ex ea commodo consequat.
-    `)),
-    h("p", { class: "signature" }, text("Surphy McBrah")),
+  node: document.getElementById("app"),
+})
+```
+
+Save the file and reload the browser. You'll be greeted by the words "Hello world" framed in a box.
+
+<img width="582" src="https://user-images.githubusercontent.com/2061445/116821112-d9986300-ab78-11eb-82c5-25c35667eb18.png">
+
+[Live Demo][1-hello-world]
+
+Let's walk through what happened:
+
+You start by importing the three functions `h`, `text` and `app`.
+
+You call `app` with an object that holds app's definition.
+
+The `view` function returns a _virtual DOM_ – a blueprint of how we want the actual DOM to look, made up of _virtual nodes_. `h` creates virtual nodes representing HTML tags, while `text` creates representations of text nodes. The equivalent description in plain HTML would be:
+
+```html
+<main>
+  <div class="person">
+    <p>Hello world</p>
+  </div>
+</main>
+```
+
+`node` declares _where_ on the page we want Hyperapp to render our app. Hyperapp replaces this node with the DOM-nodes it generates from the description in the view.
+
+## State, View, Action ##
+
+### Initializing State ###
+
+Add an `init` property to the app:
+
+```js
+app({
+  init: { name: "Leanne Graham", highlight: true },
+  ...
+})
+```
+
+Each app has an internal value called _state_. The `init` property sets the state's initial value. The view is always called with the current state, allowing us to display values from the state in the view.
+
+Change the view to:
+
+```js
+state => h("main", {}, [
+  h("div", {class: "person"}, [
+    h("p", {}, text(state.name)),
+    h("input", {type: "checkbox", checked: state.highlight}),
   ]),
-  h("div", { class: "autoupdate" }, [
-    text("Auto update: "),
-    h("input", { type: "checkbox" }),
-  ]),
-]),
-```
-
-Try it out to confirm that the result matches the screenshot above.
-
-> In many frameworks it is common to write your views/templates
-> using syntax that looks like HTML. This is possible with Hyperapp as well.
-> [Hyperlit](https://github.com/zaceno/hyperlit) allows writing html-like views
-> that work in the browser without any compilation/build-step. Using JSX for
-> Hyperapp is also possible, with a bit of configuration In this tutorial
-> we'll stick with `h` & `text` to keep it simple and close to the metal.
-
-### Composing the view with reusable functions <a name="composingview"></a>
-
-The great thing about using plain functions to build up our virtual DOM
-is that we can break out repetitive or complicated parts into their own functions.
-
-Add this function (in the "VIEWS" section):
-
-```js
-const emphasize = (word, string) =>
-  string
-    .split(" ")
-    .map((x) =>
-      x.toLowerCase() === word.toLowerCase()
-      ? h("em", {}, text(x + " "))
-      : text(x + " "),
-    )
-```
-
-It lets you change this:
-
-```js
-  ...
-  h("p", {class: "title"}, [
-    text("The "),
-    h("em", {}, text("Ocean")),
-    text(" is Sinking!")
-  ]),
-  ...
-```
-
-into this:
-
-```js
-  ...
-  h("p", {class: "title"}, emphasize("ocean",
-    "The Ocean is Sinking"
-  ))
-  ...
-```
-
-Story thumbnails are repeated several times, so encapsulate
-them in their own function:
-
-```js
-const storyThumbnail = props => h("li", {
-  class: {
-      unread: props.unread,
-      reading: props.reading,
-  },
-}, [
-  h("p", { class: "title" }, emphasize(props.filter, props.title)),
-  h("p", { class: "author" }, text(props.author)),
-]),
-```
-
-> The last example demonstrates a helpful feature of the `class` property. When
-> you set it to an object rather than a string, each key with a truthy value
-> will become a class in the class list.
-
-Continue by creating functions for each section of the view:
-
-```js
-const storyList = props => h("div", { class: "stories" }, [
-  h("ul", {}, Object.keys(props.stories).map(id => storyThumbnail({
-    id,
-    title: props.stories[id].title,
-    author: props.stories[id].author,
-    unread: !props.stories[id].seen,
-    reading: props.reading === id,
-    filter: props.filter,
-  }))),
-])
-
-const filterView = props => h("div", { class: "filter" }, [
-  text("Filter:"),
-  h("span", { class: "filter-word" }, text(props.filter)),
-  h("button", {}, text("\u270E")),
-])
-
-const storyDetail = props => h("div", { class: "story" }, [
-  props && h("h1", {}, text(props.title)),
-  props && h( "p", {}, text(`
-    Lorem ipsum dolor sit amet, consectetur adipiscing
-    elit, sed do eiusmod tempor incididunt ut labore et
-    dolore magna aliqua. Ut enim ad minim veniam, qui
-    nostrud exercitation ullamco laboris nisi ut aliquip
-    ex ea commodo consequat.
-  `)),
-  props && h("p", { class: "signature" }, text(props.author)),
-])
-
-const autoUpdateView = props => h("div", { class: "autoupdate" }, [
-  text("Auto update: "),
-  h("input", { type: "checkbox" }),
-])
-
-const container = (content) => h("div", { class: "container" }, text(content))
-```
-
-With those the view can be written as:
-
-```js
-view: () => container([
-  filterView({
-      filter: "ocean",
-  }),
-  storyList({
-    stories: {
-      112: {
-        title: "The Ocean is Sinking",
-        author: "Kat Stropher",
-        seen: false,
-      },
-      113: {
-        title: "Ocean life is brutal",
-        author: "Surphy McBrah",
-        seen: true,
-      },
-      114: {
-        title: "Family friendly fun at the ocean exhibit",
-        author: "Guy Prosales",
-        seen: true,
-      },
-    },
-    reading: "113",
-    filter: "ocean",
-  }),
-  storyDetail({
-    title: "Ocean life is brutal",
-    author: "Surphy McBrah",
-  }),
-  autoUpdateView(),
 ])
 ```
 
-What you see on the page should be exactly the same as before, because we haven't
-changed what `view` returns. Using basic functional composition, we were able to make
-the code a bit more manageable, and that's the only difference.
+Save and reload. Rather than the statically declared "Hello world" from before, we are now using the name "Leanne Graham" from the state. We also added a checkbox, whose checked state depends on `highlight`. 
 
-## State <a name="state"></a>
+<img width="584" src="https://user-images.githubusercontent.com/2061445/116821122-e5842500-ab78-11eb-8ab6-09a4fe590557.png">
 
-With all that view logic broken out in separate functions, `view` is starting to look like
-plain _data_. The next step is to fully separate data from the view. It's time to use
-the `init` property. Set it to this plain data object:
+[Live Demo][2-render-with-state]
+
+
+### Class properties ###
+
+Change the definition of the div:
 
 ```js
-  init: {
-    filter: "ocean",
-    reading: "113",
-    stories: {
-      "112": {
-        title: "The Ocean is Sinking",
-        author: "Kat Stropher",
-        seen: false,
-      },
-      "113": {
-        title: "Ocean life is brutal",
-        author: "Surphy McBrah",
-        seen: true,
-      },
-      "114": {
-        title: "Family friendly fun at the ocean exhibit",
-        author: "Guy Prosales",
-        seen: true,
-      }
+h("div", {class: {person: true, highlight: state.highlight}}, [ ... ])
+```
+
+The class property can be a string of space-separated class-names just like in regular HTML, _or_ it can be an object where the keys are class-names. When the corresponding value is truthy, the class will be assigned to the element.
+
+The `highlight` property of the state now controls both wether the div has the class "highlight" and wether the checkbox is checked.
+
+<img width="584" src="https://user-images.githubusercontent.com/2061445/116821134-f03eba00-ab78-11eb-9054-fcfab957dee6.png">
+
+[Live Demo][3-class-objects]
+
+However, clicking the checkbox to toggle the highlightedness of the box doesn't work. In the next step we will connect user interactions with transforming the state.
+
+### Actions ###
+
+Define the function:
+
+```js
+const ToggleHighlight = state => ({ ...state, highlight: !state.highlight })
+```
+
+It describes a _transformation_ of the state. It expects a value in the shape of the app's state as argument, and will return something of the same shape. Such functions are known as _actions_. This particular action keeps all of the state the same, except for `highlight`, which should be flipped to its opposite.
+
+Next, assign the function to the `onclick` property of the checkbox: 
+
+```js
+h("input", {
+  type: "checkbox",
+  checked: state.highlight,
+  onclick: ToggleHighlight,
+})
+```
+
+Save and reload. Now, clicking the checkbox toggles not only checked-ness but the higlighting of the box.
+
+<img width="583" src="https://user-images.githubusercontent.com/2061445/116821148-fcc31280-ab78-11eb-9eaa-48ea590f3804.png">
+
+[Live Demo][4-toggle-highlight]
+
+
+### Dispatching ###
+
+By assigning `ToggleHighlight` to `onclick` of the checkbox, we tell Hyperapp to _dispatch_ `ToggleHighlight` when the click-event occurs on the checkbox. Dispatching an action means Hyperapp will use the action to transform the state. With the new state, Hyperapp will calculate a new view and update the DOM to match.
+
+
+### View components ###
+
+Since the view is made up of nested function-calls, it is easy to break out a portion of it as a separate function for reuse & repetition.  
+
+Define the function:
+
+```js
+const person = props =>
+  h("div", {
+    class: {
+      person: true,
+      highlight: props.highlight
     }
-  },
+  }, [
+    h("p", {}, text(props.name)),
+    h("input", {
+      type: "checkbox",
+      checked: props.highlight,
+      onclick: props.ontoggle,
+    }),
+  ])
 ```
 
-The value of `init` becomes the app's _state_. Hyperapp calls `view` with the state
-as an argument, so it can be reduced to:
+Now the view can be simplified to:
 
 ```js
-  view: state => container([
-    filterView(state),
-    storyList(state),
-    storyDetail(state.reading && state.stories[state.reading]),
-    autoUpdateView(state),
-  ]),
-```
-
-Visually, everything is _still_ the same. If you'd like to see a working example of the code so far, have a look [here][Live Example 1]
-
-## Actions <a name="actions"></a>
-
-Now that we know all about rendering views, it's finally time for some _action_!
-
-### Reacting to events in the DOM <a name="reacting"></a>
-
-The first bit of dynamic behavior we will add is so that when you click
-the pencil-button, a text input with the filter word appears.
-
-Add an `onclick` property to the button in `filterView`:
-
-```js
-const filterView = props => h("div", { class: "filter" }, [
-  text("Filter:"),
-  h("span", { class: "filter-word" }, text(props.filter)),
-  h("button", {onclick: StartEditingFilter}, text("\u270E")), // <---
-])
-```
-
-This makes Hyperapp bind a click-event handler on the button element, so
-that when the button is clicked, an action named `StartEditingFilter` is
-_dispatched_. Create the action in the "ACTIONS" section:
-
-```js
-const StartEditingFilter = (state) => ({ ...state, editingFilter: true })
-```
-
-Actions are just functions describing transformations of the state.
-This action keeps everything in the state the same except for `editingFilter`
-which it sets to `true`.
-
-When Hyperapp dispatches an action, it replaces the old state with the new
-one calculated using the action. Then the DOM is modified to match what the
-view returns for this new state.
-
-When `editingFilter` is true, we want to have a text input instead of a
-span with the filter word. We can express this in `filterView` using a
-ternary operator (`a ? b : c`).
-
-```js
-const filterView = props => h("div", { class: "filter" }, [
-  text("Filter:"),
-
-  props.editingFilter                                    // <---
-  ? h("input",  {type: "text", value: props.filter})     // <---
-  : h("span", { class: "filter-word" }, text(props.filter)),
-
-  h("button", {onclick: StartEditingFilter}, text("\u270E")),
-])
-```
-
-Now, when you click the pencil button the text input appears. But we still need to add
-a way to go back. We need an action to `StopEditingFilter`, and a button to dispatch it.
-
-Add the action:
-
-```js
-const StopEditingFilter = (state) => ({ ...state, editingFilter: false })
-```
-
-and update `filterView` again:
-
-```js
-const filterView = props => h("div", { class: "filter" }, [
-  text("Filter:"),
-  
-  props.editingFilter                                   
-  ? h("input",  {type: "text", value: props.filter})    
-  : h("span", { class: "filter-word" }, text(props.filter)),
-  
-  props.editingFilter                                           // <---
-  ? h("button", { onclick: StopEditingFilter }, text("\u2713")) // <---
-  : h("button", {onclick: StartEditingFilter}, text("\u270E")),
-])
-```
-
-When you click the pencil button, it is replaced with a check-mark button that can take you back to the first state.
-
-![editing filter word](https://raw.githubusercontent.com/jorgebucaran/hyperapp/1fd42319051e686adb9819b7e154f764fa3b0d29/docs/src/pages/Tutorial/tut2.png)
-
-### Capturing event-data in actions <a name="eventdata"></a>
-
-The next step is to use the input for editing the filter word. Whatever we
-type in the box should be emphasized in the story-list.
-
-Update `filterView` yet again:
-
-```js
-const filterView = props => h("div", { class: "filter" }, [
-  text("Filter:"),
-  
-  props.editingFilter                                   
-  ? h("input",  {
-    type: "text",
-    value: props.filter,
-    oninput: SetFilter,  // <---
-  })    
-  : h("span", { class: "filter-word" }, text(props.filter)),
-  
-  props.editingFilter                                           
-  ? h("button", { onclick: StopEditingFilter }, text("\u2713"))
-  : h("button", {onclick: StartEditingFilter}, text("\u270E")),
-])
-```
-
-This will dispatch the `SetFilter` action everytime someone types in the input. Implement the action like this:
-
-```js
-const SetFilter = (state, event) => ({ ...state, filter: event.target.value })
-```
-
-The second argument to an action is known as the _payload_. Actions
-dispatched in response to an events on DOM elements receive the [event object](https://developer.mozilla.org/en-US/docs/Web/API/Event) for a payload. `event.target` refers to the input element in the DOM, and
-`event.target.value` refers to the current value entered into it.
-
-Now see what happens when you erase "ocean" and type "friendly" instead:
-
-![typed friendly in filter](https://raw.githubusercontent.com/jorgebucaran/hyperapp/1fd42319051e686adb9819b7e154f764fa3b0d29/docs/src/pages/Tutorial/tut3.png)
-
-### Actions with custom payloads <a name="custompayloads"></a>
-
-Next up: selecting stories by clicking them in the list.
-
-The following action sets the `reading` property in the state to a story-id, which amounts to "selecting" the story:
-
-```js
-const SelectStory = (state, id) => ({ ...state, reading: id })
-```
-
-It has a payload, but it's not an event object. It's a custom value telling us which
-story was clicked. How are actions dispatched with custom payloads? – Like this:
-
-```js
-const storyThumbnail = props => h("li", {
-  onclick: [SelectStory, props.id], // <---
-  class: {
-      unread: props.unread,
-      reading: props.reading,
-  },
-}, [
-  h("p", { class: "title" }, emphasize(props.filter, props.title)),
-  h("p", { class: "author" }, text(props.author)),
-])
-```
-
-Instead of just specifying the action, we give a length-2 array with the action first and the custom payload second.
-
-Selecting stories works now, but the feature is not quite done. When a story is selected,
-we need to set its `seen` property to `true`, so we can highlight which stories the user has yet to read. Update the `SelectStory` action:
-
-```js
-const SelectStory = (state, id) => ({
-  ...state, // keep all state the same, except for the following:
-  reading: id,
-  stories: {
-    ...state.stories, //keep stories the same, except for:
-    [id]: {
-      ...state.stories[id], //keep this story the same, except for:
-      seen: true,
-    },
-  },
-})
-```
-
-Now, when you select a blue-edged story it turns yellow because it is selected, and when you select something else,
-the edge turns gray to indicate you've read the story.
-
-![read stories are gray](https://raw.githubusercontent.com/jorgebucaran/hyperapp/1fd42319051e686adb9819b7e154f764fa3b0d29/docs/src/pages/Tutorial/tut4.png)
-
-If you'd like to see a working example of the code so far, have a look [here][Live Example 2]
-
-## Effects <a name="effects"></a>
-
-So far, the list of stories is defined statically when the app starts up and doesn't change. What we really want is when the filter-word is changed, stories matching it should be loaded from a server.
-
-Hyperapp takes a page from the book of functional programming in that it requires you to separate the imperative, procedural code from the pure mathematical calculations that define your actions. Such bundles of imperative code are called _effects_ (often also "side-effects")
-
-Wrapping procedural code in effects is easy if you should need to. You rarely do though, as many commonly needed effects are already available via npm/unpkg – notably `@hyperapp/http` which we will use for fetching the stories. Import it at the top of your script:
-
-```js
-import { app, h, text } from "https://unpkg.com/hyperapp"
-import {request} from "https://unpkg.com/@hyperapp/http" // <---
-```
-
-### Running effects with actions <a name="effectswithactions"></a>
-
-When the user is done changing the filter word, we want to fetch all the stories that match. So let's update the `StopEditingFilter` action with that effect:
-
-```js
-const StopEditingFilter = (state) => [  // <---
-  {
-    ...state,
-    editingFilter: false,
-    fetching: true,                     // <----
-  },
-  request({                            // <----
-    url: `https://zaceno.github.io/hatut/data/${state.filter.toLowerCase()}.json`,
-    expect: "json",
-    action: GotStories,
+state => h("main", {}, [
+  person({
+    name: state.name,
+    highlight: state.highlight,
+    ontoggle: ToggleHighlight,
   }),
-]
+])
 ```
 
-A few things going on here so let's break it down.
+Here, `person` is known as a _view component_. Defining and combining view components is a common practice for managing large views. Note, however, that it does not rely on any special Hyperapp-features – just plain function composition.
 
--   `StopEditingFilter` no longer returns _just_ the state, but an _array_ where the first item is the new state and the following are effects. Hyperapp understands this format of return values and will update the state same as for "normal" actions
+[Live Demo][5-view-component]
 
--   The call to `request(...)` is _*not* executing the request_. It just returns an object (actually an array of `[function, options]`) which _represents_ the effect. After the state has been updated, Hyperapp will execute the effect.
+### Action payloads ###
 
--   `request({...})` is given a few options, notably the `url` where the data we want is. `action` says we want `GotStories` dispatched with the response payload. `expect: "json"` the data should be parsed as JSON, and the payload should be a plain javascript object. We haven't implemented `GotStories` yet, but we will shortly.
-
--   We introduced a new property in the state: `fetching: true`. This is how we will keep track that we are waiting for new data.
-
-When we get new data, we want to replace the `stories` property of the state with the new stories we get in the payload. It's not quite as simple as just replacing the `stories` property in the state though. We also need to make sure to "unselect" the currently selected story if it isn't in the new list. Also, any stories in the new list that we have already `seen` need to maintain that status. Here's how it could be implemented:
+This makes it easier to have multiple boxes in the view. First add more names and highlight values to the initial state, by changing `init`:
 
 ```js
-const GotStories = (state, stories) => ({
-  ...state,
-
-  //not waiting for data:
-  fetching: false,
-
-  // replace old stories with new,
-  // but keep the 'seen' value if it exists
-  stories: Object.keys(stories)
-      .map((id) => [
-          id,
-          {
-              ...stories[id],
-              seen: state.stories[id] && state.stories[id].seen,
-          },
-      ])
-      .reduce((o, [id, story]) => ((o[id] = story), o), {}),
-
-  // in case the current story is in the new list as well,
-  // keep it selected, Otherwise select nothing
-  reading: stories[state.reading] ? state.reading : null,
-})
-```
-
-Notice we are also setting `fetching: false` to remember that we aren't waiting for new stories any more.
-
-Now go ahead and try it out. Enter "Life" as the filter-word and see how new stories are loaded in to the list.
-
-![fetched life stories](https://raw.githubusercontent.com/jorgebucaran/hyperapp/1fd42319051e686adb9819b7e154f764fa3b0d29/docs/src/pages/Tutorial/tut5.png)
-
-### Running effects on initialization <a name="effectsoninit"></a>
-
-The next obvious step is to load the _initial_ stories from the API as well.
-
-Whatever you set the app's `init` prop to is handled just like the return value of an action. To run an effect on initialization, you change `init` in the same way we changed `StopEditingFilter` above:
-
-```js
-  init: [
-    {
-      editingFilter: false,
-      autoUpdate: false,
-      filter: "ocean",
-      reading: null,
-      stories: {},
-      fetching: true  // <---
-    },
-    request({
-      url: `https://zaceno.github.io/hatut/data/ocean.json`,
-      expect: "json",
-      action: GotStories,
-    })
+{
+  names: [
+    "Leanne Graham",
+    "Ervin Howell",
+    "Clementine Bauch",
+    "Patricia Lebsack",
+    "Chelsey Dietrich",
   ],
+  highlight: [
+    false,
+    true,
+    false,
+    false,
+    false,
+  ],
+}
 ```
 
-Also, notice that now we are starting with an empty set of `stories`, and setting `fetching: true`. Now try this out and notice you are getting the same list as before, after brief moment of the list being empty.
-
-![fresh stories on init](https://raw.githubusercontent.com/jorgebucaran/hyperapp/1fd42319051e686adb9819b7e154f764fa3b0d29/docs/src/pages/Tutorial/tut6.png)
-
-Since we have been careful to keep track of wether or not we are `fetching`, we could improve the user experience with a spinner to indicate we are fetching data. Update the `storyList`:
+next, update the view to map over the names and render a `person` for each one:
 
 ```js
-const storyList = props => h("div", { class: "stories" }, [
-  
-  props.fetching && h("div", {class: "loadscreen"}, [  // <---
-    h("div", {class: "spinner"})                       // <---
-  ]),                                                  // <---
-  
-  h("ul", {}, Object.keys(props.stories).map(id => storyThumbnail({
-    id,
-    title: props.stories[id].title,
-    author: props.stories[id].author,
-    unread: !props.stories[id].seen,
-    reading: props.reading === id,
-    filter: props.filter,
-  }))),
+state => h("main", {}, [
+  ...state.names.map((name, index) => person({
+    name,
+    highlight: state.highlight[index],
+    ontoggle: [ToggleHighlight, index],
+  })),
 ])
 ```
 
-When the app loads, and when you change the filter, you should see the spinner appear until the stories are loaded.
+Notice how instead of assigning just `ToggleHighlight` to `ontoggle`, we assign `[ToggleHighlight, index]`. This makes Hyperapp dispatch `ToggleHighlight` with `index` as the _payload_. The payload becomes the second argument to the action. 
 
-![spinner](https://raw.githubusercontent.com/jorgebucaran/hyperapp/1fd42319051e686adb9819b7e154f764fa3b0d29/docs/src/pages/Tutorial/tut7.png)
-
-> If you aren't seeing the spinner, it might just be happening too fast. Try choking your network speed. In the Chrome
-> browser you can set your network speed to "slow 3g" under the network tab in the developer tools.
-
-If you'd like to see a working example of the code so far, have a look [here][Live Example 3]
-
-## Subscriptions <a name="subscriptions"></a>
-
-The last feature we'll add is one where the user can opt in to have the app check every five seconds for new
-stories matching the current filter. (There won't actually be any new stories, because it's not a real service,
-but you'll know it's happening when you see the spinner pop up every five seconds.)
-
-Whenever your app needs to react to external events (like callbacks to an interval), what you need is a _subscription_. As with effects, you can easily define your own effects but it's better to reuse the ones already available. In this case we want to import the subscription `every` from `@hyperapp/time`:
+Update `ToggleHighlight` to handle the new shape of the state, and use the index payload:
 
 ```js
-import { app, h, text } from "https://unpkg.com/hyperapp"
-import { request } from "https://unpkg.com/@hyperapp/http"
-import { every } from "https://unpkg.com/@hyperapp/time" // <---
+const ToggleHighlight = (state, index) => {
+  // make shallow clone of original highlight array
+  let highlight = [...state.highlight]
+
+  // flip the highlight value of index in the copy
+  highlight[index] = !highlight[index]
+  
+  // return shallow copy of our state, replacing 
+  // the highlight array with our new one
+  return { ...state, highlight}
+}
 ```
 
-Now add the `subscriptions` property to your `app({...})`:
+Save & reload. You now have five persons. Each can be individually highlighted by toggling its checkbox.
+
+<img width="584" src="https://user-images.githubusercontent.com/2061445/116821165-0d738880-ab79-11eb-9144-ae07771d798e.png">
+
+[Live Demo][6-action-payloads]
+
+Next, let's add the ability to "select" one person at a time by clicking on it. We only need what we've learned so far to achieve this.
+
+First, add a `selected` property to `init`, where we will keep track of the selected person by its index. Since no box is selected at first, `selected` starts out as `null`:
 
 ```js
-app ({
+{
   ...
-  subscriptions: state => [
-    every(5000, UpdateStories)
-  ]
+  selected: null, 
+}
+```
+
+Next, define an action for selecting a person: 
+
+```js
+const Select = (state, selected) => ({...state, selected})
+```
+
+Next, pass the `selected` property, and `Select` action to the `person` component:
+
+```js
+person({
+  name,
+  highlight: state.highlight[index],
+  ontoggle: [ToggleHighlight, index],
+  selected: state.selected === index, // <----
+  onselect: [Select, index],          // <----
 })
 ```
 
-Similar to `request()` earlier, `every(...)` is not actually starting the subscription. It returns an object that tells Hyperapp how to start and stop the subscription. The arguments to `every` are the interval time in milliseconds, and the action to dispatch each time – a new action we'll call `UpdateStories`.
-
+Finally, we give the selected person the "selected" class to visualize wether it is selected. We also pass the given `onselect` property on to the `onclick` event handler of the div.
 
 ```js
-const UpdateStories = (state) => [
-  {
-    ...state,
-    fetching: true,                     
+const person = props =>
+  h("div", {
+    class: {
+      person: true,
+      highlight: props.highlight,
+      selected: props.selected,    // <---
+    },
+    onclick: props.onselect,       // <---
+  }, [
+    h("p", {}, text(props.name)),
+    h("input", {
+      type: "checkbox",
+      checked: props.highlight,
+      onclick: props.ontoggle,
+    }),
+  ])
+```
+
+Save, reload & try it out by clicking on the different persons.
+
+<img width="578" src="https://user-images.githubusercontent.com/2061445/116821180-1e23fe80-ab79-11eb-9467-82880ce7a750.png">
+
+[Live Demo][7-with-selection]
+
+### DOM-event objects ###
+
+But now, when we toggle a checkbox, the person also selected. This happens because the `onclick` event bubbles up from the checkbox to the surrounding div. That is just how the DOM works. If we had access to the event object we could call the `stopPropagation` method on it, to prevent it from bubbling. That would allow toggling checkboxes without selecting persons.
+
+As it happens, we _do_ have access to the event object! Bare actions (_not_ given as `[action, payload]`) have a default payload which is the event object. That means we can define the `onclick` action of the checkbox as:
+
+```js
+onclick: (state, event) => {
+  event.stopPropagation()
+  //...
+}
+```
+
+But what do we do with the `props.ontoggle` that used to be there? – We return it!
+
+```js
+h("input", {
+  type: "checkbox",
+  checked: props.highlight,
+  onclick: (_, event) => {
+    event.stopPropagation()
+    return props.ontoggle
   },
-  request({                            
-    url: `https://zaceno.github.io/hatut/data/${state.filter.toLowerCase()}.json`,
-    expect: "json",
-    action: GotStories,
-  }),
+})
+```
+
+When an action returns another action, or an `[action, payload]` tuple instead of a new state, Hyperapp will dispatch that instead. You could say we defined an "intermediate action" just to stop the event propagation, before continuing to dispatch the action originally intended.
+
+Save, reload and try it! You should now be able to highlight and select persons independently. 
+
+<img width="571" src="https://user-images.githubusercontent.com/2061445/116821193-2b40ed80-ab79-11eb-9d1e-1ae1fc0da62b.png">
+
+[Live Demo][8-separate-highlight-selection]
+
+
+### Conditional rendering ###
+
+Further down we will be fetching the "bio" of selected persons from a server. For now, let's prepare the app to receive and display the bio.
+
+Begin by adding an initially empty `bio` property to the state, in `init`:
+
+```js
+{
+  ...,
+  selected: null,
+  bio: "",       // <---
+}
+```
+
+Next, define an action that saves the bio in the state, given some server data:
+
+```js
+const GotBio = (state, data) => ({...state, bio: data.company.bs})
+```
+
+And then add a div for displaying the bio in the view:
+
+```js
+state => h("main", {}, [
+  ...state.names.map((name, index) => person({
+    name,
+    highlight: state.highlight[index],
+    ontoggle: [ToggleHighlight, index],
+    selected: state.selected === index,
+    onselect: [Select, index],
+  })),
+  state.bio &&                                  // <---
+  h("div", { class: "bio" }, text(state.bio)),  // <---
+])
+```
+
+The bio-div will only be shown if `state.bio` is truthy. You may try it for yourself by setting `bio` to some nonempty string in `init`.
+
+[Live Demo][9-conditional-rendering]
+
+This technique of switching parts of the view on or off using `&&` (or switching between different parts using ternary operators `A ? B : C`) is known as _conditional rendering_
+
+## Effects ##
+
+### Effecters ###
+
+In order to fetch the bio, we will need the id associated with each person. Add the ids to the initial state for now:
+
+```js
+{
+  ...
+  selected: null,
+  bio: "",
+  ids: [1, 2, 3, 4, 5], // <---
+}
+```
+
+We want to perform the fetch when a person is selected, so update the `Select` action:
+
+```js
+const Select = (state, selected) => {
+
+  fetch("https://jsonplaceholder.typicode.com/users/" + state.ids[selected])
+  .then(response => response.json())
+  .then(data => {
+    console.log("Got data: ", data)
+  
+    /* now what ? */
+  })
+
+  return {...state, selected}
+}
+```
+
+> We will be using the JSONPlaceholder service in this tutorial. It is a free & open source REST API for testing & demoing client-side api integrations. Be aware that some endpoints could be down or misbehaving on occasion.
+
+If you try that, you'll see it "works" in the sense that data gets fetched and logged – but we can't get it from there in to the state!
+
+Hyperapp actions are not designed to be used this way. Actions are not general purpose event-handlers for running arbitrary code. Actions are meant to simply calculate a value and return it. 
+
+The way to run arbitrary code with some action, is to wrap that code in a function and return it alongside the new state:
+
+```js
+const Select = (state, selected) => [
+  {...state, selected},
+  [() => {
+    fetch("https://jsonplaceholder.typicode.com/users/" + state.ids[selected])
+    .then(response => response.json())
+    .then(data => {
+      console.log("Got data: ", data)
+      /* now what ? */
+    })
+  }]
 ]
 ```
 
-The action `UpdateStories` is going to be nearly the same as `StopEditingFilter`, with the one exception that we don't set `editingFilter: false`. If we kept that in, users would be "tossed out" from editing the filter after five seconds, which would be quite bothersome. We leave it as an exercise to the reader, to reduce the duplication of code that results.
+When an action returns something like `[newState, [function]]`, the function is known as an _effecter_ (a k a "effect runner"). Hyperapp will call that function for you, as a part of the dispatch process. What's more, Hyperapp provides a `dispatch` function as the first argument to effecters, allowing them to "call back" with response data:
 
-But we want to allow the user to turn updating on and off, using the auto-update checkbox. Let's keep track of their preference using a new state property `autoUpdate`, with an action we'll call `TooggleAutoUpdate`:
 
 ```js
-const ToggleAutoUpdate = (state) => ({
-    ...state,
-    autoUpdate: !state.autoUpdate,
+const Select = (state, selected) => [
+  {...state, selected},
+  [dispatch => {                           // <---
+    fetch("https://jsonplaceholder.typicode.com/users/" + state.ids[selected])
+    .then(response => response.json())
+    .then(data => dispatch(GotBio, data)) // <---
+  }]
+]
+```
+
+Now when a person is clicked, besides showing it as selected, a request for the persons's data will go out. When the response comes back, the `GotBio` action will be dispatched, with the response data as payload. This will set the bio in the state and the view will be updated to display it.
+
+<img width="567" src="https://user-images.githubusercontent.com/2061445/116821205-3ac03680-ab79-11eb-8814-74362f93de25.png">
+
+[Live Demo][10-effecter-with-dispatch]
+
+### Effects ###
+
+There will be other things we want to fetch in a similar way. The only difference will be the url and action. So let's define a reusable version of the effecter where url and action are given as an argument:
+
+```js
+const fetchJson = (dispatch, options) => {
+  fetch(options.url)
+  .then(response => response.json())
+  .then(data => dispatch(options.action, data))
+}
+```
+
+Now change `Select` again:
+
+```js
+const Select = (state, selected) => [
+  {...state, selected},
+  [ 
+    fetchJson,
+    {
+      url: "https://jsonplaceholder.typicode.com/posts/" + state.ids[selected],
+      action: GotBody,
+    }
+  ]
+]
+```
+
+A tuple such as `[effecter, options]` is known as an _effect_. The options in the effect will be provided to the effecter as the second argument. Everything works the same as before, but now we can reuse `fetchJson` for other fetching we may need later.
+
+[Live Demo][11-effect]
+
+### Effect creators ###
+
+Define another function:
+
+```js
+const jsonFetcher = (url, action) => [fetchJson, {url, action}]
+```
+
+It allows us to simplify `Select` even more:
+
+```js
+const Select = (state, selected) => [
+  {...state, selected},
+  jsonFetcher("https://jsonplaceholder.typicode.com/users/" + state.ids[selected], GotBio),
+]
+
+```
+
+Here, `jsonFetcher` is what is known as an _effect creator_. It doesn't rely any special Hyperapp features. It is just a common way to make using effects more convenient and readable.
+
+[Live Demo][12-effect-creator]
+
+### Effects on Init ###
+
+The `init` property works as if it was the return value of an initially dispatched action. That means you may set it as `[initialState, someEffect]` to have the an effect run immediately on start. 
+
+Change `init` to:
+
+```js
+[
+  {names: [], highlight: [], selected: null, bio: "", ids: []},
+  jsonFetcher("https://jsonplaceholder.typicode.com/posts", GotNames)
+]
+```
+
+This means we will not have any names or ids for the persons at first, but will fetch this information from a server. The `GotNames` action will be dispatched with the response, so implement it:
+
+```js
+const GotNames = (state, data) => ({
+  ...state,
+  names: data.slice(0, 5).map(x => x.name),
+  ids: data.slice(0, 5).map(x => x.id),
+  highlight: [false, false, false, false, false],
 })
 ```
 
-Now connect that action & state property to the checkbox by changing `autoUpdateView`:
+With that, you'll notice the app will now get the names from the API instead of having them hardcoded.
+
+[Live Demo][13-init-effect]
+
+## Subscriptions ##
+
+Our final feature will be to make it possible to move the selection up or down using arrow-keys. First, define the actions we will use to move the selection:
+
 
 ```js
-const autoUpdateView = props => h("div", { class: "autoupdate" }, [
-  text("Auto update: "),
-  h("input", {
-    type: "checkbox",
-    checked: props.autoUpdate,  // <---
-    oninput: ToggleAutoUpdate,  // <---
-  }),
-])
+const SelectUp = state => {
+  if (state.selected === null) return state
+  return [Select, state.selected - 1]
+}
+
+const SelectDown = state => {
+  if (state.selected === null) return state
+  return [Select, state.selected + 1]
+}
 ```
 
-When the checkbox is checked, `autoUpdate` will be `true`, and _only then_ do we want the subscription to `every` to be active. It's as easy as:
+When we have no selection it makes no sense to "move" it, so in those cases both actions simply return `state` which is effectively a no-op.
+
+You may recall from earlier, that when an action returns `[otherAction, somePayload]` then that other action will be dispatched with the given payload. We use that here in order to piggy-back on the fetch effect already defined in `Select`.
+
+Now that we have those actions – how do we get them dispatched in response to keydown events? 
+
+If effects are how an app affects the outside world, then _subscriptions_ are how an app _reacts_ to the outside world. In order to subscribe to keydown events, we need to define a _subscriber_. A subscriber is  a lot like an effecter, but wheras an effecter contains what we want to _do_, a subscriber says how to start listening to an event. Also, subscribers must return a function that lets Hyperapp know how to _stop_ listening:
 
 ```js
-app ({
-  ...
+const mySubscriber = (dispatch, options) => {
+  /* how to start listening to something */
+  return () => {
+    /* how to stop listening to the same thing */
+  }
+}
+```
+
+Define this subscriber that listens to keydown events. If the event key matches `options.key` we will dispatch `options.action`.
+
+```js
+const keydownSubscriber = (dispatch, options) => {
+  const handler = ev => {
+    if (ev.key !== options.key) return
+    dispatch(options.action)
+  }
+  addEventListener("keydown", handler)
+  return () => removeEventListener("keydown", handler)
+}
+```
+
+Now, just like effects, let's define a subscription creator for convenient usage:
+
+```js
+const onKeyDown = (key, action) => [keydownSubscriber, {key, action}]
+```
+
+A pair of `[subscriber, options]` is known as a _subscription_. We tell Hyperapp what subscriptions we would like active through the `subscriptions` property of the app definition. Add it to the app call:
+
+```js
+app({
+  ...,
   subscriptions: state => [
-    state.autoUpdate && every(5000, UpdateStories)  // <----
+    onKeyDown("ArrowUp", SelectUp),
+    onKeyDown("ArrowDown", SelectDown),
   ]
 })
 ```
 
-![auto update](https://raw.githubusercontent.com/jorgebucaran/hyperapp/1fd42319051e686adb9819b7e154f764fa3b0d29/docs/src/pages/Tutorial/tut8.png)
+This will start the subscriptions and keep them alive for as long as the app is running. 
 
-How did that work?! Think of how Hyperapp spares you the effort of manually adding and removing DOM nodes. All you have to do is describe how you want the DOM to look, and Hyperapp takes care of that for you. It's the same with subscriptions. Each time the state updates, Hyperapp calls the `subscriptions` function to check which subscriptions you want active, and with which properties. Then Hyperapp takes care of starting and stopping them for you.
+But we don't actually want these subscriptions running all the time. We don't want the arrow-down subscription active when the bottom person is selected. Likewise we don't want the arrow-up subscription action when the topmost person is selected.  And when there is no selection, neither subscription should be active. We can tell Hyperapp this using logic operators – just as how we do conditional rendering:
 
-That was the final step! If you'd like to see a working example have a look [here][Live Example 4]
+```js
+app({
+  ...,
+  subscriptions: state => [
+
+    state.selected !== null &&
+    state.selected > 0 &&
+    onKeyDown("ArrowUp", SelectUp),
+
+    state.selected !== null &&
+    state.selected < (state.ids.length - 1) &&
+    onKeyDown("ArrowDown", SelectDown),
+  ],
+})
+```
+
+Each time the state changes, Hyperapp will use the subscriptions function to see which subscriptions should be active, and start/stop them accordingly.
 
 
-## Conclusion <a name="conclusion"></a>
-
-Congratulations on completing this Hyperapp tutorial! Next, try building something of your own. Perhaps a game, or a twist on the classic todo-list? Refer to the [API Reference](./reference.md) as needed, and feel free to bring all your questions to the [Hyperapp Slack workspace](https://join.slack.com/t/hyperapp/shared_invite/zt-frxjw3hc-TB4MgH4t74iPrY05KF9Jcg)
+<img width="570" src="https://user-images.githubusercontent.com/2061445/116821228-4f9cca00-ab79-11eb-9528-7f6d37641ea2.png">
 
 
+[Live Demo][14-subscriptions]
+
+## Conclusion ##
+
+That marks the completion of this tutorial. Well done! We've covered state, actions, views, effects and subscriptions – and really there isn't much more to it. You are ready to strike out on your own and build something amazing!
 
 
+[1-hello-world]: https://flems.io/#0=N4IgtglgJlA2CmIBcAWAbAOgJwFYA0IAzgMYBOA9rLMgNoAMedAugQGYQKG2gB2AhmERIQGABYAXMNQLFyPcfHnIQAHigQAbgAJoAXgA6IPgAdjhgHwqA9Oo3n9PFYXjFxEOfZ5atK0Sk-e3gAi8GDkSA7e1n4BPgCusLFRsBBJgUEQhMawfACehFp8WgDmpPDwbjzFkYHWKbHWCZ7Wzq7uPOYgBM4IbXJcwgDsSABMOCAAvni8AkIiAFZcMnIKSsIQYMbkpOJawKJ4WgoAHuKHJsYTWqwUYFqGEuLGhEhWVsRQPBiEANa5xnxiD8MFB4BorKJ-vBSBdDA4HBcABTAGoaCDwADuSC0iIAlFpdOYtKJEYYwHwIDxDIdgFMtDQat4SYZbNS9sQcoQXvcQMZoYQ5IY6QyvIEmaTeWzaYcTuIJQAJeBUchaDHbWBQQy43F4RlaJg6moG3WinjkUHYqDkYhxQTyDDFCoAUQQdvEACFcgBJKAS2EgQ08Ca4hxdECyTYcaHKABGfBjSrDPRcbn6ygAzEgAIx0SbTED8QTKDDELlh2TyRTiZQAAQ2Wx2WjipFgiIA5I9nq93p8MItQSkNKQMDwKlYeMYwFYMXwFMPS4QayMrOQ4uIrClihIS1y27iANzwnhICjkXYo0UAWkvMfIx0vGOg4lE2JGdDoxmOh6DR-JlL2WhbIQECpseWhlDkbgaPA+4TEeGB8qQApeBe3i3vewEAF6UsU2K3qQoKkDed7ft4j5QM+2IaHwpCIte6EPk+ogHjUAIwDh2I5p+WhcccPEfnxKACaRgHkMBoHYhBs6aDBNT4YRnHcQAxDAUBaAKKRQCJ8nQpeMLqHE3I4J++7eDU5KkMUlLEeI4jkGAnHCTUNpIds2JbJSc7fnBVJfIhyFiBAW6bhIexyYCPylKuPBQJesiwG5WhKawUBYN5DgIfycjfEqKbwGpqFaDpRHkZRWjpiZcnbIRcWUIlSk4DgxAiWx6hVJednGNiAAclWiq1OE2XZDlaL1X4OD5GX+XIOgTmuNDiFCujEKILg-OhTBhf1Ykge02Lxhpa6yaKLkCqQlrwKwfAJOIImdY5fXeAgrDiNigx9T5mWuV8yauPls3GPNi18stq1AhtW1PZdr1aMZ42ivdo0ffB01eMYkNaBZVlgXQIlY9Zz0wyMyN+VlP25X9ano4V+M8JehPYrjE33L5GAxu4GNAbtcj7TGh0KCJDNaMQfCwMQiLUbR9F3oxFHMVoADUWgjGUYAsQj5BdVoaBOSddXnUljXNTUrArJehCLQg2IgaLEDG6KpvyObECYfAr6q3d8CnJelKgvI2KXlmHsTRl7PhAmptlOyKxVtibaGG2sGh+4SB8C90LR5W-taPHICJz5SYU6BAwgHQSB0JeOBYOXkxMBMQA
+
+[2-render-with-state]: https://flems.io/#0=N4IgtglgJlA2CmIBcAWAbAOgJwFYA0IAzgMYBOA9rLMgNoAMedAugQGYQKG2gB2AhmERIQGABYAXMNQLFyPcfHnIQAHigQAbgAJoAXgA6IPgAdjhgHwqA9Oo3n9PFYXjFxEOfZ5atK0Sk-e3gAi8GDkSA7e1n4BPgCusLFRsBBJgUEQhMawfACehFp8WvyChTxQhVrEoi4A1gBG5AAekYHWKbHWCZ7Wzq7uPOYgBM4I-XJcwgDsSADMaCAAvni8AkIiAFZcMnIKSsIQYMbkpOJawKJ4WgpN4lcmxotarBRgWoYS4saESFZWxFAeBhCLVcsY+MRahgoPANFZRGD4KQHoYHA4HgAKYCtCA8CDiJDnYprQmGAAy8D4PB48C0AHFkaIBIYrqIIABzUQpTkE66kOK05atDQQeAAd0JhHEfAUWl05i0ogxhjAfFxLPOyy0NFa3iVhlsGuAxByhB+7xAxiRhDkhi1Oq8gT1ystRq1N3EGKlMvgGBK8AAlAG8LrAvqQLjjHFxEbxIjSSBqnVGi1hlUapD4FBJdKFGIOVyC+JFsHQ0xS47yyHHTxyDDCVByMQ4oJ5Bh2fBxABRBCt8QAIVyAEkoC6USAKyWHMNE+Qjhwkcp6nx6vBpEQ1y43BNlFhUABaFBIAAcSxWIH9ygwxDNM9k8kU4mUAAFDsdTlo4qRYBiAOSfb5fn+QEMC2GEUg0Ug-U7KweGMMArDFH0oJvQhnwAJischoysbkJGvM1fwDABuNEeCQChyDObFHX3fcU33MVoHEURCXQug6GMJpSJ4RYyNVXEiWOQh8QGQlSDXGVNHgYi+J4BwMCtUgbS8GjvAYkSAC9cXZQlGlIGFSHo5oeO8JioBYwkND4UgMTohjzJYkjWnBGAdMJABGTimi0LyuN87ytBQbzTK0YTRLkcTJLcDQZNafTDM8-yAGIYAqG0UigUKEqRfdkXUOJzRwLjiO8VpVVIdlcWM8RxDnTyQtaZtlJOQljlxBRSB4uSFKUlT805PDqPiiFanZCg4nKfdZFgVqtGS1goCwbreutORgU3Vws3OeKTkMxjmNYrRZhK3aDNyma5uSnAcGIULXPUHh2X3OrjEJY9TsdB6dJquqwHez6eqBPq5B0ODoxoOMrV0JNIRTJgdq+8gRO3cjCnqDLozix1mptUgG3gVg+AScRQtehrPu8BBWF5KZAdWlqgVGLdtsjCGofgGGMwaZoEbUrRqd5YruNacmtA+kXeLIxS1q8YxEe8CqqrRuhQqV6rBbY+ngdljaxgUCp5f59WeH3TWtFVhwnml+p3AVsLkYitGV0xhRQvN4g+FgYgMWs2z7OaA6LNEAMtAAai0dCJLAZzHTFtBGpxygrpuu7WlYXZ9ylXIEEJfEvYgNPHQz+Qs4gTT4DY6OyfgW591xGF5EJfcPOrq2FNt8JVwziTznvPZeV-Qxf1kjv3CQPgaaRPvdkfQkh5AEe5JnZnxh4SYQDoJA6H3HA9zoJYmEWIA
+
+[3-class-objects]: https://flems.io/#0=N4IgtglgJlA2CmIBcAWAbAOgJwFYA0IAzgMYBOA9rLMgNoAMedAugQGYQKG2gB2AhmERIQGABYAXMNQLFyPcfHnIQAHigQAbgAJoAXgA6IPgAdjhgHwqA9Oo3n9PFYXjFxEOfZ5atK0Sk-e3gAi8GDkSA7e1n4BPgCusLFRsBBJgUEQhMawfACehFp8WvyChTxQhVrEoi4A1gBG5AAekYHWKbHWCZ7Wzq7uPOYgBM4I-XJcwgDsSADMaCAAvni8AkIiAFZcMnIKSsIQYMbkpOJawKJ4WgpN4lcmxotarBRgWoYS4saESFZWxFAeBhCLVcsY+MRahgoPANFZRGD4KQHoYHA4HgAKYCtCA8CDiJDnYprQmGAAy8D4PB48C0AHFkaIBIYrqIIABzUQpTkE66kOK05atDQQeAAd0JhHEfAUWl05i0ogxhjAfFxLPOyy0NFa3iVhlsGuAxByhB+52MSMIckJ4n58FZHK5Tt5Upl8DETu5EkWWp1XkCeuVIDMw01Vxu4gxboUGBK8AAlAm8LrAvqQLjjHFxEbxIjSSBqnVGi0w0XIfAoJLpbG2ZzveJFsnU0xmwHWymAzxyDDCVByMQ4oJ5Bh2fBxABRBDD8QAIVyAEkoMGUSA202HMNC+Qjhwkcp6nx6vBpEQTy43BNlDhUABaG9oKZLFYgePKDDEM1b2TyRTiZQAAKHMcpxaHEpCwBiADknzfL8-yAhgWwwikGikHG45WDwxhgFYYruuhn6EABABMVjkNmVgNh+ZpQQmADcaI8EgFDkGc2IBret4lreYrQOIoiEiRdB0MYTSMTwixMaquJEschD4gMhKkCeMqaPA9FSTwDgYJapDWl4HHeDxCkAF64uyhKNKQMKkNxzQSd4fFQAJhIaHwpAYlxPHOQJDGtOCMAWYSACMolNFoYViZF4VaCg4WOVo8mKTaWgqTkbgaBprTWbZoXRQAxDAFTWikUCJblSK3si6hxOaOBifR3itKqpDsri9niOIO6hQlrSDvpJyEscuIKKQElaTpekGZ69YuucOUQrU7IUHE5S3rIsBDVoBWsFAWATVNVpyMC56uJWC0BpVdm+YJWizI1OUnLZG2UNtBU4DgxCJYF6g8Oyt7dcYhIAByPQGv0WZ13VgKD4OTUC01yDo2HZjQeaWro5YNM0TCXd4yWXsxhT1KV2bZQGA3WqQfbwKwfAJOIiVA714PeAgrC8lM8NHYNQKjBeF2ZmjGPwFjNSQiWeNGVoHO8g14mtCzWhg4rklMbpx1eMY+NaK17XE3QiX6x1ctCTziNa6dYwKBUOsyybPC3mbWhGw4Twa-U7i64TSkk2TCiJS7xB8LAxAYu5nnec0vH8aICZaAA1FoJEqWA-kBsraB9ZTb00ztn3fa0rC7LeUq5AghL4qHEBFwGJfyGXECmfAQlp8z8C3LeuIwvIhK3iF7fuzpXvhMeJcqecP57LyUGGFBmkj+4SB8JzSJT7sf6EnPIAL1pW4C+MPCTCAdBIHQ95YOfSxMIsQA
+
+[4-toggle-highlight]: https://flems.io/#0=N4IgtglgJlA2CmIBcAWAbAOgJwFYA0IAzgMYBOA9rLMgNoAMedAugQGYQKG2gB2AhmERIQGABYAXMNQLFyPcfHnIQAHigQAbgAJoAXgA6IPgAdjhgHwqA9Oo3n9PFYXjFxEOfZ5atK0Sk-e3gAi8GDkSA7e1n4BPgCusLFRsBBJgQAq5ADmWQha4qLwWsSFxADWAEbkAB755HU5eQVFohBZoint4pGB1imx1gme1s6u7jzmIATOCGNyXMIA7EgAjABMIAC+eLwCQiIAVlwycgpKwhBgxuSk4lrAonj58NXiTybGm1qsFGBahhJxMZCEgrFZiFAeBhCGUAJ7GPjlDBQeAaKyieHwUgfQwOByyHiEO6ZRrwAASbQ6lLuui0RL4Ci0unMWgAFMAtBgufSFE9Wu1OhIkFoAIQ8+BiSmCu6bACUeP4pnZPQgPAg4mFHP4gmFhgAMvA+DweEUAOLY0QCQx8qXU4XiUhxIrbHoaCDwADuwvFTJZolZhjAfFV1vu2y0NB63n9hlsoeAxFgfEIIPuxixhDk9sd8BtArtdPEDIl-KpXU24cjXkC0YDIDMUzDTwUr1Z4ow2vgstleCjgRjIFVxji3UbwD7NfEmN1IBKLkqNWtE8Cc-K8Cg3qLCkl+a6verNe8ckTEHKwpJuXJtr3y7l+5rTB7PUf960PHIKOFUHIxDignkGBZPA4gAKIIP+4gAEKwgAklAdY4iAT48HKDhTLO5BXBwWLKBUfAVPA0hEIRLhuPMyjrEgADMVFbDsICdsoGDECm6EEmc4jKAAApc1y3FocSkLArIAOSAsCoLgpCGBHCiKQaKQHbAVYPDGGAVgesWiksYQXFrFY5AjlY0rMSmImygA3AqSAUOQdzjtWAC0jlVNUjketABTCmsdB0MY1RWShCpBqq9xaNchDquMwqkIRDKaPAFmbAqGDpqQmZeA53iuY5kUAF6qlkwpVKQKKkC5NSBd4HlQF5WgaHwpCss5OU1QUlk9AiMCFcKKx+bUfX+Vog21Cg-VVeF5CRWRPAxXFbgaIlPQlWVvVDQAxDAUB0pQ0ATStWKOdi6hxKmOD+RZ3g9EGpBZKqFXiOImG9eNPS-ulNzCtcqoKKQgXJTwDipRmcg7mWEj3MtiJlFkFBxDwUCObIsCfVo62sFAWD-UDaUZdCJGuOukPVgd5VtaIwpURdy03GVSOUKj604DgxATV16g8FkjlPcYwoABzU9W7OFQ9T1gPzgsAzjINeEOI40FO6a6KuC7VEwxPeBFUVZlo+GZrAI5LdW72ZqQX7wKwfAJOIE08y9gveAgrAaloiyS9LH1QjMpFE3L4gK5iyulKr6tZVoTsu+dAU9HbWgC9HQWA1CuNyOFGtaDdd2zVodATZn90R957vJzL+OzAo23GOn+c8I5hc5-9-xJxgFTuOnWszcKeuUIbE318QfCwMQrINU1LU1O5nmiLKWgANRaGssVgB11ax2gr3GwzZto8zrM9Kwpy5VOCDCuqg+nhNB-yLlEB5fA3lL7bLziI5qoovIwqOSsj8OADLfuEgAiB9Yr3HYooF2IlDAiSSkDVu4Q+DOyxKA044DhSQJANAgG6FvZzEJMoOgSA6CORwFgQhWwmCbCAA
+
+[5-view-component]: https://flems.io/#0=N4IgtglgJlA2CmIBcAWAbAOgJwFYA0IAzgMYBOA9rLMgNoAMedAugQGYQKG2gB2AhmERIQGABYAXMNQLFyPcfHnIQAHigQAbgAJoAXgA6IPgAdjhgHwqA9Oo3n9PFYXjFxEOfZ5atK0Sk-e3gAi8GDkSA7e1n4BPgCusLFRsBBJgQAq5ADmWQha4qLwWsSFxADWAEbkAB755HU5eQVFohBZoint4pGB1imx1gme1s6u7jzmIATOCGNyXMIA7EgAjABMIAC+eLwCQiIAVlwycgpKwhBgxuSk4lrAonj58NXiTybGm1qsFGBahhJxMZCEgrFZiFAeBhCGUAJ7GPjlDBQeAaKyieHwUgfQwOBxgrQAWmJWgAggBhdIASQA8gA5ADKROJeJ4sh4hDumUa8AAEm0OgK7rotJy+AotLpzFoABTALQYRVihRPVrtToSJBaACEyvgYgFGrumwAlKyCcTCVoAGpUgCiAHUtOSaQBZAAK9LtdPSTMtrPZnK0xixhDkkuDFGBktiohlhlshiewB63mIsD4hBB91TgRDpDDPC14lIcXgeFz3jVgq6WuMUcIBvVQtzmx62y0NFzccMZim9w7CleMvr5GBGH4ghNJorXkCPZAEB4xji3X7KbngXymK1hhKLkqNSTleKpTK8CgdYbTZrElnW+8cnTEHKV7HjdO2Vy5dbM56TDNHh8SsZkrQAJQAVTpUDWQ+OUeiXCBxC1eVJ3gXcQAAGXgPgeB4IoAHFsVEAQky0asjWLUsim2HoNAgeAAHctT1GNyPjcA+CXMjgA7LtN2DUM5HggTvDQljxHFfU0PvB8KKFCSpJvI1ZK3T8eS1blv35ZsulUrRTVkgDZJ4cgUS1KByGIOJBHkDAsngcQ7QQWzxAAIVhKkoA4nEQD-HhTQcKYQFkK4OCxZQKj4Cp4GkIhYpcNx5mUNYAA5Vg2bZdkEZQMGILNgvZM5xGUAABS5rluLQ4lIWAZQAckBYFQXBSEMCOFEUg0UgJ0cqxlzAKxGKknr8sIUq1ischVysI08qzeqTQAblZJAKHIO4N28YkqmqQlGOgAotTWOg6GMaoVoC1kwC4rx5WuQgkPGLVSFi8VNHgJa2yAqF80LHM512wlHoALyXLItSqUgUVIQldsu7wDqgI6tA0PhSBlHaan2w7RGWnoERgcGtRWM7alJ86tAp2oUDJhHg3IR6kqLLRXozNwNE+nooZhknKYAYhgKBRUoaB6Z5rFCWxdQ4mzHBzqW7wehu0gsiXOGNvEcgwBJumemsgsbjrcglwUUhLu+hwMD+uRlKFAHvCi8osgoOIeCgQlZFgI2tH51goCwC2rZtqEZkSi8Ha0CXYaRlGAGYFe5m4Yc9ygff5nAcGIenCfUHgskJLXjC1VLE7nXPwY18QtZ1rRS4uhxLd+oSvCXFdxBocRMV0fdyl2phI4ep65C1aKw1gVcubnA2w1ICz4FYPgEnEemi91svvAQVhkK0RYy++62W+hBLXAjtvV077ve8PaoB62rQt53+WG7nNe6-31lD8NrxjEjlW1ZZnQem-91aP2Oh-Zu39j6zAUMLX+98QE8EJGArQQDG7-B+hgCo7hB6M2HizMelBJ70xQcQPgsBiAyjRhjLGe1Y54y0AAai0GsV6YB8avzHFqNAetp5pznr7TO2ceisFOMDLuCAtRIXIS+emoj5DAwgCDdCLC2GrxeOIQkS4UTyC1ISFYajG5W2weEGKojXr3CKooHe9VDD1S+sY9wSA+DbyxJY041itS2JAPY76wUw5zA5MoOgSA6CEhwFgUJWwmCbCAA
 
 
+[6-action-payloads]: https://flems.io/#0=N4IgtglgJlA2CmIBcAWAbAOgJwFYA0IAzgMYBOA9rLMgNoAMedAugQGYQKG2gB2AhmERIQGABYAXMNQLFyPcfHnIQAHigQAbgAJoAXgA6IPgAdjhgHwqA9Oo3n9PFYXjFxEOfZ5atK0Sk-e3gAi8GDkSA7e1n4BPgCusLFRsBBJgQDCoi4A1lriWVoARuQAHlo88CXieeRafOUC8DVaohAA5qIpHdUQ4pGB1imx1gme1s6u7jzmIATOCJNyXMIA7Eg4dCAAvni8jcoYAFZcMnIKSsIQYMbkpNXAonh5leJPJsZbWqwUYFqGEuJjIQkFYrMQoDwMIRsgBPYx8YjZDBQeAaKyiOHwUjvQwOBygrQAWmJWgAgukACoASQA8gA5ADKROJeJ4sh4hGqFPIbTaCAAEu1OkLqrotAAKTl8BRPCA8FElACUWl05i0wH6BLAfGyTUIoj4VHIAHctMRYHImuRWFpbu05YaWkKuhI6qRsTD+ghqq0Oi7RVoaBhg1KFGJnSKmKzvATWCljHkCr7hd0tBpDXErTa5QqdF58k1ZMZPV4nX6RTQc5UmCqtABCZP+yvy6v9TVWLSkeDiOKkLz6w0W01FmG2m3kXtaUPwJ5d4ywBFytp-UsEgtllOuvjuvij429US2ycVU2W-pdnt99VaYNQ8TSmcb-1bBwvnj4jvEwlaABqVIAogA6lo6Q0gAsgACvS-50hSTJfqy7KcloxhYoQci1sYFBAiqsSiOKhi2IYTwaqW3jmnwhDAuq-SBChaFyEgeSkJmeC0YEjYikxWHkEC4blt07Fvt4OyBux+GGGYszqqJChVOKPF8fwgiKoqbFkS0BEgHKxhxH00mkXR3jiJiTGGMQWSIsUJTEex5GWbqUDcdhhD8Zurx2babIpIizm8a5Zw8nyM5CWp-RMIqrIEl+WgAEoAKp0syhKsu84qGXmvRMRl3jKfAwIAAU0J5hgADLwHwPAVFoADi2IGmAtkad4hj-qQGhylo-ImvAVBNUZfwgOkCCCPIcpNAAQnwcQWf1RmGBB0qkBAxAQPU5WFIQCLZHNdGGJkvXOKOQQQN2y2zbM7EsOJEbdExxXNV8hrOOpA3iCxIWPawz2fQN32wC9nn-YDGnXaWOz9B18DGkx064ZphjanKxEyU8D10be04YHlrnasY4rinlsotkq8OoaQ6E8OlnlE55nF3VO95hvTEjNgqYMDYFvIIPd3Lc-AgoCRIxPs69gRbKpYsRWLPDkCiTFQOQxBxKN4gYG03b-iNijiBNMJUlAWk4iAYU8BLDizCAsjXBwWLKIUfCFL1lvzC4bhLMoADMSCbDseyCAcxBUZb7LnOIygAAJXDcdxaL2sDigA5ACQIgmCEJHIQKIpBopDY92Vg8MYYBWMaD550HhARwATFYE7iFY-oYJXieKgA3KySAUOQ9z9MS1mEvuUD5Ex1d0HQxglB3ZuskjXjACh5CEL0UxMV2C5uBo8Bt2+DgYOTlM0aWA-LwAXkuTHFKQKKkIS1nT94Q8j2m27iv3pSD9A+Tt-08IwBfWgACME8yjAMnkAkBWgUAgIfovZe7seBr16tKTQ29+hXxvkxQB4CADEMAoBTkoNAWBGCsSEmxOoOI1EcCTzbi1Us2pSBtDlHfHu4hyBgCwTA-oysKa3G4uQOUChSDT13pCA+cg3L+iPt4B2iI2gUDiPKQksgLSkCYjg1gUAsCiL3hIyErtXDwAIRlUht8n6iCYp7Wh6Dbg3xUZQfhWgcE4BwMQWBf91A8DaISdhxgmIAA4bGlk8UuVh4h2GcK0EEqer5WT7wYl4HSekaAmVQroCyORrI1gyjceBq86ibUoHpNBpZeHoXUVoFE30EjiFgX4rhwTvAIFYOIJiKxglvgSXwgxvU3bGLzLpcQqTMQZIctkmRWgWltK0DQ2JpYGnRM6fE-RKFJmMOYYgrQdBYEbJYdM0eyzxGJKhH0oxBCEwZT2TwQkBztmiJXHvQo7hJl5JXoxQp6FYAlNgXc4ghpiDinTKQN+rCSif2HqIZUABqLQ1cuxgB-gs3iTE0DcLKY4ypLi3GwNYGcQknIYQ8x0PeHyuL8Vn3gKPBF9SXiEirPIJihJAE0riZCZ54QnZ4q7OqUOOsmKJ0MInHeTz3BID4K0rEvKzj8q0IKkAwq3wuzOQg5YIA6A+0JDgLAPtthMC2EAA
 
-[Live Example 1]: https://flems.io/#0=N4IgZglgNgpgziAXAbVAOwIYFsZJAOgAsAXLKEAGhAGMB7NYmBvAHgBMIA3AAgjYF4AOiAwAHUcIB8LAPQdOkyiDgxY1YhHoJEIAAyIAjABYQAXwrpsuHfgBWCKnQZNieCFlG0ATsW7BuYqIU3ITBjAAevqbcYF60WNzCJMSicIgyMgCuaKIA1gDm+HRYMoQAnqIwXoHCgmh1GdwAtE3cAIIAwgAqAJIA8gByAMrNTXUNMqPcAGo9AKIA6iMtY-VoTnC+MB6EGHAQAF4w3PzcABQA7t5swZteEGj5AJQnknXc3HcP+e8f3PhwURQCDEM7CRIgJ6-D74LBiM5ncIvfhvNB-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-hwdvUT8MnnSdsei-Efjwbmk-Jw7AZlRdOOA5o1107SLrVou4KCsA-Ppu-Z9P9h4KhfAao1Up3nx8ZdsapCFaoHA2vcGWzVv4tADtgH2hcJoVLPjUDiALKVGuqha-xE0cIMpzGaaYND0HwJs1DdYZNj6BgVsYuoHLpjLWleuis17kKJPQolZlNlDrtGhdzYW4KSX7vMVMgRzB+G1PHMSrt2BCWwIBmRiktOj4x3utc7exd7YV3zH8-oAH5jQfi-cG8L5OJ6fxlZqzxxD6ee73y+rzp7nrC6BeDQGbgkXhDQ2vxya1D9uICIH203DvBfOfaN7yXgG6xy+3ZQzDrNohSIlmOB3xPdbVWqsNeB4JW+JbbHPS8gkFOZTwx8-+8zjPi4s3fXLTboOd-O3hxgKDDxo9NURV9VGtatL1NgyhYAZQQQ5YIBPc3N-M1FdE8lQsAVN9Qd8B9ofQ4ADchI0QO8sdt1yNEsxx8dH5CdBNhNss9479qCmsU9acmQDgmgHhwlLdNUydOsTtEUl9a8oNYUzgdVtVgghCRDtVhC0t8BsongeMZwmhYDMYZRt5nAvA7d7o0ASls1yVWU9cHgQ0YAWN9p4UpVZN5NwVVcpVwdb1zDMc4tsdiC8ceNUsBUSUE8-9EdtMqCmhj5Moz901AQHgSlEAMB4M59HRe4XBrwIRSVtDKV78jDchSVTDSsVd-cMxKtb0jA0jJRD8U01cncfdfpXRdVXDJQncRMRUXded+c0Cyjmta9QUPc+QX0fIvQ25GiMVmivlUc2jiBSVfJ3BG0iCAiNCm4DB8BMpM9G4-9eBB9l5x8SoAABf8MoWIKwCWEYzQ6dYlXMOzV9bwRzOIPpM4XQcJZ4f5IeX4SHIlXYlohzP1WgY44+cFU4mAc4y4tACfecFONOApDvJ9BQutZQpsJvHcR3DnHg30aogXDTBNETUA9XTXbXXXPJA3PaKAY3JE83dg63cJNAQXP7ebWYsXNLRbEVKXUFIwKk0ErhQacE7gs7ZFWvYEHAGlPAqVBomoqVXI5oAVEVJoPkwUQU3khEyaNHA+bgUTQUKUgtSXRrL4iqc0bNAE4ERQ7gWwP6DQMAMoJ-S9ALZAz4VAunUNKw-FfAIwbYGk80AECNTAK6NGf4uQwEv1CnXUwDCAqA3gWqYEeAvzcA+rcVfAAwS01MTZVQC6WtbQEAAwAATmykMDMBXFMCAA
+[7-with-selection]: https://flems.io/#0=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-oUShmONifE-orBoSil1IybmOgaxTF4Wy+QHKIA-3gHvClEzMSigVvIaCop3jiubO4mF4Qo5sqLN6POvVoJV0MFXV+Sr3BID4HMvkGroRaq0DqkAeqWwxzFnHZQXw6CihwFgFOAImD-CAA
 
-[Live Example 2]: https://flems.io/#0=N4IgZglgNgpgziAXAbVAOwIYFsZJAOgAsAXLKEAGhAGMB7NYmBvAHgBMIA3AAgjYF4AOiAwAHUcIB8LAPQdOkyiDgxY1YhHoJEIAAyIAjABYQAXwrpsuHfgBWCKnQZNieCFlG0ATsW7BuYqIU3ITBjAAevqbcYF60WNzCJMSicIgyMgCuaKIA1gDm+HRYMoQAnqIwXoHCgmh1GdwAtE3cAIIAwgAqAJIA8gByAMrNTXV1TnC+Q8QYPgCiHBpo+QBi0Ixe3PzcABRTGIwAlNuSe-74lweMwTBLECvrUJuI3MRemTDcpkcTWtPEWiiRYQZZrDZVbZ7a4wE78M67C5XWY3bh3UEPcHPKqvMAYKAqb6-NCTaYwYhPTZQ-YomC3TguOEIpH4GHBSDYryvGAMhj4WZefLk-CcfGfIl-NBTbhDVQwdQzbxlals3hsJnnOrcbiXVm04KNXIwGCiAJQKDcGFvQhfOBWW7hagm3xgbzWr6u820ADumMQWu4XhgGA4K1efAoAam3gg8FewAD2t1ML1MfgBpkRpNlsBXljcHdlvtaMdzpi3n9aG12uQfAAuvHE9Xk7TU3n4LW2HWM1nTcRCBAC9GvMr+7bizBS6IXRWm9qVExXu9PpGq9XzAGN2gfuM0I0WtwAGo9eYAdRGLTG9RJ-zRHkIGDgEAAXl8drtvd42MEpnmVkyo3eTEm1ZUQoFBXZhESEBiWrHUsDEXZdnCAC1zg8J+VoAAZH0qg6R8YF2OF+B2T8vDYTCcO9PCCKIuduAAfhCSCQBgLBhGCYBzDeSdiGQ7gAGpoOgo5YLg7gl14-ihKg4QjlXODiUlaVhzKLpCEyLAACNMGgKFRDiVJTmY4RwI4vwA3oahwOoXJXmQWU1GIRUR2CAygTgfB6wzbgWEvANrMfNILLQ6tsiDENXnc1J8HC4Nv3oiLQ3yKLDM8pLMQU75V245AA0IFiJEoPxuECuBguEDRiFgKDuLY0QHyfV9dmizyOU2Ny0v5UFYFErKCuEIrONKqAgteYQMEyftvFqsIpNa-BJumrw+rqOslJvKVfFUrDB18HZWuMgaQHkcz-DKirlFzfNZu4PK12OzIoDO7i+i02x5WIfAjTKOAWq64d8yOfAENEXY+GM1T1M0nSMGgREmwjJsqtgVKPLbfNOzrbrqrpJslsICtuAWwGO3rRapsJrwsu1OLIu4ABCEnrrJrtWWNNAacDeK-WJrqMpWbYSLVLn2pxPn0bF6nN1E+S1o20kYghLxD1jb19LSo6WNO4rztG8rxvAZXbvu7UIj44RKRxOSsoDBb0TBK2tnEl3Xbdt2AyY46HlEKbzJCuDiAqGBDfNjim1FKBPjRmKpa5+gfam15ZQpZXgm4Ro-JaGW4IDV5jrgUQMHqXWRrG6CpaaMi2Fu83-sl5XVrXO2uodzEnfdzuu+7xI1y9litKmwES+GqybLsmVAWBe5HmV7KeMiFjBEETIACYAHYDAAZjksT84Hof6DOseIFs5OBWIEFHeV7i69qFeN90eZd9Xdbd2U7bczKAARck4YtA6mt4QmROlwM6ZcDbQVUibFuHluAADJ4EgMIAYF6c1F4LRRrCOWa5DqIOYtBIafhb5SQAAZNhwkGBIEBUiaW4GwWgUA3RPl8FYYgwRJifXJJkLYIYaGDmoMBUKqhQQ-juPQ2gaIICZDgFgWgbAeIeDdA8QRHA2DZF8FNbgo0tLeC+OSJsDCmFBm4AhfImAzQQAAI6ZAwPgbgABVXwTB3ABAUVgB4rjeQQGwMEGxEAmxoFoL+TICjJxVEESiTQVYnqjSwHQbRGBdF5gLGgQcEBuBaPxNYzINCmyTjRBgUq8Q5EMOKVKGANjDj4ADKQpu2o8FIOOkQvW5dhBPnMYcHhMBa7zS6gTbwTc37XkVktWgDjRBsEODAVWMB1aALgcA46OthoXUNmMzIkzpkwLXHfEAbQpqSM2VMxghscHam9jkP2pcg6VENtQG0tldHhFqjg4ZH9ymzAeJCHYThGAMC1sIFZJU1nQT+XDNAVRbp-MZLufcrQABKDiBijDqIEBGa5PHEEbKFKWhtaBOmLuHUKAsUrQQMNvYlcFSbBQTKFbUwgKWr2EDit2WDDbqS+H0QlVZBwygeLkYClB6LagGVyaCABpQ4k9DI2i8FS12C40C4nxCoLm2otwu0ZZSpAAdXbsugty4MVZwJgC+HyrSHxZjPWFfS6sYrDZDB4Q1ZUABZagAAhaohAFUuyVUuD4eM7WavEtqowLK9UuwNZbbA0BlSxFjGgNgUB43ZACL4Mc3ACXGpLAOLSoJfXiQddBAA4pkZUAAFOIdpYBwELdSjmAaVz0VME2Vta4Q1BLYCHCR1BNIuHwEKS+sAcAMA9WUHobAWI1BgllTgatXhWmAeC75Xhdim2rFLWZ3oaTTPOdWHae1d3HC5qpX+XyoDHpgPgUlCCkEphpcgFMpL1pczGRMk5My1ZXv3a+uoO5rxKGKKIaAVQ8BaSSaoJQKgnLRO0CAAwiBdBmAsCATAOA8BFHKkB+g-zXA2BXZCrYdK4KugYE0PEHiU2LuLnAJoKg8xgAANxNjoMY14ABiAAbDxljoUIO2XyHEbIbAmhsaJhx6gUm+NwV9GwfsrwDC6F0AAUhk9WDghdRplFeEJvg6ntR6dE4wDwo1GBicYZpKUindCiHCNwLeRhbP2aU3ZgIhzuCufCAZ7gRmmgmbAtMpocRvTBS8w55znnIurwAKyRfC6veLzm+PtrqPgKWkbfN5lE2xqzrxV4Zwcz5vzIX8uFa3j5zwLDomvCDGZrgMAfPgUhU0G0EB8gkFeFvZLTYi5sGSv5oEim7Mpd3BjeAmW-O5awMq7gBWZBFabCVn0rwjCFZi5V4JGJ6C1dUIcBro3rwU0BMc6Zk3ssWajjN-LMgKtLYu6V7gXGZDr0O2l1S52+CXby9wNbC2Nv3a+49+b3BXu9a2xoHb3N6sMje2gdLc8Eecirl+TLZHiBVxgO1zr3BdFQDYD582-nqhSldF4LArxNmVC8NQAiPn0f0ZfD2gwXGRtNgQoKB4TRYBgGxZ5mLdn-1pYy4nYgyBbkwH4AAcnNlLusmWqvbdm0kuAlnGA+eeYz58vNkndq8E0Z5GuvziyCZCwnQ3uC6CazAXnrw4ts9Cm1jrfPusO9k3wBTc2jAC+871kMyVXhW79-1zE3Obd8595V-3oep75bd5u3DWvmes996FIn7xaNk4p5k8QES6dNgZ9RbHfO8cE4L4nyjcaaNSno1UCAzGhdHYy4PYgw8FcQ5qwELSquo7q+RhboPJLi+B6N+ELXOvjf68N02OTnvXep7gk7nH8-6eJ6aj2xL8ftS66qMFvhMjVtb9xxgQTwmk2cf62X-jk-hv2aExgZUPf9NNk13AB8DDvSB7c5FowbmOMAA5ADDskcqQW9h5EBCYGRiMX8T8Cgz82BXgR0rIBwwAyNgDm9D5lUT8NAGRMtxNxVuNeMX9aAx838QwVtuBTdGtG93sWYCwSNqwl8+clNVM4dxsCwnpMsOd8gHgR9g8A8osj9FdIdldu81dqC08B9rdbdLcfM8xnc+Dr9W94hFC4JwIph6Mg5YB-Ng5XgqCNdYChNaARNLsJNUCG9r9SD38KCHgVBfBItIsfduAOMt5XCjdyJd9qgOAD9fsj9aAoCwAmFvQmgdNLRqA4hzQfN-CqhAifQmhwh84+Bu00A2CaVtEMkGDt8b9LRGEIYDA-8pNqB3C9c99vDgoU9ijd8ecMdZ9CBXh14j9X9rDP9Ldv83MnDJNpN2c5geC0ADdaBlDs8vNUi6D0ib0eZBZMjj9T9jCk1TDxUkCSQUC0DiCPD9dqj5jXhvBi4hQRi0wCxwJYo0AkpMsd91jw9NjikvA0BYjqIvAtIo4JDUt4c0jwIIDojoD+NDD4DLjFiHl68VjtxaD9jiYcZYAuCejeDBCXMHC3NhjG92C7w0dE8i8FDcdGEr9SM18tCe0glyd8RgC0jRBjsqYITOdZsks4TosetcVsSyhUZeBrVT5V9yNK9qNLQ68LD21ET8AmEQw4BwiOZ29qsocVdxDzdRBVDqxqipTtR5CcdB84JdFBjZTuBnwmgHhu0EiotFTqwBM4DZictGEiZBQINdhYsYtggLSrSYtLTLd8B14jhCdeImhslzFXgnRnAvBUiQM0AiNMtNNAtQiHhmsYADcmFbIfNajXguNf8F9GCsc0TYyhCO9RSxDe8JDA4LcnM1NujySw8ZCmgt5V4HdnjQIHgiNEAMBedIQGCYUGBDZoJ1NAztNXgHiCVch1NozfsKj8pEyccjBey1xuCoT8j4yzjSjpFgo4tcy1wzi7c3Mn8FEONzD1MJz8DONCi3gSdC45gXBnCtyM8pQi4gwGB1Ni53B9sodC4KzIQDB8BV4Djvk5heAbisUnjdwAABH6WIKwIcX0-0hg1TEqI8uALPWrAY6ZXYXQbtfIJ074AMFglTECnc8CwMSCxgXYLeLjGCmAOCpjBCoEo7DZLZRgTLInN02bT0zYPYkcU474w0zjVc-g3me3eM7UD424kIxdcIxhKAKIgIoI+IxI-rJgUfejZo8MCpewto+zDoowBS2i5UFBeimYkwjc9InAITDmHzDSlc1AnzEc2bJoJzNzEyn-SLcyoQ6PMMbgNiuy6k9omkssj7U0KYii8Cd07gWwGRDQMAMoFkjHNk0IhjevJrb5Vrfs5g-AIwNiJS0EjpTAYgbpcil0yi2rYvQKzQ+kntUEbJIo8vcjdfRTfAAwOK-9aDOUdQODPAAwAATnXkMDMDrFMCAA
 
-[Live Example 3]: https://flems.io/#0=N4IgZglgNgpgziAXAbVAOwIYFsZJAOgAsAXLKEAGhAGMB7NYmBvAHgBMIA3AAgjYF4AOiAwAHUcIB8LAPQdOkyiDgxY1YhHoJEIAAyIAjABYQAXwrpsuHfgBWCKnQZNieCFlG0ATsW7BuYqIU3ITBjAAevqbcYF60WNzCJMSicIgyMgCuaKIA1gDm+HRYMoQAnqIwXoHCgmjunj5+XjAAjpnwxNGx8YkgyanpWTkFRfEyAALlldXipcQptWh1GdwAtGvcAIIAwgAqAJIA8gByAMrra3V1TnC+Z8QYPgCiHBpo+QBi0Ixe3PzcAAUdwwjAAlP9JED-PhYSDGMEYG8IB9vlBfohuMQvB1uKYwdc0Ld7sRaKJXhB3l8flV-kD4TAIfwocg6tw-Gz2dxYfgGRROeykZSUdT0VVMWAMFAVPy0FyYjBiNRCCLMdiOsFOeZOS12p1Af4BdxMl4oJiAAYDNIZABeGGoTFo+HylMImQARvhNKVQZliHJQRgZAASYAM-CQMVefCkgAytAA7lUdhgVICwaY7HB6ObZfKYOFKupMcJ7PRhHmufaNPRMQBxWjEB7eCDwSv42UAXUJxO4Z0VaN+dOBjwR3BgnBcTKhBu5cNHMGCkYx48nDBjT3yivwnCluPxPa091UMHUza8ZWHfN4bGn0M5PL5OpgGA4H0xfErdxb8ExwCNj4LrypJeK2cCVuyyB8J2f5GuygGgjAwE-nAUFsJ2EFcioTBqjii5Gtqcp4rKB7LESR7cA2TYgWBV4LsE36gfAd4Gg+86IZWYCKsqqoxFKMqcoxYGYkc7q2KexD4LkMBlHAI4oWC+BYGIgJ8JC3CskR7Kfka-5aVygEoWhGFwdw2FoJi4ZCfAxncAAZHZZlAdZqHQbyMBMJhhHsp2iktGwmQOoCgK0MEaEMSBZS+epwW0LZAKMWUYLBLQyV+B2z6vrxLnIOGLRZR8nbcAA-E5iH4Plb75NwmJoJkUBQCRBJkSsMiXNwABqBzPAA6hcGxXGRvYwB4hCphANowMOCbeGwEWgR806CdiIoAXAohQJSgLCH0zXykpKmAuES36ey4QxrQ8ZJl4KZpky-AAjNXhsBdV3JqmMDpqZpWENtIAjRW6VhAWxBHdwADUfS7Xt8o1ViINg5DO3CMlRrNTcFGJXsbpYO6mDQHSohxKk6m-cIm2A3p7L0NQm3ULkmLIP2ajUd4ZTBETZJwF66HBKsLADZytOpmkHKncaaCVZinOpPg2SVZh7KVbxMvc8rHztiRYWcmTIASJQfjcMLcCi8IGjELAO3mOOo3jZNgKqxGNJeBzxPc+bsBgqjRG6-rwT+MbpsiH6hDeFbwORA7bv4BgIfeF7Xbo+RaB3E5bOxhAqcAqrpN-fIlNG1AIslsoNHwOHGlGpyjtcUqKofPZjm6-nBvAIHJdQLQr5wNQLRMMI1uafKzdcJT7d9OtKJoFUA8w75laEuyuv1ZT1uieJ6hSTJcmOy5inKaIqlsOpWM43jGDQKx+k6fpHswNL0c5W5d+YbHxCh14D9c8hTGuehMdxxdkaeWL42CYgAIS7zLn-Ts7lPJGnVvkL+stEH-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-v-oNuCYDh0QXgheMevpMfOTvucVyMge9rtiKQmf3quesJUiUmmbLgBdOogBgEPn6ULCVi4CXH0HtiBUdpiK6c+rkHtnBeoWCUyTrB-nRkYPxURA2VLhCSSUCeYaLMjvhURJJS-t9mSfcXkXtpJUGUKdQMBi1qAS0AwI4dSdpSnLpS4Hts4u4CbobpPIBbSAYPgCUjqhBU8HipALuu6YSBMNJGULEFYDqtZUBZyDtobNiAQd4EQXEAuICLoLxvkO+XiJyJtkFf4CFZXmFZiBFYhICJUoNtFTALFZ1vFRGb7pbr5vLmXl+STg6M4F4KaZFMSaeZkSpY8fKKAYgbxK-hCdTNCbCfCZZIiQ1Cid1RiUeSqIgUwDUXUbyW8SiB8fMaEQKREUYEtbVWzCEAYPVQGWeUGZtDgJNlOYDuqU1YDmJesO9t9msGdeapdada2VyK1aMdwB1Y9Yjt8cYR6QSXVaIGVZ+ZtN+dwLYGihoGAGUL2TnvQY1oOR1lzv2rzoJRtvgEYCNCtReNGb8n6oRi0N9ZEGsBVelZQaDfsR2SopSEajSbQTnhge3vgAYEjSFglieOoMlngAYAAJxlKGBmCdimBAA
+[8-separate-highlight-selection]: https://flems.io/#0=N4IgtglgJlA2CmIBcAWAbAOgJwFYA0IAzgMYBOA9rLMgNoAMedAugQGYQKG2gB2AhmERIQGABYAXMNQLFyPcfHnIQAHigQAbgAJoAXgA6IPgAdjhgHwqA9Oo3n9PFYXjFxEOfZ5atK0Sk-e3gAi8GDkSA7e1n4BPgCusLFRsBBJgQDCoi4A1lriWVoARuQAHlo88CXieeRafOUC8DVaohAA5qIpHdUQ4pGB1ilpKkP9gVrpKcS5cnUNgs1gfNlNvXkFhs4IrvBQhvPwYz5Wo14Dp+PekxDTEDxtc8RZ08VlUOTwhOXk1Vsu1fkmvxBEdBql+tYEp5rM5XO4eOYQAQ-nC5FxhABGADMSBwdBAAF88LxGsoMAArLgyOQKJTCCBgYzkUjVYCiPB5SriDkmYwErSsChgLSGCTiYyEJBWKzEKA8DCEbIAT2MfGmGCg8A0VlEKvgpF5hgcDmlWgAtBatABBdIAFQAkgB5AByAGVzRbjTxZDxCNVbeQ2m0EAAJdqdcPVXRaAAUfr4Cg5d01JQAlFpdOYtMB+ghqq0Ol0JBmtDQMOX4woxOGi+ImP0CxHujRk5UmCWAISN2stngp+tnUjwcRxUheYBacsK8QJ+Ac7uRgkOJc8Bw+v1aV3wbZR2OVudaFEKKDpzOx4BT-cco+7Ampr2mi1mrQANXtAFEAOoTR0AWQACi677Ora7pPl667VMY+qELM0bGBQEoZrEogxoYtiGByOZnN4xCwHwhCStmRzeNBpCwTwSB5KQcRziRLQ1pGVEIeQErVoWkZ4PRN5QMxiGEAq27-LsXE4VoRJHHIeE3NkfGsQJaJCa4oneESpZHKhhhmEi2ZqQoVQxixbHAvAqapipgSaSAdzGHEfQ6dhlx5HqVGGE8OSvJh9HudMuxyWxC7dBZ4xSVMsmxgA+hyWqKOIp5Zo5TlaDF8jTqx-6IXwbQJvCMb3mJ4xDiOY5aEZCnyIGwaHAV4nBeJ5n9Ew+UmlYHrPgASgAqs6bVeryMaJXcvRUYl3gmZKAAFND0YYAAy8B8DwFRaAA4gaogCF5NWGO+pAaHcWghuQADu26wFtTmGJMoSxXcTQAEJ8HETwXZchj-gmpA3BA9TzYUhBqtkr3jFdWSwM4SpaEEEDDl9L1IkcLAaYx3RUdNNWsHw4N0TV4g0TjTmY9jdXeETzgkwKWPk4jdU8VRPAJLAHL9BJZz7fAx1UfuyEtGh4B8HcmG6Ry6PjJeM5VuNGBLMYMYxiZSZ9pU8WlTBcgDfRCv0YFEhcxL8DsU2Ei9v2FM0pVCBowGQahijEiK6b3FKceeuzoJO67BmujRq2JRm76zto1uO4O22dV3g1ZxNRZPDkJqVHvMQcSCKlbTDu+CAp+I91KvaUB84aICR3eDhIiAsiMhw+rKIUfCFNuZdHvC6IgAATAAHEgrf4kSJKCGSxCEWXPq0uIygAAIMkyLJaKOsAxgA5GKEpSjKcoUoQmopBopAYBU4hWDwxhgFYx2zrvg+EOPrdWOQdknJGGCXwvqYANxekgFA-MRZwWq8ZrHWgPkKi3c6DGBKO-HgK4HBLAOhOJkhBejwiokOfCbgNDwFftA+UZEKI-28P-RBAAvO4bQqLFFIJqUgZpXiQO8IAqAwCtAaD4KQGMf9SgAKAaIN+-RVQwFIVRDEYCyjCPAVoMRZQUAiLoaVcgiC3ByBQduHKGDZEUKoUI8RABiGAUBDyUGgOo5kVCzQGnUHEIiOBwGv28P0JYpA2h3BoT8cQ5AwBCJkf0JO5FmTMXIHcBQpBIHYIwLguQhtaz4KKIDNoFA4h9jNLIWAfitDaNYFALAISHBhLVvKHi0SNH6i4Yw0QVEsQ2P6EU6hyTUnaJwDgYgsj+HqHuGaNxxgqLt0qWcFppCXHiDcR4rQ3SIHLi9Lk3xXgbJ2RoOIPUugfLZFeO2RKCCkFKLqP9SgdlMHeNHLBUgCd4CYwSOIWRHTPE9O8AgVg4gqIAHYekrkmRRd2wl9EzPEHMhZSyVnRNufcrQ1ixlnEuSM55EzwleGMNEhxTjKJaDoLI+FzjAUgMhTgvJ7ydj6NhYlVFPAzToqRSEkUq55SFHcNE9ZijEV11grAXZsiSXECxsQGMLC2EcJKCU-I6YADUWhW5DjALwsFrEqJoC8WcWpRy0kNKaf0VgNIzR+iVJbHQM4piyJVfINVEAiHwBAaKi5XIzStnkFRM0GJTXjMpe4JA9cVVDmzCPWKVEF6GAXlgnJVLwh8DufqN1NIPVaC9SAH1K5G7O2bsoOgSA6BmhwFgRNhImAEiAA
 
-[Live Example 4]: https://flems.io/#0=N4IgZglgNgpgziAXAbVAOwIYFsZJAOgAsAXLKEAGhAGMB7NYmBvAHgBMIA3AAgjYF4AOiAwAHUcIB8LAPQdOkyiDgxY1YhHoJEIAAyIAjABYQAXwrpsuHfgBWCKnQZNieCFlG0ATsW7BuYqIU3ITBjAAevqbcYF60WNzCJMSicIgyMgCuaKIA1gDm+HRYMoQAnqIwXoHCgmjunj5+XjAAjpnwxNGx8YkgyanpWTkFRfEyAALlldXipcQptfUe3r7+MJxVZdzdcQlJC4MZ2XmFxZPTVYEyGjjCiWh1GdwAtC-cABIAogAyAApfABKAGU6k8ZNw2DA6NViN4YvCMOpNGg4Nw4TEYMRqIRuHA4V4IPA6k58dwAO4QYiEABiWJx3H4eOIGEYjMk3GQdW4fm5PO4+EF+NZMAofJ5YHphAgaHyiHRXg6YrQPPMfJa7U6AAp-Py9fqDYaeeLuJkvFB5QADAZpDIALyRTFo+HyVMImQARvhNKVWZliHJWRgZAASYDCxj4SBQRhefBwn60clVADCGBUWoAlKY7HB6JblXqYOFKup5cJ7PRhIX+UiNPR5QBxWjEYEEolwGumTN1AC6YLQzze3AAgimACoASQA8gA5YGvF4D0m+NsYHxfDgaWU06CxxncLURmCZ9mH-yC-DH4IwLcy-K7mNVeXERUwHY9x5oFfcNu0USblS96PvuTJHiyjCnvwHKUtSdLYoQOqXte3C3kBO57s+MQYFAKjdsuWirliIFVAe4EijemwMFBHI6gKQoQaKMSYV48obC48brvkWL4JwOEdB+BGokRaitgS2xgShfA0eefLIYxNYtBgHCyvKfA1vi3gdvKwAmvJIpXu28A1jyyB8L2Okmjy+mRpphLwGZbC9iZ-IqEwL5vi5aoqjsyr4V+P7NmJWnwGRKF2R2Mk6nJDEUXykoIfe8pgDhKgaUZaTcNOHq2NCxD4LkMBlHA4EhXAmb4FgYhanwZ5cj5PLqSaukNfy8llY5zlWXiMDucyBkRQ55ncAAZCN-W2RlnVXr1aBeTWvYVS0bCZNQMBalqtDBI5wR2WUi1nhttCdQee2ZsEtDnX43aKTAylJcyHXHvgSkqfkvbcAA-BNMAvXdb3cPKaCZFAUB+Z+JKEdwACqohsCKf72WikmMTJsG0lK5GQUJZLjrQ+T5LAI7+rQsPw2yKMilFLV6jZoomhgJNkyK8oAITPYzcLM4w4MDkO7wAGqTl8ADqC5vEuAVQzAHiEOmEB2u+YHkt4bC7a+940Xy+KErKelwKIUBUlq9zCJ+tNVaIG3hFrrU8uE8a0ImyZeGmGZQfwTIq14bCO87qbput5v6t9iHCDL1bXWExbEFq4TcAA1H0fSZsHeovjHceJ8nZsuRD35Q3t47ulgHqYNAB6iHEqRnmHIBG5HNPcPQ1BG9QuTysgwKqHliNlMEVf-nA3pOcEzwsBLfKt+mmVN3q2SvfKg+pPgC--S5PKvQ9y-D1vspdn5218nXEiUH43DT3AmXCBoxCwPc5iobL8uK1qO9RixA-V8Pt+wKnNYn0bhfKAM9ywiH9IQbwD9o6RDft-fAnNIFeH-n2fOP49o-AgGSJkO9a4mxAPIIBl9r7KAytAzkJo+TvwSjie8o1xp10IWfYAxCwFQFoMpOA1AWhMGEI-eqepGFcEbqwvoBsZRoCqHw4Oi0awDh5HXEGjdH7ZVyuoAqRUSrv0GuVSq1VarQUel4MoxdMil3LlAaKrUmqtV-jAJe8CdHTTsS5RB3gHFD0Mh1cyCCIHeBcmvZSbNtFTR8W5OaJo95ym4O-KJjJPa8DViaaMsYPErxSVULsqdzqoJxr4DJXgBZEnJJXb+eDhBMOCP4URwgCnkIEeiTOwgSKsVznyKh8C0LbgfCxI0fT+lGj5KHfBMpRD+kjryWxFR7F9AiMQasJo+JQA6Gk4eBSXL0FGf6eU3diAtOCNwcek8fLdj1HyeUdcDYYEeMw4BoC+gFJeN7Ng5C5lwM8QUlBPkOmeK6cBXpAzAVAoNEMkI+CPT+jhDcqpzdvxtw7r+OEAE7wYSfF4XyjTYG1EEJkAATAAdgMAAZjNsHC54LIVVmYS3eFOyWQbhRT0tFj83nYrxfi3QXxSXKkWgOSGwkjFlAACJYgwBXHBZTDFCM4EQkBV8wF7XqT8muY0wVJAMMomBsd352K+TyXBqrEJ9FPlUllmdLQmkTC0BIEBUhmMhLQdh6K4BUgCDgYgwRSR5SxGaAIHBRBYOoPeE0qgqS7VvA61CEBMhwCwLQNgjSVjoplEGjgK0GCml8CAj03h3xYhNGwR1ubuBVXyJgAIRt2gYHwDDXwTB3B+pLTKBtVEIDYGCO0CAJo0C0B1pkBNxYqhBogiiU0oNsB0G4NmrSaJ6guszRWiAnaJCtWLKhDAF94hxsLZu1EbRMisnwHyS0eqYllMNfgk158anKAgGWv0LRXmZ3fm45BOS0C8qlgKzmpM4YiiKTAEpEqh7lIIcI25N6f2ZD-YwJVPlWUgGJhiaD5MZltJ8nXLZ8zmEmmINMsBOJoS5BzeEBZrVCPt1vKs3xXMYP01apsnI2zuB4wJkTJmdGsk8rQVDJwLIZSkSZHxlwoHKnXrlSQvjYrJFeHIcJ6ifMITDkBNDWci46iBCsY1eoxB5To3gjiLT-I-motSdhXC9G9Q-u5jMlKFmXIFLAbQNa1yyN6iiUDEGYMTQ6J0t5VU76eQ9qhPKQt1AzEcW4sQL4sAcAMAAEJlEnGwfBNQQCBe4JwYp8pjxnikwJrwWoGkShYgB8kWMTwuQwVg2Ox4Ms8j2iK-jljnpxNVc9JxrX-r3lkQzDjqGysVYy71nycBPRcMJKIesqIcuMTqj5xiNHf2ofoahTYxitQAFZdA7eCDZxGkU+T9jQP5OoShigBtgF4PAHoMAelUEoFQokUTaBAEYQwRKzAWBAJgHAeAihX3O-QRgzAbD5Zk5MvUYBgcvBSlgaAZQcvXLgC8FQhIwAAG4TR0CdfKAAxAANiJ1j1qt3275DiNkNgLwcfuO4Hj6gjOSd6kpGwak8oDA7YAKTM-5BwA2IDEfcAp3wXnPIRfU8YB4EBjAaeOrMTN7gnPRDxyJUYXQKulca-jj+rXKuxfC8JJLmWhsRQvDiOSTKyvVfa71-HXF23NfW+4Li231uSemAHB-NFkP+QS7l8srAaB5S4sOdwIlBv-cW5D2HiPJpPAuum-KFoMuuAwAN0bSRLxCAwDvSQeURLtcG9EMpN6LwkUc-13UT3X4vFI19+Lo3AeFcx4hHH1qUekzyiMGHzbxfe1AQbNwFPrI08e691BujDfDd8Gb0HkPMh296k7+SeUBOZD4vH7Xva0--c45b9wHvEI+8mhX637gm-48D6T8P1Qo-Nhb7qN7-cz+qhPNVtP6HDAnm5-yPn7gOaUAbABucy5e1QqI0OXgWA8o0GMw1AgcBuX+xAqOCsMyBgBOVerUVUXgroaALwsAYAumSum2Ku1eT+BSvATGxAyAeGlQ-AAA5HMvQR9HPDEtfiiPKHdnmMsowAbiRigXaA9Dmj7G-iRnwarFhD2pIiAf+PKLoBnjAIQfKI7uEAbjnnnkQYXpgSznwOzi7kYCQaofHqXg9PIcYWwGXgQUQYYcXiYbKOXrIS7tofyEgQIWgRgUYbYjHGAcjpAdAaaOIEOggckjDsmBofKIAcASEd-nDgjkjqiKjlUBAJjmQbXhQRCgsPQNPgnoPsHgEB6Nwf6Onrho4WYa1ISH-kQWUXqPwS6oIapAARIV4C8GISaKznoVoZ4YIr-v-p0YgTDnUTMq7s4TyMIVCM0dUBwDGt3iMQAUiAUJTmgGwPjhYVEaTk0ZXvHBThgNsNwaLiaLUXLIWqvtwLbrbkYJrnjgABw3Fb6v7ooZFQqICQLrbT5k4LG0BU7yixYtzShgBf53HpGUrB51hp7T606sT05E4E7iHhCo5HFd7cBSHFEnZe46LT7qGVEc7c6P5oB14dhjrT7YG4FyG2EWEPTu5X6J4cH5GFG8ElGiCkkmhWFMnlHhGnHiGZH+HVH8hGz4io54awDl74ZIn0Aok1HzEU6fFLEB50547-EpHrFwlwAIknEygqC+BnGa6GH05Ep6niEiETH3TTGH6zG0DrZgDsLkgvBC4TaOpQAG7mlVCWlJgvDhAXJ8BQhoC4n4mhRGxvEbF4iOq1QGCXGM7UAGnjHm7GmZQeGRlv5WFPK6GEDyj4qzGHHKSIlanxw6kM5M4mjEkygtEthwj+GUmonb4ZRToQB-T3SyhvGSmLHU4QnfEyy-HJEAkHFNH4GKHIEtnNzgHcQ+nolGyrxoCvQBmGk9mEGymQkwhoAukuwejLIok15P4jkQDPFOnoqsHvFSlU6zmtlxrfh-GdkVm+loiiDxhUiwBElcQyjYlO7Zl253Hokyyf6hE9FEGRH9Hf74hlCwBAzeBVQOmpEXkxI0ZIJ3k4EPmnFPnwX25F7RHIH-mAW8Ashty-nIGxFQC2lJGKk17gX4DsKcLcKzTZHsFD5cHy70m2KlEKFKEcmRLsk8mjElnxCsl6h2gvAyhQjula6sVzHk5NmHnD75C3ZagO6bbBBSUyWbbSWnH4D4qZggHeE4R3p5FrTOBeDDkBpoAQ6sH86m5C4yiZ4wAtHsLtwG7tEpncAE4XFdH8iYn-72WzE5E37UU8Hin8gV6H66A84Fn3l4EsmvBEq4qYFrl4niL6XPgYCEGkRNzyZEGmwgC85GWC4RGWW5C842Xd5xnHxfl5XOGFl5GhmOVjFv6THRqZTbYBU+QVWQk6l7EJryn-G84NWiV5nUAKjI4l4tAZpdU9Woh9UuC87XLuCj5D7RUQ4GD4C4pohmXriUGQA6arkDgTCFRlCxBWBojTUJV8j+Xnyvi+HAXJ4tgihai6BQj5AqU7B8ic6HX+DHUQGnXD7nWMBahEoE5XUwA3UY53UVlP6T4rasGgHqVlryhaWxjDniQNnCXSnLH04KlklvTKFIUMYWlWk2k5bcL2mOmY2un8XSgWFMCwnwmZlql7qama6265lGD00w3eDbCEAGBw0fEHn9lGw4AU6zQG79mtWKl6glXygvDq6a6i3nG24S1uV2HRIqHcDy3DE5no2RV17bCiDT5g1GwQ3cC2AxoaBgBlBYWw7YBxE9To4Z4CbZ6FVK74BGAyyM3GIQUur3rEBmjvig1qXa15EVEkDG2oUzJUjqURnIVuEc74AGAO3V6PY9zIhaB4AGAACc+KhgZgvYpgQAA
+[9-conditional-rendering]: https://flems.io/#0=N4IgtglgJlA2CmIBcAWAbAOgJwFYA0IAzgMYBOA9rLMgNoAMedAugQGYQKG2gB2AhmERIQGABYAXMNQLFyPcfHnIQAHigQAbgAJoAXgA6IPgAdjhgHwqA9Oo3n9PFYXjFxEOfZ5atK0Sk-e3gAi8GDkSA7e1n4BPgCusLFRsBBJgQDCoi4A1lriWVoARuQAHlo88CXieeRafOUC8DVaohAA5qIpHdUQ4pGB1ilpKkP9gVrpKcS5cnUNgs1gfNlNvXkFhs4IrvBQhvPwYz5Wo14Dp+PekxDTEDxtc8RZ08VlUOTwhOXk1Vsu1fkmvxBEdBql+tYEp5rM5XO4eOYQAQ-nC5FxhABGADMSBwdBAAF88LxGsoMAArLgyOQKJTCCBgYzkUjVYCiPB5SriDkmYwErSsChgLSGCTiYyEJBWKzEKA8DCEbIAT2MfGmGCg8A0VlEKvgpF5hgcDmlWgAtBatABBdIAFQAkgB5AByAGVzRbjTxZDxCNVbeQ2m0EAAJdqdcPVXRaAAUfr4Cg5d01JQAlFpdOYtMB+ghqq0Ol0JBmtDQMOX4woxOGi+ImP0CxHujRk5UmCWAISN2stngp+tnUjwcRxUheYBacsK8QJ+Ac7uRgkOJc8Bw+v1aV3wbZR2OVudaFEKKDpzOx4BT-cco+7Ampr3r6oAcR+ACF3CW4zPE1ooAm+KeWYxheFbfgehTuEgv7-hgsiMnwPBKhghSEHeXqmhaZpaAAavaACiADqEyOgAsgACi6eHOra7qYQ+aLVMY+qELM0bGBQEoZrEogxoYtiGByOZnN4xCwHwhCStmRzeExpAsTwUHiKQcRztJLQ1pGUHseQErVoWkZ4GpN5QFpHGEAq27-LshnCVoRJHHIok3Nkpk6eZaKWa4NneESpZHDxhhmEi2a+QoVQxtpunAvAqapt5gQBSAdzGHEfTBUJlx5HqUGGE8OSvAJal5dMuyubpC7dPF4yOVMLmxgA+hyWqKOIgFSbZ4zNfI046WRHF8G0CbwjG94dYEQ4jmOWiRe58iBsGhxjfZtl3vFTCjSaVgelhABKACqzrbV6vLAf0dy9FBGWBNFkoAAU0GphgADLwAhFRaE+BqiAIhVjYYeGkBodxaCG5AAO7brAv2ZYYkyhC1dxNK+fBxE80OXIYZEJqQNwQPUL0oWq2To+MsNZLAzhKloQQQMOONo0iRwsP5GndFBD1jawfAU6pY1KSpVWBFzPOC94wvOKLArcxLTOC8ZUE8AksAckcEHhCKIACZlWimiodFnMt3hA-AYNQfuXEtLx4B8HcWvAL5HPjJeYEYDdGBLMYMYxtFSZ9pUbWyfJp1jT7akVRIZsu+H4i9v2ks0vNCDswGQahqzEi+3HRmecekezhZO67BmujRq2JTx76Ofs1uO6Z22gt3nFRz7shH4AGRt9rXfdz3uv6+MiX8elWiieJkmGGr+yhVyX752rsUcjrW1656ZzrfFPDkJqUHvMQcSCN1bTDnhCAH+Ir5KvaUBW4aIBNzwaE8EiIBwcYHD6sohR8IU27P0e8LohADgHASAMT4iJCSQQZJiASWfj6Wk4hlAAAEGRMhZFoUcsAYwAHIxQSilDKOUFJCCahSBoUgrthxWB4MYMAVgwazgoTAwgSCABMVhyCpROJGWCElsGpgANxeiQBQH47VvAWleGaMG0B8hQVYXQOgxgShCIfl6JYwMJxMkIL0eEUEhxiTcBoeAAiVwOAwIHWYV0pE6IAF53DaFBYopBNSkDNK8VR3gZFQDkVoDQfBSAxkkaUaRsjRCCP6KqGADioJgOUVoOJZRElaBQEolRkTyA6LcHIfR24hrGM8UUZkrjYnxIAMQwCgIeSg0BCnONcWaA06g4iSRwMogR3h+hLFIG0O47ifjiHIGAWJaTCl7zksyLS5A7gKFIKosx8pLHymjuIooRM2gUDiH2M0shYCTK0GU1gUAsDzPMUsguVkqnWOKfqUJPjRBQSxO0-o9Tbm7P2WU4BxBClRPUPcM0gzjBQQABzPLOL8hx-TxCDOGVoUF6S1GrkWcxWYyVUo0HEHqXQxVsivHbFdbRuicl1BQpQVKJj+jjJYqQHe8AuYJHEIUwFIywXeAQKwcQUEADsYKVwWJRfKYyOgaHosxUxbFzxcWlHxbmOlnKtBtIRd4ZlcLeVen5RMrwxhVndN6QpLQdBCm6r6ey+VrC1XIs1RcnYVTtVXWNTwM0pqoKGuXCKJFrdagEsyUS-V38WKwHJYU51I9ubEBjP4wJwSSh3PyOmAA1FoVhQ4wARLOCqtAozKWUA+V8wprAaRmj9EqJOOgZxTHzYWux8B5EpqZVyM0rZ5BQTNBiOty5zFqyQD-AtQ5szwJalBbBhhsGmM7ZBPgHL9T9ppIOrQw6QCjpXH-HOADlB0CQHQM0OAsCbsJEwAkQA
 
+[10-effecter-with-dispatch]: https://flems.io/#0=N4IgtglgJlA2CmIBcAWAbAOgJwFYA0IAzgMYBOA9rLMgNoAMedAugQGYQKG2gB2AhmERIQGABYAXMNQLFyPcfHnIQAHigQAbgAJoAXgA6IPgAdjhgHwqA9Oo3n9PFYXjFxEOfZ5atK0Sk-e3gAi8GDkSA7e1n4BPgCusLFRsBBJgQDCoi4A1lriWVoARuQAHlo88CXieeRafOUC8DVaohAA5qIpHdUQ4pGB1ilpKkP9gVrpKcS5cnUNgs1gfNlNvXkFhs4IrvBQhvPwYz5Wo14Dp+PekxDTEDxtc8RZ08VlUOTwhOXk1Vsu1fkmvxBEdBqlQRdLgBleDbNz3ObApqseDiJ6fOo8KBadSEYywPgATy+gKK7i0rHIpHWfGqxngpEIclBJ3BZ2sCU81mcrncPHMIAIf15ci4wgAjAB2JBYEAAXzwvEaygwACsuDI5AolMIIGBjFTqsBRHg8pVxKaTMY5RSKGAtIYJOJjIQkFYrMQoDwMIRsoTjHxphgoPANFZRP6GVbDA4HO6tABaJNaACC6QAKgBJADyADkoYmk7GeLIeIRqunyG02ggABLtToN6q6LQACnLtPgpruIZKAEotLpzFpgP0ENVWh0uhJB1oaBgFx2FGIG9PxEx+pPG90aD3KkxZwBCLdr3dY-f9UiouKkLzALQLn3iTumk9NuUOD88Byl8taGFwrO7bPgoprCgoUADkOc79MAj5Ll2WjgbsCr9DQuIBmioiDsO96XPhBGEfGKhJgmRwolhraOuIzquu66pyPigbwKIlAhqQGDiP6NzkCGGCyGAVhxM4jJWPsADUSEgfAGDQIQNDIVATB9kcnFZDwrZXniopNNBWkGmWMkMRpfYqWc3hqYorZQLS9TQRhtJPK2ADiPwAELuKaNnPqZWjEaR-RyhuPDBT+orVK54gebULbAS+OK2VBw6tnBi7SaahTuEgCXPvx5D6nwPCEhghSEHKZlxlYhYJloABqmYAKIAOoTNmACyAAKeYNbm6YFgF34luFWj0oyswtsYFAujhm5USAtiGKao7mVoxAEoQrojkc3ijUyPDZeIpBxF220tKuTbZZN5AuiuU5Nngp2KZdU2ED6sL-LsD0rahK1yGtNzZM912vTpcJfd4CowStohzWYgojpDChVK2V03Uipng4EMOGHcxhxH08PLfhXH0tlhjoi8pSLadFMrFAQM3W+3SY+Mf1TIDbYAPqmqGijiElW0reMvPyE+10dVNfBtLSfKtmZhFXuIN5eKjIPyFWNaHELWg-eM5WY8pxbxqRWgAEoAKq5tVxZWil-R3L02VE4ESKugABTQp2GAAMvAhUVFozmkHwogCNT2uGA1pAaHcWi1uQADusKwOH+GGJMoR83cTRuXwcRPKnlyGB1tKkDcED1L7pWBtkhfjOnWSwM4hJaEEEComXBeCkcLBHEzEjZZ72usHwTcndrh3HSzgQj2P0-eLPzjzxSo9Lz309PeUCSwKaRyZeEDogHXOhQJtNDiqaABMpoAMymigpo4CwflVSRRZnLrWgx-ACfZQhOEtDmksO4i0EamiHuMeC0kMCuwwEsYwrZWxIm7OefsADdpyDttrZBp1+7iD-tAvBZ5ey921lqDWCBB6VmrHWc6zMdCoNIfhTeCE3pwl2IOXQLY9wlGXqDf4g8AL-BQSQ6e5U+wb2gfvLQAAyGRfc5oLUJqtdam1DD732Ijc0cVlz7wxv0ZSmMeC8XgNld4xA4iCFFm0VEDUEBWKioSTMUA5rRhABIz8ZlBQgAEsYDgDJlCFD4IUWE3jwJ8jFCALASA6DykVCAJEKpiAbW8aWbU4hlAAAE9QGlINUG8sBWwAHInQujdB6L0apCAhhSBoDiFRxBWB4MYQSCdOwcWSYQTJl8rDkHxqybo-ENpFL7AAbmLEgCgPxBbeCTK8BMCdoD5GypfOgdBjAlHGTwL8DhgF3hGuQQgvQ+TZSvASNwGh4CjJ2d6DBd5+jzKOQALzuG0bKxRSDsQTK8LZ3hFlQGWV-PgpBWxzNKAspZogxn9ADDAV52VxTrLKIijZWgUVlBQEi35ByjluDkKc2EMtLnYo+exBFqKADEMBsRMhSFAElVIvnB3UMJbKOANmjO8P0JYpA2h3G+T8cQ+UEVYv6BYsapBLrkDuAoUgWybkYDubdbcM5nZBOmG0CgcQsQJlkLAKk2UKWsCgFgeVDhFUMj2mwj62I1WMoZBCgFohso3w5Q8+1pBdWUANVoClOAcDEGxbC9Q9wExCuMNlAAHG6s4wbXkCposKrQ0bNmfmLBasaXhcb4xoCTeAuhaavAPM7A0uKTl1FKpQfGVyxU3iZJKnE8AR4JHENi8NIqY3eAQKwfBWhJQxq-Bmq1ikGF43ELmyMBbnjZCLTMrQ3be3stTWcdtyaB3pruSNOdPK+X7S0HQbFO7+ULpWeu25lq5DWp2NiYw27gW7oTCe-d8qHSDRKuSEthzjn4orbS6t2Kn3EFHsQVsGhgWgoFSUR1+QBySUvleMA0KV3XWymgUVZw9U+r9QG7FlJ5AJnLISShOhnxTFw1qAjEAnmmK0PB0IbbzQJj3PIbKCZxQIbNd6feSAQmUivCONJfNspFMMEU655ruN8B7QyATWohNaBEyAMTX4wnvRFGWZQdAYkJhwNE2JQU5RAA
+
+[11-effect]: https://flems.io/#0=N4IgtglgJlA2CmIBcAWAbAOgJwFYA0IAzgMYBOA9rLMgNoAMedAugQGYQKG2gB2AhmERIQGABYAXMNQLFyPcfHnIQAHigQAbgAJoAXgA6IPgAdjhgHwqA9Oo3n9PFYXjFxEOfZ5atK0Sk-e3gAi8GDkSA7e1n4BPgCusLFRsBBJgQDCoi4A1lriWVoARuQAHlo88CXieeRafOUC8DVaohAA5qIpHdUQ4pGB1ilpKkP9gVrpKcS5cnUNgs1gfNlNvXkFhs4IrvBQhvPwYz5Wo14Dp+PekxDTEDxtc8RZ08VlUOTwhOXk1Vsu1fkmvxBEdBqlQRdLgBleDbNz3ObApqseDiJ6fOo8KBadSEYywPgATy+gKK7i0rHIpHWfGqxngpEIclBJ3BZ2sCU81mcrncPHMIAIf15ci4wgAjAB2JBYEAAXzwvEaygwACsuDI5AolMIIGBjFTqsBRHg8pVxKaTMY5RSKGAtIYJOJjIQkFYrMQoDwMIRsoTjHxphgoPANFZRP6GVbDA4HLIeIRqii0aIAFJMry6LQAClxAZTpvIxjcooAlFpdOYtMB+smntmiyWExg4qRYKX+hhATxs6RPgaE01K1o+3jRfA1Rns6WO2cu1ke1BafVh3nafXG3zCBhA03TUvxHwZw45bGeO6tABaa9aACC6QAKgBJADyADkoVfr2f44mtA-yDaNoEAACXaTpwOqLNs0TWl4FNO4QxKcthxrM4EGqVoOi6CQKy0GgMEI2CFDEcCcPEJh+iwiDuhoRDKiYPCAEJqPIuisQY-o+3EVsvGALRCJ9Q8FFNVjINPHgJLjUVqhhOE8Jg4T4K0YUFCgFCqxofpgEE4jlNU3YFX6GgHTObw6zTDM8CONDLi0VtYCQB0QCdF03SsdU5HxQN4FESgQ1ILt-RucgQwwWQwCsOJnEZKx9gAahUpSMGgQgaAMqAWCObxdz5JyAHEfgAIXcayzK0CTvEonhqukhNqkK8QStqaC9P3ZcNJzHSiKU01CncJyDz4cLyH1PgeEJDBCkIOVZwcC9r0vLQADUnwAUQAdQmF8AFkAAV3zWt8H0-RafxkrR6UZWYs2MCgXQrWJRGzQxbEMU1bMCYgCUIV1q2yy6GQzJzxFIOJ4IBsTuicu6i23KGJDKuyMph+7twypHAiM8q5G+m5slRuGMHHOFMYVfCjmewwzEFatyYUKps1hl0MCRGdMe8KmQDuYw4j6WnPvGcRIycwx0ReUp3oB8WVigQmWYRi0AdxqYCZzAB9U1Q0UcROsFy5tfkISiz2+6+DaWk+WnAHvG43jLrR4n5EA4DDnK7xsfGWbMaYObzysL8loAJQAVTfQOzytbNPruXonP1pFXQAAq093nIAGXgcaKi0fLSD4UQBCltPDDW0gNDuLQQPIAB3WFYGLuzDEmUIdbuJoir4OInkby5DD22lSBuCB6kz6bA2yXvxmbrJYGcQktCCCBUSHnvBSOLLysVpzU7s1g+DniG09B8GOcCffD7P8yD+cK+KRvo-xk38YUfKBJYFNI5+vCZyp50KA-o0HFKaAATKaAAzKaFApocAsC0BeFQZ0ziey0BXeANcnJ6Uei0F64A+B3HenTU0u9Ai6WSonDASxjDZmzEiBCHFkLYKulOfW3g6GQzIpBTByVFbsSQs-S4WoXYIB3gBICoFOHdHofwu+r89I+lhP8XYFZdBZnoiUO+JN-g7zkv8aRDEz6zVLGfeR38tAADJzGU1wW9AWWhvp8F+qLEA399j03NIpOCU13Ds36L7TGPBQrwEGuQYgcRBBGzaKiNaCAIlNUJE+KAuDowgGMSeWcgoQARWMBwBkyhCh8EKLCTJqktzKHFEgOg8pFQgCRCqYgv1Mnxm1OIZQAABPUBpSDVActmAA5K5V07pPTenVCGFIGhAoVHEFYHgxhIo1zgoFBphA2kgKsOQPmrJujhV+n00sABuM8SAKA-H+mca8rxLw12gPkJyIC6B0GMCUI5kkzxLErvxA0hBeh5RHLCS2Gh4AHKkt6ZhsxPpXJ+QALzuG0JyxRSABUvK8V53gblQDuagvgpBsyXNKNc25ohDn9ADDAOFTlxRPLKFS55WhaVlBQNStFl1yA-KbE5PsBI3BApZYigKlK6UAGIYDYiZCkKAfKqTIvzuoaKTkcDPIOd4foSxSBtDuCin44hRqUuZf0MJ11SAw3IHcBQpBXmgowOC70itzneAKdMNoFA4hYkvLIWAVInJCtYFALAlqHDWqBnIBRcJlGQulQyQlmLRBOXAUq-o-Ko0eq9VoIVOAcDEBZWS9Q9xLw6uME5AAHAms4Oa4VavEDqsAxbS1WptToOZfMaDC3pLoGWrxGKfW+b8uQTlCnir5sCg1rYmTGpxPAfeCRxAsoLXq0t3gECsHEE5SUdbA02tDUo7EPNm2tvgO2542RO32q0EuldWhFUvP6HOrQJbr1vJ4Bu4NXhjCnrVRqngTk6Aso-Zq899z11gpfVunY2I32fT-TwS8AGtA-pPKZQNZju1st7V+uo01KBDpZbB4gB9iDZg0DivFWqSjRvyOWRKIC+xgBJWcW9aB9VnBTeO9NmaWWUnkJeRMhIRE6EPFMDjWpuMQGhcErQ1HQizvNJeei8gnKXnFDRgN3pv5ICKZSPs1Zmk6ycn0wwfSQVIYGnwZdDJtNal01ofTIBDMSRKYokUCZlB0EqZeHAWBKnyiYHKIAA
+
+[12-effect-creator]: https://flems.io/#0=N4IgtglgJlA2CmIBcAWAbAOgJwFYA0IAzgMYBOA9rLMgNoAMedAugQGYQKG2gB2AhmERIQGABYAXMNQLFyPcfHnIQAHigQAbgAJoAXgA6IPgAdjhgHwqA9Oo3n9PFYXjFxEOfZ5atK0Sk-e3gAi8GDkSA7e1n4BPgCusLFRsBBJgQDCoi4A1lriWVoARuQAHlo88CXieeRafOUC8DVaohAA5qIpHdUQ4pGB1ilpKkP9gVrpKcS5cnUNgs1gfNlNvXkFhs4IrvBQhvPwYz5Wo14Dp+PekxDTEDxtc8RZ08VlUOTwhOXk1Vsu1fkmvxBEdBqlQRdLgBleDbNz3ObApqseDiJ6fOo8KBadSEYywPgATy+gKK7i0rHIpHWfGqxngpEIclBJ3BZ2sCU81mcrncPHMIAIf15ci4wgAjAB2JBYEAAXzwvEaygwACsuDI5AolMIIGBjFTqsBRHg8pVxKaTMY5RSKGAtIYJOJjIQkFYrMQoDwMIRsoTjHxphgoPANFZRP6GVbDA4HO6tABaJNaABiAFEACrpAASWgAUlCAPIAOS0aZT6fSGcTSdjPFkPEI1RRaNEeaZXl0WgAFLiA63TeRjG5RQBKLS6cxaYD9FtPbtDkeNjBxUiwUf9DCAnjd0ifA2NpqTrR7vGi+Bqjvd0cbs5brI7qC0+rHvu0+eLvmEDCBpemp-iHwN4OHKdYNk2WjqnIKaoui1Jdt2q6wJaIo8OOx40HObYdqawBIShS5ykwdbxkmCZaAAglWACSJZQjWCZgaK1QZuQbRtAg2btJ03HVAhTa0vApp3CGJToVOM5nAg1StB0XQSBOWg0BgKkCQoYjcfJ4jEWcsk8d0NAiZUTCKQAhHpWmGVixn9Hu4irl4wBaCpPqAQopoWbxoE8N5DjgdUMJwop3ZqUJWjCgoUDiUp-TAC5oWmhFuwKv0UE8DBrYMt2jriM6rruml+KBvAoiUCGpBbv6NzkCGGCyGAVhxM4jJWPsADU4VuRe0CEDQSVQCwWgAOI-AAQu4o54A4Ol+cxw1jeS-Fdf+z7Rd2cWqctZLhDiz51eQ+p8DwhIYIUhByrecZWAxWgAGrUWmADqEyFgAsgACiWabFhm9FkUxjZ0gyHaKcYFAuhOsSiNlIC2IYuFHMQBKEK605HN49KMnISB5KQcRCejLSabxONg0O36ed0U1nOM-Wk+D379dT4wpTTWhyEjNzZPT5MYOecLM1oCoxWz0OGGYgrTsLChVN2ZMuhgSI3oL3hiyAdzGHEfSS5Jlx5JGOOGOiLylPDhPGysUA8wrlMSCrgQc1M3M9gA+qaoaKOI0W63rWge-IrlDu94N8G0tJ8tehPeHZDlaPL35amxHGHGz3isyzk39Ewl08KRyYAEoAKqlv9PAOFa639HcvQ4z73hIq6AAFNCE4YAAy8BHRUw2kHwogCGbqcOiAaakBodxaNm5AAO6wrAg964YkyhJ7dxNKNfBxE8C+XIY720qQNwQPUHdnYG2Q7+MS9ZLAziEloQQQKih-b4KRwsEctviDjLdD6wfC3wJkPcQeMgF63-oA+23gIHOCgRSABsD372zpuUBIyEHRs0KO4Q2IBL46CgKjGg4pTQACZTQAGZTQoFNDgD+Zx05aHHvAaeONQqQxaDDJYdx4ZS1NL-cY8UuqK0aN+JYxhuzdiRMJayYl2GYyvHXQIUjCZf1YUIr+VlRJ0L1ondiCAf6sT0fALicleLSK0XAlBoUfSwn+LsCcuguxGRKHA-m-wf6BX+OY4y9sLqZzZtYrBtQABkwTP4wzhjrLQSM+AoxwUE-Y0tzQhSEUE5WWd-H1xqvAHG7xiBxEEAHNoqI0wIEKeIUahJqJQBhtGEA-iLoOEFCAeqxgOAMmUIUPghRYTNIil+ZQJCSFIBIfKRUIAkQqmICjZpDZtTiGUAAAT1AaUg1QkLdgAOROhdG6D0XpLwhhSBoCqFRxBWB4MYBq09BIVWmYQRZJCrDkC1qybodUUabNHAAbjrEgCgPw0ZnCTK8BM09oD5BxiQugdBjAlF+T5OsXDHJx3IIQXofIcZ7gJG4DQ8Bvm+W9PI2YPtQXooAF53DaDjYopByoJleAi7w4KoCQsYXwUg3YQWlDBRC0QPz+gBhgFSnG4pYVlDFXCrQkqygoHFUy1F6KlxYthOHPFCraXlVFVKgAxDAbETIUhQA1VSelvd1BNRxjgOF3zvD9CWKQNodwGU-HEAdUV8r+j5KxqQUm5A7gKFIAiwlGBiXei-kC7wXTphtAoHELECZZCwCpDjHVrAoBYGDQ4UNwM5A2LhPY0lpqGS8tZaIHG5CbX9E1SWpNKatA6pwDgYgCqhXqHuAmN1xgcYAA4q1nDbVSl1uV3VaD7fCkCdYc1Yy8BrLWNBxCRl0BbV4JkfYGiVZiuoZ1KBa3xV61cTJfU4ngP-BI4gFVdo9f27wCBWDfy0JKft3lp0dnzXY7Ec7xALqXSu0oa7+h3ofdaidZwr1jufVOsNcdI1aAdU6ngOM6AKvg86oDULINEtzd6fqMGfaoZ4AmdDWhkMgQwdmoJsGN0Yuxtuw1e6FXEeIAA4g3YNAcq5S6kopb8jjg6iQvcYABVgaHDjNAnqzh1uPY25tCrKTyATE2Qk+idCASmHJrUimIDkpyVoAToRL3mgTEZeQOMEzikE1m70QSkA9MpHuacczPY402YYTZBKKPYL4PehkjmtTOa0K5kA7nvJ9NsahMUIA6BIDoAmHAWAYvyiYHKIAA
+
+[13-init-effect]: https://flems.io/#0=N4IgtglgJlA2CmIBcAWAbAOgJwFYA0IAzgMYBOA9rLMgNoAMedAugQGYQKG2gB2AhmERIQGABYAXMNQLFyPcfHnIQAHigQAbgAJoAXgA6IPgAdjhgHwqA9Oo3n9PFYXjFxEOfZ5atK0Sk-e3gAi8GDkSA7e1n4BPgCusLFRsBBJgQDCoi4A1lriWVoARuQAHlo88CXieeRafOUC8DVaohAA5qIpHdUQ4pGB1ilpKkP9gVrpKcS5cnUNgs1gfNlNvXkFhs4IrvBQhvPwYz5Wo14Dp+PekxDTEDxtc8RZ08VlUOTwhOXk1Vsu1fkmvxBEdBqlQRdLgBleDbNz3ObApqseDiJ6fOo8KBadSEYywPgATy+gKK7i0rHIpHWfGqxngpEIclBJ3BZ2sCU81mcrncPHMIAIf15ci4wgAjAB2JBYEAAXzwvEaygwACsuDI5AolMIIGBjFTqsBRHg8pVxKaTMY5RSKGAtIYJOJjIQkFYrMQoDwMIRsoTjHxphgoPANFZRP6GVbDA4HO6tABaJNaABiAFEACrpAASWgAUlCAPIAOS0aZT6fSGcTSdjPFkPEI1RRaNEeaZXl0WgAFLiA63TeRjG5RQBKLS6cxaYD9FtPbtDkeNjBxUiwUf9DCAnjd0ifA2NpqTrR7vGi+Bqjvd0cbs5brI7qC0+rHvu0+eLvmEDCBpemp-iHwN4OHKdYNk2WjqnIKaoui1Jdt2q6wJaIo8OOx40HObYdqawBIShS5ykwdbxkmCZaAAglWACSJZQjWCZgaK1QZuQbRtAg2btJ03HVAhTa0vApp3CGJToVOM5nAg1StB0XQSBOWg0BgKkCQoYjcfJ4jEWcsk8d0NAiZUTCKQAhHpWmGVixn9Hu4irl4wBaCpPqAQopoWbxoE8N5DjgdUMJwop3ZqUJWjCgoUDiUp-TAC5oWmhFuwKv0UE8DBrYMt2jriM6rruml+KBvAoiUCGpBbv6NzkCGGCyGAVhxM4jJWPsADU4VuRe0CEDQSVQCwWgAOI-AAQu4o54A4Ol+cxw1jeS-Fdf+z7Rd2cWqctZLhDiz51eQ+p8DwhIYIUhByres2NtUI3iMWjRfEtgkrYBa2Sd48XLf0SKurtgE+lM8DdgwWg4KOGBLMY3ZlMeJQYEik39D1SB-XwAM3EDINgxDJjQxOU5w9AiO6ZpvEo5hfCwM4pqsJT1MUnTYW01TTOMywIGXTwpHJgAatRaYAOoTIWACyAAKJZpsWGb0WRTHXVo9KMrMXbGBQLr4-0ojZSAtiGLhRzEAShC-e9lxKx2KPiKQcRCUc3ied0KNq0O36OxIU1nOM-XO+r379Z74wpV7WhyEbNzZL7rsYOecKB1oCoxSH2uGGYgrTonChVN2LsuvDjQ3vHDs63cxhxH06dm+M4iRijhjoi8pT6-bWgNysUBR3n7sWi3YdTJHPYAPqmqGijiNFVeXKP8iuUOYvq3wbS0ny14t94dkOYrfsx-IbEcYcIfeMHQfE94TCc9z5EAEoAKqlnLPAOFa61IzwvTk0cwA-eTg3dz-iWwn+LsFGPAEjIW2nXEA+sdBQF+jQJgx9AhpQynBHWToXRuisIVAkxASplQZJVYw1Var1Uas1Qg0Dbr3UEIQW8Z944aAgPAAA7ijUK+MWg6yWHcaBwBE40COJ9QS+caE4yht2JEwlrJiQ4RbOQL9D4HCLoEP+nVhHdysqJdmiitR7wQOTVi7FOKk26FIrRyjvA+zUepfqE5dBdiMiUCxodDxwnJoFf4ZjjLKIuqfQIoVTrkgAGRBKOCnXWmheGt2Nr9QwhR3D7EzuaEKXVAnkELv0c+8ceA1XgCjd4xA4iCBnm0VEaYEDFPEKNQk1EoA62jCAYmF0HCChAPVIhCBSDKEKHwQosJWkRS-MoNAdAkBoHlIqEASIVTEBNq0hs2pxDKAAAJ6gNKQaoSFuwAHJ0H5Q9F6S8IYUgaAqhUcQVgeDGAaswwSFVZmEGWQAJisOQcurJuh1RNts0cABuOsSAKA-GnP0JMrwEzMOgPkFGTy6B0GMCUf5Pk6zcMcorcghBeh8hRnuAkbgNDwF+b5b0cjHL9HBZigAXncNoKNiikHKgmV4SLvCQqgNCrQGg+CkG7GC0oEKoWiD+f0AMMAaUo3FPCsokqEVaBlWUFAUqWXosxUuHFsJl4EuVfS8qErZUAGIYDYiZCkKA2qqSMtIHwdQTUUY4ARb87w-QlikDaHcJlPxxAHQlUq-ohTlakGduQO4ChSBIuJRgUlGk5K8RBWcHp0w2gUDiFiBMshYBUhRvq1gUAsDhocJGhkHYfSAJ2NiM2OqGQCvZaIFGABmB15KLVVvTZmrQ+qcA4GIMq0V6h7gJi9cYFGAAORtZxe00o9blb1WhR2IpAnWQtysvCl3LjQGu9JdBt1eCZM2BpVXYrqGdSg5dCV+tXEyQNOJ4C0wSOIZVg6fVju8AgVg4gUaSjHd5JdxbbGrvEOuyMW7njZB3XGl9N732g2fTUIds6v2LtJYrcDWgXVup4CjOgyq0PutfVBp5CGSVFrkCWuEuxkNmxwzwBMeHMPhodI-b08Tah7oxViuQKNekmtPcq2jrdKbEG7FynlfKSjVvyOODqTy9xgGFWcR9WgRkwdbVejtXblWUnkAmJshJ9E6EAlMDTWptMQEpXkrQ0nQgPvNAmIy8gUYJnFDJ-NTH3BID6ZSPc04FljxRtsww2yiUFuY0gPgb6GTea1L5rQ-mQCBe8gM0tS4xQgFGXQBMOAsBIDoPKBBQA
+
+[14-subscriptions]: https://flems.io/#0=N4IgtglgJlA2CmIBcAWAbAOgJwFYA0IAzgMYBOA9rLMgNoAMedAugQGYQKG2gB2AhmERIQGABYAXMNQLFyPcfHnIQAHigQAbgAJoAXgA6IPgAdjhgHwqA9Oo3n9PFYXjFxEOfZ5atK0Sk-e3gAi8GDkSA7e1n4BPgCusLFRsBBJgQDCoi4A1lriWVoARuQAHlo88CXieeRafOUC8DVaohAA5qIpHdUQ4pGB1ilpKkP9gVrpKcS5cnUNgs1gfNlNvXkFhs4IrvBQhvPwYz5Wo14Dp+PekxDTEDxtc8RZ08VlUOTwhOXk1Vsu1fkmvxBEdBqlQRdLgBleDbNz3ObApqseDiJ6fOo8KBadSEYywPgATy+gKK7i0rHIpHWfGqxngpEIclBJ3BZ2SbMuWgAqsYbOQAO5ePikCgCrQrYlaMIaJp-VzuHgsyHWBKeazOBUeEAEeVuORcYQARiwSAAzFgQABfPC8RrKDAAKy4MjkCiUwggYGMVOqwFEeDylXEgZMxitFIoYC0hgk4mMhCQVisxCgPAwhGyhOMfGmGCg8A0VlE2YZYcMDgcya0AFo61oANIAUQAmkEAPIAdQAcloodyAEJQ9IAJQAkgAFAAqY-bvbrNcrPFkPEI1Ul7yFULihRIpAghQZWl0WgAFLic2iA1pyMZ9auAJTH8xaYD9Fdrlp8LEIaknwvPq+RwQKwZ6FhgkpaAAhLoJ63vehAQfAhJPqQqJxKQSrsjiEB4rSTynvBiqIbm94Pv0Vr9HwMBNrK8gADK4e6DKnoYG6CkqOpfj+DLkWcaHiBhXink+ugvmhMrwLRijiIxa6KCxbHIZunGBqI35wLxDiUVhH7VHIDbIUEHHHmekqhlqPCiS+NDsVuO57geDKBsA5l1JZVpMEu1YLloABiTZTukAASWgAFJQnOWhNn5AXpFOtZ1kuekUqiTxhUyXgnueuGXk8gZEQa1lAWcKJXoRd7ERgGGwHx3gYICPCnmheIGk0YlaC1PqrvATqZSJdVaA1WRNVAtL1B1F74aIFUIRgpGKoGY3iHwD58TpDgpc6ch+WlWR-meNUWWRgE0GV6WZS5R3ufenneVYiU1loACC8Wzt2UKPclBrVFO5BtG0CDBe0nQg9U2VrrS8CBncBYlMVb5nAg1StB0XQSKZNAYNjkMKGIIPo+IXlnKjoPdDQsOVEwplQaThMU1iVP9AJQmvkNOMrQoakE2DOkbcuP19rC-ymaeuPQ1oeq7MVND9MA2MZpzEtS1ANr9NtPC7VeikgHGCZJlYGv4rm8CiJQBakA12Y3OQBYYLIYBWHEziMlY+wANSS0rGDQIQNAqywWgAOI-AO7gPngDjE5tgsh+IYe1BDStLeNxWnvLHNQ4GhTuEgOLjfb5Det+hIYLuVp8THq7VHH3aNF8SdZ-nK1p4j9WZ1z-RIomzd8BmUzwKeDBaDgD4YEsxinmUHUlBgSIR-0vt58tfeEAPQ+BqP48mFPgGz9AC8kzz3R52dfCwM4gasOfl8UjfEvXxfD-3yw2mVwL1dC3CvKmeLgFtzoUCYtvYq2PLBcoCRaqdXQphL2UNmYwK8DQGEcJAziwzMLHY2InpGmJvzFKKD-jGSFL-JW-9F5APQaA2CJ4eCQNQoguBCgEGCVgcgzBIYmG9VAZ7XB2l7qPS0AANTHE2TsEx2wAFkJxzibN2Kcn0FzfU-vSRkswTzGAoAmZ8-QZqGFsIYFyRxiAEkID3AB4xVGZTzuIUgcRoZHG8HTMGedNG3kQs47okdsLeBVq4rRiEVbePGGrbCcgTE3GyP49xGA2qoIooGWW2E9EgDMFxYANogxVFPG4hMc9GhrWCYEFJdxjBxD6OkxxeRSx50MOiF4pRDFVPqSsKA0S8meIkEU8Y4SphRLPAAfUDIWGSCMqneBGfIRWt4JxaL4G0WkioRLjOgawrwuTEJun+oDQ4PitChJCYfbwTB34+XrCObk84kpYTDOnRePBeinyOMAbup9A6dPEG8tBHDdh5zoVQbOucYwgEMToKAPcaBMAOYEDWWt0SkFYrrcQ8ZEzJiNgSYgptzYMitsYG2dsHZOxdoQUFtd66DVfmcDQEB4ACjzn-DqKSlh3FBRkxJRwFboO7tvSep4kQw0ZvDQCVi5B3L2fyqpHz6Xew+QzOGlKuRbIBggU+f1lXwGBmjMGAr5XdMCH4rhGC4S7DASeSmJQ9XeDif8U+hDXA6qpnqiuRz9XexzrUAAZB6o4KSDHpK0CYvgZjakgHdfsTJChsnoPdYU-oJyik8FtvAZe5BiBxEEFMtoqImwIAzfHQkY4oCIvLCAF1hAHJkAgJVA00qoanSXOMKhPzsQwVoZArQXqjhNuNdiF8dAO3erCTwQyhJiFNUMM9UUgpeSgrteIXkh8u0gObdBcB-zYADqXVDI1-wTUqDPOg32GAED3HyLWLQRonydqHSOsdiLJ1ijHbOjhY6XWUorg4HUIAHZ4t-MoQofBDzSCIBw4iygsAAA4kBGiNNaW0IAkQOmIGYr9K53TiGUAAAS9D6Ug1QaqngAOR61RSmNMfUCwpA0JbCo4grA8GMI7AUUNLbIcIJhgATFYcg5TWTdHtmYwjD4ADcS4kAUB+CVbwdZXg1gFNAfIecON0DoMYEoomeD82ZV4YAWgfSEF6IqPOaECRuFlMJ-mGARU6f6LJgzAAvO4bQ87FFIBbGsrwNPeHk1ARTWgNAilPDJ0ocmFOiBE-0HMMAnN5yNKpsocW1MXvi1oFA8WvN6fIAZ+8xnYSLPM7ZqkFtYtJYAMQwGxEyFIUAMuufc6QaiEBnZ5xwGp4T3h+hLFIG0O4HmfjiCLrF9L74MJMlIK48gdwFCkA05Z6z+MtXdCk0UXM2Q2gUDiFiGsshYBUjzqV1gUAsCzYcFZhkmUd1YOW3VhkoXfOiDzmaNrhW3O3Z23trQpWcA4GIBlqL6h7g1gG8YPOEHntnH+05vryLBtaDB+p-hWEztqK8KU8pNBxCll0C0141MAH6cM3IPOgGqvlPgBltNajxs4ngNfBI4gMvA6G+D7wCBWCfK0AAdnBzpZHF3QFo-EBjrHOPSh4-6GzjnrWEdnCZ3DnnS4+ezGMMtrrPWeB5zoBltXvXJdKYV+meboCVcAJ1zwGseutBa+0jGJH7rlsE5y3UXclAycZct8Qc+xBTwBYRcFkod38hPk9hxiSEXZe3jzmgYbZx3vU6+z9jLlJ5A1jXISFVOgVpTCT26VPEB7PJq0KH0IjPgw1kpvIPONYjQSRO+md1SBDyUjQq+NDMk86EcMIRizp2G98HZ0eYAbfK9aE7yAbvOkv16jA8IOgSA6A1hwKaOg1ooVAA

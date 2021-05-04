@@ -1,8 +1,16 @@
 # Dispatch
 
-The **dispatch** function controls Hyperapp's core dispatching process which executes [actions](actions.md), applies state transitions, runs [effects](actions.md#effects), and starts/stops [subscriptions](subscriptions.md) that need it.
+**_Definition:_**
+
+> The **dispatch** function controls Hyperapp's core dispatching process which executes [actions](actions.md), applies state transitions, runs [effects](effects.md), and starts/stops [subscriptions](subscriptions.md) that need it.
 
 You can augment the dispatcher to tap into the dispatching process for debugging/instrumentation purposes. Such augmentation is loosely comparable to middleware used in other frameworks.
+
+**_Signature:_**
+
+```elm
+DispatchFn : (Action, Payload?) -> void
+```
 
 ---
 
@@ -25,6 +33,7 @@ A dispatch function accepts as its first argument an [action](actions.md) or any
 The action will then be carried out and its resulting state transition will be applied and then any effects it requested to be run will be run.
 
 ```js
+// DispatchFn : (Action, Payload?) -> void
 const dispatch = (action, payload) => {
   // Do your custom work here.
   // ...
@@ -45,10 +54,15 @@ Let's say we're working on a project where we want to always log the current sta
 ```js
 import { log } from "./fx"
 
-const middleware = (dispatch) => (action, payload) => {
-  dispatch((state) => [state, log(state)])
-  dispatch(action, payload)
-}
+// DispatchInitializerFn : OriginalDispatchFn -> NewDispatchFn
+const middleware = (dispatch) => 
+  (action, payload) => {
+    // Dispatch anonymous action which triggers logging effect.
+    dispatch((state) => [state, log(state)])
+    
+    // Afterwards, carry on normally.
+    dispatch(action, payload)
+  }
 ```
 
 Great! Now let's learn how to use it.
@@ -62,6 +76,27 @@ The [`app()`](../api/app.md) function will check to see if you have a dispatch i
 The only time the dispatch initializer gets used is once during the instantiation of your app.
 
 Only one dispatch initializer can be defined per app. Consequently, only one dispatch can be defined per app.
+
+Extending the example from above, the dispatch initializer would be used like this:
+
+```js
+import { log } from "./fx"
+
+// DispatchInitializerFn : OriginalDispatchFn -> NewDispatchFn
+const middleware = (dispatch) => 
+  (action, payload) => {
+    // Dispatch anonymous action which triggers logging effect.
+    dispatch((state) => [state, log(state)])
+    
+    // Afterwards, carry on normally.
+    dispatch(action, payload)
+  }
+
+app({
+  // ...
+  dispatch: middleware
+})
+```
 
 ---
 

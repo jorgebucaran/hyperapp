@@ -1,6 +1,10 @@
 # `memo()`
 
-A wrapper function to cache your [views](../architecture/views.md) based on properties you pass into them.
+**_Definition:_**
+
+> A wrapper function to cache your [views](../architecture/views.md) based on properties you pass into them.
+
+**_Import & Usage:_**
 
 ```js
 import { memo } from "hyperapp"
@@ -10,10 +14,20 @@ import { memo } from "hyperapp"
 memo(view, props)
 ```
 
-| Parameter     | Type                                            | Required?
-| ------------- | ----------------------------------------------- | ---------
-| [view](#view) | [View](../architecture/views.md)                | :100:
-| [data](#data) | anything indexable (i.e. array, object, string) | no
+**_Signature & Parameters:_**
+
+```elm
+memo : (View, IndexableData) -> VNode
+```
+
+| Parameters    | Type                                            | Required? |
+| ------------- | ----------------------------------------------- | --------- |
+| [view](#view) | [View](../architecture/views.md)                | yes :100: |
+| [data](#data) | anything indexable (i.e. Array, Object, String) | no        |
+
+| Return Value                                         | Type  |
+| ---------------------------------------------------- | ----- |
+| [virtual node](../architecture/views.md#virtual-dom) | VNode |
 
 `memo()` lets you take advantage of a performance optimization technique known as [memoization](../architecture/views.md#memoization).
 
@@ -67,7 +81,7 @@ app({
       h("p", {}, text("Memoized view showing list:")),
       memo(listView, state.list),
     ]),
-  node: document.body,
+  node: document.querySelector("main"),
 })
 ```
 

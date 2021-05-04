@@ -1,8 +1,20 @@
 # Subscriptions
 
-A **subscription** function represents a dependency your app has on some external process. As with [effects](actions.md#effects), subscriptions deal with impure, asynchronous interactions with the outside world in a safe, pure, and immutable way. They are a streamlined way of responding to events happening outside our application such as time or location changes. They handle resource management for us that we would otherwise need to worry about like adding and removing event listeners, closing connections, etc.
+**_Definition:_**
 
-There are several official Hyperapp packages that provide subscriptions for some commonly used APIs from [The Web Platform](https://platform.html5.org/). For instance, you can schedule recurrent tasks using [`@hyperapp/time`](../../../packages/time), or listen to global events like mouse or keyboard events using [`@hyperapp/events`](../../../packages/events).
+> A **subscription** function represents a dependency your app has on some external process.
+
+As with [effects](effects.md), subscriptions deal with impure, asynchronous interactions with the outside world in a safe, pure, and immutable way. They are a streamlined way of responding to events happening outside our application such as time or location changes. They handle resource management for us that we would otherwise need to worry about like adding and removing event listeners, closing connections, etc.
+
+**_Signature:_**
+
+```elm
+Subscription : [SubscriberFn, Payload?]
+```
+
+**_Naming Recommendation:_**
+
+Subscriptions are recommended to be named in `camelCase` prefixed by `on`, for instance `onEvery` or `onMouseEnter` in order to reflect their event handling character.
 
 ---
 
@@ -11,7 +23,7 @@ There are several official Hyperapp packages that provide subscriptions for some
 Subscriptions are setup and managed through the [`subscriptions:`](../api/app.md#subscriptions) property used with [`app()`](../api/app.md) when instantiating your app.
 
 ```js
-import { every } from "@hyperapp/time"
+import { onEvery } from "./time"
 
 // ...
 
@@ -19,7 +31,7 @@ app({
   init: { delayInMilliseconds: 1000 },
   subscriptions: (state) => [
     // Dispatch `RequestResource` every `delayInMilliseconds`.
-    every(state.delayInMilliseconds, RequestResource),
+    onEvery(state.delayInMilliseconds, RequestResource),
   ],
 })
 ```
@@ -29,11 +41,12 @@ You can control if subscriptions are active or not by using boolean values.
 ```js
 app({
   subscriptions: (state) => [
-    state.toBe && every(state.delay, ThatIsTheQuestion),
-    state.notToBe || every(state.delay, ThatIsTheQuestion),
+    state.toBe && onEvery(state.delay, ThatIsTheQuestion),
+    state.notToBe || onEvery(state.delay, ThatIsTheQuestion),
   ],
 })
 ```
+
 <!-- In William Shakespeare's play "Hamlet", Prince Hamlet gives a soliloquy in Act 3, Scene 1 where he begins with "To be, or not to be", basically questioning life. -->
 
 ### Subscriptions Array Format
@@ -44,12 +57,12 @@ Hyperapp expects the subscriptions array to be of a fixed size with each entry b
 
 On every state change, Hyperapp will check each subscriptions array entry to see if they're active and compare that with how they were in the previous state. This comparison determines how subscriptions are handled.
 
-| Previously Active | Currently Active | What Happens
-| ----------------- | ---------------- | ------------
-| no                | no               | Nothing.
-| no                | :100:            | Subscription starts up.
-| :100:             | no               | Subscription shuts down and gets cleaned up.
-| :100:             | :100:            | Subscription remains active.
+| Previously Active | Currently Active | What Happens                                 |
+| ----------------- | ---------------- | -------------------------------------------- |
+| no                | no               | Nothing.                                     |
+| no                | yes :100:        | Subscription starts up.                      |
+| yes :100:         | no               | Subscription shuts down and gets cleaned up. |
+| yes :100:         | yes :100:        | Subscription remains active.                 |
 
 To restart a subscription you must first deactivate it and then, during the next state change, reactivate it.
 
@@ -61,7 +74,17 @@ There may be times when an official Hyperapp subscription package is unavailable
 
 ### Subscribers
 
-A **subscriber** is a function which implements an active subscription. As with [effecters](actions.md#effecters), subscribers are allowed to use side-effects and can also manually [`dispatch`](dispatch.md) actions in order to inform your app of any pertinent results from their execution.
+**_Definition:_**
+
+> A **subscriber** is a function which implements an active subscription.
+
+**_Signature:_**
+
+```elm
+SubscriberFn : (DispatchFn, Payload?) -> CleanupFn
+```
+
+As with [effecters](effects.md#effecters), subscribers are allowed to use side-effects and can also manually [`dispatch`](dispatch.md) actions in order to inform your app of any pertinent results from their execution.
 
 Subscribers can be given a data `payload` for their use.
 
@@ -84,6 +107,7 @@ const triggerSpecialEvent = () => {
 
 triggerSpecialEvent()
 ```
+
 <!-- In "The Hitchhiker's Guide to the Galaxy" the number 42 is given as The Answer to the Ultimate Question of Life, The Universe, and Everything by the computer Deep Thought. -->
 
 Our embedded Hyperapp application will need a custom subscription to be able to deal with custom events:
@@ -94,6 +118,7 @@ Our embedded Hyperapp application will need a custom subscription to be able to 
 const listenToEvent = (dispatch, props) => {
   const listener = (event) =>
     requestAnimationFrame(() => dispatch(props.action, event.detail))
+
   addEventListener(props.type, listener)
   return () => removeEventListener(props.type, listener)
 }
@@ -101,7 +126,7 @@ const listenToEvent = (dispatch, props) => {
 export const listen = (type, action) => [listenToEvent, { type, action }]
 ```
 
-In case you're wondering why `listenToEvent()`'s listener is using `requestAnimationFrame` it has to do with [synchonization](actions.md#synchonization).
+In case you're wondering why `listenToEvent()`'s listener is using `requestAnimationFrame`, it has to do with [synchronization](actions.md#synchronization).
 
 Now we can use our custom subscription in our Hyperapp application. Since it will be embedded we'll wrap our call to [`app()`](../api/app.md) within an exported function our legacy app can make use of:
 
@@ -119,7 +144,7 @@ export const myApp = (node) =>
         payload && h("p", {}, text(`Payload received: ${JSON.stringify(payload)}`)),
       ]),
     subscriptions: () => [listen("secret", Response)],
-    node,
+    node: document.querySelector("main"),
   })
 ```
 
@@ -135,6 +160,7 @@ Since a well-formed subscriber returns a cleanup function, it's possible that th
 const listenToEvent = (dispatch, props) => {
   const listener = (event) =>
     requestAnimationFrame(() => dispatch(props.action, event.detail))
+
   addEventListener(props.type, listener)
   return () => {
     removeEventListener(props.type, listener)
@@ -149,6 +175,7 @@ So, using `props` directly works well. However, if instead you tried to use dest
 const listenToEvent = (dispatch, { action, type }) => {
   const listener = (event) =>
     requestAnimationFrame(() => dispatch(action, event.detail))
+
   addEventListener(type, listener)
   return () => {
     removeEventListener(type, listener)
@@ -178,7 +205,7 @@ export const preventDefault = (action, event) =>
 
 import { preventDefault } from "./fx"
 
-export const skipDefault = (action) => (state, event) =>
+export const skipDefault = (action) => (state, event) => 
   [state, preventDefault(action, event)]
 
 export const MyAction = (state) => ({ ...state })
@@ -191,8 +218,7 @@ const subOnThatThing = (dispatch, props) => {
   // Do stuff...
 }
 
-export const onThatThing = (action, props) =>
-  [subOnThatThing, { ...props, action }]
+export const onThatThing = (action, props) => [subOnThatThing, { ...props, action }]
 ```
 
 ```js

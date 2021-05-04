@@ -11,7 +11,8 @@
 
 - [State](architecture/state.md) represents your application's data.
 - [Views](architecture/views.md) represent your state visually.
-- [Actions](architecture/actions.md) cause state transitions and run effects.
+- [Actions](architecture/actions.md) cause state transitions and trigger effects.
+- [Effects](architecture/effects.md) are triggered by actions to interact with external processes.
 - [Subscriptions](architecture/subscriptions.md) dispatch actions in response to external events.
 - [Dispatch](architecture/dispatch.md) controls action dispatching.
 
@@ -22,8 +23,8 @@
 - [Component](architecture/views.md#components): A view with a specific purpose.
 - [Dispatch Function](architecture/dispatch.md#dispatch): The process that executes actions, applies state, and calls effects.
 - [Dispatch Initializer](architecture/dispatch.md#dispatch-initializer): A function that controls dispatch.
-- [Effect](architecture/actions.md#effects): A generalized encapsulation of an external process.
-- [Effecter](architecture/actions.md#effecters): A function that carries out an effect.
+- [Effect](architecture/effects.md): A generalized encapsulation of an external process.
+- [Effecter](architecture/effects.md#effecters): A function that carries out an effect.
 - [Event Payload](architecture/actions.md#event-payloads): A payload specific to an event.
 - [Memoization](architecture/views.md#memoization): In Hyperapp, the delayed rendering of VNodes.
 - [Mount Node](api/app.md#node): The DOM element that holds the app.

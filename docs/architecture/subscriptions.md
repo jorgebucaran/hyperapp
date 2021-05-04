@@ -116,7 +116,7 @@ Our embedded Hyperapp application will need a custom subscription to be able to 
 // ./subs.js
 
 const listenToEvent = (dispatch, props) => {
-  const listener = (event) => 
+  const listener = (event) =>
     requestAnimationFrame(() => dispatch(props.action, event.detail))
 
   addEventListener(props.type, listener)
@@ -158,7 +158,7 @@ Since a well-formed subscriber returns a cleanup function, it's possible that th
 
 ```js
 const listenToEvent = (dispatch, props) => {
-  const listener = (event) => 
+  const listener = (event) =>
     requestAnimationFrame(() => dispatch(props.action, event.detail))
 
   addEventListener(props.type, listener)
@@ -173,13 +173,13 @@ So, using `props` directly works well. However, if instead you tried to use dest
 
 ```js
 const listenToEvent = (dispatch, { action, type }) => {
-  const listener = (event) => 
+  const listener = (event) =>
     requestAnimationFrame(() => dispatch(action, event.detail))
 
   addEventListener(type, listener)
   return () => {
     removeEventListener(type, listener)
-    dispatch(action, "cleaned-up") // <-- uh, oh!
+    dispatch(action, "cleaned-up")    // <-- uh, oh!
   }
 }
 ```
@@ -196,7 +196,7 @@ const runPreventDefault = (dispatch, payload) => {
   dispatch(payload.action)
 }
 
-export const preventDefault = (action, event) => 
+export const preventDefault = (action, event) =>
   [runPreventDefault, { action, event }]
 ```
 

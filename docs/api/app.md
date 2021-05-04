@@ -87,8 +87,8 @@ Hyperapp uses this to map your state to your UI for rendering the app. Every tim
 app({
   // ...
   view: (state) => h("main", {}, [
-    outworld(state), 
-    netherrealm(state)
+    outworld(state),
+    netherrealm(state),
   ]),
 })
 ```
@@ -128,10 +128,10 @@ import { onKey } from "./subs"
 // ...
 
 app({
-  view: (state) => 
+  view: (state) =>
     h("div", {}, [
-      state.playing && viewLevel(), 
-      h("p", {}, text("Rip and Tear!"))
+      state.playing && viewLevel(),
+      h("p", {}, text("Rip and Tear!")),
     ]),
   subscriptions: (state) => [
     onKey("w", MoveForward),

@@ -111,9 +111,9 @@ The [classes](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attribute
       "mastodon",
       state.pink && "pterodactyl",
       [
-        { triceratops: state.blue }, 
-        "sabretooth-tiger", 
-        state.red && "tyrannosaurus"
+        { triceratops: state.blue },
+        "sabretooth-tiger",
+        state.red && "tyrannosaurus",
       ],
     ],
   })
@@ -185,8 +185,8 @@ or as an array of child VNodes:
 
 ```js
 h("q", {}, [
-  text("I know Kung Fu."), 
-  h("em", {}, text("Show me."))
+  text("I know Kung Fu."),
+  h("em", {}, text("Show me.")),
 ])
 ```
 
@@ -209,7 +209,7 @@ const jsxify = (h) => (type, props, ...children) =>
     : h(
         type,
         props || {},
-        [].concat(...children).map((x) => 
+        [].concat(...children).map((x) =>
           typeof x === "string" || typeof x === "number" ? text(x) : x
         )
       )

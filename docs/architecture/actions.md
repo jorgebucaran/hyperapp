@@ -141,6 +141,32 @@ h(
 
 ---
 
+## Payload with event and other data
+
+What if we want to use event.stopPropagation(), etc., and we also have some data to pass to the action?
+
+The trick is that an action can return an action too `(=> [MyAction, newPayload])`, so you can define a function as a helper.
+
+```js
+//helper function
+const withPayload = (filter) => (_, x) => filter(x)
+```
+
+and use it like this:
+
+```js
+{
+  oninput: withPayload((event) => [
+    MyAction,
+    { id: state.currentId, value: event.target.value },
+  ]),
+}
+```
+
+The action that carries the payload is the anonymous function in the middle `(_, x)` of `withPayload`
+
+---
+
 ## Transforms
 
 You may consider refactoring very large and/or complicated actions it into simpler, more manageable functions. If so, remember that actions are just messages and, conceptually speaking, are not composable like the functions that implement them. That being said, it can at times be advantageous to delegate some state processing to other functions. Each of these constituent functions is a **transform** and is intended for use by actions or other transforms.

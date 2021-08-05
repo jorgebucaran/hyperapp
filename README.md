@@ -62,7 +62,7 @@ To access [Web Platform APIs](https://platform.html5.org) (like `fetch` or `addE
 
 ## Help, I'm stuck!
 
-If you've hit a stumbling block, hop on our [Discord](https://discord.gg/5CtfCYEq8V) server to get help, and if you remain stuck, [please file an issue](https://github.com/jorgebucaran/hyperapp/issues/new), and we'll help you figure it out.
+If you've hit a stumbling block, hop on our [Discord](https://discord.gg/eFvZXzXF9U) server to get help, and if you remain stuck, [please file an issue](https://github.com/jorgebucaran/hyperapp/issues/new), and we'll help you figure it out.
 
 ## Contributing
 

@@ -116,7 +116,7 @@ declare module "hyperapp" {
   // A dispatchable entity is used to cause a state transition.
   type Dispatchable<S, P = any> =
     | S
-    | [state: S, ...effects: Effect<S, P>[]]
+    | [state: S, ...effects: MaybeEffect<S, P>[]]
     | Action<S, P>
     | readonly [action: Action<S, P>, payload: P]
 
@@ -125,6 +125,10 @@ declare module "hyperapp" {
     effecter: (dispatch: Dispatch<S>, payload: P) => void | Promise<void>,
     payload: P
   ]
+  
+  // Effects can be declared conditionally.
+  type MaybeEffect<S, P> = null | undefined | boolean | "" | 0 | Effect<S, P>
+
 
   // Event handlers are implemented using actions.
   type EventActions<S> = {

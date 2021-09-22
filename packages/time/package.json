@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "type": "module",
   "main": "index.js",
-  "description": "Subscribe to intervals, get the time now",
+  "description": "Subscribe to intervals, get the time now.",
   "repository": "https://github.com/jorgebucaran/hyperapp/tree/main/packages/time",
   "license": "MIT",
   "keywords": [

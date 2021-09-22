@@ -1,0 +1,15 @@
+{
+  "name": "@hyperapp/dom",
+  "version": "0.1.2",
+  "type": "module",
+  "main": "index.js",
+  "description": "Inspect the DOM, focus and blur",
+  "repository": "https://github.com/jorgebucaran/hyperapp/tree/main/packages/dom",
+  "license": "MIT",
+  "keywords": [
+    "hyperapp",
+    "focus",
+    "blur",
+    "dom"
+  ]
+}

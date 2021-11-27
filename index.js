@@ -101,13 +101,13 @@ var patchProperty = (node, key, oldValue, newValue, listener, isSvg) => {
 }
 
 var createNode = (vdom, listener, isSvg) => {
-  var props = vdom.props
+  var {is, ...props} = vdom.props
   var node =
     vdom.type === TEXT_NODE
       ? document.createTextNode(vdom.tag)
       : (isSvg = isSvg || vdom.tag === "svg")
-      ? document.createElementNS(SVG_NS, vdom.tag, { is: props.is })
-      : document.createElement(vdom.tag, { is: props.is })
+      ? document.createElementNS(SVG_NS, vdom.tag, is && {is})
+      : document.createElement(vdom.tag, is && {is})
 
   for (var k in props) {
     patchProperty(node, k, null, props[k], listener, isSvg)

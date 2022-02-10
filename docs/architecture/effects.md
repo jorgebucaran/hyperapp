@@ -9,7 +9,7 @@ As with [subscriptions](subscriptions.md), effects are used to deal with impure 
 **_Signature:_**
 
 ```elm
-Effect : EffecterFn | [EffecterFn, Payload?]
+Effect : EffecterFn | [EffecterFn, Payload]
 ```
 
 **_Naming Recommendation:_**

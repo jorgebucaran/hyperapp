@@ -1,77 +1,70 @@
 # `app()`
 
-**_Definition:_**
+<big><pre>
+app : ({ <a href="#init">init</a>, <a href="#view">view</a>, <a href="#node">node</a>, <a href="#subscriptions">subscriptions?</a>, <a href="#dispatch">dispatch?</a> }) -> DispatchFn
+</pre></big>
 
-> A function that initializes and mounts a Hyperapp application.
-
-**_Import & Usage:_**
+Initialize and mount a Hyperapp application.
 
 ```js
 import { app } from "hyperapp"
 
-// ...
-
-app(props)
-```
-
-**_Signature & Parameters:_**
-
-```elm
-app : ({ Init, View, Node, Subscriptions?, Dispatch? }) -> DispatchFn
-```
-
-## Parameters
-
-### `props`
-
-There are only a handful of props you can use to configure your app.
-
-| Prop                            | Type                                                                      | Required? |
-| ------------------------------- | ------------------------------------------------------------------------- | --------- |
-| [init](#init)                   | [State](../architecture/state.md) or [Action](../architecture/actions.md) | yes :100: |
-| [view](#view)                   | [View](../architecture/views.md)                                          | yes :100: |
-| [node](#node)                   | DOM element                                                               | yes :100: |
-| [subscriptions](#subscriptions) | Function                                                                  | no        |
-| [dispatch](#dispatch)           | [Dispatch Initializer](../architecture/dispatch.md#dispatch-initializer)  | no        |
-
-#### `init:`
-
-```js
-init: { firstState }
-      | [firstState, ...effects ]
-      | initAction
-      | [initAction, payload? ]
-```
-
-Initialize the app
-
-`init: { firstState }` sets the initial state directly:
-
-```js
 app({
-  init: { counter: 0 },
-  // ...
+  init: { message: 'hello world' },
+  view: state => h("p", {}, text(state.message)),
+  node: document.getElementById('app')
 })
 ```
+<br/>
 
-`init: [firstState, ...effects ]` sets the initial state and run the given [effects](../architecture/effects.md):
-<!-- The initial state is a play on Jay-Z's song "99 Problems". -->
+### `init:`
 
 ```js
-import { fetch  } from "./fx"
-
-app({
-  // ...
-  init: [
-    { loading: true }, 
-    fetch(problems)
-  ],
-})
+init: { state }
+      | [state, ...effects ]
+      | Action
+      | [Action, payload? ]
 ```
 
-<!-- The initial action taken is a play on Jay-Z's song "99 Problems". -->
+Initialize the app. Takes place before the first view render and subscriptions registration.  
 
 Note that if you leave `init:` undefined the state will be set to an empty object (`{}`) by default.
+<br/>
+
+**Signatures:** 
+
+- `init: { state }` sets the initial state directly:
+
+  ```js
+  app({
+    init: { counter: 0 },
+    // ...
+  })
+  ```
+
+- `init: [state, ...effects ]` sets the initial state and run the given [effects](../architecture/effects.md):
+
+  ```js
+  app({
+    init: [ { loading: true }, fetch('myurl?init', DoneAction) ],
+    // ...
+  })
+  ```
+
+- `init: Action` and `init: [Action, payload? ]` run the given [Action](../architecture/action.md):
+
+  This form is useful when the Action can be reused later.  
+  The state passed to the Action in this case is `undefined`  
+
+  ```js
+  const Reset = state => { counter: 0 }
+
+  app({
+    init: Reset,
+    // ...
+  }
+  ```
+
 
 #### `view:`
 

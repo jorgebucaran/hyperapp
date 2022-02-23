@@ -6,6 +6,8 @@ app : ({ <a href="#init">init</a>, <a href="#view">view</a>, <a href="#node">nod
 
 Initialize and mount a Hyperapp application.
 
+(`subscriptions` and `dispatch` are optional)
+
 ```js
 import { app } from "hyperapp"
 

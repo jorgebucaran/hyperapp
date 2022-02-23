@@ -20,16 +20,6 @@ app(props)
 app : ({ Init, View, Node, Subscriptions?, Dispatch? }) -> DispatchFn
 ```
 
-| Parameter       | Type   | Required? |
-| --------------- | ------ | --------- |
-| [props](#props) | Object | yes :100: |
-
-| Return Value                            | Type     |
-| --------------------------------------- | -------- |
-| [dispatch](../architecture/dispatch.md) | Function |
-
----
-
 ## Parameters
 
 ### `props`
@@ -46,29 +36,35 @@ There are only a handful of props you can use to configure your app.
 
 #### `init:`
 
-Initial value of the [state](../architecture/state.md) or an [action](../architecture/actions.md) to take to initialize the state.
+```js
+init: { firstState }
+      | [firstState, ...effects ]
+      | initAction
+      | [initAction, payload? ]
+```
 
-You can simply set the initial state directly:
+Initialize the app
+
+`init: { firstState }` sets the initial state directly:
 
 ```js
 app({
+  init: { counter: 0 },
   // ...
-  init: { problems: 99 },
 })
 ```
 
+`init: [firstState, ...effects ]` sets the initial state and run the given [effects](../architecture/effects.md):
 <!-- The initial state is a play on Jay-Z's song "99 Problems". -->
 
-Or you can use the various types of [actions](../architecture/actions.md) to do things like fetching initial data for your app.
-
 ```js
-import { butASPAAintOne } from "./fx"
+import { fetch  } from "./fx"
 
 app({
   // ...
-  init: (problems = 99) => [
+  init: [
     { loading: true }, 
-    butASPAAintOne(problems)
+    fetch(problems)
   ],
 })
 ```

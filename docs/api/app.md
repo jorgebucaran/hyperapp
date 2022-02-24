@@ -1,12 +1,10 @@
 # `app()`
 
 <big><pre>
-app : ({ <a href="#init">init</a>, <a href="#view">view</a>, <a href="#node">node</a>, <a href="#subscriptions">subscriptions?</a>, <a href="#dispatch">dispatch?</a> }) -> DispatchFn
+app : ({ <a href="#init">init?</a>, <a href="#view">view</a>, <a href="#node">node</a>, <a href="#subscriptions">subscriptions?</a>, <a href="#dispatch">dispatch?</a> }) -> DispatchFn
 </pre></big>
 
-Initialize and mount a Hyperapp application.
-
-(`subscriptions` and `dispatch` are optional)
+Initialize and mount a Hyperapp application. `init`, `subscriptions` and `dispatch` are optional.
 
 ```js
 import { app } from "hyperapp"
@@ -14,7 +12,8 @@ import { app } from "hyperapp"
 app({
   init: { message: 'hello world' },
   view: state => h("p", {}, text(state.message)),
-  node: document.getElementById('app')
+  node: document.getElementById('app'),
+  subscriptions: state => [ onKey("w", MoveForward) ],  
 })
 ```
 <br/>
@@ -30,7 +29,7 @@ init: { state }
 
 Initialize the app. Takes place before the first view render and subscriptions registration.  
 
-Note that if you leave `init:` undefined the state will be set to an empty object (`{}`) by default.
+If omitted the state will be set to an empty object (`{}`) by default.
 <br/>
 
 **Signatures:** 
@@ -137,7 +136,6 @@ A [Dispatch Initializer](../architecture/dispatch.md#dispatch-initializer) that 
 
 ### Other Considerations
 
-- You can embed your Hyperapp application within an already existing app that was built with some other framework. This can be useful for migrating to Hyperapp in a systematic way or just using Hyperapp for a particular purpose.
+- You can embed your Hyperapp application within an already existing app that was built with some other framework. 
 
-- Multiple Hyperapp applications can coexist on the page simultaneously. They each have their own state and behave independently relative to each other.  
-If they need to communicate with each other, then subscriptions and effects for each app can be used for that purpose.
+- Multiple Hyperapp applications can coexist on the page simultaneously. They each have their own state and behave independently relative to each other. They can communicate with each other using subscriptions and effects (ie using events).

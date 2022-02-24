@@ -4,7 +4,8 @@
 app : ({ <a href="#init">init?</a>, <a href="#view">view</a>, <a href="#node">node</a>, <a href="#subscriptions">subscriptions?</a>, <a href="#dispatch">dispatch?</a> }) -> DispatchFn
 </pre></big>
 
-Initialize and mount a Hyperapp application. `init`, `subscriptions` and `dispatch` are optional.
+Initialize and mount a Hyperapp application.  
+`init`, `subscriptions` and `dispatch` are optional.
 
 ```js
 import { app } from "hyperapp"
@@ -107,8 +108,8 @@ app({
 ### `subscriptions:`
 
 A function that returns an array of [subscriptions](../architecture/subscriptions.md) for a given state.  
-Every time the [state](../architecture/state.md) of the application changes, this function will be called to determine the current subscriptions.
-
+Every time the [state](../architecture/state.md) of the application changes, this function will be called to determine the current subscriptions.  
+If omitted the app has no subscriptions (`subscriptions: state => []`)
 ```js
 import { onKey } from "./subs"
 
@@ -124,13 +125,15 @@ app({
 
 ### `dispatch:`
 
-A [Dispatch Initializer](../architecture/dispatch.md#dispatch-initializer) that can create a [custom dispatch function](../architecture/dispatch.md#custom-dispatching) to use instead of the default dispatch.
+A [Dispatch Initializer](../architecture/dispatch.md#dispatch-initializer) that can create a [custom dispatch function](../architecture/dispatch.md#custom-dispatching) to use instead of the default dispatch.  
+Mainly used for middleware and debugging.
 
 <br/>
 
 ### Instrumentation
 
-`app()` returns the [dispatch](../architecture/dispatch.md) function your app uses. This can be handy if you want to [control your app externally](#usage-within-non-hyperapp-projects).
+`app()` returns the [dispatch](../architecture/dispatch.md) function your app uses. This can be handy if you want to control your app externally.  
+Calling `dispatch` with no arguments frees the app's resources and runs any running subscriptions cleanup functions.
 
 <br/>
 

@@ -130,9 +130,9 @@ Mainly used for middleware and debugging.
 
 <br/>
 
-### Instrumentation
+### Return
 
-`app()` returns the [dispatch](../architecture/dispatch.md) function your app uses. This can be handy if you want to control your app externally.  
+`app()` returns the [dispatch](../architecture/dispatch.md) function your app uses. This can be handy if you want to control your app externally (instrumentation).  
 Calling `dispatch` with no arguments frees the app's resources and runs any running subscriptions cleanup functions.
 
 <br/>

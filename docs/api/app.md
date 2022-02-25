@@ -5,7 +5,23 @@ app : ({ <a href="#init">init?</a>, <a href="#view">view</a>, <a href="#node">no
 </pre></big>
 
 Initialize and mount a Hyperapp application.  
-`init`, `subscriptions` and `dispatch` are optional.
+<br/>
+
+| Prop                            | Type                                                                      | Required? |
+| ------------------------------- | ------------------------------------------------------------------------- | --------- |
+| [init](#init)                   | [State](../architecture/state.md) or [Action](../architecture/actions.md) | no        |
+| [view](#view)                   | [View](../architecture/views.md)                                          | yes       |
+| [node](#node)                   | DOM element                                                               | yes       |
+| [subscriptions](#subscriptions) | Function                                                                  | no        |
+| [dispatch](#dispatch)           | [Dispatch Initializer](../architecture/dispatch.md#dispatch-initializer)  | no        |
+
+
+| Return Value                            | Type     |
+| --------------------------------------- | -------- |
+| [dispatch](../architecture/dispatch.md) | Function |
+
+
+<br/>
 
 ```js
 import { app } from "hyperapp"

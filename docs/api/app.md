@@ -29,7 +29,6 @@ init: { state }
 ```
 
 Initialize the app. Takes place before the first view render and subscriptions registration.  
-
 If omitted the state will be set to an empty object (`{}`) by default.
 <br/>
 
@@ -70,8 +69,7 @@ If omitted the state will be set to an empty object (`{}`) by default.
 
 ### `view:`
 
-The [top-level view](../architecture/views.md#top-level-view) that represents the app as a whole. There can only be one top-level view in your app.
-
+The [top-level view](../architecture/views.md#top-level-view) that represents the app as a whole. There can only be one top-level view in your app.  
 Hyperapp uses this to map your state to your UI for rendering the app. Every time the [state](../architecture/state.md) of the application changes, this function will be called to render the UI based on the new state, using the logic you've defined inside of it.
 
 ```js

@@ -5,7 +5,7 @@ app : ({ <a href="#init">init?</a>, <a href="#view">view</a>, <a href="#node">no
 </pre></big>
 
 Initialize and mount a Hyperapp application.  
-<br/>
+  
 
 | Prop                            | Type                                                                      | Required? |
 | ------------------------------- | ------------------------------------------------------------------------- | --------- |
@@ -21,7 +21,7 @@ Initialize and mount a Hyperapp application.
 | [dispatch](../architecture/dispatch.md) | Function |
 
 
-<br/>
+  
 
 ```js
 import { app } from "hyperapp"
@@ -33,7 +33,7 @@ app({
   subscriptions: state => [ onKey("w", MoveForward) ],  
 })
 ```
-<br/>
+  
 
 ### `init:`
 
@@ -46,7 +46,7 @@ init: { state }
 
 Initialize the app. Takes place before the first view render and subscriptions registration.  
 If omitted the state will be set to an empty object (`{}`) by default.
-<br/>
+  
 
 **Signatures:** 
 
@@ -81,7 +81,7 @@ If omitted the state will be set to an empty object (`{}`) by default.
     // ...
   }
   ```
-<br/>
+  
 
 ### `view:`
 
@@ -99,7 +99,7 @@ app({
 ```
 
 <!-- "Outworld" and "Netherrealm" are two of several realms in the "Mortal Kombat" videogame series. -->
-<br/>
+  
 
 ### `node:`
 
@@ -117,7 +117,7 @@ app({
   node: document.getElementById("app"),
 })
 ```
-<br/>
+  
 
 ### `subscriptions:`
 
@@ -135,21 +135,20 @@ app({
   ]
 })
 ```
-<br/>
+  
 
 ### `dispatch:`
 
 A [Dispatch Initializer](../architecture/dispatch.md#dispatch-initializer) that can create a [custom dispatch function](../architecture/dispatch.md#custom-dispatching) to use instead of the default dispatch.  
 Mainly used for middleware and debugging.
-
-<br/>
+  
 
 ### Return
 
 `app()` returns the [dispatch](../architecture/dispatch.md) function your app uses. This can be handy if you want to control your app externally (instrumentation).  
 Calling `dispatch` with no arguments frees the app's resources and runs any running subscriptions cleanup functions.
 
-<br/>
+  
 
 ### Other Considerations
 

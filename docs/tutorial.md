@@ -490,14 +490,13 @@ The way to run arbitrary code with some action, is to wrap that code in a functi
 ```js
 const Select = (state, selected) => [
   {...state, selected},
-  [() => {
+  () => 
     fetch("https://jsonplaceholder.typicode.com/users/" + state.ids[selected])
     .then(response => response.json())
     .then(data => {
       console.log("Got data: ", data)
       /* now what ? */
     })
-  }]
 ]
 ```
 
@@ -507,11 +506,11 @@ When an action returns something like `[newState, [function]]`, the function is 
 ```js
 const Select = (state, selected) => [
   {...state, selected},
-  [dispatch => {                           // <---
+  dispatch => {                           // <---
     fetch("https://jsonplaceholder.typicode.com/users/" + state.ids[selected])
     .then(response => response.json())
     .then(data => dispatch(GotBio, data)) // <---
-  }]
+  }
 ]
 ```
 

@@ -148,16 +148,16 @@ app({
 
 ## `dispatch:`
 
-A [dispatch initializer](../architecture/dispatch.md#dispatch-initializer) that can create a [custom dispatch function](../architecture/dispatch.md#custom-dispatching) to use instead of the default dispatch. Mainly used for middleware and debugging.
+A [dispatch initializer](../architecture/dispatch.md#dispatch-initializer) that can create a [custom dispatch function](../architecture/dispatch.md#custom-dispatching) to use instead of the default dispatch. Allows tapping into dispatches for debugging, testing, telemetry etc.
 
 ## Return Value
 
-`app()` returns the [dispatch](../architecture/dispatch.md) function your app uses. This can be handy if you want to control your app externally (instrumentation).
+`app()` returns the [dispatch](../architecture/dispatch.md) function your app uses. This can be handy if you want to control your app externally, ie where only a subsection of your app is implemented with Hyperapp.
 
 Calling the dispatch function with no arguments frees the app's resources and runs every active subscription's cleanup function.
 
 ## Other Considerations
 
-- You can embed your Hyperapp application within another already existing Hyperapp application or an app that was built with some other framework. This can be useful for migrating to Hyperapp in a systematic way or just using Hyperapp for a particular purpose.
+- You can embed your Hyperapp application within another already existing Hyperapp application or an app that was built with some other framework.
 
 - Multiple Hyperapp applications can coexist on the page simultaneously. They each have their own state and behave independently relative to each other. They can communicate with each other using subscriptions and effects (i.e. using events).

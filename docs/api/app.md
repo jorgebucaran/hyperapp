@@ -19,7 +19,7 @@ app : ({ Init, View, Node, Subscriptions?, Dispatch? }) -> DispatchFn
 | [dispatch](../architecture/dispatch.md) | Function |
 
 ```js
-import { app, h } from "hyperapp"
+import { app, h, text } from "hyperapp"
 
 app({
   init: { message: "Hello World!" },
@@ -125,7 +125,7 @@ app({
 
 A function that returns an array of [subscriptions](../architecture/subscriptions.md) for a given state. Every time the [state](../architecture/state.md) of the application changes, this function will be called to determine the current subscriptions.
 
-If a subscription entry is falsy then the subscription that was at that spot, if any, will be considered unsubscribed from and will will be cleaned up.
+If a subscription entry is falsy then the subscription that was at that spot, if any, will be considered unsubscribed from and will be cleaned up.
 
 If `subscriptions:` is omitted the app has no subscriptions. It behaves the same as if you were using: `subscriptions: (state) => []`
 

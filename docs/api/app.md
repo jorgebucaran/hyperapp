@@ -6,13 +6,13 @@ Initializes and mounts a Hyperapp application.
 app : ({ Init, View, Node, Subscriptions?, Dispatch? }) -> DispatchFn
 ```
 
-| Prop                            | Type                                                                      | Required? |
-| ------------------------------- | ------------------------------------------------------------------------- | --------- |
-| [init](#init)                   | [State](../architecture/state.md) or [Action](../architecture/actions.md) | No        |
-| [view](#view)                   | [View](../architecture/views.md)                                          | **Yes**   |
-| [node](#node)                   | DOM element                                                               | **Yes**   |
-| [subscriptions](#subscriptions) | Function                                                                  | No        |
-| [dispatch](#dispatch)           | [Dispatch Initializer](../architecture/dispatch.md#dispatch-initializer)  | No        |
+| Prop                             | Type                                                                        | Required?                        |
+| -------------------------------- | --------------------------------------------------------------------------- | -------------------------------- |
+| [init:](#init)                   | <ul><li>[State](../architecture/state.md)</li><li>[[State](../architecture/state.md), ...[Effect](../architecture/effects.md)[]]</li><li>[Action](../architecture/actions.md)</li><li>[[Action](../architecture/actions.md), any]</li></ul> | No                               |
+| [view:](#view)                   | [View](../architecture/views.md)                                            | No                               |
+| [node:](#node)                   | DOM element                                                                 | **Yes when `view:` is present.** |
+| [subscriptions:](#subscriptions) | Function                                                                    | No                               |
+| [dispatch:](#dispatch)           | [Dispatch Initializer](../architecture/dispatch.md#dispatch-initializer)    | No                               |
 
 | Return Value                            | Type     |
 | --------------------------------------- | -------- |

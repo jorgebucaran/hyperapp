@@ -15,7 +15,7 @@ var enqueue =
 var createClass = (obj) => {
   var out = ""
 
-  if (typeof obj === "string") return obj
+  if (!obj || typeof obj === "string") return obj
 
   if (isArray(obj)) {
     for (var k = 0, tmp; k < obj.length; k++) {
@@ -69,8 +69,7 @@ var patchSubs = (oldSubs, newSubs = EMPTY_ARR, dispatch) => {
 var getKey = (vdom) => (vdom == null ? vdom : vdom.key)
 
 var patchProperty = (node, key, oldValue, newValue, listener, isSvg) => {
-  if (key === "key") {
-  } else if (key === "style") {
+  if (key === "style") {
     for (var k in { ...oldValue, ...newValue }) {
       oldValue = newValue == null || newValue[k] == null ? "" : newValue[k]
       if (k[0] === "-") {
@@ -89,11 +88,7 @@ var patchProperty = (node, key, oldValue, newValue, listener, isSvg) => {
     }
   } else if (!isSvg && key !== "list" && key !== "form" && key in node) {
     node[key] = newValue == null ? "" : newValue
-  } else if (
-    newValue == null ||
-    newValue === false ||
-    (key === "class" && !(newValue = createClass(newValue)))
-  ) {
+  } else if (newValue == null || newValue === false) {
     node.removeAttribute(key)
   } else {
     node.setAttribute(key, newValue)
@@ -348,10 +343,10 @@ var recycleNode = (node) =>
         node
       )
 
-var createVNode = (tag, props, children, type, node) => ({
+var createVNode = (tag, { key, ...props }, children, type, node) => ({
   tag,
   props,
-  key: props.key,
+  key,
   children,
   type,
   node,
@@ -362,8 +357,12 @@ export var memo = (tag, memo) => ({ tag, memo })
 export var text = (value, node) =>
   createVNode(value, EMPTY_OBJ, EMPTY_ARR, TEXT_NODE, node)
 
-export var h = (tag, props, children = EMPTY_ARR) =>
-  createVNode(tag, props, isArray(children) ? children : [children])
+export var h = (tag, { class: c, ...p }, children = EMPTY_ARR) =>
+  createVNode(
+    tag,
+    { ...p, class: createClass(c) },
+    isArray(children) ? children : [children]
+  )
 
 export var app = ({
   node,

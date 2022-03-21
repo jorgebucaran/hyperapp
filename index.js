@@ -15,7 +15,7 @@ var enqueue =
 var createClass = (obj) => {
   var out = ""
 
-  if (!obj || typeof obj === "string") return obj
+  if (typeof obj === "string") return obj
 
   if (isArray(obj)) {
     for (var k = 0, tmp; k < obj.length; k++) {
@@ -357,7 +357,7 @@ export var memo = (tag, memo) => ({ tag, memo })
 export var text = (value, node) =>
   createVNode(value, EMPTY_OBJ, EMPTY_ARR, TEXT_NODE, node)
 
-export var h = (tag, { class: c, ...p }, children = EMPTY_ARR) =>
+export var h = (tag, { class: c = "", ...p }, children = EMPTY_ARR) =>
   createVNode(
     tag,
     { ...p, class: createClass(c) },

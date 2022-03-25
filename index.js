@@ -357,10 +357,10 @@ export var memo = (tag, memo) => ({ tag, memo })
 export var text = (value, node) =>
   createVNode(value, EMPTY_OBJ, EMPTY_ARR, TEXT_NODE, node)
 
-export var h = (tag, { class: c = "", ...p }, children = EMPTY_ARR) =>
+export var h = (tag, { class: c, ...props }, children = EMPTY_ARR) =>
   createVNode(
     tag,
-    { ...p, class: createClass(c) },
+    { ...props, ...(c ? { class: createClass(c) } : EMPTY_OBJ) },
     isArray(children) ? children : [children]
   )
 

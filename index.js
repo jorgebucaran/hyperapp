@@ -378,7 +378,7 @@ export var app = ({
       if (subscriptions) subs = patchSubs(subs, subscriptions(state), dispatch)
       if (view && !busy) {
         requestAnimationFrame(render)
-        busy = true;
+        busy = true
       }
     }
   }

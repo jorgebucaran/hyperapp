@@ -7,10 +7,6 @@ var SVG_NS = "http://www.w3.org/2000/svg"
 var id = (a) => a
 var map = EMPTY_ARR.map
 var isArray = Array.isArray
-var enqueue =
-  typeof requestAnimationFrame !== "undefined"
-    ? requestAnimationFrame
-    : setTimeout
 
 var createClass = (obj) => {
   var out = ""
@@ -380,7 +376,7 @@ export var app = ({
     if (state !== newState) {
       if ((state = newState) == null) dispatch = subscriptions = render = id
       if (subscriptions) subs = patchSubs(subs, subscriptions(state), dispatch)
-      if (view && !busy) enqueue(render, (busy = true))
+      if (view && !busy) requestAnimationFrame(render, (busy = true))
     }
   }
 

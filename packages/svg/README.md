@@ -38,7 +38,7 @@ Want to draw some circles? [Try this example in your browser](https://codepen.io
 ## Installation
 
 ```console
-npm install @hyperapp/html
+npm install @hyperapp/svg
 ```
 
 Then with a module bundler like [Rollup](https://rollupjs.org) or [Webpack](https://webpack.js.org) import it in your application and get right down to business.

@@ -540,8 +540,8 @@ const Select = (state, selected) => [
   [ 
     fetchJson,
     {
-      url: "https://jsonplaceholder.typicode.com/posts/" + state.ids[selected],
-      action: GotBio,
+      url: "https://jsonplaceholder.typicode.com/users/" + state.ids[selected],
+      action: GetBio,
     }
   ]
 ]

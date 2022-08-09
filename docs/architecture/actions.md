@@ -191,7 +191,7 @@ An array returned from an action carries [special meaning as already mentioned e
 
 There are a couple of options available:
 
-- Wrap the return state within an [effectful state array](state.md#state-with-effects).
+- Wrap the return state within an [effectful state array](state.md#state-with-effects). Mention also that init: option of app() function must also be wrapped.
 
   ```js
   const ArrayAction = (state) => [[...state, "one"]]

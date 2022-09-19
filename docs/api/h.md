@@ -169,7 +169,14 @@ const pokedex = (pokemon) =>
 
 Props that represent event listeners, such as [`onclick`](https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event), [`onchange`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/change_event), [`oninput`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/input_event), etc. are where you would assign [actions](../architecture/actions.md) to VNodes.
 
-Synthetic events can be added in the same way as long as their name starts with "on", so an event created with `const buildEvent = new Event('build')` can be used like this: `h("button", { onbuild: BuildAction }, text("Click Me"))`
+Synthetic events can be added in the same way as long as their name starts with "on", so an event created with 
+```js
+const buildEvent = new Event('build')
+``` 
+can be used like this: 
+```js
+h("button", { onbuild: BuildAction }, text("Click Me"))
+```
 
 ### `children`
 

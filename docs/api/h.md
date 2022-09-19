@@ -171,7 +171,7 @@ Props that represent event listeners, such as [`onclick`](https://developer.mozi
 
 Synthetic events can be added in the same way as long as their name starts with "on", so an event created with 
 ```js
-const buildEvent = new Event('build')
+const buildEvent = new Event("build")
 ``` 
 can be used like this: 
 ```js

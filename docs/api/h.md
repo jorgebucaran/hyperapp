@@ -131,7 +131,7 @@ The [classes](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attribute
 
 #### `style:`
 
-The [inline CSS styles](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/style) to use with the VNode. The `style` prop can be an object of [CSS properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference) where the keys are the CSS property names and the values are the correpsonding CSS property values. Hyphenated CSS property names can either be in camelCase or quoted to abide by JavaScript syntax restrictions.
+The [inline CSS styles](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/style) to use with the VNode. The `style` prop can be an object of [CSS properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference) where the keys are the CSS property names and the values are the corresponding CSS property values. Hyphenated CSS property names can either be in camelCase or quoted to abide by JavaScript syntax restrictions.
 
 ```js
 h(

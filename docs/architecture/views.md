@@ -200,6 +200,6 @@ For an example, look at the documentation for [`memo()`](../api/memo.md#example)
 
 Memoization exists to help improve rendering performance but it's not a panacea. If it was used with nodes that need to update on every state change, the cost of checking if the memoization's props had changed before carrying out the rendering would be a net loss of performance over time.
 
-Memoization was designed for nodes that don't need to update at all or just occassionally.
+Memoization was designed for nodes that don't need to update at all or just occasionally.
 
 As always when it comes to optimizations, be sure to measure the performance of your app to make sure you're getting true benefits and adjust if necessary.

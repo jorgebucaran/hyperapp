@@ -16,7 +16,7 @@
 - [Subscriptions](architecture/subscriptions.md) dispatch actions in response to external events.
 - [Dispatch](architecture/dispatch.md) controls action dispatching.
 
-&nbsp;&nbsp;&nbsp;&nbsp;[Flowchart](architecture/flowchart.md) showing the genral flow of a hyperapp app.
+&nbsp;&nbsp;&nbsp;&nbsp;[Flowchart](architecture/flowchart.md) showing the general flow of a hyperapp app.
 
 <h2 title="“I’d like to think of browsing the glossary as flipping pages in a book. I can go anywhere instantly and learn whatever suits my fancy.” ―@icylace">Glossary</h2>
 

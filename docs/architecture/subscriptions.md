@@ -186,7 +186,7 @@ const listenToEvent = (dispatch, { action, type }) => {
 
 The reason is because destructuring the `props` parameter will create local copies of the props listed. This means the cleanup function's closure will be referring to the `action` function that existed at the moment the cleanup function was created and returned, not the moment the cleanup function gets invoked. This is a subtle yet significant difference depending on how you use your actions with this type of subscriber.
 
-The scenario in which this comes into play is if you use an anonymous function for the `action`. An example of where you may consider doing this is if you wanted a way to seletively prevent default event behavior when a subscriber responds to an event.
+The scenario in which this comes into play is if you use an anonymous function for the `action`. An example of where you may consider doing this is if you wanted a way to selectively prevent default event behavior when a subscriber responds to an event.
 
 ```js
 // ./fx.js

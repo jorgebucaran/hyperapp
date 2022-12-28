@@ -48,7 +48,7 @@ The primary [view](views.md) of your app, as set by the [`view:`](../api/app.md#
 
 ### Serializability
 
-While you can put anything you want in the state we recommend avoiding things that are unserializable such as symbols, functions, and recursive references. This helps to ensure compatibility with things like saving to peristent local storage, or using other tools especially ones that are potentially Hyperapp-specific.
+While you can put anything you want in the state we recommend avoiding things that are unserializable such as symbols, functions, and recursive references. This helps to ensure compatibility with things like saving to persistent local storage, or using other tools especially ones that are potentially Hyperapp-specific.
 
 ### State Type
 

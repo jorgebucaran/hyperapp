@@ -9,7 +9,7 @@ graph TD
     viewEvent --- |dispatch|j6[ ] --> Action
     externalEvents(("&nbsp;&nbsp;external&nbsp;&nbsp;<br/>events")) -->|onEvent| subscription
     subscription --- |dispatch|j7[ ] -->Action
-    Action -->|"Action<br/>[Action, payload]"|Action
+    Action -->|"&nbsp;&nbsp;&nbsp;&nbsp;Action<br/>&nbsp;&nbsp;&nbsp;&nbsp;[Action, payload]"|Action
     Action --> |"{state}"| nextState[next<br/>state]
     Action --- |"[state, effect(s)]"|j3[ ]
     j3 --- j10[ ] --> nextState

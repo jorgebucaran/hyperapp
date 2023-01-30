@@ -4,7 +4,7 @@ graph TD
     init --> |"init:{state}"|nextState
     init --- |"init:[state, effect(s)]<br/>init:Action<br/>init:[Action, payload?]"|j0[ ]
     j0 --- j8[ ] --> Action
-    domevent(("&nbsp;&nbsp;&nbsp;&nbsp;DOM&nbsp;&nbsp;&nbsp;&nbsp;<br/>events")) -->|onclick| viewEvent[view<br/>event]
+    domevent(("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DOM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>events")) -->|onclick| viewEvent[view<br/>event]
     viewEvent --- |dispatch|j6[ ] --> Action
     externalEvents(("global/external<br/>events/processes")) -->|mousemove<br/>myevent| subscription
     subscription --- |dispatch|j7[ ] -->Action

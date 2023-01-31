@@ -13,10 +13,10 @@ graph TD
     Action --- |"NextState<br/>[NextState, ...Effects]"|j2[ ] ---> nextState
     
     nextState(("&nbsp;&nbsp;next&nbsp;&nbsp;<br/>state")) --- j3[ ]
-    j3 --> |"view(state)"|newDom(("&nbsp;&nbsp;&nbsp;(re)render&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;DOM&nbsp;&nbsp;&nbsp;"))
-    j3 --> |"subscriptions(state)"|recalcSubs((recalc<br/>subscriptions))
+    j3 --> |"view(state)"|newDom("&nbsp;&nbsp;&nbsp;(re)render&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;DOM&nbsp;&nbsp;&nbsp;")
+    j3 --> |"subscriptions(state)"|recalcSubs(recalc<br/>subscriptions)
     j3 --> |"(dispatch, Payload?) -> void"|effect
-    effect["Effects<br>(impure code)"] -.-> |"dispatch"|dispatchAction(("Action"))
+    effect("Effects<br>(impure code)") -.-> |"dispatch"|dispatchAction("Action")
     
     style j0 height:1px;
     style j0 width:1px;

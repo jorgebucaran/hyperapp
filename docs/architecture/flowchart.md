@@ -1,32 +1,29 @@
 ```mermaid
 graph TD
-    userInteraction((user<br/>interaction)) -->|onclick| viewEvent[view<br/>event]
-    init(("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;init&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"))
-    init --> |"init:{state}"|nextState
-    userInteraction -->|onmousemove| subscription
-    init --- |"init:[state, effect(s)]<br/>init:Action<br/>init:[Action, payload?]"|j0[ ]
-    j0 --- j8[ ] --> Action
-    viewEvent --- |dispatch|j6[ ] --> Action
-    externalEvents(("&nbsp;&nbsp;external&nbsp;&nbsp;<br/>events")) -->|onEvent| subscription
-    subscription --- |dispatch|j7[ ] -->Action
-    Action -->|"Action<br/>[Action, payload]"|Action
-    Action --> |"{state}"| nextState[next<br/>state]
-    Action --- |"[state, effect(s)]"|j3[ ]
-    j3 --- j10[ ] --> nextState
-    j3 --- j4[ ] --> effect["effect(s)"]
-    effect --- j13[ ] --> runEffect(("&nbsp;Run effect(s)<br/>(impure code)"))
-    runEffect --> |"dispatch<br/>(optional)"|Action
-    nextState --- j5[ ]
-    j5 --> |"view(state)"|newDom(("&nbsp;&nbsp;&nbsp;(re)render<br/>&nbsp;&nbsp;DOM&nbsp;&nbsp;&nbsp;"))
-    j5 --> |"subscriptions(state)"|recalcSubs((recalc<br/>subscriptions))
+    init("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;init&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
+    init --- |"init:{state}<br/>init:[state, effect(s)]<br/>"|j0[ ] --- j1[ ] -->nextState
+    init --> |"init:Action<br/>init:[Action, payload?]"|Action
+
+    domevent("DOM/synthetic&nbsp;<br/>events<br/>&nbsp;(click/myevent)&nbsp;") --> viewEvent
+    viewEvent(("&nbsp;&nbsp;&nbsp;&nbsp;view&nbsp;&nbsp;&nbsp;&nbsp;<br/>event")) --> Action
+    externalEvents("global/external<br/>processes<br/>&nbsp;(window resize)&nbsp;") --> subscription
+    subscription(("subscription")) -->Action
+
+    Action["&nbsp;Action&nbsp;<br/>(state change)"] -->|"OtherAction<br/>&nbsp;[OtherAction, payload?]<br/>"|Action
+    Action --- |"NextState<br/>[NextState, ...Effects]"|j2[ ] ---> nextState
     
-    style j0 height:0px;
-    style j3 height:0px;
-    style j4 height:0px;
-    style j5 height:0px;
-    style j6 height:0px;
-    style j7 height:0px;
-    style j8 height:0px;
-    style j10 height:0px;
-    style j13 height:0px;
+    nextState(("&nbsp;&nbsp;next&nbsp;&nbsp;<br/>state")) --- j3[ ]
+    j3 --> |"view(state)"|newDom("&nbsp;&nbsp;&nbsp;(re)render&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;DOM&nbsp;&nbsp;&nbsp;")
+    j3 --> |"subscriptions(state)"|recalcSubs(recalc<br/>subscriptions)
+    j3 --> |"(dispatch, Payload?) -> void"|effect
+    effect("Effects<br>(impure code)") -.-> |"dispatch"|dispatchAction("Action")
+    
+    style j0 height:1px;
+    style j0 width:1px;
+    style j1 height:1px;
+    style j1 width:1px;
+    style j2 height:1px;
+    style j2 width:1px;
+    style j3 height:1px;
+    style j3 width:1px;
 ```

@@ -38,36 +38,59 @@ const dispatch = (action, payload) => {
   // Do your custom work here.
   // ...
 
-  // Afterwards, carry on normally.
+  // Hand dispatch over to built-in dispatch.
   dispatch(action, payload)
 }
 ```
 
-Hyperapp's default dispatch function is a little too involved to showcase here but suffice it to say you'll most likely want to leverage it.
+## Dispatch recursion
+
+Dispatch is implemented in a recursive fashion, such that if the action dispatched does not represent the next state (or next state with effects), it will use the dispatched action and payload to resolve the next thing to dispatch. 
+
+A call to `dispatch([ActionFn, payload])` will recurse `dispatch(ActionFn, payload)`, which will recurse to `dispatch(ActionFn(currentState, payload))`. 
 
 ---
 
-## Example
+## Example 1 - Log actions
 
-Let's say we're working on a project where we want to always log the current state. Creating a custom dispatch for this purpose makes sense because it lets us accomplish this without having to change any of our existing actions to request our logging effect to run.
+Let's say you need to debug the order in which actions are dispatched. An augmented dispatch that logs each action could help with that, rather than having to add `console.log` to every action.
 
 ```js
-import { log } from "./fx"
+const mwLogActions = dispatch => (action, payload) => {
 
-// DispatchInitializerFn : OriginalDispatchFn -> NewDispatchFn
-const middleware = (dispatch) => 
-  (action, payload) => {
-    // Dispatch anonymous action which triggers logging effect.
-    dispatch((state) => [state, log(state)])
-    
-    // Afterwards, carry on normally.
-    dispatch(action, payload)
+  if (typeof action === 'function') {
+    console.log('DISPATCH: ', action.name)
   }
+
+  //pass on to original dispatch
+  dispatch(action, payload)
+}
+
 ```
 
-Great! Now let's learn how to use it.
-
 ---
+
+## Example 2 - Log state
+
+If you instead are more interested in just logging each state transformation, an augmented dispatch such as this will work:
+
+```js
+const mwLogState = dispatch => (action, payload) => {
+
+  if (Array.isArray(action) && typeof action[0] !== 'function') {
+    console.log('STATE:', action[0])
+  }
+  if (!Array.isArray(action) && typeof action !== 'function') {
+    console.log('STATE:', action)
+  }
+
+  //pass on to original dispatch
+  dispatch(action, payload)
+}
+
+```
+
+
 
 ## Usage
 
@@ -80,23 +103,25 @@ Only one dispatch initializer can be defined per app. Consequently, only one dis
 Extending the example from above, the dispatch initializer would be used like this:
 
 ```js
-import { log } from "./fx"
-
-// DispatchInitializerFn : OriginalDispatchFn -> NewDispatchFn
-const middleware = (dispatch) => 
-  (action, payload) => {
-    // Dispatch anonymous action which triggers logging effect.
-    dispatch((state) => [state, log(state)])
-    
-    // Afterwards, carry on normally.
-    dispatch(action, payload)
-  }
+import { mwLogState } from "./middleware.js"
 
 app({
   // ...
-  dispatch: middleware
+  dispatch: mwLogState
 })
 ```
+
+And if you wanted to use both custom dispatches together, you can chain them like this:
+
+```js
+import { mwLogState, mwLogActions } from "./middleware.js"
+
+app({
+  // ...
+  dispatch: dispatch => mwLogState(mwLogActions(dispatch))
+})
+```
+
 
 ---
 

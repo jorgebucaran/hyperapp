@@ -120,7 +120,7 @@ const finishingMoveOptions = () => [
   h("button", { onclick: BefriendHim }, text("Friendship")),
 ]
 
-const view = () => h("div", {}, finishingMoveOptions())
+const view = () => h("div", {}, ...finishingMoveOptions())
 ```
 
 <!-- In the "Mortal Kombat" videogame series there are multiple ways to finish off your opponent. The opportunity to do so occurs at the end of a match once the match announcer exclaims "Finish Him!" -->

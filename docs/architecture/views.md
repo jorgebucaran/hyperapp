@@ -121,7 +121,7 @@ const finishingMoveOptions = () => [
 ]
 
 const view = () => h("div", {}, [
-  h("em", {}, text("Finish them:"),
+  h("em", {}, text("Finish them:")),
   ...finishingMoveOptions(),
 ])
 ```

@@ -109,7 +109,7 @@ Components are recommended to be named in `camelCase` using a noun that concisel
 
 ### Components Returning Multiple VNodes
 
-Components are allowed to return an array of VNodes. However, to make use of such components you'll need to spread their result.
+Components are allowed to return an array of VNodes. However, to make use of such components in a list of other siblings, you'll need to spread their result.
 
 ```js
 // Component : () -> [...VNodes]
@@ -120,7 +120,10 @@ const finishingMoveOptions = () => [
   h("button", { onclick: BefriendHim }, text("Friendship")),
 ]
 
-const view = () => h("div", {}, finishingMoveOptions())
+const view = () => h("div", {}, [
+  h("em", {}, text("Finish them:"),
+  ...finishingMoveOptions(),
+])
 ```
 
 <!-- In the "Mortal Kombat" videogame series there are multiple ways to finish off your opponent. The opportunity to do so occurs at the end of a match once the match announcer exclaims "Finish Him!" -->

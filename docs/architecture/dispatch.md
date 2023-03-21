@@ -71,7 +71,7 @@ const logActionsMiddleware = dispatch => (action, payload) => {
 
 ## Example 2 - Log state
 
-If you instead are more interested in just logging each state transformation, an augmented dispatch such as this will work:
+To log each state transformation, we first create a general state middleware and then use it to create an augmented dispatch for state logging:
 
 ```js
 const stateMiddleware = fn => dispatch => (action, payload) => {
@@ -89,6 +89,28 @@ const logStateMiddleware = stateMiddleware(state => {
 })
 ```
 
+---
+
+## Example 3 - Immutable state
+
+When learning HyperApp and during the developemt it can sometimes be useful to guarantee states are not mutated by mistake, let's use `stateMiddleware` above to create an augmented dispatch for state immutability:
+
+```js
+// a proxy prohibiting mutation
+const immutableProxy = o => {
+  if (o===null || typeof o !== 'object') return o
+  return new Proxy(o, {
+    get(obj, prop) {
+      return immutableProxy(obj[prop])
+    },
+    set(obj, prop) {
+      throw new Error(`Can not set prop ${prop} on immutable object`)
+    }
+  })
+}
+
+export const immutableMiddleware = stateMiddleware(state => immutableProxy(state))
+```
 
 
 ## Usage
@@ -110,14 +132,14 @@ app({
 })
 ```
 
-And if you wanted to use both custom dispatches together, you can chain them like this:
+And if you wanted to use all custom dispatches together, you can chain them like this:
 
 ```js
 import { mwLogState, mwLogActions } from "./middleware.js"
 
 app({
   // ...
-  dispatch: dispatch => logStateMiddleware(logActionsMiddleware(dispatch))
+  dispatch: dispatch => logStateMiddleware(logActionsMiddleware(immutableMiddleware(dispatch)))
 })
 ```
 

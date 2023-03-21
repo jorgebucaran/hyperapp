@@ -56,7 +56,7 @@ A call to `dispatch([ActionFn, payload])` will recurse `dispatch(ActionFn, paylo
 Let's say you need to debug the order in which actions are dispatched. An augmented dispatch that logs each action could help with that, rather than having to add `console.log` to every action.
 
 ```js
-const mwLogActions = dispatch => (action, payload) => {
+const logActionsMiddleware = dispatch => (action, payload) => {
 
   if (typeof action === 'function') {
     console.log('DISPATCH: ', action.name)
@@ -65,7 +65,6 @@ const mwLogActions = dispatch => (action, payload) => {
   //pass on to original dispatch
   dispatch(action, payload)
 }
-
 ```
 
 ---
@@ -75,19 +74,17 @@ const mwLogActions = dispatch => (action, payload) => {
 If you instead are more interested in just logging each state transformation, an augmented dispatch such as this will work:
 
 ```js
-const mwLogState = dispatch => (action, payload) => {
-
+const stateMiddleware = fn => dispatch => (action, payload) => {
   if (Array.isArray(action) && typeof action[0] !== 'function') {
-    console.log('STATE:', action[0])
+    action = [fn(action[0]), ...action.slice(1)]
   }
   if (!Array.isArray(action) && typeof action !== 'function') {
-    console.log('STATE:', action)
+    action = fn(action)
   }
-
-  //pass on to original dispatch
   dispatch(action, payload)
 }
 
+const logStateMiddleware = stateMiddleware(state => { console.log(state); return state})
 ```
 
 
@@ -107,7 +104,7 @@ import { mwLogState } from "./middleware.js"
 
 app({
   // ...
-  dispatch: mwLogState
+  dispatch: logStateMiddleware
 })
 ```
 
@@ -118,7 +115,7 @@ import { mwLogState, mwLogActions } from "./middleware.js"
 
 app({
   // ...
-  dispatch: dispatch => mwLogState(mwLogActions(dispatch))
+  dispatch: dispatch => logStateMiddleware(logActionsMiddleware(dispatch))
 })
 ```
 

@@ -84,7 +84,10 @@ const stateMiddleware = fn => dispatch => (action, payload) => {
   dispatch(action, payload)
 }
 
-const logStateMiddleware = stateMiddleware(state => { console.log(state); return state})
+const logStateMiddleware = stateMiddleware(state => { 
+  console.log('STATE:', state)
+  return state
+})
 ```
 
 

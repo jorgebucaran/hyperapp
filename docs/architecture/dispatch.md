@@ -128,14 +128,14 @@ import { mwLogState } from "./middleware.js"
 
 app({
   // ...
-  dispatch: logStateMiddleware
+  dispatch: logActionsMiddleware
 })
 ```
 
 And if you wanted to use all custom dispatches together, you can chain them like this:
 
 ```js
-import { mwLogState, mwLogActions } from "./middleware.js"
+import { logActionsMiddleware, logStateMiddleware, immutableMiddleware } from "./middleware.js"
 
 app({
   // ...

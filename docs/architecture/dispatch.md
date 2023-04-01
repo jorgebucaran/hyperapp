@@ -59,7 +59,7 @@ Let's say you need to debug the order in which actions are dispatched. An augmen
 const logActionsMiddleware = dispatch => (action, payload) => {
 
   if (typeof action === 'function') {
-    console.log('DISPATCH: ', action.name)
+    console.log('DISPATCH: ', action.name || action)
   }
 
   //pass on to original dispatch

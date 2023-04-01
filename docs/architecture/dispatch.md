@@ -75,6 +75,7 @@ To log each state transformation, we first create a general state middleware and
 
 ```js
 const stateMiddleware = fn => dispatch => (action, payload) => {
+  if (!action) return dispatch();
   if (Array.isArray(action) && typeof action[0] !== 'function') {
     action = [fn(action[0]), ...action.slice(1)]
   } else if (!Array.isArray(action) && typeof action !== 'function') {

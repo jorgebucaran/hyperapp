@@ -93,7 +93,7 @@ const logStateMiddleware = stateMiddleware(state => {
 
 ## Example 3 - Immutable state
 
-When learning HyperApp and during developemt it can sometimes be useful to guarantee states are not mutated by mistake, let's use `stateMiddleware` above to create an augmented dispatch for state immutability:
+When learning Hyperapp and during developemt it can sometimes be useful to guarantee states are not mutated by mistake, let's use `stateMiddleware` above to create an augmented dispatch for state immutability:
 
 ```js
 // a proxy prohibiting mutation

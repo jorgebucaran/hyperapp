@@ -56,40 +56,61 @@ A call to `dispatch([ActionFn, payload])` will recurse `dispatch(ActionFn, paylo
 Let's say you need to debug the order in which actions are dispatched. An augmented dispatch that logs each action could help with that, rather than having to add `console.log` to every action.
 
 ```js
-const mwLogActions = dispatch => (action, payload) => {
+const logActionsMiddleware = dispatch => (action, payload) => {
 
   if (typeof action === 'function') {
-    console.log('DISPATCH: ', action.name)
+    console.log('DISPATCH: ', action.name || action)
   }
 
   //pass on to original dispatch
   dispatch(action, payload)
 }
-
 ```
 
 ---
 
 ## Example 2 - Log state
 
-If you instead are more interested in just logging each state transformation, an augmented dispatch such as this will work:
+To log each state transformation, we first create a general state middleware and then use it to create an augmented dispatch for state logging:
 
 ```js
-const mwLogState = dispatch => (action, payload) => {
-
+const stateMiddleware = fn => dispatch => (action, payload) => {
   if (Array.isArray(action) && typeof action[0] !== 'function') {
-    console.log('STATE:', action[0])
+    action = [fn(action[0]), ...action.slice(1)]
+  } else if (!Array.isArray(action) && typeof action !== 'function') {
+    action = fn(action)
   }
-  if (!Array.isArray(action) && typeof action !== 'function') {
-    console.log('STATE:', action)
-  }
-
-  //pass on to original dispatch
   dispatch(action, payload)
 }
 
+const logStateMiddleware = stateMiddleware(state => { 
+  console.log('STATE:', state)
+  return state
+})
 ```
 
+---
+
+## Example 3 - Immutable state
+
+When learning Hyperapp and during developemt it can sometimes be useful to guarantee states are not mutated by mistake, let's use `stateMiddleware` above to create an augmented dispatch for state immutability:
+
+```js
+// a proxy prohibiting mutation
+const immutableProxy = o => {
+  if (o===null || typeof o !== 'object') return o
+  return new Proxy(o, {
+    get(obj, prop) {
+      return immutableProxy(obj[prop])
+    },
+    set(obj, prop) {
+      throw new Error(`Can not set prop ${prop} on immutable object`)
+    }
+  })
+}
+
+export const immutableMiddleware = stateMiddleware(state => immutableProxy(state))
+```
 
 
 ## Usage
@@ -107,18 +128,18 @@ import { mwLogState } from "./middleware.js"
 
 app({
   // ...
-  dispatch: mwLogState
+  dispatch: logActionsMiddleware
 })
 ```
 
-And if you wanted to use both custom dispatches together, you can chain them like this:
+And if you wanted to use all custom dispatches together, you can chain them like this:
 
 ```js
-import { mwLogState, mwLogActions } from "./middleware.js"
+import { logActionsMiddleware, logStateMiddleware, immutableMiddleware } from "./middleware.js"
 
 app({
   // ...
-  dispatch: dispatch => mwLogState(mwLogActions(dispatch))
+  dispatch: dispatch => logStateMiddleware(logActionsMiddleware(immutableMiddleware(dispatch)))
 })
 ```
 

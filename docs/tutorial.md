@@ -582,7 +582,7 @@ Change `init` to:
 ```js
 [
   {names: [], highlight: [], selected: null, bio: "", ids: []},
-  jsonFetcher("https://jsonplaceholder.typicode.com/posts", GotNames)
+  jsonFetcher("https://jsonplaceholder.typicode.com/users", GotNames)
 ]
 ```
 

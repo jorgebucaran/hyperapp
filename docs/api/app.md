@@ -64,7 +64,7 @@ Initializes the app by either setting the initial value of the [state](../archit
 
 - `init: Action`
 
-  Runs the given [Action](../architecture/action.md).
+  Runs the given [Action](../architecture/actions.md).
 
   This form is useful when the action can be reused later. The state passed to the action in this case is `undefined`.
 
@@ -79,7 +79,7 @@ Initializes the app by either setting the initial value of the [state](../archit
 
 - `init: [Action, payload]`
 
-  Runs the given [Action](../architecture/actio.md) with a payload.
+  Runs the given [Action](../architecture/actions.md) with a payload.
 
   ```js
   const SetCounter = (_state, n) => ({ counter: n })
